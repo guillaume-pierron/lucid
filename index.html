@@ -3,656 +3,776 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Décideur Pro — Aide à la décision multi-options</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700;900&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Lucid — Aide à la décision</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:wght@600;700&display=swap" rel="stylesheet">
 <style>
-/* ══════════════════════════════════════
-   VARIABLES & RESET
-══════════════════════════════════════ */
+/* ── TOKENS ─────────────────────────────── */
 :root {
-  --bg:       #09090b;
-  --surf:     #111113;
-  --surf2:    #17171a;
-  --border:   #1e1e22;
-  --border2:  #2a2a30;
-  --gold:     #c8a24a;
-  --gold2:    #e0bf79;
-  --cream:    #eae4d6;
-  --muted:    #656570;
-  --muted2:   #3e3e46;
-  --green:    #52b87a;
-  --red:      #e05252;
-  --r:        12px;
-
-  /* Option palette — up to 6 */
-  --c0: #5b9bd5; --c0b: rgba(91,155,213,0.12);  --c0o: rgba(91,155,213,0.35);
-  --c1: #d4735a; --c1b: rgba(212,115,90,0.12);  --c1o: rgba(212,115,90,0.35);
-  --c2: #6db87a; --c2b: rgba(109,184,122,0.12); --c2o: rgba(109,184,122,0.35);
-  --c3: #b87ad4; --c3b: rgba(184,122,212,0.12); --c3o: rgba(184,122,212,0.35);
-  --c4: #d4b85a; --c4b: rgba(212,184,90,0.12);  --c4o: rgba(212,184,90,0.35);
-  --c5: #5ab8d4; --c5b: rgba(90,184,212,0.12);  --c5o: rgba(90,184,212,0.35);
+  --bg:       #f5f4f0;
+  --bg2:      #eceae4;
+  --white:    #ffffff;
+  --border:   #e2dfd8;
+  --border2:  #cdc9c0;
+  --ink:      #1a1917;
+  --ink2:     #3d3b36;
+  --muted:    #8a877f;
+  --muted2:   #b8b4ac;
+  --teal:     #2563eb;
+  --teal2:    #3b82f6;
+  --teal-bg:  #eff6ff;
+  --teal-bd:  #bfdbfe;
+  --green:    #2d8a4e;
+  --green-bg: #eaf4ee;
+  --red:      #c0392b;
+  --red-bg:   #fdecea;
+  --amber:    #b8820a;
+  --amber-bg: #fef6e4;
+  --r:        14px;
+  --r-sm:     9px;
+  --shadow:   0 2px 12px rgba(0,0,0,0.07);
+  --shadow-lg:0 8px 32px rgba(0,0,0,0.1);
 }
 
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; }
-
-body {
-  background: var(--bg);
-  color: var(--cream);
-  font-family: 'Outfit', sans-serif;
-  font-weight: 400;
-  min-height: 100vh;
-  overflow-x: hidden;
+/* ── RESET ───────────────────────────────── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:15px;
+  line-height:1.6;
+  min-height:100vh;
 }
 
-body::before {
-  content:'';
-  position:fixed; inset:0;
-  background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(200,162,74,0.06), transparent);
-  pointer-events:none; z-index:0;
-}
+/* ── PAGES ───────────────────────────────── */
+.page{display:none;min-height:100vh;flex-direction:column;}
+.page.active{display:flex;}
 
-.app { position:relative; z-index:1; }
-
-/* ══════════════════════════════════════
-   PAGES
-══════════════════════════════════════ */
-.page { display:none; min-height:100vh; flex-direction:column; }
-.page.active { display:flex; }
-
-/* ══════════════════════════════════════
-   HEADER
-══════════════════════════════════════ */
-.app-header {
-  padding: 22px 36px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  border-bottom: 1px solid var(--border);
-  position: sticky; top:0; z-index:50;
-  background: rgba(9,9,11,0.85);
-  backdrop-filter: blur(12px);
-}
-
-.logo {
-  font-family:'Cormorant Garamond', serif;
-  font-size: 1.4rem; font-weight:700;
-  color: var(--gold2);
-  letter-spacing:-0.01em;
-}
-.logo em { color:var(--muted); font-style:normal; font-weight:400; }
-
-.header-steps {
-  display:flex; gap:6px; align-items:center; margin-left:auto;
-}
-.hstep {
-  display:flex; align-items:center; gap:6px;
-  font-size:0.72rem; font-weight:500;
-  color: var(--muted2);
-  transition: color 0.3s;
-}
-.hstep.active { color: var(--gold2); }
-.hstep.done   { color: var(--muted); }
-.hstep-dot {
-  width:24px; height:24px; border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-size:0.7rem; font-weight:700;
-  background: var(--border2); color:var(--muted2);
-  transition: all 0.3s; flex-shrink:0;
-}
-.hstep.active .hstep-dot { background:var(--gold); color:#09090b; }
-.hstep.done   .hstep-dot { background:var(--muted2); color:var(--cream); }
-.hstep-sep { width:20px; height:1px; background:var(--border2); }
-
-/* ══════════════════════════════════════
-   MAIN CONTENT
-══════════════════════════════════════ */
-.main {
-  flex:1; padding:48px 36px 80px;
-  max-width:1040px; margin:0 auto; width:100%;
-}
-
-/* ══════════════════════════════════════
-   ANIMATIONS
-══════════════════════════════════════ */
-@keyframes up   { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none} }
-@keyframes spin { to{transform:rotate(360deg)} }
-
-.anim    { animation: up 0.45s ease both; }
-.anim-1  { animation-delay:.06s }
-.anim-2  { animation-delay:.13s }
-.anim-3  { animation-delay:.20s }
-.anim-4  { animation-delay:.27s }
-
-/* ══════════════════════════════════════
-   TYPOGRAPHY
-══════════════════════════════════════ */
-.eyebrow {
-  font-size:0.68rem; font-weight:600;
-  letter-spacing:.18em; text-transform:uppercase;
-  color:var(--gold); margin-bottom:8px;
-}
-.page-title {
-  font-family:'Cormorant Garamond', serif;
-  font-size: clamp(2rem,4vw,3rem);
-  font-weight:700; line-height:1.1;
-  color:var(--cream); margin-bottom:10px;
-}
-.page-sub {
-  color:var(--muted); font-size:.9rem;
-  font-weight:300; line-height:1.65;
-  max-width:540px; margin-bottom:36px;
-}
-
-/* ══════════════════════════════════════
-   FORM ELEMENTS
-══════════════════════════════════════ */
-.field { margin-bottom:18px; }
-.field > label {
-  display:block; font-size:.75rem; font-weight:600;
-  letter-spacing:.07em; text-transform:uppercase;
-  color:var(--muted); margin-bottom:7px;
-}
-input[type=text], textarea, select {
-  width:100%;
-  background:var(--surf); border:1px solid var(--border2);
-  border-radius:var(--r); color:var(--cream);
-  font-family:'Outfit',sans-serif; font-size:.95rem;
-  padding:13px 16px; outline:none; resize:none;
-  transition: border-color .2s, box-shadow .2s;
-  appearance:none;
-}
-input[type=text]:focus, textarea:focus, select:focus {
-  border-color:var(--gold);
-  box-shadow:0 0 0 3px rgba(200,162,74,.1);
-}
-
-/* ══════════════════════════════════════
-   BUTTONS
-══════════════════════════════════════ */
-.btn {
-  font-family:'Outfit',sans-serif; font-size:.88rem; font-weight:500;
-  padding:12px 24px; border-radius:10px; border:none; cursor:pointer;
-  transition:all .18s; display:inline-flex; align-items:center; gap:7px;
-  letter-spacing:.02em;
-}
-.btn-primary { background:var(--gold); color:#09090b; }
-.btn-primary:hover { background:var(--gold2); transform:translateY(-1px); box-shadow:0 8px 24px rgba(200,162,74,.25); }
-.btn-secondary { background:transparent; color:var(--muted); border:1px solid var(--border2); }
-.btn-secondary:hover { border-color:var(--muted2); color:var(--cream); }
-.btn-ghost { background:transparent; color:var(--muted); border:none; font-size:.82rem; padding:8px 12px; }
-.btn-ghost:hover { color:var(--cream); }
-.btn-icon {
-  width:32px; height:32px; border-radius:8px; padding:0;
-  display:inline-flex; align-items:center; justify-content:center;
-  font-size:.9rem;
-}
-.btn-row { display:flex; align-items:center; justify-content:space-between; margin-top:36px; gap:12px; }
-
-/* ══════════════════════════════════════
-   INTRO PAGE
-══════════════════════════════════════ */
-#page-intro {
-  align-items:center; justify-content:center;
-  text-align:center; padding:60px 36px;
-}
-.intro-wordmark {
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(3.5rem,9vw,7rem);
-  font-weight:900; color:var(--gold2); line-height:1;
-  margin-bottom:6px;
-  animation: up .8s ease both;
-}
-.intro-tagline {
-  font-size:1rem; color:var(--muted); font-weight:300;
-  margin-bottom:48px; animation: up .8s .15s ease both;
-}
-.intro-chips {
-  display:flex; gap:10px; justify-content:center;
-  flex-wrap:wrap; margin-bottom:48px;
-  animation: up .8s .25s ease both;
-}
-.chip {
-  display:flex; align-items:center; gap:7px;
-  font-size:.78rem; color:var(--muted);
-  background:var(--surf); border:1px solid var(--border2);
-  padding:7px 16px; border-radius:30px;
-}
-.chip-icon { color:var(--gold); }
-.start-btn {
-  animation: up .8s .35s ease both;
-  font-size:1rem; padding:16px 44px; border-radius:12px;
-  background:var(--gold); color:#09090b;
-  border:none; font-family:'Outfit',sans-serif; font-weight:600;
-  cursor:pointer; transition:all .2s; letter-spacing:.02em;
-}
-.start-btn:hover { background:var(--gold2); transform:translateY(-2px); box-shadow:0 14px 36px rgba(200,162,74,.3); }
-
-/* ══════════════════════════════════════
-   STEP 1 — OPTIONS BUILDER
-══════════════════════════════════════ */
-.options-builder { display:flex; flex-direction:column; gap:12px; margin-bottom:20px; }
-
-.opt-card {
-  background:var(--surf); border:1px solid var(--border2);
-  border-radius:var(--r); padding:0; overflow:hidden;
-  transition: border-color .2s;
-}
-
-.opt-card-header {
-  display:flex; align-items:center; gap:12px;
-  padding:14px 18px;
+/* ── HEADER ──────────────────────────────── */
+.app-header{
+  background:var(--white);
   border-bottom:1px solid var(--border);
-  cursor:pointer; user-select:none;
+  padding:14px 28px;
+  display:flex;align-items:center;gap:16px;
+  position:sticky;top:0;z-index:50;
+  box-shadow:0 1px 4px rgba(0,0,0,0.05);
+}
+.logo{
+  font-family:'Lora',serif;
+  font-size:1.3rem;font-weight:700;
+  color:var(--teal);
+  letter-spacing:-.02em;
+  display:flex;align-items:center;gap:6px;
+}
+.logo-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--teal2);
+  display:inline-block;
 }
 
-.opt-color-dot {
-  width:10px; height:10px; border-radius:50%; flex-shrink:0;
+/* Step progress in header */
+.step-progress{
+  margin-left:auto;
+  display:flex;align-items:center;gap:0;
+}
+.sp-step{
+  display:flex;align-items:center;gap:7px;
+  padding:6px 14px;border-radius:30px;
+  font-size:.75rem;font-weight:600;
+  color:var(--muted);
+  transition:all .2s;
+}
+.sp-step.active{background:var(--teal-bg);color:var(--teal);}
+.sp-step.done{color:var(--muted2);}
+.sp-num{
+  width:22px;height:22px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.72rem;font-weight:700;
+  background:var(--bg2);color:var(--muted);
+  flex-shrink:0;transition:all .2s;
+}
+.sp-step.active .sp-num{background:var(--teal);color:#fff;}
+.sp-step.done .sp-num{background:var(--green);color:#fff;}
+.sp-arrow{color:var(--muted2);font-size:.75rem;padding:0 2px;}
+
+/* ── MAIN ────────────────────────────────── */
+.main{
+  flex:1;
+  padding:36px 28px 72px;
+  max-width:960px;
+  margin:0 auto;
+  width:100%;
 }
 
-.opt-card-label {
-  font-size:.8rem; font-weight:600;
-  letter-spacing:.08em; text-transform:uppercase;
+/* ── ANIMATIONS ──────────────────────────── */
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.anim{animation:up .4s ease both;}
+.d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.16s}.d4{animation-delay:.22s}
+
+/* ── TYPOGRAPHY ──────────────────────────── */
+.page-eyebrow{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--teal);background:var(--teal-bg);
+  padding:4px 12px;border-radius:20px;border:1px solid var(--teal-bd);
+  margin-bottom:14px;
+}
+.page-title{
+  font-family:'Lora',serif;
+  font-size:clamp(1.7rem,3.5vw,2.4rem);
+  font-weight:700;line-height:1.2;
+  color:var(--ink);margin-bottom:8px;
+}
+.page-sub{
+  font-size:.93rem;color:var(--muted);
+  line-height:1.65;max-width:520px;margin-bottom:32px;
 }
 
-.opt-card-name-preview {
-  margin-left:auto; font-size:.85rem; color:var(--muted);
-  max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+/* ── CARDS ───────────────────────────────── */
+.card{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  box-shadow:var(--shadow);
 }
 
-.opt-card-toggle {
-  font-size:.75rem; color:var(--muted2); margin-left:8px;
-  transition:transform .2s;
+/* ── FORM ────────────────────────────────── */
+.field{margin-bottom:18px;}
+.field>label{
+  display:block;font-size:.78rem;font-weight:700;
+  color:var(--ink2);margin-bottom:6px;letter-spacing:.02em;
 }
-.opt-card.open .opt-card-toggle { transform:rotate(180deg); }
+input[type=text],textarea,select{
+  width:100%;
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:var(--r-sm);
+  color:var(--ink);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.95rem;padding:12px 14px;
+  outline:none;resize:none;appearance:none;
+  transition:border-color .18s,box-shadow .18s;
+}
+input[type=text]:focus,textarea:focus,select:focus{
+  border-color:var(--teal2);
+  box-shadow:0 0 0 3px rgba(37,99,235,.12);
+}
+input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
-.opt-card-body { padding:18px; display:none; }
-.opt-card.open .opt-card-body { display:block; }
+/* ── BUTTONS ─────────────────────────────── */
+.btn{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.88rem;font-weight:600;
+  padding:11px 22px;border-radius:var(--r-sm);
+  border:none;cursor:pointer;
+  transition:all .18s;
+  display:inline-flex;align-items:center;gap:7px;
+}
+.btn-primary{background:var(--teal);color:#fff;}
+.btn-primary:hover{background:var(--teal2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,99,235,.25);}
+.btn-secondary{background:var(--white);color:var(--ink2);border:1.5px solid var(--border);}
+.btn-secondary:hover{border-color:var(--border2);background:var(--bg);}
+.btn-row{display:flex;align-items:center;justify-content:space-between;margin-top:32px;gap:12px;}
 
-.opt-remove-btn {
-  width:28px; height:28px; border-radius:7px;
-  background:transparent; border:1px solid var(--border2);
-  color:var(--muted2); cursor:pointer; font-size:.8rem;
-  display:inline-flex; align-items:center; justify-content:center;
-  transition:all .15s; font-family:'Outfit',sans-serif;
+/* ── INTRO PAGE ──────────────────────────── */
+#page-intro{
+  background:var(--white);
+  align-items:center;justify-content:center;
+  text-align:center;padding:40px 28px;
+  min-height:100dvh;
+}
+.intro-inner{
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  width:100%;max-width:680px;
+  gap:0;
+  /* Fill screen height and distribute space evenly */
+  min-height:calc(100dvh - 80px);
+}
+.intro-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--teal-bg);color:var(--teal);
+  border:1px solid var(--teal-bd);
+  font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:4px 12px;border-radius:20px;margin-bottom:14px;
+  animation:up .5s ease both;flex-shrink:0;
+}
+.intro-logo{
+  font-family:'Lora',serif;
+  font-size:clamp(2.8rem,9vw,6.5rem);
+  font-weight:700;color:var(--ink);line-height:1;
+  margin-bottom:10px;flex-shrink:0;
+  animation:up .5s .08s ease both;
+}
+.intro-logo span{color:var(--teal);}
+.intro-tagline{
+  font-size:clamp(.88rem,2vw,1.1rem);color:var(--muted);
+  font-weight:400;max-width:420px;margin:0 auto 20px;
+  animation:up .5s .16s ease both;flex-shrink:0;
+}
+.intro-how{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:10px;width:100%;margin:0 auto 24px;
+  animation:up .5s .24s ease both;flex-shrink:0;
+}
+.how-card{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px 10px;
+  text-align:center;
+}
+.how-num{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--teal);color:#fff;
+  font-size:.75rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 8px;
+}
+.how-title{font-size:.8rem;font-weight:700;color:var(--ink);margin-bottom:3px;}
+.how-desc{font-size:.7rem;color:var(--muted);line-height:1.4;}
+.intro-start-btn{
+  animation:up .5s .32s ease both;
+  font-size:1rem;padding:14px 40px;border-radius:12px;
+  background:var(--teal);color:#fff;
+  border:none;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;
+  cursor:pointer;transition:all .2s;flex-shrink:0;
+  box-shadow:0 4px 16px rgba(37,99,235,.3);
+  width:100%;max-width:320px;
+}
+.intro-start-btn:hover{background:var(--teal2);transform:translateY(-2px);box-shadow:0 10px 28px rgba(37,99,235,.35);}
+
+/* On very small screens, hide how-cards description text */
+@media(max-height:640px){
+  .how-desc{display:none;}
+  .how-card{padding:10px 8px;}
+  .intro-how{margin-bottom:16px;}
+  .intro-tagline{margin-bottom:14px;}
+}
+
+/* ── AI INTERPRETATION ───────────────────── */
+.interp-box{
+  background:var(--white);
+  border:1.5px solid var(--teal-bd);
+  border-radius:var(--r);
+  margin-bottom:24px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.interp-head{
+  display:flex;align-items:center;gap:10px;
+  padding:13px 18px;
+  background:var(--teal-bg);
+  border-bottom:1px solid var(--teal-bd);
+}
+.interp-head-title{font-size:.88rem;font-weight:700;color:var(--teal);}
+.interp-badge{
+  font-size:.62rem;font-weight:700;letter-spacing:.08em;
+  background:var(--teal);color:#fff;
+  padding:2px 8px;border-radius:5px;text-transform:uppercase;
+}
+.interp-body{padding:20px 22px;}
+.interp-text{
+  font-size:.95rem;color:var(--ink2);line-height:1.75;
+  font-weight:400;
+}
+.interp-text strong{color:var(--ink);font-weight:700;}
+
+/* Loading skeleton */
+.interp-loading{
+  display:flex;flex-direction:column;gap:10px;padding:20px 22px;
+}
+.skel{
+  height:14px;border-radius:6px;
+  background:linear-gradient(90deg,var(--bg) 25%,var(--bg2) 50%,var(--bg) 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.4s infinite;
+}
+.skel.w100{width:100%;}
+.skel.w80{width:80%;}
+.skel.w60{width:60%;}
+@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+
+/* ── STEP 1 — OPTIONS ────────────────────── */
+.decision-card{
+  padding:24px;margin-bottom:20px;
+}
+.options-list{display:flex;flex-direction:column;gap:12px;margin-bottom:14px;}
+.opt-card{border-radius:var(--r);overflow:hidden;border:1.5px solid var(--border);background:var(--white);box-shadow:var(--shadow);}
+.opt-card-head{
+  display:flex;align-items:center;gap:10px;
+  padding:13px 16px;cursor:pointer;user-select:none;
+  background:var(--bg);border-bottom:1px solid var(--border);
+  transition:background .15s;
+}
+.opt-card-head:hover{background:var(--bg2);}
+.opt-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.opt-letter{
+  font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+}
+.opt-name-preview{
+  margin-left:auto;font-size:.82rem;color:var(--muted);
+  max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.opt-chevron{color:var(--muted2);font-size:.75rem;transition:transform .2s;margin-left:6px;}
+.opt-card.open .opt-chevron{transform:rotate(180deg);}
+.opt-card-body{padding:16px;display:none;}
+.opt-card.open .opt-card-body{display:block;}
+.opt-rm{
+  width:26px;height:26px;border-radius:7px;
+  background:transparent;border:1px solid var(--border);
+  color:var(--muted);cursor:pointer;font-size:.8rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif;
   flex-shrink:0;
 }
-.opt-remove-btn:hover { background:rgba(224,82,82,.12); border-color:var(--red); color:var(--red); }
+.opt-rm:hover{background:var(--red-bg);border-color:var(--red);color:var(--red);}
 
-.add-opt-btn {
-  display:flex; align-items:center; gap:10px;
-  background:var(--surf); border:1px dashed var(--border2);
-  border-radius:var(--r); padding:14px 18px;
-  cursor:pointer; font-family:'Outfit',sans-serif;
-  font-size:.85rem; color:var(--muted); width:100%;
+.add-option-btn{
+  width:100%;display:flex;align-items:center;gap:10px;
+  background:var(--white);border:1.5px dashed var(--border2);
+  border-radius:var(--r);padding:14px 18px;
+  cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.85rem;font-weight:600;color:var(--muted);
   transition:all .18s;
 }
-.add-opt-btn:hover { border-color:var(--gold); color:var(--gold2); }
-.add-opt-btn-icon {
-  width:28px; height:28px; border-radius:7px;
-  background:var(--surf2); display:flex; align-items:center; justify-content:center;
-  font-size:1rem;
+.add-option-btn:hover{border-color:var(--teal2);color:var(--teal);background:var(--teal-bg);}
+.add-option-icon{
+  width:28px;height:28px;border-radius:8px;
+  background:var(--bg);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;transition:all .18s;
+}
+.add-option-btn:hover .add-option-icon{background:var(--teal);color:#fff;border-color:var(--teal);}
+
+/* ── STEP 2 — CRITERIA ───────────────────── */
+.criteria-intro{
+  background:var(--amber-bg);border:1px solid #f0d080;
+  border-radius:var(--r);padding:14px 18px;
+  margin-bottom:22px;
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:.85rem;color:var(--amber);line-height:1.5;
+}
+.criteria-intro-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+
+.cat-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px;}
+.cat-tab{
+  background:var(--white);border:1.5px solid var(--border);
+  border-radius:30px;color:var(--muted);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.78rem;font-weight:600;
+  padding:6px 14px;cursor:pointer;transition:all .15s;
+}
+.cat-tab:hover{border-color:var(--border2);color:var(--ink2);}
+.cat-tab.active{border-color:var(--teal);color:var(--teal);background:var(--teal-bg);}
+
+.crit-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:8px;margin-bottom:22px;
+}
+.crit-pill{
+  background:var(--white);border:1.5px solid var(--border);
+  border-radius:var(--r-sm);padding:11px 13px;
+  cursor:pointer;transition:all .15s;
+  display:flex;align-items:flex-start;gap:9px;user-select:none;
+}
+.crit-pill:hover{border-color:var(--border2);box-shadow:var(--shadow);}
+.crit-pill.on{border-color:var(--teal);background:var(--teal-bg);box-shadow:0 0 0 1px var(--teal);}
+.crit-check{
+  width:18px;height:18px;border-radius:5px;
+  background:var(--bg);border:1.5px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;flex-shrink:0;margin-top:1px;transition:all .15s;
+}
+.crit-pill.on .crit-check{background:var(--teal);border-color:var(--teal);color:#fff;}
+.crit-icon{font-size:.95rem;flex-shrink:0;margin-top:1px;}
+.crit-name{font-size:.82rem;font-weight:600;color:var(--ink);}
+.crit-hint{font-size:.7rem;color:var(--muted);margin-top:2px;line-height:1.4;}
+
+.custom-form{
+  background:var(--bg);border:1.5px dashed var(--border2);
+  border-radius:var(--r);padding:18px;margin-bottom:22px;
+}
+.custom-form-title{
+  font-size:.82rem;font-weight:700;color:var(--ink2);margin-bottom:14px;
+  display:flex;align-items:center;gap:6px;
+}
+.custom-row{display:grid;grid-template-columns:1fr 70px 1fr;gap:10px;align-items:end;}
+
+/* Selected criteria box */
+.selected-box{
+  background:var(--white);border:1.5px solid var(--border);
+  border-radius:var(--r);overflow:hidden;
+}
+.selected-box-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 18px;border-bottom:1px solid var(--border);
+  background:var(--bg);
+}
+.selected-box-head h3{font-size:.85rem;font-weight:700;color:var(--ink2);}
+.sel-count{
+  background:var(--teal);color:#fff;
+  font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:20px;
+}
+.sel-list{padding:6px;}
+.sel-item{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 12px;border-radius:8px;transition:background .12s;
+}
+.sel-item:hover{background:var(--bg);}
+.sel-icon{font-size:.9rem;flex-shrink:0;}
+.sel-name{font-size:.82rem;font-weight:500;color:var(--ink);flex:1;}
+.inv-tag{
+  font-size:.63rem;background:var(--amber-bg);
+  color:var(--amber);padding:2px 6px;border-radius:4px;
+  border:1px solid #f0d080;font-weight:600;
+}
+.weight-sel{
+  padding:4px 8px;font-size:.72rem;border-radius:6px;
+  background:var(--bg);border:1.5px solid var(--border);
+  color:var(--ink2);cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;
+}
+.inv-btn{
+  font-size:.63rem;padding:4px 8px;
+  background:var(--bg);border:1.5px solid var(--border);
+  border-radius:5px;color:var(--muted);cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  white-space:nowrap;font-weight:600;transition:all .12s;
+}
+.inv-btn.on{border-color:var(--amber);color:var(--amber);background:var(--amber-bg);}
+.rm-btn{
+  width:24px;height:24px;border-radius:6px;
+  background:transparent;border:1.5px solid var(--border);
+  color:var(--muted);cursor:pointer;font-size:.75rem;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif;transition:all .12s;
+}
+.rm-btn:hover{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+.empty-hint{text-align:center;padding:28px;color:var(--muted);font-size:.85rem;}
+
+/* ── STEP 3 — EVALUATION ─────────────────── */
+.eval-grid{display:grid;gap:16px;}
+.eval-col{}
+.eval-col-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 18px;border-radius:12px 12px 0 0;
+  border:1.5px solid;border-bottom:none;
+}
+.eval-col-name{font-size:1rem;font-weight:700;}
+.eval-live-score{
+  display:flex;flex-direction:column;align-items:flex-end;
+}
+.eval-live-num{
+  font-family:'Lora',serif;
+  font-size:1.6rem;font-weight:700;line-height:1;
+}
+.eval-live-label{font-size:.62rem;color:var(--muted);font-weight:500;}
+
+.eval-col-body{border:1.5px solid;border-top:none;border-radius:0 0 12px 12px;overflow:hidden;background:var(--white);}
+
+/* Stepper */
+.sl-item{padding:14px 16px;border-bottom:1px solid var(--border);}
+.sl-item:last-child{border-bottom:none;}
+.sl-head{display:flex;align-items:center;gap:6px;margin-bottom:12px;}
+.sl-label{font-size:.8rem;font-weight:600;color:var(--ink);flex:1;}
+.sl-wtag{
+  font-size:.62rem;background:var(--amber-bg);
+  color:var(--amber);padding:2px 6px;border-radius:4px;
+  border:1px solid #f0d080;font-weight:700;flex-shrink:0;
 }
 
-/* ══════════════════════════════════════
-   STEP 2 — CRITERIA
-══════════════════════════════════════ */
-.cat-tabs { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:22px; }
-.cat-tab {
-  background:var(--surf); border:1px solid var(--border2);
-  border-radius:7px; color:var(--muted);
-  font-family:'Outfit',sans-serif; font-size:.78rem; font-weight:500;
-  padding:6px 13px; cursor:pointer; transition:all .15s;
+.stepper{
+  display:grid;grid-template-columns:44px 1fr 44px;
+  align-items:center;gap:10px;
 }
-.cat-tab:hover { color:var(--cream); }
-.cat-tab.active { border-color:var(--gold); color:var(--gold2); background:rgba(200,162,74,.07); }
+.stepper-btn{
+  width:44px;height:44px;border-radius:10px;
+  border:1.5px solid var(--border);
+  background:var(--bg);color:var(--ink2);
+  font-size:1.3rem;font-weight:300;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  transition:all .15s;flex-shrink:0;
+  touch-action:manipulation;user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.stepper-btn:hover{border-color:var(--border2);background:var(--bg2);}
+.stepper-btn:active{transform:scale(.90);background:var(--border);}
 
-.crit-grid {
-  display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
-  gap:8px; margin-bottom:24px;
-}
+.stepper-track{display:flex;flex-direction:column;align-items:center;gap:7px;}
 
-.crit-pill {
-  background:var(--surf); border:1px solid var(--border2);
-  border-radius:10px; padding:11px 13px;
-  cursor:pointer; transition:all .15s;
-  display:flex; align-items:center; gap:9px; user-select:none;
-}
-.crit-pill:hover { background:var(--surf2); }
-.crit-pill.on { border-color:var(--gold); background:rgba(200,162,74,.05); }
-.crit-check {
-  width:18px; height:18px; border-radius:5px;
-  background:var(--border2); display:flex; align-items:center; justify-content:center;
-  font-size:.65rem; flex-shrink:0; transition:all .15s;
-}
-.crit-pill.on .crit-check { background:var(--gold); color:#09090b; }
-.crit-icon { font-size:.95rem; flex-shrink:0; }
-.crit-name { font-size:.82rem; font-weight:500; color:var(--cream); }
-.crit-hint { font-size:.68rem; color:var(--muted); margin-top:1px; }
-
-.custom-form {
-  background:var(--surf2); border:1px dashed var(--border2);
-  border-radius:var(--r); padding:18px; margin-bottom:24px;
-}
-.custom-form h4 { font-size:.82rem; font-weight:600; color:var(--cream); margin-bottom:14px; }
-.custom-row { display:grid; grid-template-columns:1fr 70px 1fr; gap:10px; align-items:end; }
-
-.active-box {
-  background:var(--surf); border:1px solid var(--border2); border-radius:var(--r); overflow:hidden;
-}
-.active-box-header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:14px 18px; border-bottom:1px solid var(--border);
-}
-.active-box-header h3 { font-size:.82rem; font-weight:600; color:var(--cream); }
-.count-badge {
-  background:var(--gold); color:#09090b;
-  font-size:.68rem; font-weight:700; padding:2px 8px; border-radius:20px;
+.pip-row{display:flex;gap:4px;align-items:flex-end;width:100%;height:20px;}
+.pip{
+  flex:1;border-radius:4px;
+  background:var(--bg2);border:1px solid var(--border);
+  transition:background .18s,height .18s,border-color .18s;
+  min-height:8px;
 }
 
-.active-list { padding:6px; }
-.active-item {
-  display:flex; align-items:center; gap:8px;
-  padding:9px 11px; border-radius:8px; border:1px solid transparent;
-  transition:background .12s;
-}
-.active-item:hover { background:var(--surf2); }
-.ai-icon { font-size:.95rem; flex-shrink:0; }
-.ai-name { font-size:.82rem; color:var(--cream); flex:1; }
-.inv-tag {
-  font-size:.6rem; background:rgba(200,162,74,.12);
-  color:var(--gold); padding:2px 5px; border-radius:3px;
-}
-.weight-sel {
-  width:auto; padding:4px 8px; font-size:.72rem;
-  border-radius:6px; background:var(--bg); border:1px solid var(--border2);
-  color:var(--cream); cursor:pointer; font-family:'Outfit',sans-serif;
-}
-.inv-btn {
-  font-size:.62rem; padding:4px 7px;
-  background:var(--bg); border:1px solid var(--border2);
-  border-radius:4px; color:var(--muted); cursor:pointer;
-  font-family:'Outfit',sans-serif; white-space:nowrap; transition:all .12s;
-}
-.inv-btn.on { border-color:var(--gold); color:var(--gold); }
-.rm-btn {
-  width:22px; height:22px; border-radius:5px;
-  background:transparent; border:1px solid var(--border2);
-  color:var(--muted2); cursor:pointer; font-size:.75rem;
-  display:flex; align-items:center; justify-content:center;
-  flex-shrink:0; font-family:'Outfit',sans-serif; transition:all .12s;
-}
-.rm-btn:hover { background:rgba(224,82,82,.12); border-color:var(--red); color:var(--red); }
-.empty-hint { text-align:center; padding:32px; color:var(--muted); font-size:.85rem; }
-
-/* ══════════════════════════════════════
-   STEP 3 — SLIDERS
-══════════════════════════════════════ */
-.eval-grid {
-  display:grid;
-  gap:16px;
+.stepper-val{
+  font-family:'Lora',serif;
+  font-size:1.5rem;font-weight:700;line-height:1;
+  transition:color .18s;min-width:28px;text-align:center;
 }
 
-.eval-col { }
-
-.eval-col-head {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:13px 16px; border-radius:10px 10px 0 0;
-  border:1px solid; border-bottom:none;
-}
-.eval-col-name {
-  font-family:'Cormorant Garamond',serif;
-  font-size:1.1rem; font-weight:700;
-}
-.eval-col-score {
-  font-family:'Cormorant Garamond',serif;
-  font-size:1.5rem; font-weight:900;
+/* ── NOTES ───────────────────────────────── */
+.notes-row{display:grid;gap:14px;margin-top:20px;}
+.notes-lbl{
+  font-size:.75rem;font-weight:700;color:var(--ink2);margin-bottom:6px;display:block;
 }
 
-.eval-col-body {
-  border:1px solid; border-top:none;
-  border-radius:0 0 10px 10px; overflow:hidden;
+/* ── RESULTS ─────────────────────────────── */
+.res-decision-banner{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:20px 24px;
+  margin-bottom:24px;
+  display:flex;align-items:center;gap:14px;
+  box-shadow:var(--shadow);
 }
+.res-dec-icon{font-size:1.6rem;flex-shrink:0;}
+.res-dec-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:3px;}
+.res-dec-text{font-size:1rem;font-weight:600;color:var(--ink);}
 
-.sl-item {
-  padding:13px 16px; border-bottom:1px solid var(--border);
+.verdict-strip{
+  border-radius:var(--r);padding:20px 24px;
+  display:flex;align-items:flex-start;gap:16px;
+  margin-bottom:24px;border:1.5px solid;
+  box-shadow:var(--shadow);
 }
-.sl-item:last-child { border-bottom:none; }
-.sl-head {
-  display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;
-}
-.sl-label { font-size:.78rem; font-weight:500; color:var(--cream); display:flex; align-items:center; gap:5px; }
-.sl-val { font-size:1.05rem; font-weight:700; font-family:'Cormorant Garamond',serif; }
-.sl-wtag {
-  font-size:.6rem; background:rgba(200,162,74,.1);
-  color:var(--gold); padding:2px 5px; border-radius:3px;
-}
+.verdict-icon{font-size:1.8rem;flex-shrink:0;margin-top:2px;}
+.verdict-title{font-family:'Lora',serif;font-size:1.25rem;font-weight:700;margin-bottom:4px;}
+.verdict-sub{font-size:.85rem;color:var(--muted);line-height:1.55;}
 
-input[type=range] {
-  width:100%; height:5px; appearance:none;
-  border-radius:3px; outline:none; cursor:pointer;
-  background:var(--border2);
+.scores-row{display:grid;gap:12px;margin-bottom:24px;}
+.score-card{
+  background:var(--white);border-radius:var(--r);
+  padding:20px 22px;border:1.5px solid var(--border);
+  position:relative;overflow:hidden;
+  box-shadow:var(--shadow);transition:box-shadow .15s;
 }
-input[type=range]::-webkit-slider-thumb {
-  appearance:none; width:16px; height:16px; border-radius:50%;
-  border:2px solid var(--surf); cursor:pointer;
-  box-shadow:0 2px 6px rgba(0,0,0,.5);
+.score-card:hover{box-shadow:var(--shadow-lg);}
+.score-card.rank-1{border-width:2px;}
+.rank-badge{
+  position:absolute;top:14px;right:14px;
+  font-size:.68rem;font-weight:700;
+  padding:3px 10px;border-radius:20px;
+  letter-spacing:.06em;
 }
-.sl-scale { display:flex; justify-content:space-between; font-size:.62rem; color:var(--muted2); margin-top:3px; }
+.sc-letter{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+.sc-name{font-family:'Lora',serif;font-size:1.25rem;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.sc-desc{font-size:.78rem;color:var(--muted);margin-bottom:16px;}
+.sc-score-row{display:flex;align-items:flex-end;gap:5px;margin-bottom:10px;}
+.sc-num{font-family:'Lora',serif;font-size:2.8rem;font-weight:700;line-height:1;}
+.sc-denom{font-size:.8rem;color:var(--muted);margin-bottom:6px;font-weight:500;}
+.sc-bar{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;margin-bottom:14px;}
+.sc-bar-fill{height:100%;border-radius:4px;transition:width 1s ease;}
 
-.notes-row { display:grid; gap:14px; margin-top:20px; }
-.notes-lbl { font-size:.72rem; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); margin-bottom:5px; display:block; }
-
-/* ══════════════════════════════════════
-   RESULTS
-══════════════════════════════════════ */
-.res-header { text-align:center; margin-bottom:36px; }
-.res-decision {
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(1.4rem,3vw,2rem);
-  font-weight:700; color:var(--cream); margin-top:6px;
+/* Breakdown */
+.section-title{
+  font-family:'Lora',serif;
+  font-size:1.1rem;font-weight:700;color:var(--ink);
+  margin-bottom:14px;padding-bottom:12px;
+  border-bottom:1.5px solid var(--border);
 }
-
-.verdict-strip {
-  border-radius:var(--r); padding:22px 26px;
-  display:flex; align-items:center; gap:18px;
-  margin-bottom:28px; border:1px solid;
+.bk-table{
+  background:var(--white);border:1.5px solid var(--border);
+  border-radius:var(--r);overflow:hidden;margin-bottom:24px;
+  box-shadow:var(--shadow);overflow-x:auto;
 }
-.verdict-icon { font-size:2rem; }
-.verdict-title {
-  font-family:'Cormorant Garamond',serif;
-  font-size:1.35rem; font-weight:700; margin-bottom:3px;
+.bk-row{display:flex;align-items:center;border-bottom:1px solid var(--border);}
+.bk-row:last-child{border-bottom:none;}
+.bk-row.hdr{background:var(--bg);border-bottom:1.5px solid var(--border);}
+.bk-row:not(.hdr):hover{background:var(--bg);}
+.bk-cell{padding:12px 14px;font-size:.8rem;}
+.bk-cell.crit-col{width:190px;flex-shrink:0;display:flex;align-items:center;gap:7px;color:var(--ink);font-weight:600;}
+.bk-cell.hdr-cell{color:var(--muted);font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;}
+.bk-cell.opt-col{flex:1;min-width:90px;}
+.opt-cell-in{display:flex;align-items:center;gap:7px;}
+.opt-pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:7px;
+  font-size:.82rem;font-weight:700;flex-shrink:0;
 }
-.verdict-sub { font-size:.82rem; color:var(--muted); line-height:1.5; }
-
-/* Podium / scores grid */
-.scores-row {
-  display:grid; gap:12px; margin-bottom:28px;
-}
-.score-card {
-  border-radius:var(--r); padding:22px; border:1px solid;
-  position:relative; overflow:hidden; transition:transform .15s;
-}
-.score-card:hover { transform:translateY(-2px); }
-.score-card.rank-1::after {
-  content:'🥇 1er'; position:absolute; top:12px; right:12px;
-  font-size:.65rem; font-weight:700; padding:3px 9px;
-  border-radius:20px; letter-spacing:.08em;
-}
-.score-card.rank-2::after { content:'🥈 2e'; position:absolute; top:12px; right:12px; font-size:.65rem; font-weight:700; padding:3px 9px; border-radius:20px; }
-.score-card.rank-3::after { content:'🥉 3e'; position:absolute; top:12px; right:12px; font-size:.65rem; font-weight:700; padding:3px 9px; border-radius:20px; }
-
-.sc-label { font-size:.68rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; margin-bottom:5px; }
-.sc-name { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:700; color:var(--cream); margin-bottom:14px; }
-.sc-score-row { display:flex; align-items:flex-end; gap:6px; margin-bottom:12px; }
-.sc-num { font-family:'Cormorant Garamond',serif; font-size:2.6rem; font-weight:900; line-height:1; }
-.sc-denom { font-size:.75rem; color:var(--muted); margin-bottom:8px; }
-.sc-bar-track { flex:1; height:6px; background:var(--border2); border-radius:3px; overflow:hidden; margin-bottom:12px; }
-.sc-bar-fill { height:100%; border-radius:3px; transition:width 1s ease; }
-
-/* Breakdown table */
-.section-hd {
-  font-family:'Cormorant Garamond',serif;
-  font-size:1.2rem; font-weight:700; color:var(--cream);
-  margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);
-}
-.bk-table { background:var(--surf); border:1px solid var(--border2); border-radius:var(--r); overflow-x:auto; margin-bottom:28px; }
-.bk-row { display:flex; align-items:center; gap:0; border-bottom:1px solid var(--border); }
-.bk-row:last-child { border-bottom:none; }
-.bk-row.hdr { background:var(--surf2); }
-.bk-cell { padding:12px 14px; font-size:.78rem; }
-.bk-cell.crit-col { width:180px; flex-shrink:0; display:flex; align-items:center; gap:7px; color:var(--cream); }
-.bk-cell.hdr-cell { color:var(--muted); font-weight:600; font-size:.7rem; text-transform:uppercase; letter-spacing:.07em; }
-.bk-cell.opt-col { flex:1; min-width:90px; }
-.opt-cell-inner { display:flex; align-items:center; gap:7px; }
-.opt-pill {
-  display:inline-flex; align-items:center; justify-content:center;
-  width:26px; height:26px; border-radius:7px;
-  font-size:.82rem; font-weight:700; flex-shrink:0;
-}
-.mini-bar { flex:1; height:5px; background:var(--border2); border-radius:3px; overflow:hidden; }
-.mini-bar-fill { height:100%; border-radius:3px; }
+.mini-bar{flex:1;height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;}
+.mini-bar-fill{height:100%;border-radius:3px;}
 
 /* Radar */
-.radar-wrap {
-  background:var(--surf); border:1px solid var(--border2); border-radius:var(--r);
-  padding:24px; margin-bottom:28px;
-  display:flex; flex-direction:column; align-items:center;
+.radar-section{
+  background:var(--white);border:1.5px solid var(--border);
+  border-radius:var(--r);padding:22px;margin-bottom:24px;
+  box-shadow:var(--shadow);
 }
-.radar-wrap h3 { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:var(--cream); margin-bottom:20px; align-self:flex-start; }
-.radar-legend { display:flex; flex-wrap:wrap; gap:16px; margin-top:16px; font-size:.78rem; color:var(--muted); }
-.legend-dot { width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:5px; }
+.radar-section h3{font-family:'Lora',serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:18px;}
+.radar-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;font-size:.8rem;color:var(--muted);}
+.leg-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:5px;}
 
-/* AI analysis */
-.analysis-box { background:var(--surf); border:1px solid var(--border2); border-radius:var(--r); overflow:hidden; margin-bottom:28px; }
-.analysis-head { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
-.analysis-head h3 { font-size:.88rem; font-weight:600; color:var(--cream); }
-.ai-badge { font-size:.62rem; font-weight:700; letter-spacing:.1em; background:rgba(200,162,74,.15); color:var(--gold); padding:3px 8px; border-radius:5px; text-transform:uppercase; }
-.analysis-body { display:grid; grid-template-columns:1fr 1fr; gap:0; }
-.an-col { padding:18px; }
-.an-col:first-child { border-right:1px solid var(--border); }
-.an-col h4 { font-size:.72rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; margin-bottom:12px; }
-.an-col.pros h4 { color:var(--green); }
-.an-col.cons h4 { color:var(--red); }
-.an-item { display:flex; gap:8px; font-size:.8rem; color:var(--muted); line-height:1.5; margin-bottom:8px; }
-.an-dot { width:5px; height:5px; border-radius:50%; margin-top:7px; flex-shrink:0; }
-.pros .an-dot { background:var(--green); }
-.cons .an-dot { background:var(--red); }
+/* Analysis */
+.analysis-box{
+  background:var(--white);border:1.5px solid var(--border);
+  border-radius:var(--r);overflow:hidden;margin-bottom:24px;
+  box-shadow:var(--shadow);
+}
+.analysis-head{
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:9px;background:var(--bg);
+}
+.analysis-head h3{font-size:.88rem;font-weight:700;color:var(--ink);}
+.ai-badge{
+  font-size:.65rem;font-weight:700;letter-spacing:.08em;
+  background:var(--teal-bg);color:var(--teal);
+  padding:3px 9px;border-radius:5px;text-transform:uppercase;
+  border:1px solid var(--teal-bd);
+}
+.analysis-body{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.an-col{padding:18px;}
+.an-col:first-child{border-right:1px solid var(--border);}
+.an-col h4{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;}
+.an-col.pros h4{color:var(--green);}
+.an-col.cons h4{color:var(--red);}
+.an-item{display:flex;gap:8px;font-size:.82rem;color:var(--ink2);line-height:1.55;margin-bottom:8px;}
+.an-dot{width:6px;height:6px;border-radius:50%;margin-top:6px;flex-shrink:0;}
+.pros .an-dot{background:var(--green);}
+.cons .an-dot{background:var(--red);}
 
-/* Notes results */
-.notes-res { background:var(--surf); border:1px solid var(--border2); border-radius:var(--r); overflow:hidden; margin-bottom:28px; }
-.notes-res-head { padding:12px 18px; border-bottom:1px solid var(--border); font-size:.82rem; font-weight:600; color:var(--cream); }
-.notes-res-body { display:grid; gap:0; }
-.note-col { padding:14px 18px; border-right:1px solid var(--border); }
-.note-col:last-child { border-right:none; }
-.note-col-lbl { font-size:.7rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
-.note-col-txt { font-size:.82rem; color:var(--muted); line-height:1.6; font-style:italic; }
+/* Notes result */
+.notes-res{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow);}
+.notes-res-head{padding:13px 18px;border-bottom:1px solid var(--border);font-size:.85rem;font-weight:700;color:var(--ink);background:var(--bg);}
+.notes-res-body{display:grid;}
+.note-col{padding:14px 18px;border-right:1px solid var(--border);}
+.note-col:last-child{border-right:none;}
+.note-col-lbl{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;}
+.note-col-txt{font-size:.83rem;color:var(--muted);line-height:1.6;font-style:italic;}
 
-.res-actions { display:flex; align-items:center; justify-content:space-between; margin-top:36px; padding-top:22px; border-bottom:1px solid var(--border); padding-bottom:22px; }
+.res-actions{display:flex;align-items:center;justify-content:space-between;margin-top:32px;padding-top:20px;border-top:1px solid var(--border);flex-wrap:wrap;gap:10px;}
 
-/* ══════════════════════════════════════
-   UTILITIES
-══════════════════════════════════════ */
-.opt-color { color: var(--c0); }
+/* ── TOOLTIP ─────────────────────────────── */
+[data-tip]{position:relative;cursor:help;}
+[data-tip]::after{
+  content:attr(data-tip);
+  position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
+  background:var(--ink);color:#fff;
+  font-size:.7rem;padding:5px 9px;border-radius:6px;
+  white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:100;
+}
+[data-tip]:hover::after{opacity:1;}
 
-@media(max-width:680px){
-  .app-header { padding:14px 18px; }
-  .main { padding:28px 18px 60px; }
-  .header-steps .hstep-label { display:none; }
-  .analysis-body { grid-template-columns:1fr; }
-  .bk-cell.opt-col { min-width:70px; }
+/* ── RESPONSIVE ──────────────────────────── */
+@media(max-width:640px){
+  .app-header{padding:12px 16px;}
+  .main{padding:22px 16px 60px;}
+  .intro-how{grid-template-columns:1fr;}
+  .sp-step span:not(.sp-num){display:none;}
+  .custom-row{grid-template-columns:1fr 1fr;}
+  .analysis-body{grid-template-columns:1fr;}
+  .an-col:first-child{border-right:none;border-bottom:1px solid var(--border);}
+  .notes-res-body{grid-template-columns:1fr!important;}
+  .note-col{border-right:none!important;border-bottom:1px solid var(--border);}
 }
 
-@media print {
-  .app-header button, .res-actions { display:none!important; }
-  .page { display:none!important; }
-  #page-results { display:flex!important; }
-  body { background:white!important; color:black!important; }
+@media print{
+  body{background:#fff;}
+  .app-header button,.res-actions,.btn-row{display:none!important;}
+  .page{display:none!important;}
+  #page-results{display:flex!important;}
 }
 </style>
 </head>
 <body>
 <div class="app">
 
-<!-- ══════════════════════════════════════
-     INTRO
-══════════════════════════════════════ -->
+<!-- ══════════════════════════ INTRO ══════════════════════════ -->
 <div class="page active" id="page-intro">
-  <div class="main" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center">
-    <div class="intro-wordmark">Décideur<span style="color:var(--gold)">.</span></div>
-    <div class="intro-tagline">Comparez jusqu'à 6 options avec méthode — critères pondérés, analyse visuelle, synthèse automatique</div>
-    <div class="intro-chips">
-      <div class="chip"><span class="chip-icon">⚖️</span>Multi-options</div>
-      <div class="chip"><span class="chip-icon">🧩</span>29 critères</div>
-      <div class="chip"><span class="chip-icon">📊</span>Radar & scores</div>
-      <div class="chip"><span class="chip-icon">🏋️</span>Pondération</div>
-      <div class="chip"><span class="chip-icon">🧠</span>Analyse auto</div>
-      <div class="chip"><span class="chip-icon">🖨️</span>Export PDF</div>
+  <div class="main" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:24px 28px">
+    <div class="intro-inner">
+      <div class="intro-badge">✦ Aide à la décision</div>
+      <div class="intro-logo">Lucid<span>.</span></div>
+      <div class="intro-tagline">Comparez vos options clairement, prenez des décisions avec confiance.</div>
+
+      <div class="intro-how">
+        <div class="how-card">
+          <div class="how-num">1</div>
+          <div class="how-title">Posez votre question</div>
+          <div class="how-desc">Décrivez votre décision et listez vos options à comparer.</div>
+        </div>
+        <div class="how-card">
+          <div class="how-num">2</div>
+          <div class="how-title">Choisissez vos critères</div>
+          <div class="how-desc">Sélectionnez ce qui compte vraiment pour vous.</div>
+        </div>
+        <div class="how-card">
+          <div class="how-num">3</div>
+          <div class="how-title">Obtenez votre analyse</div>
+          <div class="how-desc">Lucid calcule les scores et vous présente un résultat clair.</div>
+        </div>
+      </div>
+
+      <button class="intro-start-btn" onclick="nav('page-step1')">Commencer →</button>
+      <p style="margin-top:12px;font-size:.75rem;color:var(--muted2)">Gratuit · Aucun compte requis · 100% privé</p>
     </div>
-    <button class="start-btn" onclick="nav('page-step1')">Commencer l'analyse →</button>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     STEP 1 — OPTIONS
-══════════════════════════════════════ -->
+<!-- ══════════════════════════ STEP 1 ══════════════════════════ -->
 <div class="page" id="page-step1">
   <div class="app-header">
-    <div class="logo">Décideur<em>.</em></div>
-    <div class="header-steps" id="hs1"></div>
+    <div class="logo"><div class="logo-dot"></div>Lucid</div>
+    <div class="step-progress" id="sp1"></div>
   </div>
   <div class="main">
-    <div class="eyebrow anim">Étape 1 sur 3</div>
-    <div class="page-title anim anim-1">Définissez votre décision</div>
-    <div class="page-sub anim anim-2">Décrivez votre situation, puis ajoutez entre 2 et 6 options à comparer.</div>
+    <div class="page-eyebrow anim">Étape 1 sur 3</div>
+    <div class="page-title anim d1">Quelle décision devez-vous prendre ?</div>
+    <div class="page-sub anim d2">Commencez par décrire votre situation, puis ajoutez les options que vous hésitez entre.</div>
 
-    <div class="anim anim-2">
-      <div class="field">
-        <label for="inp-dec">Votre décision</label>
-        <textarea id="inp-dec" rows="2" placeholder="Ex : Quelle ville choisir pour m'installer ?"></textarea>
+    <div class="card decision-card anim d2">
+      <div class="field" style="margin-bottom:0">
+        <label for="inp-dec">📝 Votre décision en une phrase</label>
+        <textarea id="inp-dec" rows="2" placeholder="Ex : Dois-je accepter ce nouvel emploi ou rester dans mon poste actuel ?"></textarea>
       </div>
     </div>
 
-    <div class="anim anim-3">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <label style="font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Options à comparer</label>
-        <span id="opt-count-label" style="font-size:.72rem;color:var(--muted)">2 options</span>
+    <div class="anim d3">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <label style="font-size:.85rem;font-weight:700;color:var(--ink2)">🔀 Vos options</label>
+        <span id="opt-count-lbl" style="font-size:.75rem;color:var(--muted);background:var(--bg2);padding:3px 10px;border-radius:20px;font-weight:600">2 options</span>
       </div>
-      <div class="options-builder" id="optBuilder"></div>
-      <button class="add-opt-btn" id="addOptBtn" onclick="addOption()">
-        <div class="add-opt-btn-icon">+</div>
-        Ajouter une option <span style="color:var(--muted2);font-size:.75rem">(max 6)</span>
+      <div class="options-list" id="optBuilder"></div>
+      <button class="add-option-btn" id="addOptBtn" onclick="addOption()">
+        <div class="add-option-icon">+</div>
+        Ajouter une option <span style="color:var(--muted2);font-weight:400">(max 6)</span>
       </button>
     </div>
 
-    <div class="btn-row anim anim-4">
+    <div class="btn-row anim d4">
       <button class="btn btn-secondary" onclick="nav('page-intro')">← Retour</button>
-      <button class="btn btn-primary" onclick="validateStep1()">Choisir les critères →</button>
+      <button class="btn btn-primary" onclick="validateStep1()">Choisir mes critères →</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     STEP 2 — CRITÈRES
-══════════════════════════════════════ -->
+<!-- ══════════════════════════ STEP 2 ══════════════════════════ -->
 <div class="page" id="page-step2">
   <div class="app-header">
-    <div class="logo">Décideur<em>.</em></div>
-    <div class="header-steps" id="hs2"></div>
+    <div class="logo"><div class="logo-dot"></div>Lucid</div>
+    <div class="step-progress" id="sp2"></div>
   </div>
   <div class="main">
-    <div class="eyebrow">Étape 2 sur 3</div>
-    <div class="page-title">Choisissez vos critères</div>
-    <div class="page-sub">Sélectionnez les critères, ajustez leur importance et inversez-les si nécessaire.</div>
+    <div class="page-eyebrow">Étape 2 sur 3</div>
+    <div class="page-title">Qu'est-ce qui compte pour vous ?</div>
+    <div class="page-sub">Sélectionnez les critères importants dans votre situation. Vous pouvez en choisir autant que vous voulez.</div>
+
+    <div class="criteria-intro">
+      <div class="criteria-intro-icon">💡</div>
+      <div>Cliquez sur les critères pour les sélectionner. Vous pourrez ensuite ajuster leur <strong>importance</strong> (poids) et choisir si un score élevé est positif ou négatif pour ce critère.</div>
+    </div>
 
     <div class="cat-tabs" id="catTabs"></div>
     <div class="crit-grid" id="critGrid"></div>
 
     <div class="custom-form">
-      <h4>✦ Critère personnalisé</h4>
+      <div class="custom-form-title">✦ Ajouter un critère personnalisé</div>
       <div class="custom-row">
-        <div class="field" style="margin:0"><label>Nom</label><input type="text" id="cust-name" placeholder="Ex : Impact écologique"></div>
-        <div class="field" style="margin:0"><label>Icône</label><input type="text" id="cust-icon" placeholder="🌱" style="text-align:center"></div>
+        <div class="field" style="margin:0"><label>Nom</label><input type="text" id="cust-name" placeholder="Ex : Impact sur ma famille"></div>
+        <div class="field" style="margin:0"><label>Icône</label><input type="text" id="cust-icon" placeholder="🎯" style="text-align:center"></div>
         <div class="field" style="margin:0">
           <label>Catégorie</label>
           <select id="cust-cat">
@@ -660,637 +780,528 @@ input[type=range]::-webkit-slider-thumb {
           </select>
         </div>
       </div>
-      <button class="btn btn-secondary" style="margin-top:12px;font-size:.8rem;padding:9px 18px" onclick="addCustom()">+ Ajouter</button>
+      <button class="btn btn-secondary" style="margin-top:12px;font-size:.8rem;padding:9px 18px" onclick="addCustom()">+ Ajouter ce critère</button>
     </div>
 
-    <div class="active-box" style="margin-top:24px">
-      <div class="active-box-header">
-        <h3>Critères sélectionnés</h3>
-        <div class="count-badge" id="crit-badge">0</div>
+    <div class="selected-box">
+      <div class="selected-box-head">
+        <h3>✅ Critères sélectionnés</h3>
+        <div class="sel-count" id="crit-badge">0</div>
       </div>
-      <div class="active-list" id="activeList">
-        <div class="empty-hint">Sélectionnez au moins 2 critères</div>
+      <div class="sel-list" id="activeList">
+        <div class="empty-hint">👆 Sélectionnez au moins 2 critères ci-dessus pour continuer</div>
       </div>
     </div>
 
     <div class="btn-row">
       <button class="btn btn-secondary" onclick="nav('page-step1')">← Retour</button>
-      <button class="btn btn-primary" onclick="validateStep2()">Évaluer →</button>
+      <button class="btn btn-primary" onclick="validateStep2()">Évaluer mes options →</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     STEP 3 — ÉVALUATION
-══════════════════════════════════════ -->
+<!-- ══════════════════════════ STEP 3 ══════════════════════════ -->
 <div class="page" id="page-step3">
   <div class="app-header">
-    <div class="logo">Décideur<em>.</em></div>
-    <div class="header-steps" id="hs3"></div>
+    <div class="logo"><div class="logo-dot"></div>Lucid</div>
+    <div class="step-progress" id="sp3"></div>
   </div>
   <div class="main">
-    <div class="eyebrow">Étape 3 sur 3</div>
-    <div class="page-title" id="eval-title">Évaluez chaque option</div>
-    <div class="page-sub">Déplacez les curseurs de 1 (très faible) à 10 (très élevé). Les scores se mettent à jour en temps réel.</div>
+    <div class="page-eyebrow">Étape 3 sur 3</div>
+    <div class="page-title" id="eval-title">Notez chaque option</div>
+    <div class="page-sub">Pour chaque critère, donnez une note de <strong>1</strong> (très faible) à <strong>10</strong> (excellent) à chaque option. Le score global se met à jour en direct.</div>
 
     <div class="eval-grid" id="evalGrid"></div>
     <div class="notes-row" id="notesRow"></div>
 
     <div class="btn-row">
       <button class="btn btn-secondary" onclick="nav('page-step2')">← Retour</button>
-      <button class="btn btn-primary" onclick="showResults()">Voir les résultats ✦</button>
+      <button class="btn btn-primary" onclick="showResults()">Voir mon analyse →</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     RESULTS
-══════════════════════════════════════ -->
+<!-- ══════════════════════════ RESULTS ══════════════════════════ -->
 <div class="page" id="page-results">
   <div class="app-header">
-    <div class="logo">Décideur<em>.</em></div>
+    <div class="logo"><div class="logo-dot"></div>Lucid</div>
     <div style="margin-left:auto;display:flex;gap:8px">
-      <button class="btn btn-secondary" style="font-size:.8rem" onclick="window.print()">🖨️ PDF</button>
-      <button class="btn btn-primary" style="font-size:.8rem" onclick="restart()">↺ Recommencer</button>
+      <button class="btn btn-secondary" style="font-size:.82rem" onclick="window.print()">🖨️ Exporter en PDF</button>
+      <button class="btn btn-primary" style="font-size:.82rem" onclick="restart()">↺ Nouvelle décision</button>
     </div>
   </div>
   <div class="main" id="resContent"></div>
 </div>
 
-</div><!-- /app -->
+</div>
 
 <script>
-/* ══════════════════════════════════════
-   PALETTE (must match CSS)
-══════════════════════════════════════ */
+/* ─── PALETTE ───────────────────────────── */
 const COLORS = [
-  { hex:'#5b9bd5', bg:'rgba(91,155,213,0.12)',  border:'rgba(91,155,213,0.35)' },
-  { hex:'#d4735a', bg:'rgba(212,115,90,0.12)',  border:'rgba(212,115,90,0.35)' },
-  { hex:'#6db87a', bg:'rgba(109,184,122,0.12)', border:'rgba(109,184,122,0.35)' },
-  { hex:'#b87ad4', bg:'rgba(184,122,212,0.12)', border:'rgba(184,122,212,0.35)' },
-  { hex:'#d4b85a', bg:'rgba(212,184,90,0.12)',  border:'rgba(212,184,90,0.35)' },
-  { hex:'#5ab8d4', bg:'rgba(90,184,212,0.12)',  border:'rgba(90,184,212,0.35)' },
+  {hex:'#2563eb',bg:'rgba(37,99,235,0.08)',  border:'rgba(37,99,235,0.3)'  },
+  {hex:'#e07040',bg:'rgba(224,112,64,0.08)', border:'rgba(224,112,64,0.3)' },
+  {hex:'#7c3aed',bg:'rgba(124,58,237,0.08)', border:'rgba(124,58,237,0.3)' },
+  {hex:'#d97706',bg:'rgba(217,119,6,0.08)',  border:'rgba(217,119,6,0.3)'  },
+  {hex:'#0891b2',bg:'rgba(8,145,178,0.08)',  border:'rgba(8,145,178,0.3)'  },
+  {hex:'#be185d',bg:'rgba(190,24,93,0.08)',  border:'rgba(190,24,93,0.3)'  },
 ];
-
 const LETTERS = ['A','B','C','D','E','F'];
 
-/* ══════════════════════════════════════
-   CRITERIA LIBRARY
-══════════════════════════════════════ */
+/* ─── CRITERIA LIBRARY ──────────────────── */
 const LIB = [
-  {id:'fin_gain',  cat:'Finance',     icon:'💰', name:'Gain financier',           hint:'Revenus, salaire, bénéfices',          invert:false, dw:2},
-  {id:'fin_risk',  cat:'Finance',     icon:'📉', name:'Risque financier',          hint:'Pertes potentielles, dettes',           invert:true,  dw:2},
-  {id:'roi',       cat:'Finance',     icon:'📈', name:'Retour sur investissement', hint:'ROI à moyen/long terme',                invert:false, dw:1},
-  {id:'cost',      cat:'Finance',     icon:'🏷️', name:'Coût initial',             hint:'Investissement de départ',              invert:true,  dw:1},
-  {id:'fin_stab',  cat:'Finance',     icon:'🏦', name:'Stabilité financière',      hint:'Sécurité des revenus',                  invert:false, dw:2},
+  {id:'fin_gain', cat:'Finance',     icon:'💰', name:'Gain financier',           hint:'Revenus, salaire, bénéfices',           invert:false, dw:2},
+  {id:'fin_risk', cat:'Finance',     icon:'📉', name:'Risque financier',          hint:'Pertes potentielles, dettes',            invert:true,  dw:2},
+  {id:'roi',      cat:'Finance',     icon:'📈', name:'Retour sur investissement', hint:'ROI à moyen/long terme',                 invert:false, dw:1},
+  {id:'cost',     cat:'Finance',     icon:'🏷️', name:'Coût initial',             hint:'Investissement de départ',               invert:true,  dw:1},
+  {id:'fin_stab', cat:'Finance',     icon:'🏦', name:'Stabilité financière',      hint:'Sécurité des revenus',                   invert:false, dw:2},
 
-  {id:'career',    cat:'Pro',         icon:'🚀', name:'Évolution de carrière',     hint:'Perspectives professionnelles',          invert:false, dw:2},
-  {id:'skills',    cat:'Pro',         icon:'🧠', name:'Développement compétences', hint:'Apprentissage, montée en compétence',   invert:false, dw:1},
-  {id:'workload',  cat:'Pro',         icon:'⚡', name:'Charge de travail',         hint:'Volume et intensité du travail',         invert:true,  dw:1},
-  {id:'jobsec',    cat:'Pro',         icon:'🛡️', name:"Sécurité de l'emploi",     hint:'Stabilité et pérennité du poste',        invert:false, dw:2},
-  {id:'autonom',   cat:'Pro',         icon:'🎯', name:'Autonomie',                 hint:"Liberté d'action et de décision",        invert:false, dw:1},
-  {id:'flex',      cat:'Pro',         icon:'⏰', name:'Flexibilité horaire',        hint:'Télétravail, horaires aménageables',     invert:false, dw:1},
-  {id:'recog',     cat:'Pro',         icon:'🏅', name:'Reconnaissance',            hint:'Valorisation, prestige',                 invert:false, dw:1},
+  {id:'career',   cat:'Pro',         icon:'🚀', name:'Évolution de carrière',     hint:'Perspectives professionnelles',           invert:false, dw:2},
+  {id:'skills',   cat:'Pro',         icon:'🧠', name:'Développement compétences', hint:'Apprentissage, montée en compétence',    invert:false, dw:1},
+  {id:'workload', cat:'Pro',         icon:'⚡', name:'Charge de travail',         hint:'Volume et intensité du travail',          invert:true,  dw:1},
+  {id:'jobsec',   cat:'Pro',         icon:'🛡️', name:"Sécurité de l'emploi",     hint:'Stabilité et pérennité du poste',         invert:false, dw:2},
+  {id:'autonom',  cat:'Pro',         icon:'🎯', name:'Autonomie',                 hint:"Liberté d'action et de décision",         invert:false, dw:1},
+  {id:'flex',     cat:'Pro',         icon:'⏰', name:'Flexibilité horaire',        hint:'Télétravail, horaires aménageables',      invert:false, dw:1},
+  {id:'recog',    cat:'Pro',         icon:'🏅', name:'Reconnaissance',            hint:'Valorisation, prestige',                  invert:false, dw:1},
 
-  {id:'wellb',     cat:'Perso',       icon:'❤️', name:'Bien-être personnel',       hint:'Bonheur, épanouissement',               invert:false, dw:3},
-  {id:'stress',    cat:'Perso',       icon:'😤', name:'Niveau de stress',          hint:'Pression, anxiété générée',              invert:true,  dw:2},
-  {id:'health',    cat:'Perso',       icon:'🌿', name:'Impact santé',              hint:'Effets sur votre santé physique/mentale',invert:false, dw:2},
-  {id:'time',      cat:'Perso',       icon:'⏱️', name:'Temps libre',              hint:'Loisirs, repos, temps pour soi',          invert:false, dw:2},
-  {id:'values',    cat:'Perso',       icon:'🧭', name:'Alignement valeurs',        hint:'Cohérence avec vos principes',           invert:false, dw:3},
-  {id:'passion',   cat:'Perso',       icon:'🔥', name:'Passion & intérêt',         hint:'Motivation intrinsèque',                 invert:false, dw:2},
-  {id:'risk',      cat:'Perso',       icon:'⚠️', name:'Risque global',             hint:'Incertitude, exposition au danger',       invert:true,  dw:2},
+  {id:'wellb',    cat:'Perso',       icon:'❤️', name:'Bien-être personnel',       hint:'Bonheur, épanouissement',                invert:false, dw:3},
+  {id:'stress',   cat:'Perso',       icon:'😤', name:'Niveau de stress',          hint:'Pression, anxiété générée',               invert:true,  dw:2},
+  {id:'health',   cat:'Perso',       icon:'🌿', name:'Impact santé',              hint:'Effets sur votre santé physique/mentale', invert:false, dw:2},
+  {id:'time',     cat:'Perso',       icon:'⏱️', name:'Temps libre',              hint:'Loisirs, repos, temps pour soi',           invert:false, dw:2},
+  {id:'values',   cat:'Perso',       icon:'🧭', name:'Alignement valeurs',        hint:'Cohérence avec vos principes',            invert:false, dw:3},
+  {id:'passion',  cat:'Perso',       icon:'🔥', name:'Passion & intérêt',         hint:'Motivation intrinsèque',                  invert:false, dw:2},
+  {id:'risk',     cat:'Perso',       icon:'⚠️', name:'Risque global',             hint:'Incertitude, exposition au danger',        invert:true,  dw:2},
 
-  {id:'family',    cat:'Social',      icon:'👨‍👩‍👧', name:'Impact famille',       hint:'Relations avec proches',                 invert:false, dw:2},
-  {id:'social',    cat:'Social',      icon:'🤝', name:'Vie sociale',               hint:'Réseau, amis, interactions',             invert:false, dw:1},
-  {id:'location',  cat:'Social',      icon:'📍', name:'Qualité du lieu de vie',    hint:'Logement, ville, environnement',         invert:false, dw:1},
-  {id:'repute',    cat:'Social',      icon:'✨', name:'Réputation / Image',         hint:'Perception des autres',                  invert:false, dw:1},
-  {id:'impact',    cat:'Social',      icon:'🌍', name:'Impact sociétal',            hint:'Utilité pour la société',                invert:false, dw:1},
+  {id:'family',   cat:'Social',      icon:'👨‍👩‍👧', name:'Impact famille',       hint:'Relations avec proches',                  invert:false, dw:2},
+  {id:'social',   cat:'Social',      icon:'🤝', name:'Vie sociale',               hint:'Réseau, amis, interactions',              invert:false, dw:1},
+  {id:'location', cat:'Social',      icon:'📍', name:'Qualité du lieu de vie',    hint:'Logement, ville, environnement',          invert:false, dw:1},
+  {id:'repute',   cat:'Social',      icon:'✨', name:'Réputation / Image',         hint:'Perception des autres',                   invert:false, dw:1},
+  {id:'impact',   cat:'Social',      icon:'🌍', name:'Impact sociétal',            hint:'Utilité pour la société',                 invert:false, dw:1},
 
-  {id:'lt',        cat:'Stratégique', icon:'🔭', name:'Vision long terme',          hint:'Bénéfices dans 5-10 ans',               invert:false, dw:2},
-  {id:'rev',       cat:'Stratégique', icon:'↩️', name:'Réversibilité',              hint:'Possibilité de revenir en arrière',      invert:false, dw:2},
-  {id:'opp',       cat:'Stratégique', icon:'🎲', name:'Opportunité unique',          hint:'Rareté de la chance',                   invert:false, dw:1},
-  {id:'complex',   cat:'Stratégique', icon:'🔧', name:'Complexité',                  hint:'Difficulté de mise en œuvre',           invert:true,  dw:1},
-  {id:'dep',       cat:'Stratégique', icon:'🔗', name:'Dépendances',                 hint:'Contraintes liées à autres facteurs',   invert:true,  dw:1},
+  {id:'lt',       cat:'Stratégique', icon:'🔭', name:'Vision long terme',          hint:'Bénéfices dans 5–10 ans',                invert:false, dw:2},
+  {id:'rev',      cat:'Stratégique', icon:'↩️', name:'Réversibilité',              hint:'Possibilité de revenir en arrière',       invert:false, dw:2},
+  {id:'opp',      cat:'Stratégique', icon:'🎲', name:'Opportunité unique',          hint:'Rareté de la chance',                    invert:false, dw:1},
+  {id:'complex',  cat:'Stratégique', icon:'🔧', name:'Complexité',                  hint:'Difficulté de mise en œuvre',            invert:true,  dw:1},
+  {id:'dep',      cat:'Stratégique', icon:'🔗', name:'Dépendances',                 hint:'Contraintes liées à autres facteurs',    invert:true,  dw:1},
 ];
 
 const CATS = ['Tous','Finance','Pro','Perso','Social','Stratégique'];
 const WEIGHTS = {1:'×1 Normal', 2:'×2 Important', 3:'×3 Crucial'};
 
-/* ══════════════════════════════════════
-   STATE
-══════════════════════════════════════ */
+/* ─── STATE ─────────────────────────────── */
 let S = {
-  decision: '',
-  options: [
-    { name:'', desc:'' },
-    { name:'', desc:'' },
-  ],
-  criteria: [],   // {id,cat,icon,name,hint,invert,weight,custom?}
-  scores: {},     // { critId: [v0,v1,...] }
-  notes: [],      // [note0, note1, ...]
-  currentCat: 'Tous',
+  decision:'',
+  options:[{name:'',desc:''},{name:'',desc:''}],
+  criteria:[],
+  scores:{},
+  notes:[],
+  currentCat:'Tous',
 };
 
-/* ══════════════════════════════════════
-   NAVIGATION
-══════════════════════════════════════ */
-function nav(pageId) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(pageId).classList.add('active');
+/* ─── NAV ───────────────────────────────── */
+function nav(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function renderHeaderSteps(activeStep) {
-  ['hs1','hs2','hs3'].forEach((id,i) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const step = i+1;
-    const labels = ['Options','Critères','Évaluation'];
-    el.innerHTML = [1,2,3].map(s => {
-      const cls = s < step ? 'done' : s === step ? 'active' : '';
-      return `
-        <div class="hstep ${cls}">
-          <div class="hstep-dot">${s < step ? '✓' : s}</div>
-          <span class="hstep-label" style="display:none;font-size:.72rem">${labels[s-1]}</span>
-        </div>
-        ${s < 3 ? '<div class="hstep-sep"></div>' : ''}
-      `;
+function renderStepProgress(active){
+  ['sp1','sp2','sp3'].forEach((id,i)=>{
+    const el=document.getElementById(id); if(!el) return;
+    const labels=['Mes options','Mes critères','Mes notes'];
+    el.innerHTML=[1,2,3].map(s=>{
+      const cls=s<active?'done':s===active?'active':'';
+      return `<div class="sp-step ${cls}">
+        <div class="sp-num">${s<active?'✓':s}</div>
+        <span>${labels[s-1]}</span>
+      </div>${s<3?'<div class="sp-arrow">›</div>':''}`;
     }).join('');
   });
 }
-renderHeaderSteps(1);
+renderStepProgress(1);
 
-/* ══════════════════════════════════════
-   STEP 1 — OPTIONS
-══════════════════════════════════════ */
-function initOptions() {
-  renderOptionsBuilder();
-}
+/* ─── STEP 1 ────────────────────────────── */
+function initOptions(){ renderOptBuilder(); }
 
-function renderOptionsBuilder() {
-  const builder = document.getElementById('optBuilder');
-  builder.innerHTML = '';
-  S.options.forEach((opt, i) => {
-    const c = COLORS[i];
-    const letter = LETTERS[i];
-    const card = document.createElement('div');
-    card.className = 'opt-card open';
-    card.id = `opt-card-${i}`;
-    card.innerHTML = `
-      <div class="opt-card-header" onclick="toggleOptCard(${i})">
-        <div class="opt-color-dot" style="background:${c.hex}"></div>
-        <div class="opt-card-label" style="color:${c.hex}">Option ${letter}</div>
-        <div class="opt-card-name-preview" id="opt-preview-${i}">${opt.name || '—'}</div>
-        ${i >= 2 ? `<button class="opt-remove-btn" onclick="event.stopPropagation();removeOption(${i})">✕</button>` : ''}
-        <div class="opt-card-toggle">▾</div>
+function renderOptBuilder(){
+  const b=document.getElementById('optBuilder');
+  b.innerHTML='';
+  S.options.forEach((opt,i)=>{
+    const c=COLORS[i], ltr=LETTERS[i];
+    const card=document.createElement('div');
+    card.className='opt-card open'; card.id=`opt-card-${i}`;
+    card.innerHTML=`
+      <div class="opt-card-head" onclick="toggleOpt(${i})">
+        <div class="opt-dot" style="background:${c.hex}"></div>
+        <div class="opt-letter" style="color:${c.hex}">Option ${ltr}</div>
+        <div class="opt-name-preview" id="opt-prev-${i}">${esc(opt.name)||'—'}</div>
+        ${i>=2?`<button class="opt-rm" onclick="event.stopPropagation();removeOpt(${i})" title="Supprimer">✕</button>`:''}
+        <div class="opt-chevron">▾</div>
       </div>
       <div class="opt-card-body">
         <div class="field">
           <label>Nom de l'option</label>
-          <input type="text" id="opt-name-${i}" value="${esc(opt.name)}" placeholder="Ex : Paris"
-            oninput="S.options[${i}].name=this.value;updateOptPreview(${i})">
+          <input type="text" id="opt-name-${i}" value="${esc(opt.name)}"
+            placeholder="Ex : Rester à Paris"
+            oninput="S.options[${i}].name=this.value;document.getElementById('opt-prev-${i}').textContent=this.value||'—'">
         </div>
         <div class="field" style="margin-bottom:0">
-          <label>Description courte (optionnel)</label>
-          <input type="text" id="opt-desc-${i}" value="${esc(opt.desc)}" placeholder="Ex : Grande ville, nombreuses opportunités…"
+          <label>Description courte <span style="font-weight:400;color:var(--muted)">(optionnel)</span></label>
+          <input type="text" id="opt-desc-${i}" value="${esc(opt.desc)}"
+            placeholder="Ex : Stabilité, famille proche…"
             oninput="S.options[${i}].desc=this.value">
         </div>
-      </div>
-    `;
-    builder.appendChild(card);
+      </div>`;
+    b.appendChild(card);
   });
-
-  document.getElementById('opt-count-label').textContent = `${S.options.length} option${S.options.length>1?'s':''}`;
-  document.getElementById('addOptBtn').style.display = S.options.length >= 6 ? 'none' : 'flex';
+  document.getElementById('opt-count-lbl').textContent=`${S.options.length} option${S.options.length>1?'s':''}`;
+  document.getElementById('addOptBtn').style.display=S.options.length>=6?'none':'flex';
 }
 
-function updateOptPreview(i) {
-  const el = document.getElementById(`opt-preview-${i}`);
-  if (el) el.textContent = S.options[i].name || '—';
-}
+function toggleOpt(i){ document.getElementById(`opt-card-${i}`).classList.toggle('open'); }
+function addOption(){ if(S.options.length>=6) return; S.options.push({name:'',desc:''}); renderOptBuilder(); }
+function removeOpt(i){ if(S.options.length<=2) return; S.options.splice(i,1); renderOptBuilder(); }
 
-function toggleOptCard(i) {
-  document.getElementById(`opt-card-${i}`).classList.toggle('open');
-}
-
-function addOption() {
-  if (S.options.length >= 6) return;
-  S.options.push({name:'', desc:''});
-  renderOptionsBuilder();
-}
-
-function removeOption(i) {
-  if (S.options.length <= 2) return;
-  S.options.splice(i, 1);
-  renderOptionsBuilder();
-}
-
-function validateStep1() {
-  const dec = document.getElementById('inp-dec').value.trim();
-  if (!dec) { shake('inp-dec'); return; }
-  const allNamed = S.options.every((_,i) => document.getElementById(`opt-name-${i}`)?.value.trim());
-  if (!allNamed) { alert('Donnez un nom à chaque option.'); return; }
-  S.decision = dec;
-  S.options = S.options.map((_, i) => ({
-    name: document.getElementById(`opt-name-${i}`).value.trim(),
-    desc: document.getElementById(`opt-desc-${i}`).value.trim(),
+function validateStep1(){
+  const dec=document.getElementById('inp-dec').value.trim();
+  if(!dec){ shake('inp-dec'); return; }
+  const allNamed=S.options.every((_,i)=>document.getElementById(`opt-name-${i}`)?.value.trim());
+  if(!allNamed){ alert('Veuillez donner un nom à chaque option.'); return; }
+  S.decision=dec;
+  S.options=S.options.map((_,i)=>({
+    name:document.getElementById(`opt-name-${i}`).value.trim(),
+    desc:document.getElementById(`opt-desc-${i}`).value.trim(),
   }));
-  S.notes = S.options.map(() => '');
+  S.notes=S.options.map(()=>'');
+  renderStepProgress(2);
   buildCriteriaPage();
   nav('page-step2');
 }
 
 initOptions();
 
-/* ══════════════════════════════════════
-   STEP 2 — CRITERIA
-══════════════════════════════════════ */
-function buildCriteriaPage() {
-  renderCatTabs();
-  filterGrid('Tous');
-  renderActiveList();
-}
+/* ─── STEP 2 ────────────────────────────── */
+function buildCriteriaPage(){ renderCatTabs(); filterGrid('Tous'); renderSelList(); }
 
-function renderCatTabs() {
-  const tabs = document.getElementById('catTabs');
-  tabs.innerHTML = '';
-  CATS.forEach(cat => {
-    const btn = document.createElement('button');
-    btn.className = 'cat-tab' + (cat === S.currentCat ? ' active' : '');
-    btn.textContent = cat;
-    btn.onclick = () => filterGrid(cat);
-    tabs.appendChild(btn);
+function renderCatTabs(){
+  const t=document.getElementById('catTabs'); t.innerHTML='';
+  CATS.forEach(cat=>{
+    const b=document.createElement('button');
+    b.className='cat-tab'+(cat===S.currentCat?' active':'');
+    b.textContent=cat; b.onclick=()=>filterGrid(cat); t.appendChild(b);
   });
 }
 
-function filterGrid(cat) {
-  S.currentCat = cat;
-  renderCatTabs();
-  const grid = document.getElementById('critGrid');
-  grid.innerHTML = '';
-  const items = cat === 'Tous' ? LIB : LIB.filter(c => c.cat === cat);
-  items.forEach(c => {
-    const on = S.criteria.some(x => x.id === c.id);
-    const pill = document.createElement('div');
-    pill.className = 'crit-pill' + (on ? ' on' : '');
-    pill.id = 'pill-' + c.id;
-    pill.innerHTML = `
-      <div class="crit-check">${on ? '✓' : ''}</div>
+function filterGrid(cat){
+  S.currentCat=cat; renderCatTabs();
+  const g=document.getElementById('critGrid'); g.innerHTML='';
+  (cat==='Tous'?LIB:LIB.filter(c=>c.cat===cat)).forEach(c=>{
+    const on=S.criteria.some(x=>x.id===c.id);
+    const pill=document.createElement('div');
+    pill.className='crit-pill'+(on?' on':''); pill.id='pill-'+c.id;
+    pill.innerHTML=`
+      <div class="crit-check">${on?'✓':''}</div>
       <div class="crit-icon">${c.icon}</div>
-      <div><div class="crit-name">${c.name}</div><div class="crit-hint">${c.hint}</div></div>
-    `;
-    pill.onclick = () => toggleCrit(c.id);
-    grid.appendChild(pill);
+      <div><div class="crit-name">${c.name}</div><div class="crit-hint">${c.hint}</div></div>`;
+    pill.onclick=()=>toggleCrit(c.id); g.appendChild(pill);
   });
 }
 
-function toggleCrit(id) {
-  const idx = S.criteria.findIndex(c => c.id === id);
-  if (idx !== -1) {
-    S.criteria.splice(idx, 1);
-  } else {
-    const c = LIB.find(c => c.id === id);
-    S.criteria.push({...c, weight: c.dw});
-  }
-  filterGrid(S.currentCat);
-  renderActiveList();
+function toggleCrit(id){
+  const idx=S.criteria.findIndex(c=>c.id===id);
+  if(idx!==-1) S.criteria.splice(idx,1);
+  else { const c=LIB.find(c=>c.id===id); S.criteria.push({...c,weight:c.dw}); }
+  filterGrid(S.currentCat); renderSelList();
 }
 
-function addCustom() {
-  const name = document.getElementById('cust-name').value.trim();
-  if (!name) { shake('cust-name'); return; }
-  const icon = document.getElementById('cust-icon').value.trim() || '🔹';
-  const cat  = document.getElementById('cust-cat').value;
-  S.criteria.push({ id:'cust_'+Date.now(), cat, icon, name, hint:'Critère personnalisé', invert:false, weight:1, custom:true });
-  document.getElementById('cust-name').value = '';
-  document.getElementById('cust-icon').value = '';
-  renderActiveList();
+function addCustom(){
+  const name=document.getElementById('cust-name').value.trim();
+  if(!name){shake('cust-name');return;}
+  const icon=document.getElementById('cust-icon').value.trim()||'🔹';
+  const cat=document.getElementById('cust-cat').value;
+  S.criteria.push({id:'cust_'+Date.now(),cat,icon,name,hint:'Critère personnalisé',invert:false,weight:1,custom:true});
+  document.getElementById('cust-name').value='';
+  document.getElementById('cust-icon').value='';
+  renderSelList();
 }
 
-function renderActiveList() {
-  const list = document.getElementById('activeList');
-  const badge = document.getElementById('crit-badge');
-  badge.textContent = S.criteria.length;
-  if (!S.criteria.length) {
-    list.innerHTML = '<div class="empty-hint">Sélectionnez au moins 2 critères ci-dessus</div>';
+function renderSelList(){
+  const list=document.getElementById('activeList');
+  document.getElementById('crit-badge').textContent=S.criteria.length;
+  if(!S.criteria.length){
+    list.innerHTML='<div class="empty-hint">👆 Sélectionnez au moins 2 critères ci-dessus pour continuer</div>';
     return;
   }
-  list.innerHTML = '';
-  S.criteria.forEach(c => {
-    const item = document.createElement('div');
-    item.className = 'active-item';
-    item.innerHTML = `
-      <div class="ai-icon">${c.icon}</div>
-      <div class="ai-name">${c.name}${c.invert ? ' <span class="inv-tag">inversé</span>' : ''}</div>
-      <label style="font-size:.7rem;color:var(--muted);margin-right:4px">Poids</label>
+  list.innerHTML='';
+  S.criteria.forEach(c=>{
+    const item=document.createElement('div'); item.className='sel-item';
+    item.innerHTML=`
+      <div class="sel-icon">${c.icon}</div>
+      <div class="sel-name">${c.name}${c.invert?` <span class="inv-tag" title="Score élevé = mauvais pour ce critère">↓ inversé</span>`:''}</div>
+      <label style="font-size:.72rem;color:var(--muted);margin-right:4px;white-space:nowrap">Importance</label>
       <select class="weight-sel" onchange="setCW('${c.id}',this.value)">
-        ${[1,2,3].map(w=>`<option value="${w}" ${c.weight===w?'selected':''}>${WEIGHTS[w]}</option>`).join('')}
+        ${[1,2,3].map(w=>`<option value="${w}"${c.weight===w?' selected':''}>${WEIGHTS[w]}</option>`).join('')}
       </select>
-      <button class="inv-btn ${c.invert?'on':''}" onclick="toggleInv('${c.id}')">
-        ${c.invert ? '⬇ Inversé' : '⬆ Normal'}
+      <button class="inv-btn${c.invert?' on':''}" onclick="toggleInv('${c.id}')"
+        title="${c.invert?'Actuellement : score élevé = mauvais':'Actuellement : score élevé = bon'}">
+        ${c.invert?'↓ Inversé':'↑ Normal'}
       </button>
-      <button class="rm-btn" onclick="removeCrit('${c.id}')">✕</button>
-    `;
+      <button class="rm-btn" onclick="rmCrit('${c.id}')" title="Retirer ce critère">✕</button>`;
     list.appendChild(item);
   });
 }
 
-function setCW(id, v) {
-  const c = S.criteria.find(x => x.id === id);
-  if (c) c.weight = parseInt(v);
-}
-function toggleInv(id) {
-  const c = S.criteria.find(x => x.id === id);
-  if (c) { c.invert = !c.invert; renderActiveList(); }
-}
-function removeCrit(id) {
-  S.criteria = S.criteria.filter(x => x.id !== id);
-  const pill = document.getElementById('pill-' + id);
-  if (pill) { pill.classList.remove('on'); pill.querySelector('.crit-check').textContent = ''; }
-  renderActiveList();
+function setCW(id,v){ const c=S.criteria.find(x=>x.id===id); if(c) c.weight=parseInt(v); }
+function toggleInv(id){ const c=S.criteria.find(x=>x.id===id); if(c){c.invert=!c.invert;renderSelList();} }
+function rmCrit(id){
+  S.criteria=S.criteria.filter(x=>x.id!==id);
+  const pill=document.getElementById('pill-'+id);
+  if(pill){pill.classList.remove('on');pill.querySelector('.crit-check').textContent='';}
+  renderSelList();
 }
 
-function validateStep2() {
-  if (S.criteria.length < 2) { alert('Sélectionnez au moins 2 critères.'); return; }
-  // Init scores
-  S.criteria.forEach(c => {
-    if (!S.scores[c.id] || S.scores[c.id].length !== S.options.length) {
-      S.scores[c.id] = S.options.map(() => 5);
-    }
+function validateStep2(){
+  if(S.criteria.length<2){alert('Veuillez sélectionner au moins 2 critères.');return;}
+  S.criteria.forEach(c=>{
+    if(!S.scores[c.id]||S.scores[c.id].length!==S.options.length)
+      S.scores[c.id]=S.options.map(()=>5);
   });
+  renderStepProgress(3);
   buildEvalPage();
   nav('page-step3');
 }
 
-/* ══════════════════════════════════════
-   STEP 3 — SLIDERS
-══════════════════════════════════════ */
-function buildEvalPage() {
-  document.getElementById('eval-title').textContent =
-    `Évaluez : "${S.decision.substring(0,50)}${S.decision.length>50?'…':''}"`;
+/* ─── STEP 3 ────────────────────────────── */
+function buildEvalPage(){
+  document.getElementById('eval-title').textContent=
+    `Notez vos options pour : "${S.decision.substring(0,50)}${S.decision.length>50?'…':''}"`;
 
-  const nOpts = S.options.length;
-  const grid = document.getElementById('evalGrid');
+  const nOpts=S.options.length;
+  const grid=document.getElementById('evalGrid');
+  grid.style.gridTemplateColumns=`repeat(${Math.min(nOpts,2)},1fr)`;
+  grid.innerHTML='';
 
-  // Responsive columns: 1 col if 5-6 options, 2 cols otherwise
-  const cols = nOpts <= 4 ? Math.min(nOpts, 2) : (nOpts <= 6 ? 2 : 2);
-  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  S.options.forEach((opt,oi)=>{
+    const c=COLORS[oi];
+    const col=document.createElement('div');
+    col.className='eval-col';
 
-  grid.innerHTML = '';
-
-  S.options.forEach((opt, oi) => {
-    const c = COLORS[oi];
-    const col = document.createElement('div');
-    col.className = 'eval-col';
-
-    const sliders = S.criteria.map(cr => {
-      const v = S.scores[cr.id]?.[oi] ?? 5;
-      const pct = ((v-1)/9*100).toFixed(1);
-      const inv = cr.invert ? `<span class="inv-tag" style="font-size:.58rem">↓</span>` : '';
-      const wt  = cr.weight > 1 ? `<span class="sl-wtag">×${cr.weight}</span>` : '';
+    const items=S.criteria.map(cr=>{
+      const v=S.scores[cr.id]?.[oi]??5;
+      const inv=cr.invert?`<span class="inv-tag" title="Score élevé = mauvais pour ce critère">↓</span>`:'';
+      const wt=cr.weight>1?`<span class="sl-wtag">×${cr.weight}</span>`:'';
+      const pips=Array.from({length:10},(_,pi)=>
+        `<div class="pip" id="pip-${oi}-${cr.id}-${pi+1}"></div>`).join('');
       return `
         <div class="sl-item">
           <div class="sl-head">
-            <div class="sl-label">${cr.icon} ${cr.name} ${inv} ${wt}</div>
-            <div class="sl-val" id="sv-${oi}-${cr.id}">${v}</div>
+            <div class="sl-label">${cr.icon} ${cr.name} ${inv}</div>${wt}
           </div>
-          <input type="range" min="1" max="10" value="${v}"
-            id="sl-${oi}-${cr.id}"
-            oninput="updateSlider(${oi},'${cr.id}',this.value)">
-          <div class="sl-scale"><span>1</span><span>5</span><span>10</span></div>
-        </div>
-      `;
+          <div class="stepper">
+            <button class="stepper-btn" onclick="stepVal(${oi},'${cr.id}',-1)" aria-label="Diminuer">−</button>
+            <div class="stepper-track">
+              <div class="pip-row">${pips}</div>
+              <div class="stepper-val" id="sv-${oi}-${cr.id}">${v}</div>
+            </div>
+            <button class="stepper-btn" onclick="stepVal(${oi},'${cr.id}',+1)" aria-label="Augmenter">+</button>
+          </div>
+        </div>`;
     }).join('');
 
-    col.innerHTML = `
+    col.innerHTML=`
       <div class="eval-col-head" style="background:${c.bg};border-color:${c.border}">
         <div class="eval-col-name" style="color:${c.hex}">Option ${LETTERS[oi]} — ${esc(opt.name)}</div>
-        <div class="eval-col-score" id="live-${oi}" style="color:${c.hex}">—</div>
+        <div class="eval-live-score">
+          <div class="eval-live-num" id="live-${oi}" style="color:${c.hex}">—</div>
+          <div class="eval-live-label">/ 100</div>
+        </div>
       </div>
-      <div class="eval-col-body" style="border-color:${c.border}">
-        ${sliders}
-      </div>
-    `;
+      <div class="eval-col-body" style="border-color:${c.border}">${items}</div>`;
+
     grid.appendChild(col);
-    // Apply initial colors to all sliders in this column
-    S.criteria.forEach(cr => {
-      const sl = document.getElementById(`sl-${oi}-${cr.id}`);
-      const vd = document.getElementById(`sv-${oi}-${cr.id}`);
-      const v  = S.scores[cr.id]?.[oi] ?? 5;
-      if (sl) applySliderStyle(sl, vd, v, cr.invert ?? false);
-    });
+    S.criteria.forEach(cr=>renderStepper(oi,cr.id,S.scores[cr.id]?.[oi]??5,cr.invert??false));
     refreshLive(oi);
   });
 
-  // Notes
-  const notesRow = document.getElementById('notesRow');
-  notesRow.style.gridTemplateColumns = `repeat(${Math.min(nOpts,3)},1fr)`;
-  notesRow.innerHTML = S.options.map((opt,oi) => {
-    const c = COLORS[oi];
-    return `
-      <div>
-        <span class="notes-lbl" style="color:${c.hex}">Notes — Option ${LETTERS[oi]} (${esc(opt.name)})</span>
-        <textarea id="note-${oi}" rows="2" placeholder="Vos réflexions…"
-          oninput="S.notes[${oi}]=this.value">${esc(S.notes[oi]||'')}</textarea>
-      </div>
-    `;
-  }).join('');
+  const notesRow=document.getElementById('notesRow');
+  notesRow.style.gridTemplateColumns=`repeat(${Math.min(nOpts,3)},1fr)`;
+  notesRow.innerHTML=S.options.map((opt,oi)=>`
+    <div>
+      <span class="notes-lbl" style="color:${COLORS[oi].hex}">
+        📝 Notes libres — Option ${LETTERS[oi]} (${esc(opt.name)})
+      </span>
+      <textarea id="note-${oi}" rows="3"
+        placeholder="Vos réflexions, intuitions, ce que les chiffres ne disent pas…"
+        oninput="S.notes[${oi}]=this.value">${esc(S.notes[oi]||'')}</textarea>
+    </div>`).join('');
 }
 
-/* Returns a red→grey→green color based on effective value 1-10 */
-function sliderColor(rawVal, invert) {
-  let eff = invert ? (11 - rawVal) : rawVal;
-  // eff: 1=worst(red), 5=neutral(grey), 10=best(green)
-  const t = (eff - 1) / 9; // 0..1
-  if (t < 0.5) {
-    // red → grey: interpolate from #e05252 to #4a4a56
-    const r = Math.round(224 + (74  - 224) * (t / 0.5));
-    const g = Math.round(82  + (74  - 82)  * (t / 0.5));
-    const b = Math.round(82  + (86  - 82)  * (t / 0.5));
-    return `rgb(${r},${g},${b})`;
+/* ─── STEPPER COLOR ─────────────────────── */
+function stepColor(raw, invert){
+  const eff=invert?(11-raw):raw;
+  const t=(eff-1)/9;
+  if(t<0.5){
+    const f=t/0.5;
+    return `rgb(${Math.round(192+( 90-192)*f)},${Math.round(57+(87-57)*f)},${Math.round(43+(80-43)*f)})`;
   } else {
-    // grey → green: interpolate from #4a4a56 to #52b87a
-    const t2 = (t - 0.5) / 0.5;
-    const r = Math.round(74  + (82  - 74)  * t2);
-    const g = Math.round(74  + (184 - 74)  * t2);
-    const b = Math.round(86  + (122 - 86)  * t2);
-    return `rgb(${r},${g},${b})`;
+    const f=(t-0.5)/0.5;
+    return `rgb(${Math.round(90+(45-90)*f)},${Math.round(87+(138-87)*f)},${Math.round(80+(78-80)*f)})`;
   }
 }
 
-function applySliderStyle(sl, valDisplay, rawVal, invert) {
-  const color = sliderColor(rawVal, invert);
-  const pct = ((rawVal - 1) / 9 * 100).toFixed(1) + '%';
-  sl.style.background = `linear-gradient(90deg, ${color} ${pct}, var(--border2) ${pct})`;
-  sl.style.accentColor = color;
-  sl.style.setProperty('--pct', pct);
-  // Thumb color via a dynamic style tag keyed by slider id
-  let styleTag = document.getElementById('thumb-' + sl.id);
-  if (!styleTag) {
-    styleTag = document.createElement('style');
-    styleTag.id = 'thumb-' + sl.id;
-    document.head.appendChild(styleTag);
+function renderStepper(oi,cid,val,invert){
+  const color=stepColor(val,invert);
+  const vd=document.getElementById(`sv-${oi}-${cid}`);
+  if(vd){vd.textContent=val;vd.style.color=color;}
+  for(let pi=1;pi<=10;pi++){
+    const pip=document.getElementById(`pip-${oi}-${cid}-${pi}`);
+    if(!pip) continue;
+    if(pi<=val){
+      // Height grows with value for a bar-chart feel
+      pip.style.height=(8+pi*1.2)+'px';
+      pip.style.background=color;
+      pip.style.borderColor=color;
+    } else {
+      pip.style.height='8px';
+      pip.style.background='';
+      pip.style.borderColor='';
+    }
   }
-  styleTag.textContent = `#${sl.id}::-webkit-slider-thumb { background: ${color} !important; }`;
-  if (valDisplay) { valDisplay.style.color = color; valDisplay.textContent = rawVal; }
 }
 
-function updateSlider(oi, cid, val) {
-  val = parseInt(val);
-  if (!S.scores[cid]) S.scores[cid] = S.options.map(()=>5);
-  S.scores[cid][oi] = val;
-  const sl = document.getElementById(`sl-${oi}-${cid}`);
-  const vd = document.getElementById(`sv-${oi}-${cid}`);
-  const crit = S.criteria.find(c => c.id === cid);
-  applySliderStyle(sl, vd, val, crit?.invert ?? false);
+function stepVal(oi,cid,delta){
+  if(!S.scores[cid]) S.scores[cid]=S.options.map(()=>5);
+  const next=Math.min(10,Math.max(1,(S.scores[cid][oi]??5)+delta));
+  S.scores[cid][oi]=next;
+  const cr=S.criteria.find(c=>c.id===cid);
+  renderStepper(oi,cid,next,cr?.invert??false);
   refreshLive(oi);
 }
 
-function calcScore(oi) {
-  let tot = 0, max = 0;
-  S.criteria.forEach(c => {
-    let v = S.scores[c.id]?.[oi] ?? 5;
-    if (c.invert) v = 11 - v;
-    tot += v * c.weight;
-    max += 10 * c.weight;
+function calcScore(oi){
+  let tot=0,max=0;
+  S.criteria.forEach(c=>{
+    let v=S.scores[c.id]?.[oi]??5;
+    if(c.invert) v=11-v;
+    tot+=v*c.weight; max+=10*c.weight;
   });
-  return Math.round((tot / max) * 100);
+  return Math.round((tot/max)*100);
 }
 
-function refreshLive(oi) {
-  const el = document.getElementById(`live-${oi}`);
-  if (el) el.textContent = calcScore(oi);
+function refreshLive(oi){
+  const el=document.getElementById(`live-${oi}`);
+  if(el) el.textContent=calcScore(oi);
 }
 
-/* ══════════════════════════════════════
-   RESULTS
-══════════════════════════════════════ */
-function showResults() {
-  S.notes = S.options.map((_,i) => document.getElementById(`note-${i}`)?.value || '');
+/* ─── RESULTS ───────────────────────────── */
+function showResults(){
+  S.notes=S.options.map((_,i)=>document.getElementById(`note-${i}`)?.value||'');
   buildResults();
   nav('page-results');
-  setTimeout(drawCharts, 120);
+  setTimeout(drawRadar,150);
+  generateInterpretation();
 }
 
-function buildResults() {
-  const scores = S.options.map((_,i) => calcScore(i));
-  const ranked = [...S.options.map((_,i)=>i)].sort((a,b) => scores[b]-scores[a]);
-  const winner = ranked[0];
-  const runnerUp = ranked[1];
-  const diff = scores[winner] - scores[runnerUp];
-  const tie = diff <= 4;
-
-  const cW = COLORS[winner];
+function buildResults(){
+  const scores=S.options.map((_,i)=>calcScore(i));
+  const ranked=[...S.options.map((_,i)=>i)].sort((a,b)=>scores[b]-scores[a]);
+  const winner=ranked[0], runner=ranked[1];
+  const diff=scores[winner]-scores[runner];
+  const tie=diff<=4;
+  const cW=COLORS[winner];
 
   // Verdict
-  let vstyle, vemoji, vtitle, vsub;
-  if (tie) {
-    vstyle = `background:rgba(200,162,74,0.07);border-color:rgba(200,162,74,0.3)`;
-    vemoji = '⚖️';
-    vtitle = `<span style="color:var(--gold2)">Résultat très serré !</span>`;
-    vsub = `Seulement ${diff} point(s) d'écart. Votre intuition et vos valeurs profondes sont décisives.`;
+  let vstyle,vemoji,vtitle,vsub;
+  if(tie){
+    vstyle=`background:#fffbea;border-color:#f0d080`;
+    vemoji='⚖️';
+    vtitle=`<span style="color:var(--amber)">Résultat très serré !</span>`;
+    vsub=`Seulement ${diff} point${diff>1?'s':''} d'écart — les deux premières options sont quasiment équivalentes. Faites confiance à votre intuition.`;
   } else {
-    vstyle = `background:${cW.bg};border-color:${cW.border}`;
-    vemoji = '✦';
-    vtitle = `<span style="color:${cW.hex}">"${esc(S.options[winner].name)}" ressort favorablement</span>`;
-    vsub = `Avantage de ${diff} points sur l'ensemble de vos critères pondérés — devant "${esc(S.options[runnerUp].name)}" (${scores[runnerUp]} pts).`;
+    vstyle=`background:${cW.bg};border-color:${cW.border}`;
+    vemoji='🎯';
+    vtitle=`<span style="color:${cW.hex}">"${esc(S.options[winner].name)}" ressort en tête</span>`;
+    vsub=`Avantage de ${diff} points sur vos critères pondérés. N'oubliez pas de prendre en compte vos notes et votre ressenti.`;
   }
 
-  // Score cards
-  const scoreCards = ranked.map((oi, rank) => {
-    const c = COLORS[oi];
-    const sc = scores[oi];
-    const rankCls = rank < 3 ? `rank-${rank+1}` : '';
-    const rankAfterColor = rank===0 ? `background:${c.bg};color:${c.hex}` : `background:var(--border2);color:var(--muted)`;
+  // Score cards (ranked)
+  const ncols=Math.min(S.options.length,3);
+  const scoreCards=ranked.map((oi,rank)=>{
+    const c=COLORS[oi]; const sc=scores[oi];
+    const rankLabels=['🥇 1ère option','🥈 2ème option','🥉 3ème option'];
+    const rankBadge=rank<3?`<div class="rank-badge" style="background:${c.bg};color:${c.hex};border:1px solid ${c.border}">${rankLabels[rank]}</div>`:'';
+    const miniCrits=S.criteria.slice(0,4).map(cr=>{
+      const v=S.scores[cr.id]?.[oi]??5;
+      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.75rem">
+        <span style="width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)">${cr.icon} ${cr.name}</span>
+        <div style="flex:1;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${v*10}%;background:${c.hex};border-radius:3px"></div>
+        </div>
+        <span style="width:16px;text-align:right;color:var(--ink2);font-weight:600">${v}</span>
+      </div>`;
+    }).join('');
     return `
-      <div class="score-card ${rankCls}" style="background:${c.bg};border-color:${c.border}">
-        <style>#resContent .score-card.${rankCls}::after{${rankAfterColor}}</style>
-        <div class="sc-label" style="color:${c.hex}">Option ${LETTERS[oi]}</div>
+      <div class="score-card${rank===0?' rank-1':''}" style="border-color:${rank===0?c.hex:c.border}">
+        ${rankBadge}
+        <div class="sc-letter" style="color:${c.hex}">Option ${LETTERS[oi]}</div>
         <div class="sc-name">${esc(S.options[oi].name)}</div>
-        ${S.options[oi].desc ? `<div style="font-size:.75rem;color:var(--muted);margin-bottom:10px">${esc(S.options[oi].desc)}</div>` : ''}
+        ${S.options[oi].desc?`<div class="sc-desc">${esc(S.options[oi].desc)}</div>`:''}
         <div class="sc-score-row">
           <div class="sc-num" style="color:${c.hex}">${sc}</div>
           <div class="sc-denom">/100</div>
         </div>
-        <div class="sc-bar-track"><div class="sc-bar-fill" style="width:${sc}%;background:${c.hex}"></div></div>
-        ${S.criteria.slice(0,4).map(cr=>{
-          const v = S.scores[cr.id]?.[oi]??5;
-          return `<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;font-size:.72rem;color:var(--muted)">
-            <span style="width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${cr.icon} ${cr.name}</span>
-            <div style="flex:1;height:4px;background:var(--border2);border-radius:2px;overflow:hidden">
-              <div style="height:100%;width:${v*10}%;background:${c.hex};border-radius:2px"></div>
-            </div>
-            <span style="width:14px;text-align:right">${v}</span>
-          </div>`;
-        }).join('')}
-      </div>
-    `;
+        <div class="sc-bar"><div class="sc-bar-fill" style="width:${sc}%;background:${c.hex}"></div></div>
+        ${miniCrits}
+      </div>`;
   }).join('');
 
-  // Columns count for score grid
-  const ncols = Math.min(S.options.length, 3);
-
-  // Breakdown table header
-  const bkHeader = `
-    <div class="bk-row hdr">
-      <div class="bk-cell crit-col hdr-cell">Critère</div>
-      ${S.options.map((o,i)=>`
-        <div class="bk-cell opt-col hdr-cell" style="color:${COLORS[i].hex}">
-          ${LETTERS[i]}. ${esc(o.name.substring(0,12))}${o.name.length>12?'…':''}
-        </div>
-      `).join('')}
-    </div>
-  `;
-
-  const bkRows = S.criteria.map(cr => {
-    const vals = S.options.map((_,i) => S.scores[cr.id]?.[i] ?? 5);
-    const maxV = Math.max(...vals);
-    return `
-      <div class="bk-row">
-        <div class="bk-cell crit-col">
-          ${cr.icon} ${cr.name}
-          ${cr.weight>1 ? `<span class="sl-wtag">×${cr.weight}</span>` : ''}
-          ${cr.invert ? `<span class="inv-tag" style="font-size:.6rem">↓</span>` : ''}
-        </div>
-        ${vals.map((v,i) => {
-          const c = COLORS[i];
-          const isMax = v === maxV;
-          return `
-            <div class="bk-cell opt-col">
-              <div class="opt-cell-inner">
-                <div class="opt-pill" style="background:${c.bg};color:${c.hex};font-weight:${isMax?700:400}">${v}</div>
-                <div class="mini-bar"><div class="mini-bar-fill" style="width:${v*10}%;background:${c.hex}"></div></div>
-              </div>
-            </div>
-          `;
-        }).join('')}
+  // Breakdown
+  const bkHeader=`<div class="bk-row hdr">
+    <div class="bk-cell crit-col hdr-cell">Critère</div>
+    ${S.options.map((o,i)=>`<div class="bk-cell opt-col hdr-cell" style="color:${COLORS[i].hex}">${LETTERS[i]}. ${esc(o.name.substring(0,10))}${o.name.length>10?'…':''}</div>`).join('')}
+  </div>`;
+  const bkRows=S.criteria.map(cr=>{
+    const vals=S.options.map((_,i)=>S.scores[cr.id]?.[i]??5);
+    const maxV=Math.max(...vals);
+    return `<div class="bk-row">
+      <div class="bk-cell crit-col">
+        ${cr.icon} ${cr.name}
+        ${cr.weight>1?`<span style="font-size:.62rem;background:var(--amber-bg);color:var(--amber);padding:2px 5px;border-radius:3px;border:1px solid #f0d080;font-weight:700">×${cr.weight}</span>`:''}
+        ${cr.invert?`<span class="inv-tag">↓</span>`:''}
       </div>
-    `;
+      ${vals.map((v,i)=>{
+        const c=COLORS[i];
+        return `<div class="bk-cell opt-col"><div class="opt-cell-in">
+          <div class="opt-pill" style="background:${c.bg};color:${c.hex};font-weight:${v===maxV?700:400}">${v}</div>
+          <div class="mini-bar"><div class="mini-bar-fill" style="width:${v*10}%;background:${c.hex}"></div></div>
+        </div></div>`;
+      }).join('')}
+    </div>`;
   }).join('');
 
   // Analysis
-  const an = genAnalysis(scores, winner, ranked);
+  const an=genAnalysis(scores,winner,ranked);
 
   // Notes
-  const hasNotes = S.notes.some(n => n.trim());
-  const notesHTML = hasNotes ? `
+  const hasNotes=S.notes.some(n=>n.trim());
+  const notesHTML=hasNotes?`
     <div class="notes-res">
       <div class="notes-res-head">📝 Vos notes personnelles</div>
       <div class="notes-res-body" style="grid-template-columns:repeat(${Math.min(S.options.length,3)},1fr)">
-        ${S.options.map((o,i) => `
-          <div class="note-col" style="border-right-color:var(--border)">
+        ${S.options.map((o,i)=>`
+          <div class="note-col" style="${i<S.options.length-1?'border-right:1px solid var(--border)':''}">
             <div class="note-col-lbl" style="color:${COLORS[i].hex}">${LETTERS[i]}. ${esc(o.name)}</div>
-            <div class="note-col-txt">${esc(S.notes[i]) || '<em style="color:var(--muted2)">Aucune note</em>'}</div>
-          </div>
-        `).join('')}
+            <div class="note-col-txt">${esc(S.notes[i])||'<em style="color:var(--muted2)">Aucune note</em>'}</div>
+          </div>`).join('')}
       </div>
-    </div>
-  ` : '';
+    </div>`:'';
 
-  document.getElementById('resContent').innerHTML = `
-    <div class="res-header">
-      <div class="eyebrow">Résultats de l'analyse</div>
-      <div class="res-decision">${esc(S.decision)}</div>
+  document.getElementById('resContent').innerHTML=`
+    <div class="res-decision-banner">
+      <div class="res-dec-icon">🤔</div>
+      <div>
+        <div class="res-dec-label">Votre décision</div>
+        <div class="res-dec-text">${esc(S.decision)}</div>
+      </div>
     </div>
 
     <div class="verdict-strip" style="${vstyle}">
@@ -1301,29 +1312,40 @@ function buildResults() {
       </div>
     </div>
 
-    <div class="scores-row" style="grid-template-columns:repeat(${ncols},1fr)">
-      ${scoreCards}
-    </div>
-
-    <div class="radar-wrap">
-      <h3>Comparaison visuelle des critères</h3>
-      <canvas id="radarC" width="500" height="380"></canvas>
-      <div class="radar-legend">
-        ${S.options.map((o,i)=>`<span><span class="legend-dot" style="background:${COLORS[i].hex}"></span>${esc(o.name)}</span>`).join('')}
+    <div class="interp-box">
+      <div class="interp-head">
+        <span>💬</span>
+        <div class="interp-head-title">Interprétation personnalisée</div>
+        <div class="interp-badge">IA</div>
+      </div>
+      <div id="interpContent">
+        <div class="interp-loading">
+          <div class="skel w100"></div>
+          <div class="skel w80"></div>
+          <div class="skel w100"></div>
+          <div class="skel w60"></div>
+        </div>
       </div>
     </div>
 
-    <div class="section-hd">Détail par critère</div>
-    <div class="bk-table">
-      ${bkHeader}
-      ${bkRows}
+    <div class="scores-row" style="grid-template-columns:repeat(${ncols},1fr)">${scoreCards}</div>
+
+    <div class="radar-section">
+      <h3>🕸️ Profil visuel des options</h3>
+      <canvas id="radarC" width="480" height="360" style="max-width:100%"></canvas>
+      <div class="radar-legend">
+        ${S.options.map((o,i)=>`<span><span class="leg-dot" style="background:${COLORS[i].hex}"></span>${esc(o.name)}</span>`).join('')}
+      </div>
     </div>
+
+    <div class="section-title">📊 Détail des scores par critère</div>
+    <div class="bk-table">${bkHeader}${bkRows}</div>
 
     <div class="analysis-box">
       <div class="analysis-head">
         <span>🧠</span>
         <h3>Analyse synthétique</h3>
-        <div class="ai-badge">Auto-générée</div>
+        <div class="ai-badge">Automatique</div>
       </div>
       <div class="analysis-body">
         <div class="an-col pros">
@@ -1340,151 +1362,211 @@ function buildResults() {
     ${notesHTML}
 
     <div class="res-actions">
-      <button class="btn btn-secondary" onclick="nav('page-step3')">← Modifier</button>
-      <div style="display:flex;gap:10px">
-        <button class="btn btn-secondary" onclick="window.print()">🖨️ Exporter PDF</button>
+      <button class="btn btn-secondary" onclick="nav('page-step3')">← Modifier mes notes</button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="window.print()">🖨️ Exporter en PDF</button>
         <button class="btn btn-primary" onclick="restart()">↺ Nouvelle décision</button>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
-function genAnalysis(scores, winner, ranked) {
-  const wName = S.options[winner].name;
-  const pros = [], cons = [];
+/* ─── AI INTERPRETATION ─────────────────── */
+async function generateInterpretation(){
+  const scores = S.options.map((_,i) => calcScore(i));
+  const ranked = [...S.options.map((_,i)=>i)].sort((a,b)=>scores[b]-scores[a]);
 
-  // Top criteria for winner
-  const sortedCrits = [...S.criteria].sort((a,b) => {
-    let va = S.scores[a.id]?.[winner]??5, vb = S.scores[b.id]?.[winner]??5;
-    if(a.invert) va=11-va; if(b.invert) vb=11-vb;
-    return (vb*b.weight)-(va*a.weight);
-  });
+  const optionsSummary = S.options.map((o,i) => {
+    const critDetails = S.criteria.map(c => {
+      const raw = S.scores[c.id]?.[i] ?? 5;
+      const eff = c.invert ? 11 - raw : raw;
+      return `  - ${c.name} (poids ×${c.weight}${c.invert?' [inversé]':''}): ${raw}/10 → effectif ${eff}/10`;
+    }).join('\n');
+    return `Option ${LETTERS[i]} — "${o.name}"${o.desc?' ('+o.desc+')':''}
+  Score final: ${scores[i]}/100
+${critDetails}${S.notes[i]?'\n  Note personnelle: "'+S.notes[i]+'"':''}`;
+  }).join('\n\n');
 
-  sortedCrits.slice(0,2).forEach(c => {
-    const v = S.scores[c.id]?.[winner]??5;
-    pros.push(`Score élevé sur « ${c.name} » (${v}/10)${c.weight>1?`, critère ×${c.weight}`:''}. `);
-  });
+  const rankedNames = ranked.map(i=>`"${S.options[i].name}" (${scores[i]} pts)`).join(' > ');
+  const crucialCriteria = S.criteria.filter(c=>c.weight>=2).map(c=>`${c.name} (×${c.weight})`).join(', ') || 'Aucun';
 
-  const diff = scores[ranked[0]] - scores[ranked[1]];
-  if (diff > 15) pros.push(`Domination claire avec ${diff} points d'avance — choix peu ambigu.`);
-  else if (diff <= 4) pros.push(`Les options sont très proches — valeur de l'intuition à ne pas sous-estimer.`);
+  const prompt = `Tu es un conseiller bienveillant et direct qui aide les gens à prendre des décisions importantes.
 
-  // Runner-up advantages
-  if (ranked.length > 1) {
-    const ru = ranked[1];
-    const ruCrits = [...S.criteria].sort((a,b) => {
-      let va=S.scores[a.id]?.[ru]??5, vb=S.scores[b.id]?.[ru]??5;
-      if(a.invert) va=11-va; if(b.invert) vb=11-vb;
-      return (vb*b.weight)-(va*a.weight);
+L'utilisateur doit décider : "${S.decision}"
+
+Résultats de son analyse multi-critères :
+Classement : ${rankedNames}
+
+${optionsSummary}
+
+Critères les plus importants (×2 ou ×3) : ${crucialCriteria}
+
+Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en français, naturel et humain.
+- Compare les options sur les points où elles divergent le plus
+- Révèle ce que les chiffres disent vraiment sur ses priorités
+- Formule une recommandation nuancée tenant compte des critères importants
+- Si serré, dis-le et oriente vers ce qui compte le plus
+- Écris directement, sans titre, sans bullet, sans intro générique
+- Style : "Option X est plus forte sur…", "Si tu accordes de l'importance à…", "Ce que les chiffres révèlent ici…"
+- Tutoie, sois chaleureux mais factuel. 3-5 phrases max.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{role:'user', content: prompt}]
+      })
     });
-    ruCrits.slice(0,2).forEach(c => {
-      const vW = S.scores[c.id]?.[winner]??5, vR = S.scores[c.id]?.[ru]??5;
-      if (vR > vW) cons.push(`"${esc(S.options[ru].name)}" surpasse sur « ${c.name} » (${vR} vs ${vW}).`);
+    const data = await res.json();
+    const text = data?.content?.[0]?.text || null;
+    const el = document.getElementById('interpContent');
+    if (!el) return;
+    if (text) {
+      const formatted = text
+        .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+        .replace(/\n\n/g,'</p><p>')
+        .replace(/\n/g,'<br>');
+      el.innerHTML=`<div class="interp-body"><div class="interp-text"><p>${formatted}</p></div></div>`;
+    } else { throw new Error(); }
+  } catch(e) {
+    // Fallback local si l'API échoue
+    const scores2 = S.options.map((_,i)=>calcScore(i));
+    const ranked2 = [...S.options.map((_,i)=>i)].sort((a,b)=>scores2[b]-scores2[a]);
+    const w=ranked2[0], r=ranked2[1];
+    const diff=scores2[w]-scores2[r];
+
+    const topW = [...S.criteria].sort((a,b)=>{
+      const va=(a.invert?11-(S.scores[a.id]?.[w]??5):(S.scores[a.id]?.[w]??5))*a.weight;
+      const vb=(b.invert?11-(S.scores[b.id]?.[w]??5):(S.scores[b.id]?.[w]??5))*b.weight;
+      return vb-va;
+    })[0];
+    const topR = [...S.criteria].sort((a,b)=>{
+      const va=(a.invert?11-(S.scores[a.id]?.[r]??5):(S.scores[a.id]?.[r]??5))*a.weight;
+      const vb=(b.invert?11-(S.scores[b.id]?.[r]??5):(S.scores[b.id]?.[r]??5))*b.weight;
+      return vb-va;
+    })[0];
+
+    const msg = diff<=4
+      ? `Les deux options sont très proches (${scores2[w]} vs ${scores2[r]} pts).`
+        +(topW?` "${S.options[w].name}" se démarque légèrement sur <strong>${topW.name}</strong>.`:'')
+        +` Dans ce cas serré, fais confiance à ton instinct.`
+      : `"${S.options[w].name}" ressort en tête avec ${diff} points d'avance.`
+        +(topW?` Son principal atout : <strong>${topW.name}</strong>.`:'')
+        +(topR?` "${S.options[r].name}" reste plus fort sur <strong>${topR.name}</strong> — à peser si c'est une priorité.`:'');
+
+    const el=document.getElementById('interpContent');
+    if(el) el.innerHTML=`<div class="interp-body"><div class="interp-text"><p>${msg}</p></div></div>`;
+  }
+}
+
+function genAnalysis(scores,winner,ranked){
+  const wName=S.options[winner].name;
+  const pros=[],cons=[];
+  const sortW=[...S.criteria].sort((a,b)=>{
+    let va=S.scores[a.id]?.[winner]??5,vb=S.scores[b.id]?.[winner]??5;
+    if(a.invert)va=11-va;if(b.invert)vb=11-vb;
+    return(vb*b.weight)-(va*a.weight);
+  });
+  sortW.slice(0,2).forEach(c=>{
+    const v=S.scores[c.id]?.[winner]??5;
+    pros.push(`Score élevé sur « ${c.name} » (${v}/10)${c.weight>1?` — critère d'importance ×${c.weight}`:''}.`);
+  });
+  const diff=scores[ranked[0]]-scores[ranked[1]];
+  if(diff>15) pros.push(`Avantage significatif de ${diff} points — la recommandation est claire.`);
+  else if(diff<=4) pros.push(`Résultat serré — d'autres facteurs non quantifiables peuvent faire la différence.`);
+  if(ranked.length>1){
+    const ru=ranked[1];
+    const sortR=[...S.criteria].sort((a,b)=>{
+      let va=S.scores[a.id]?.[ru]??5,vb=S.scores[b.id]?.[ru]??5;
+      if(a.invert)va=11-va;if(b.invert)vb=11-vb;
+      return(vb*b.weight)-(va*a.weight);
+    });
+    sortR.slice(0,2).forEach(c=>{
+      const vW=S.scores[c.id]?.[winner]??5,vR=S.scores[c.id]?.[ru]??5;
+      if(vR>vW) cons.push(`"${esc(S.options[ru].name)}" fait mieux sur « ${c.name} » (${vR} vs ${vW}).`);
     });
   }
-
-  // Crucial criteria where winner is weak
-  S.criteria.filter(c=>c.weight===3).forEach(c => {
-    const v = S.scores[c.id]?.[winner]??5;
-    if (v < 5) cons.push(`Critère crucial « ${c.name} » : score faible pour "${esc(wName)}" (${v}/10) — à surveiller.`);
+  S.criteria.filter(c=>c.weight===3).forEach(c=>{
+    const v=S.scores[c.id]?.[winner]??5;
+    if(v<5) cons.push(`Critère crucial « ${c.name} » : score faible pour "${esc(wName)}" (${v}/10) — à surveiller.`);
   });
-
-  if (!cons.length) cons.push(`Aucune faiblesse critique identifiée — l'option est solide sur l'ensemble des critères.`);
-
-  return { pros: pros.slice(0,3), cons: cons.slice(0,3) };
+  if(!cons.length) cons.push(`Pas de faiblesse critique identifiée — l'option est solide sur tous les critères.`);
+  return{pros:pros.slice(0,3),cons:cons.slice(0,3)};
 }
 
-/* ══════════════════════════════════════
-   RADAR CHART
-══════════════════════════════════════ */
-function drawCharts() {
-  const canvas = document.getElementById('radarC');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  const cx = W/2, cy = H/2;
-  const N = S.criteria.length;
-  if (N < 3) return;
-  const R = Math.min(W,H)/2 - 64;
+/* ─── RADAR ─────────────────────────────── */
+function drawRadar(){
+  const canvas=document.getElementById('radarC'); if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2;
+  const N=S.criteria.length; if(N<3) return;
+  const R=Math.min(W,H)/2-64;
   ctx.clearRect(0,0,W,H);
+  const angle=i=>(i/N)*Math.PI*2-Math.PI/2;
 
-  const angle = i => (i/N)*Math.PI*2 - Math.PI/2;
-
-  // Grid rings
-  [2,4,6,8,10].forEach(lvl => {
+  // Grid
+  [2,4,6,8,10].forEach(lvl=>{
     ctx.beginPath();
-    S.criteria.forEach((_,i) => {
-      const a=angle(i), r=(lvl/10)*R;
-      i===0 ? ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a))
-             : ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
+    S.criteria.forEach((_,i)=>{
+      const a=angle(i),r=(lvl/10)*R;
+      i===0?ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a)):ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
     });
     ctx.closePath();
-    ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.strokeStyle='rgba(0,0,0,0.07)';ctx.lineWidth=1;ctx.stroke();
   });
-
-  // Axes
-  S.criteria.forEach((_,i) => {
-    ctx.beginPath();
-    ctx.moveTo(cx,cy);
-    ctx.lineTo(cx+R*Math.cos(angle(i)), cy+R*Math.sin(angle(i)));
-    ctx.strokeStyle='rgba(255,255,255,0.08)'; ctx.lineWidth=1; ctx.stroke();
+  S.criteria.forEach((_,i)=>{
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+R*Math.cos(angle(i)),cy+R*Math.sin(angle(i)));
+    ctx.strokeStyle='rgba(0,0,0,0.08)';ctx.lineWidth=1;ctx.stroke();
   });
 
   // Labels
-  ctx.font='11px Outfit,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
-  S.criteria.forEach((c,i) => {
-    const a=angle(i), x=cx+(R+46)*Math.cos(a), y=cy+(R+46)*Math.sin(a);
-    ctx.fillStyle='rgba(100,100,110,0.9)';
-    ctx.fillText(c.icon, x, y-6);
-    const short = c.name.length>13 ? c.name.substring(0,12)+'…' : c.name;
-    ctx.fillText(short, x, y+8);
+  ctx.font='11px Plus Jakarta Sans,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  S.criteria.forEach((c,i)=>{
+    const a=angle(i),x=cx+(R+44)*Math.cos(a),y=cy+(R+44)*Math.sin(a);
+    ctx.fillStyle='#8a877f';
+    ctx.fillText(c.icon,x,y-6);
+    const short=c.name.length>13?c.name.substring(0,12)+'…':c.name;
+    ctx.fillText(short,x,y+8);
   });
 
-  // Polygons per option
-  S.options.forEach((_, oi) => {
-    const col = COLORS[oi];
+  // Polygons
+  S.options.forEach((_,oi)=>{
+    const col=COLORS[oi];
     ctx.beginPath();
-    S.criteria.forEach((c,i) => {
-      const v = S.scores[c.id]?.[oi]??5;
-      const a=angle(i), r=(v/10)*R;
-      i===0 ? ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a))
-             : ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
+    S.criteria.forEach((c,i)=>{
+      const v=S.scores[c.id]?.[oi]??5,a=angle(i),r=(v/10)*R;
+      i===0?ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a)):ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
     });
     ctx.closePath();
-    // Fill with transparency based on option index (later = more transparent to not hide earlier)
-    const alpha = 0.18 - oi * 0.02;
-    ctx.fillStyle = col.hex + Math.round(Math.max(alpha,0.06)*255).toString(16).padStart(2,'0');
-    ctx.fill();
-    ctx.strokeStyle = col.hex;
-    ctx.lineWidth = 2;
-    ctx.stroke();
+    // Parse hex to rgba
+    const hex=col.hex.replace('#','');
+    const r=parseInt(hex.substring(0,2),16),g=parseInt(hex.substring(2,4),16),b=parseInt(hex.substring(4,6),16);
+    ctx.fillStyle=`rgba(${r},${g},${b},0.12)`;ctx.fill();
+    ctx.strokeStyle=col.hex;ctx.lineWidth=2.5;ctx.stroke();
   });
 }
 
-/* ══════════════════════════════════════
-   UTILS
-══════════════════════════════════════ */
-function esc(str) {
-  if (!str) return '';
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+/* ─── UTILS ─────────────────────────────── */
+function esc(s){
+  if(!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
-function shake(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.style.borderColor='var(--red)'; el.focus();
+function shake(id){
+  const el=document.getElementById(id); if(!el) return;
+  el.style.borderColor='var(--red)';el.focus();
   setTimeout(()=>el.style.borderColor='',1800);
 }
-
-function restart() {
-  S = {
-    decision:'', options:[{name:'',desc:''},{name:'',desc:''}],
-    criteria:[], scores:{}, notes:[], currentCat:'Tous'
-  };
+function restart(){
+  S={decision:'',options:[{name:'',desc:''},{name:'',desc:''}],criteria:[],scores:{},notes:[],currentCat:'Tous'};
   document.getElementById('inp-dec').value='';
-  renderOptionsBuilder();
+  renderOptBuilder();
+  renderStepProgress(1);
   nav('page-intro');
 }
 </script>
 </body>
 </html>
+
