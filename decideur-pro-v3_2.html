@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Décideur Pro — Aide à la décision multi-options</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700;900&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════
+   VARIABLES & RESET
+══════════════════════════════════════ */
+:root {
+  --bg:       #09090b;
+  --surf:     #111113;
+  --surf2:    #17171a;
+  --border:   #1e1e22;
+  --border2:  #2a2a30;
+  --gold:     #c8a24a;
+  --gold2:    #e0bf79;
+  --cream:    #eae4d6;
+  --muted:    #656570;
+  --muted2:   #3e3e46;
+  --green:    #52b87a;
+  --red:      #e05252;
+  --r:        12px;
+
+  /* Option palette — up to 6 */
+  --c0: #5b9bd5; --c0b: rgba(91,155,213,0.12);  --c0o: rgba(91,155,213,0.35);
+  --c1: #d4735a; --c1b: rgba(212,115,90,0.12);  --c1o: rgba(212,115,90,0.35);
+  --c2: #6db87a; --c2b: rgba(109,184,122,0.12); --c2o: rgba(109,184,122,0.35);
+  --c3: #b87ad4; --c3b: rgba(184,122,212,0.12); --c3o: rgba(184,122,212,0.35);
+  --c4: #d4b85a; --c4b: rgba(212,184,90,0.12);  --c4o: rgba(212,184,90,0.35);
+  --c5: #5ab8d4; --c5b: rgba(90,184,212,0.12);  --c5o: rgba(90,184,212,0.35);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(200,162,74,0.06), transparent);
+  pointer-events:none; z-index:0;
+}
+
+.app { position:relative; z-index:1; }
+
+/* ══════════════════════════════════════
+   PAGES
+══════════════════════════════════════ */
+.page { display:none; min-height:100vh; flex-direction:column; }
+.page.active { display:flex; }
+
+/* ══════════════════════════════════════
+   HEADER
+══════════════════════════════════════ */
+.app-header {
+  padding: 22px 36px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top:0; z-index:50;
+  background: rgba(9,9,11,0.85);
+  backdrop-filter: blur(12px);
+}
+
+.logo {
+  font-family:'Cormorant Garamond', serif;
+  font-size: 1.4rem; font-weight:700;
+  color: var(--gold2);
+  letter-spacing:-0.01em;
+}
+.logo em { color:var(--muted); font-style:normal; font-weight:400; }
+
+.header-steps {
+  display:flex; gap:6px; align-items:center; margin-left:auto;
+}
+.hstep {
+  display:flex; align-items:center; gap:6px;
+  font-size:0.72rem; font-weight:500;
+  color: var(--muted2);
+  transition: color 0.3s;
+}
+.hstep.active { color: var(--gold2); }
+.hstep.done   { color: var(--muted); }
+.hstep-dot {
+  width:24px; height:24px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.7rem; font-weight:700;
+  background: var(--border2); color:var(--muted2);
+  transition: all 0.3s; flex-shrink:0;
+}
+.hstep.active .hstep-dot { background:var(--gold); color:#09090b; }
+.hstep.done   .hstep-dot { background:var(--muted2); color:var(--cream); }
+.hstep-sep { width:20px; height:1px; background:var(--border2); }
+
+/* ══════════════════════════════════════
+   MAIN CONTENT
+══════════════════════════════════════ */
+.main {
+  flex:1; padding:48px 36px 80px;
+  max-width:1040px; margin:0 auto; width:100%;
+}
+
+/* ══════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════ */
+@keyframes up   { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none} }
+@keyframes spin { to{transform:rotate(360deg)} }
+
+.anim    { animation: up 0.45s ease both; }
+.anim-1  { animation-delay:.06s }
+.anim-2  { animation-delay:.13s }
+.anim-3  { animation-delay:.20s }
+.anim-4  { animation-delay:.27s }
+
+/* ══════════════════════════════════════
+   TYPOGRAPHY
+══════════════════════════════════════ */
+.eyebrow {
+  font-size:0.68rem; font-weight:600;
+  letter-spacing:.18em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:8px;
+}
+.page-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size: clamp(2rem,4vw,3rem);
+  font-weight:700; line-height:1.1;
+  color:var(--cream); margin-bottom:10px;
+}
+.page-sub {
+  color:var(--muted); font-size:.9rem;
+  font-weight:300; line-height:1.65;
+  max-width:540px; margin-bottom:36px;
+}
+
+/* ══════════════════════════════════════
+   FORM ELEMENTS
+══════════════════════════════════════ */
+.field { margin-bottom:18px; }
+.field > label {
+  display:block; font-size:.75rem; font-weight:600;
+  letter-spacing:.07em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:7px;
+}
+input[type=text], textarea, select {
+  width:100%;
+  background:var(--surf); border:1px solid var(--border2);
+  border-radius:var(--r); color:var(--cream);
+  font-family:'Outfit',sans-serif; font-size:.95rem;
+  padding:13px 16px; outline:none; resize:none;
+  transition: border-color .2s, box-shadow .2s;
+  appearance:none;
+}
+input[type=text]:focus, textarea:focus, select:focus {
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(200,162,74,.1);
+}
+
+/* ══════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════ */
+.btn {
+  font-family:'Outfit',sans-serif; font-size:.88rem; font-weight:500;
+  padding:12px 24px; border-radius:10px; border:none; cursor:pointer;
+  transition:all .18s; display:inline-flex; align-items:center; gap:7px;
+  letter-spacing:.02em;
+}
+.btn-primary { background:var(--gold); color:#09090b; }
+.btn-primary:hover { background:var(--gold2); transform:translateY(-1px); box-shadow:0 8px 24px rgba(200,162,74,.25); }
+.btn-secondary { background:transparent; color:var(--muted); border:1px solid var(--border2); }
+.btn-secondary:hover { border-color:var(--muted2); color:var(--cream); }
+.btn-ghost { background:transparent; color:var(--muted); border:none; font-size:.82rem; padding:8px 12px; }
+.btn-ghost:hover { color:var(--cream); }
+.btn-icon {
+  width:32px; height:32px; border-radius:8px; padding:0;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:.9rem;
+}
+.btn-row { display:flex; align-items:center; justify-content:space-between; margin-top:36px; gap:12px; }
+
+/* ══════════════════════════════════════
+   INTRO PAGE
+══════════════════════════════════════ */
+#page-intro {
+  align-items:center; justify-content:center;
+  text-align:center; padding:60px 36px;
+}
+.intro-wordmark {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(3.5rem,9vw,7rem);
+  font-weight:900; color:var(--gold2); line-height:1;
+  margin-bottom:6px;
+  animation: up .8s ease both;
+}
+.intro-tagline {
+  font-size:1rem; color:var(--muted); font-weight:300;
+  margin-bottom:48px; animation: up .8s .15s ease both;
+}
+.intro-chips {
+  display:flex; gap:10px; justify-content:center;
+  flex-wrap:wrap; margin-bottom:48px;
+  animation: up .8s .25s ease both;
+}
+.chip {
+  display:flex; align-items:center; gap:7px;
+  font-size:.78rem; color:var(--muted);
+  background:var(--surf); border:1px solid var(--border2);
+  padding:7px 16px; border-radius:30px;
+}
+.chip-icon { color:var(--gold); }
+.start-btn {
+  animation: up .8s .35s ease both;
+  font-size:1rem; padding:16px 44px; border-radius:12px;
+  background:var(--gold); color:#09090b;
+  border:none; font-family:'Outfit',sans-serif; font-weight:600;
+  cursor:pointer; transition:all .2s; letter-spacing:.02em;
+}
+.start-btn:hover { background:var(--gold2); transform:translateY(-2px); box-shadow:0 14px 36px rgba(200,162,74,.3); }
+
+/* ══════════════════════════════════════
+   STEP 1 — OPTIONS BUILDER
+══════════════════════════════════════ */
+.options-builder { display:flex; flex-direction:column; gap:12px; margin-bottom:20px; }
+
+.opt-card {
+  background:var(--surf); border:1px solid var(--border2);
+  border-radius:var(--r); padding:0; overflow:hidden;
+  transition: border-color .2s;
+}
+
+.opt-card-header {
+  display:flex; align-items:center; gap:12px;
+  padding:14px 18px;
+  border-bottom:1px solid var(--border);
+  cursor:pointer; user-select:none;
+}
+
+.opt-color-dot {
+  width:10px; height:10px; border-radius:50%; flex-shrink:0;
+}
+
+.opt-card-label {
+  font-size:.8rem; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase;
+}
+
+.opt-card-name-preview {
+  margin-left:auto; font-size:.85rem; color:var(--muted);
+  max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+
+.opt-card-toggle {
+  font-size:.75rem; color:var(--muted2); margin-left:8px;
+  transition:transform .2s;
+}
+.opt-card.open .opt-card-toggle { transform:rotate(180deg); }
+
+.opt-card-body { padding:18px; display:none; }
+.opt-card.open .opt-card-body { display:block; }
+
+.opt-remove-btn {
+  width:28px; height:28px; border-radius:7px;
+  background:transparent; border:1px solid var(--border2);
+  color:var(--muted2); cursor:pointer; font-size:.8rem;
+  display:inline-flex; align-items:center; justify-content:center;
+  transition:all .15s; font-family:'Outfit',sans-serif;
+  flex-shrink:0;
+}
+.opt-remove-btn:hover { background:rgba(224,82,82,.12); border-color:var(--red); color:var(--red); }
+
+.add-opt-btn {
+  display:flex; align-items:center; gap:10px;
+  background:var(--surf); border:1px dashed var(--border2);
+  border-radius:var(--r); padding:14px 18px;
+  cursor:pointer; font-family:'Outfit',sans-serif;
+  font-size:.85rem; color:var(--muted); width:100%;
+  transition:all .18s;
+}
+.add-opt-btn:hover { border-color:var(--gold); color:var(--gold2); }
+.add-opt-btn-icon {
+  width:28px; height:28px; border-radius:7px;
+  background:var(--surf2); display:flex; align-items:center; justify-content:center;
+  font-size:1rem;
+}
+
+/* ══════════════════════════════════════
+   STEP 2 — CRITERIA
+══════════════════════════════════════ */
+.cat-tabs { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:22px; }
+.cat-tab {
+  background:var(--surf); border:1px solid var(--border2);
+  border-radius:7px; color:var(--muted);
+  font-family:'Outfit',sans-serif; font-size:.78rem; font-weight:500;
+  padding:6px 13px; cursor:pointer; transition:all .15s;
+}
+.cat-tab:hover { color:var(--cream); }
+.cat-tab.active { border-color:var(--gold); color:var(--gold2); background:rgba(200,162,74,.07); }
+
+.crit-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  gap:8px; margin-bottom:24px;
+}
+
+.crit-pill {
+  background:var(--surf); border:1px solid var(--border2);
+  border-radius:10px; padding:11px 13px;
+  cursor:pointer; transition:all .15s;
+  display:flex; align-items:center; gap:9px; user-select:none;
+}
+.crit-pill:hover { background:var(--surf2); }
+.crit-pill.on { border-color:var(--gold); background:rgba(200,162,74,.05); }
+.crit-check {
+  width:18px; height:18px; border-radius:5px;
+  background:var(--border2); display:flex; align-items:center; justify-content:center;
+  font-size:.65rem; flex-shrink:0; transition:all .15s;
+}
+.crit-pill.on .crit-check { background:var(--gold); color:#09090b; }
+.crit-icon { font-size:.95rem; flex-shrink:0; }
+.crit-name { font-size:.82rem; font-weight:500; color:var(--cream); }
+.crit-hint { font-size:.68rem; color:var(--muted); margin-top:1px; }
+
+.custom-form {
+  background:var(--surf2); border:1px dashed var(--border2);
+  border-radius:var(--r); padding:18px; margin-bottom:24px;
+}
+.custom-form h4 { font-size:.82rem; font-weight:600; color:var(--cream); margin-bottom:14px; }
+.custom-row { display:grid; grid-template-columns:1fr 70px 1fr; gap:10px; align-items:end; }
+
+.active-box {
+  background:var(--surf); border:1px solid var(--border2); border-radius:var(--r); overflow:hidden;
+}
+.active-box-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 18px; border-bottom:1px solid var(--border);
+}
+.active-box-header h3 { font-size:.82rem; font-weight:600; color:var(--cream); }
+.count-badge {
+  background:var(--gold); color:#09090b;
+  font-size:.68rem; font-weight:700; padding:2px 8px; border-radius:20px;
+}
+
+.active-list { padding:6px; }
+.active-item {
+  display:flex; align-items:center; gap:8px;
+  padding:9px 11px; border-radius:8px; border:1px solid transparent;
+  transition:background .12s;
+}
+.active-item:hover { background:var(--surf2); }
+.ai-icon { font-size:.95rem; flex-shrink:0; }
+.ai-name { font-size:.82rem; color:var(--cream); flex:1; }
+.inv-tag {
+  font-size:.6rem; background:rgba(200,162,74,.12);
+  color:var(--gold); padding:2px 5px; border-radius:3px;
+}
+.weight-sel {
+  width:auto; padding:4px 8px; font-size:.72rem;
+  border-radius:6px; background:var(--bg); border:1px solid var(--border2);
+  color:var(--cream); cursor:pointer; font-family:'Outfit',sans-serif;
+}
+.inv-btn {
+  font-size:.62rem; padding:4px 7px;
+  background:var(--bg); border:1px solid var(--border2);
+  border-radius:4px; color:var(--muted); cursor:pointer;
+  font-family:'Outfit',sans-serif; white-space:nowrap; transition:all .12s;
+}
+.inv-btn.on { border-color:var(--gold); color:var(--gold); }
+.rm-btn {
+  width:22px; height:22px; border-radius:5px;
+  background:transparent; border:1px solid var(--border2);
+  color:var(--muted2); cursor:pointer; font-size:.75rem;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; font-family:'Outfit',sans-serif; transition:all .12s;
+}
+.rm-btn:hover { background:rgba(224,82,82,.12); border-color:var(--red); color:var(--red); }
+.empty-hint { text-align:center; padding:32px; color:var(--muted); font-size:.85rem; }
+
+/* ══════════════════════════════════════
+   STEP 3 — SLIDERS
+══════════════════════════════════════ */
+.eval-grid {
+  display:grid;
+  gap:16px;
+}
+
+.eval-col { }
+
+.eval-col-head {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:13px 16px; border-radius:10px 10px 0 0;
+  border:1px solid; border-bottom:none;
+}
+.eval-col-name {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem; font-weight:700;
+}
+.eval-col-score {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem; font-weight:900;
+}
+
+.eval-col-body {
+  border:1px solid; border-top:none;
+  border-radius:0 0 10px 10px; overflow:hidden;
+}
+
+.sl-item {
+  padding:13px 16px; border-bottom:1px solid var(--border);
+}
+.sl-item:last-child { border-bottom:none; }
+.sl-head {
+  display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;
+}
+.sl-label { font-size:.78rem; font-weight:500; color:var(--cream); display:flex; align-items:center; gap:5px; }
+.sl-val { font-size:1.05rem; font-weight:700; font-family:'Cormorant Garamond',serif; }
+.sl-wtag {
+  font-size:.6rem; background:rgba(200,162,74,.1);
+  color:var(--gold); padding:2px 5px; border-radius:3px;
+}
+
+input[type=range] {
+  width:100%; height:5px; appearance:none;
+  border-radius:3px; outline:none; cursor:pointer;
+  background:var(--border2);
+}
+input[type=range]::-webkit-slider-thumb {
+  appearance:none; width:16px; height:16px; border-radius:50%;
+  border:2px solid var(--surf); cursor:pointer;
+  box-shadow:0 2px 6px rgba(0,0,0,.5);
+}
+.sl-scale { display:flex; justify-content:space-between; font-size:.62rem; color:var(--muted2); margin-top:3px; }
+
+.notes-row { display:grid; gap:14px; margin-top:20px; }
+.notes-lbl { font-size:.72rem; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); margin-bottom:5px; display:block; }
+
+/* ══════════════════════════════════════
+   RESULTS
+══════════════════════════════════════ */
+.res-header { text-align:center; margin-bottom:36px; }
+.res-decision {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.4rem,3vw,2rem);
+  font-weight:700; color:var(--cream); margin-top:6px;
+}
+
+.verdict-strip {
+  border-radius:var(--r); padding:22px 26px;
+  display:flex; align-items:center; gap:18px;
+  margin-bottom:28px; border:1px solid;
+}
+.verdict-icon { font-size:2rem; }
+.verdict-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.35rem; font-weight:700; margin-bottom:3px;
+}
+.verdict-sub { font-size:.82rem; color:var(--muted); line-height:1.5; }
+
+/* Podium / scores grid */
+.scores-row {
+  display:grid; gap:12px; margin-bottom:28px;
+}
+.score-card {
+  border-radius:var(--r); padding:22px; border:1px solid;
+  position:relative; overflow:hidden; transition:transform .15s;
+}
+.score-card:hover { transform:translateY(-2px); }
+.score-card.rank-1::after {
+  content:'🥇 1er'; position:absolute; top:12px; right:12px;
+  font-size:.65rem; font-weight:700; padding:3px 9px;
+  border-radius:20px; letter-spacing:.08em;
+}
+.score-card.rank-2::after { content:'🥈 2e'; position:absolute; top:12px; right:12px; font-size:.65rem; font-weight:700; padding:3px 9px; border-radius:20px; }
+.score-card.rank-3::after { content:'🥉 3e'; position:absolute; top:12px; right:12px; font-size:.65rem; font-weight:700; padding:3px 9px; border-radius:20px; }
+
+.sc-label { font-size:.68rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; margin-bottom:5px; }
+.sc-name { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:700; color:var(--cream); margin-bottom:14px; }
+.sc-score-row { display:flex; align-items:flex-end; gap:6px; margin-bottom:12px; }
+.sc-num { font-family:'Cormorant Garamond',serif; font-size:2.6rem; font-weight:900; line-height:1; }
+.sc-denom { font-size:.75rem; color:var(--muted); margin-bottom:8px; }
+.sc-bar-track { flex:1; height:6px; background:var(--border2); border-radius:3px; overflow:hidden; margin-bottom:12px; }
+.sc-bar-fill { height:100%; border-radius:3px; transition:width 1s ease; }
+
+/* Breakdown table */
+.section-hd {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.2rem; font-weight:700; color:var(--cream);
+  margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);
+}
+.bk-table { background:var(--surf); border:1px solid var(--border2); border-radius:var(--r); overflow-x:auto; margin-bottom:28px; }
+.bk-row { display:flex; align-items:center; gap:0; border-bottom:1px solid var(--border); }
+.bk-row:last-child { border-bottom:none; }
+.bk-row.hdr { background:var(--surf2); }
+.bk-cell { padding:12px 14px; font-size:.78rem; }
+.bk-cell.crit-col { width:180px; flex-shrink:0; display:flex; align-items:center; gap:7px; color:var(--cream); }
+.bk-cell.hdr-cell { color:var(--muted); font-weight:600; font-size:.7rem; text-transform:uppercase; letter-spacing:.07em; }
+.bk-cell.opt-col { flex:1; min-width:90px; }
+.opt-cell-inner { display:flex; align-items:center; gap:7px; }
+.opt-pill {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:26px; height:26px; border-radius:7px;
+  font-size:.82rem; font-weight:700; flex-shrink:0;
+}
+.mini-bar { flex:1; height:5px; background:var(--border2); border-radius:3px; overflow:hidden; }
+.mini-bar-fill { height:100%; border-radius:3px; }
+
+/* Radar */
+.radar-wrap {
+  background:var(--surf); border:1px solid var(--border2); border-radius:var(--r);
+  padding:24px; margin-bottom:28px;
+  display:flex; flex-direction:column; align-items:center;
+}
+.radar-wrap h3 { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:var(--cream); margin-bottom:20px; align-self:flex-start; }
+.radar-legend { display:flex; flex-wrap:wrap; gap:16px; margin-top:16px; font-size:.78rem; color:var(--muted); }
+.legend-dot { width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:5px; }
+
+/* AI analysis */
+.analysis-box { background:var(--surf); border:1px solid var(--border2); border-radius:var(--r); overflow:hidden; margin-bottom:28px; }
+.analysis-head { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+.analysis-head h3 { font-size:.88rem; font-weight:600; color:var(--cream); }
+.ai-badge { font-size:.62rem; font-weight:700; letter-spacing:.1em; background:rgba(200,162,74,.15); color:var(--gold); padding:3px 8px; border-radius:5px; text-transform:uppercase; }
+.analysis-body { display:grid; grid-template-columns:1fr 1fr; gap:0; }
+.an-col { padding:18px; }
+.an-col:first-child { border-right:1px solid var(--border); }
+.an-col h4 { font-size:.72rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; margin-bottom:12px; }
+.an-col.pros h4 { color:var(--green); }
+.an-col.cons h4 { color:var(--red); }
+.an-item { display:flex; gap:8px; font-size:.8rem; color:var(--muted); line-height:1.5; margin-bottom:8px; }
+.an-dot { width:5px; height:5px; border-radius:50%; margin-top:7px; flex-shrink:0; }
+.pros .an-dot { background:var(--green); }
+.cons .an-dot { background:var(--red); }
+
+/* Notes results */
+.notes-res { background:var(--surf); border:1px solid var(--border2); border-radius:var(--r); overflow:hidden; margin-bottom:28px; }
+.notes-res-head { padding:12px 18px; border-bottom:1px solid var(--border); font-size:.82rem; font-weight:600; color:var(--cream); }
+.notes-res-body { display:grid; gap:0; }
+.note-col { padding:14px 18px; border-right:1px solid var(--border); }
+.note-col:last-child { border-right:none; }
+.note-col-lbl { font-size:.7rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
+.note-col-txt { font-size:.82rem; color:var(--muted); line-height:1.6; font-style:italic; }
+
+.res-actions { display:flex; align-items:center; justify-content:space-between; margin-top:36px; padding-top:22px; border-bottom:1px solid var(--border); padding-bottom:22px; }
+
+/* ══════════════════════════════════════
+   UTILITIES
+══════════════════════════════════════ */
+.opt-color { color: var(--c0); }
+
+@media(max-width:680px){
+  .app-header { padding:14px 18px; }
+  .main { padding:28px 18px 60px; }
+  .header-steps .hstep-label { display:none; }
+  .analysis-body { grid-template-columns:1fr; }
+  .bk-cell.opt-col { min-width:70px; }
+}
+
+@media print {
+  .app-header button, .res-actions { display:none!important; }
+  .page { display:none!important; }
+  #page-results { display:flex!important; }
+  body { background:white!important; color:black!important; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══════════════════════════════════════
+     INTRO
+══════════════════════════════════════ -->
+<div class="page active" id="page-intro">
+  <div class="main" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center">
+    <div class="intro-wordmark">Décideur<span style="color:var(--gold)">.</span></div>
+    <div class="intro-tagline">Comparez jusqu'à 6 options avec méthode — critères pondérés, analyse visuelle, synthèse automatique</div>
+    <div class="intro-chips">
+      <div class="chip"><span class="chip-icon">⚖️</span>Multi-options</div>
+      <div class="chip"><span class="chip-icon">🧩</span>29 critères</div>
+      <div class="chip"><span class="chip-icon">📊</span>Radar & scores</div>
+      <div class="chip"><span class="chip-icon">🏋️</span>Pondération</div>
+      <div class="chip"><span class="chip-icon">🧠</span>Analyse auto</div>
+      <div class="chip"><span class="chip-icon">🖨️</span>Export PDF</div>
+    </div>
+    <button class="start-btn" onclick="nav('page-step1')">Commencer l'analyse →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     STEP 1 — OPTIONS
+══════════════════════════════════════ -->
+<div class="page" id="page-step1">
+  <div class="app-header">
+    <div class="logo">Décideur<em>.</em></div>
+    <div class="header-steps" id="hs1"></div>
+  </div>
+  <div class="main">
+    <div class="eyebrow anim">Étape 1 sur 3</div>
+    <div class="page-title anim anim-1">Définissez votre décision</div>
+    <div class="page-sub anim anim-2">Décrivez votre situation, puis ajoutez entre 2 et 6 options à comparer.</div>
+
+    <div class="anim anim-2">
+      <div class="field">
+        <label for="inp-dec">Votre décision</label>
+        <textarea id="inp-dec" rows="2" placeholder="Ex : Quelle ville choisir pour m'installer ?"></textarea>
+      </div>
+    </div>
+
+    <div class="anim anim-3">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <label style="font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Options à comparer</label>
+        <span id="opt-count-label" style="font-size:.72rem;color:var(--muted)">2 options</span>
+      </div>
+      <div class="options-builder" id="optBuilder"></div>
+      <button class="add-opt-btn" id="addOptBtn" onclick="addOption()">
+        <div class="add-opt-btn-icon">+</div>
+        Ajouter une option <span style="color:var(--muted2);font-size:.75rem">(max 6)</span>
+      </button>
+    </div>
+
+    <div class="btn-row anim anim-4">
+      <button class="btn btn-secondary" onclick="nav('page-intro')">← Retour</button>
+      <button class="btn btn-primary" onclick="validateStep1()">Choisir les critères →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     STEP 2 — CRITÈRES
+══════════════════════════════════════ -->
+<div class="page" id="page-step2">
+  <div class="app-header">
+    <div class="logo">Décideur<em>.</em></div>
+    <div class="header-steps" id="hs2"></div>
+  </div>
+  <div class="main">
+    <div class="eyebrow">Étape 2 sur 3</div>
+    <div class="page-title">Choisissez vos critères</div>
+    <div class="page-sub">Sélectionnez les critères, ajustez leur importance et inversez-les si nécessaire.</div>
+
+    <div class="cat-tabs" id="catTabs"></div>
+    <div class="crit-grid" id="critGrid"></div>
+
+    <div class="custom-form">
+      <h4>✦ Critère personnalisé</h4>
+      <div class="custom-row">
+        <div class="field" style="margin:0"><label>Nom</label><input type="text" id="cust-name" placeholder="Ex : Impact écologique"></div>
+        <div class="field" style="margin:0"><label>Icône</label><input type="text" id="cust-icon" placeholder="🌱" style="text-align:center"></div>
+        <div class="field" style="margin:0">
+          <label>Catégorie</label>
+          <select id="cust-cat">
+            <option>Finance</option><option>Pro</option><option selected>Perso</option><option>Social</option><option>Stratégique</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-secondary" style="margin-top:12px;font-size:.8rem;padding:9px 18px" onclick="addCustom()">+ Ajouter</button>
+    </div>
+
+    <div class="active-box" style="margin-top:24px">
+      <div class="active-box-header">
+        <h3>Critères sélectionnés</h3>
+        <div class="count-badge" id="crit-badge">0</div>
+      </div>
+      <div class="active-list" id="activeList">
+        <div class="empty-hint">Sélectionnez au moins 2 critères</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="nav('page-step1')">← Retour</button>
+      <button class="btn btn-primary" onclick="validateStep2()">Évaluer →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     STEP 3 — ÉVALUATION
+══════════════════════════════════════ -->
+<div class="page" id="page-step3">
+  <div class="app-header">
+    <div class="logo">Décideur<em>.</em></div>
+    <div class="header-steps" id="hs3"></div>
+  </div>
+  <div class="main">
+    <div class="eyebrow">Étape 3 sur 3</div>
+    <div class="page-title" id="eval-title">Évaluez chaque option</div>
+    <div class="page-sub">Déplacez les curseurs de 1 (très faible) à 10 (très élevé). Les scores se mettent à jour en temps réel.</div>
+
+    <div class="eval-grid" id="evalGrid"></div>
+    <div class="notes-row" id="notesRow"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="nav('page-step2')">← Retour</button>
+      <button class="btn btn-primary" onclick="showResults()">Voir les résultats ✦</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     RESULTS
+══════════════════════════════════════ -->
+<div class="page" id="page-results">
+  <div class="app-header">
+    <div class="logo">Décideur<em>.</em></div>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button class="btn btn-secondary" style="font-size:.8rem" onclick="window.print()">🖨️ PDF</button>
+      <button class="btn btn-primary" style="font-size:.8rem" onclick="restart()">↺ Recommencer</button>
+    </div>
+  </div>
+  <div class="main" id="resContent"></div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+/* ══════════════════════════════════════
+   PALETTE (must match CSS)
+══════════════════════════════════════ */
+const COLORS = [
+  { hex:'#5b9bd5', bg:'rgba(91,155,213,0.12)',  border:'rgba(91,155,213,0.35)' },
+  { hex:'#d4735a', bg:'rgba(212,115,90,0.12)',  border:'rgba(212,115,90,0.35)' },
+  { hex:'#6db87a', bg:'rgba(109,184,122,0.12)', border:'rgba(109,184,122,0.35)' },
+  { hex:'#b87ad4', bg:'rgba(184,122,212,0.12)', border:'rgba(184,122,212,0.35)' },
+  { hex:'#d4b85a', bg:'rgba(212,184,90,0.12)',  border:'rgba(212,184,90,0.35)' },
+  { hex:'#5ab8d4', bg:'rgba(90,184,212,0.12)',  border:'rgba(90,184,212,0.35)' },
+];
+
+const LETTERS = ['A','B','C','D','E','F'];
+
+/* ══════════════════════════════════════
+   CRITERIA LIBRARY
+══════════════════════════════════════ */
+const LIB = [
+  {id:'fin_gain',  cat:'Finance',     icon:'💰', name:'Gain financier',           hint:'Revenus, salaire, bénéfices',          invert:false, dw:2},
+  {id:'fin_risk',  cat:'Finance',     icon:'📉', name:'Risque financier',          hint:'Pertes potentielles, dettes',           invert:true,  dw:2},
+  {id:'roi',       cat:'Finance',     icon:'📈', name:'Retour sur investissement', hint:'ROI à moyen/long terme',                invert:false, dw:1},
+  {id:'cost',      cat:'Finance',     icon:'🏷️', name:'Coût initial',             hint:'Investissement de départ',              invert:true,  dw:1},
+  {id:'fin_stab',  cat:'Finance',     icon:'🏦', name:'Stabilité financière',      hint:'Sécurité des revenus',                  invert:false, dw:2},
+
+  {id:'career',    cat:'Pro',         icon:'🚀', name:'Évolution de carrière',     hint:'Perspectives professionnelles',          invert:false, dw:2},
+  {id:'skills',    cat:'Pro',         icon:'🧠', name:'Développement compétences', hint:'Apprentissage, montée en compétence',   invert:false, dw:1},
+  {id:'workload',  cat:'Pro',         icon:'⚡', name:'Charge de travail',         hint:'Volume et intensité du travail',         invert:true,  dw:1},
+  {id:'jobsec',    cat:'Pro',         icon:'🛡️', name:"Sécurité de l'emploi",     hint:'Stabilité et pérennité du poste',        invert:false, dw:2},
+  {id:'autonom',   cat:'Pro',         icon:'🎯', name:'Autonomie',                 hint:"Liberté d'action et de décision",        invert:false, dw:1},
+  {id:'flex',      cat:'Pro',         icon:'⏰', name:'Flexibilité horaire',        hint:'Télétravail, horaires aménageables',     invert:false, dw:1},
+  {id:'recog',     cat:'Pro',         icon:'🏅', name:'Reconnaissance',            hint:'Valorisation, prestige',                 invert:false, dw:1},
+
+  {id:'wellb',     cat:'Perso',       icon:'❤️', name:'Bien-être personnel',       hint:'Bonheur, épanouissement',               invert:false, dw:3},
+  {id:'stress',    cat:'Perso',       icon:'😤', name:'Niveau de stress',          hint:'Pression, anxiété générée',              invert:true,  dw:2},
+  {id:'health',    cat:'Perso',       icon:'🌿', name:'Impact santé',              hint:'Effets sur votre santé physique/mentale',invert:false, dw:2},
+  {id:'time',      cat:'Perso',       icon:'⏱️', name:'Temps libre',              hint:'Loisirs, repos, temps pour soi',          invert:false, dw:2},
+  {id:'values',    cat:'Perso',       icon:'🧭', name:'Alignement valeurs',        hint:'Cohérence avec vos principes',           invert:false, dw:3},
+  {id:'passion',   cat:'Perso',       icon:'🔥', name:'Passion & intérêt',         hint:'Motivation intrinsèque',                 invert:false, dw:2},
+  {id:'risk',      cat:'Perso',       icon:'⚠️', name:'Risque global',             hint:'Incertitude, exposition au danger',       invert:true,  dw:2},
+
+  {id:'family',    cat:'Social',      icon:'👨‍👩‍👧', name:'Impact famille',       hint:'Relations avec proches',                 invert:false, dw:2},
+  {id:'social',    cat:'Social',      icon:'🤝', name:'Vie sociale',               hint:'Réseau, amis, interactions',             invert:false, dw:1},
+  {id:'location',  cat:'Social',      icon:'📍', name:'Qualité du lieu de vie',    hint:'Logement, ville, environnement',         invert:false, dw:1},
+  {id:'repute',    cat:'Social',      icon:'✨', name:'Réputation / Image',         hint:'Perception des autres',                  invert:false, dw:1},
+  {id:'impact',    cat:'Social',      icon:'🌍', name:'Impact sociétal',            hint:'Utilité pour la société',                invert:false, dw:1},
+
+  {id:'lt',        cat:'Stratégique', icon:'🔭', name:'Vision long terme',          hint:'Bénéfices dans 5-10 ans',               invert:false, dw:2},
+  {id:'rev',       cat:'Stratégique', icon:'↩️', name:'Réversibilité',              hint:'Possibilité de revenir en arrière',      invert:false, dw:2},
+  {id:'opp',       cat:'Stratégique', icon:'🎲', name:'Opportunité unique',          hint:'Rareté de la chance',                   invert:false, dw:1},
+  {id:'complex',   cat:'Stratégique', icon:'🔧', name:'Complexité',                  hint:'Difficulté de mise en œuvre',           invert:true,  dw:1},
+  {id:'dep',       cat:'Stratégique', icon:'🔗', name:'Dépendances',                 hint:'Contraintes liées à autres facteurs',   invert:true,  dw:1},
+];
+
+const CATS = ['Tous','Finance','Pro','Perso','Social','Stratégique'];
+const WEIGHTS = {1:'×1 Normal', 2:'×2 Important', 3:'×3 Crucial'};
+
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+let S = {
+  decision: '',
+  options: [
+    { name:'', desc:'' },
+    { name:'', desc:'' },
+  ],
+  criteria: [],   // {id,cat,icon,name,hint,invert,weight,custom?}
+  scores: {},     // { critId: [v0,v1,...] }
+  notes: [],      // [note0, note1, ...]
+  currentCat: 'Tous',
+};
+
+/* ══════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════ */
+function nav(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderHeaderSteps(activeStep) {
+  ['hs1','hs2','hs3'].forEach((id,i) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const step = i+1;
+    const labels = ['Options','Critères','Évaluation'];
+    el.innerHTML = [1,2,3].map(s => {
+      const cls = s < step ? 'done' : s === step ? 'active' : '';
+      return `
+        <div class="hstep ${cls}">
+          <div class="hstep-dot">${s < step ? '✓' : s}</div>
+          <span class="hstep-label" style="display:none;font-size:.72rem">${labels[s-1]}</span>
+        </div>
+        ${s < 3 ? '<div class="hstep-sep"></div>' : ''}
+      `;
+    }).join('');
+  });
+}
+renderHeaderSteps(1);
+
+/* ══════════════════════════════════════
+   STEP 1 — OPTIONS
+══════════════════════════════════════ */
+function initOptions() {
+  renderOptionsBuilder();
+}
+
+function renderOptionsBuilder() {
+  const builder = document.getElementById('optBuilder');
+  builder.innerHTML = '';
+  S.options.forEach((opt, i) => {
+    const c = COLORS[i];
+    const letter = LETTERS[i];
+    const card = document.createElement('div');
+    card.className = 'opt-card open';
+    card.id = `opt-card-${i}`;
+    card.innerHTML = `
+      <div class="opt-card-header" onclick="toggleOptCard(${i})">
+        <div class="opt-color-dot" style="background:${c.hex}"></div>
+        <div class="opt-card-label" style="color:${c.hex}">Option ${letter}</div>
+        <div class="opt-card-name-preview" id="opt-preview-${i}">${opt.name || '—'}</div>
+        ${i >= 2 ? `<button class="opt-remove-btn" onclick="event.stopPropagation();removeOption(${i})">✕</button>` : ''}
+        <div class="opt-card-toggle">▾</div>
+      </div>
+      <div class="opt-card-body">
+        <div class="field">
+          <label>Nom de l'option</label>
+          <input type="text" id="opt-name-${i}" value="${esc(opt.name)}" placeholder="Ex : Paris"
+            oninput="S.options[${i}].name=this.value;updateOptPreview(${i})">
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Description courte (optionnel)</label>
+          <input type="text" id="opt-desc-${i}" value="${esc(opt.desc)}" placeholder="Ex : Grande ville, nombreuses opportunités…"
+            oninput="S.options[${i}].desc=this.value">
+        </div>
+      </div>
+    `;
+    builder.appendChild(card);
+  });
+
+  document.getElementById('opt-count-label').textContent = `${S.options.length} option${S.options.length>1?'s':''}`;
+  document.getElementById('addOptBtn').style.display = S.options.length >= 6 ? 'none' : 'flex';
+}
+
+function updateOptPreview(i) {
+  const el = document.getElementById(`opt-preview-${i}`);
+  if (el) el.textContent = S.options[i].name || '—';
+}
+
+function toggleOptCard(i) {
+  document.getElementById(`opt-card-${i}`).classList.toggle('open');
+}
+
+function addOption() {
+  if (S.options.length >= 6) return;
+  S.options.push({name:'', desc:''});
+  renderOptionsBuilder();
+}
+
+function removeOption(i) {
+  if (S.options.length <= 2) return;
+  S.options.splice(i, 1);
+  renderOptionsBuilder();
+}
+
+function validateStep1() {
+  const dec = document.getElementById('inp-dec').value.trim();
+  if (!dec) { shake('inp-dec'); return; }
+  const allNamed = S.options.every((_,i) => document.getElementById(`opt-name-${i}`)?.value.trim());
+  if (!allNamed) { alert('Donnez un nom à chaque option.'); return; }
+  S.decision = dec;
+  S.options = S.options.map((_, i) => ({
+    name: document.getElementById(`opt-name-${i}`).value.trim(),
+    desc: document.getElementById(`opt-desc-${i}`).value.trim(),
+  }));
+  S.notes = S.options.map(() => '');
+  buildCriteriaPage();
+  nav('page-step2');
+}
+
+initOptions();
+
+/* ══════════════════════════════════════
+   STEP 2 — CRITERIA
+══════════════════════════════════════ */
+function buildCriteriaPage() {
+  renderCatTabs();
+  filterGrid('Tous');
+  renderActiveList();
+}
+
+function renderCatTabs() {
+  const tabs = document.getElementById('catTabs');
+  tabs.innerHTML = '';
+  CATS.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-tab' + (cat === S.currentCat ? ' active' : '');
+    btn.textContent = cat;
+    btn.onclick = () => filterGrid(cat);
+    tabs.appendChild(btn);
+  });
+}
+
+function filterGrid(cat) {
+  S.currentCat = cat;
+  renderCatTabs();
+  const grid = document.getElementById('critGrid');
+  grid.innerHTML = '';
+  const items = cat === 'Tous' ? LIB : LIB.filter(c => c.cat === cat);
+  items.forEach(c => {
+    const on = S.criteria.some(x => x.id === c.id);
+    const pill = document.createElement('div');
+    pill.className = 'crit-pill' + (on ? ' on' : '');
+    pill.id = 'pill-' + c.id;
+    pill.innerHTML = `
+      <div class="crit-check">${on ? '✓' : ''}</div>
+      <div class="crit-icon">${c.icon}</div>
+      <div><div class="crit-name">${c.name}</div><div class="crit-hint">${c.hint}</div></div>
+    `;
+    pill.onclick = () => toggleCrit(c.id);
+    grid.appendChild(pill);
+  });
+}
+
+function toggleCrit(id) {
+  const idx = S.criteria.findIndex(c => c.id === id);
+  if (idx !== -1) {
+    S.criteria.splice(idx, 1);
+  } else {
+    const c = LIB.find(c => c.id === id);
+    S.criteria.push({...c, weight: c.dw});
+  }
+  filterGrid(S.currentCat);
+  renderActiveList();
+}
+
+function addCustom() {
+  const name = document.getElementById('cust-name').value.trim();
+  if (!name) { shake('cust-name'); return; }
+  const icon = document.getElementById('cust-icon').value.trim() || '🔹';
+  const cat  = document.getElementById('cust-cat').value;
+  S.criteria.push({ id:'cust_'+Date.now(), cat, icon, name, hint:'Critère personnalisé', invert:false, weight:1, custom:true });
+  document.getElementById('cust-name').value = '';
+  document.getElementById('cust-icon').value = '';
+  renderActiveList();
+}
+
+function renderActiveList() {
+  const list = document.getElementById('activeList');
+  const badge = document.getElementById('crit-badge');
+  badge.textContent = S.criteria.length;
+  if (!S.criteria.length) {
+    list.innerHTML = '<div class="empty-hint">Sélectionnez au moins 2 critères ci-dessus</div>';
+    return;
+  }
+  list.innerHTML = '';
+  S.criteria.forEach(c => {
+    const item = document.createElement('div');
+    item.className = 'active-item';
+    item.innerHTML = `
+      <div class="ai-icon">${c.icon}</div>
+      <div class="ai-name">${c.name}${c.invert ? ' <span class="inv-tag">inversé</span>' : ''}</div>
+      <label style="font-size:.7rem;color:var(--muted);margin-right:4px">Poids</label>
+      <select class="weight-sel" onchange="setCW('${c.id}',this.value)">
+        ${[1,2,3].map(w=>`<option value="${w}" ${c.weight===w?'selected':''}>${WEIGHTS[w]}</option>`).join('')}
+      </select>
+      <button class="inv-btn ${c.invert?'on':''}" onclick="toggleInv('${c.id}')">
+        ${c.invert ? '⬇ Inversé' : '⬆ Normal'}
+      </button>
+      <button class="rm-btn" onclick="removeCrit('${c.id}')">✕</button>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function setCW(id, v) {
+  const c = S.criteria.find(x => x.id === id);
+  if (c) c.weight = parseInt(v);
+}
+function toggleInv(id) {
+  const c = S.criteria.find(x => x.id === id);
+  if (c) { c.invert = !c.invert; renderActiveList(); }
+}
+function removeCrit(id) {
+  S.criteria = S.criteria.filter(x => x.id !== id);
+  const pill = document.getElementById('pill-' + id);
+  if (pill) { pill.classList.remove('on'); pill.querySelector('.crit-check').textContent = ''; }
+  renderActiveList();
+}
+
+function validateStep2() {
+  if (S.criteria.length < 2) { alert('Sélectionnez au moins 2 critères.'); return; }
+  // Init scores
+  S.criteria.forEach(c => {
+    if (!S.scores[c.id] || S.scores[c.id].length !== S.options.length) {
+      S.scores[c.id] = S.options.map(() => 5);
+    }
+  });
+  buildEvalPage();
+  nav('page-step3');
+}
+
+/* ══════════════════════════════════════
+   STEP 3 — SLIDERS
+══════════════════════════════════════ */
+function buildEvalPage() {
+  document.getElementById('eval-title').textContent =
+    `Évaluez : "${S.decision.substring(0,50)}${S.decision.length>50?'…':''}"`;
+
+  const nOpts = S.options.length;
+  const grid = document.getElementById('evalGrid');
+
+  // Responsive columns: 1 col if 5-6 options, 2 cols otherwise
+  const cols = nOpts <= 4 ? Math.min(nOpts, 2) : (nOpts <= 6 ? 2 : 2);
+  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+  grid.innerHTML = '';
+
+  S.options.forEach((opt, oi) => {
+    const c = COLORS[oi];
+    const col = document.createElement('div');
+    col.className = 'eval-col';
+
+    const sliders = S.criteria.map(cr => {
+      const v = S.scores[cr.id]?.[oi] ?? 5;
+      const pct = ((v-1)/9*100).toFixed(1);
+      const inv = cr.invert ? `<span class="inv-tag" style="font-size:.58rem">↓</span>` : '';
+      const wt  = cr.weight > 1 ? `<span class="sl-wtag">×${cr.weight}</span>` : '';
+      return `
+        <div class="sl-item">
+          <div class="sl-head">
+            <div class="sl-label">${cr.icon} ${cr.name} ${inv} ${wt}</div>
+            <div class="sl-val" id="sv-${oi}-${cr.id}">${v}</div>
+          </div>
+          <input type="range" min="1" max="10" value="${v}"
+            id="sl-${oi}-${cr.id}"
+            oninput="updateSlider(${oi},'${cr.id}',this.value)">
+          <div class="sl-scale"><span>1</span><span>5</span><span>10</span></div>
+        </div>
+      `;
+    }).join('');
+
+    col.innerHTML = `
+      <div class="eval-col-head" style="background:${c.bg};border-color:${c.border}">
+        <div class="eval-col-name" style="color:${c.hex}">Option ${LETTERS[oi]} — ${esc(opt.name)}</div>
+        <div class="eval-col-score" id="live-${oi}" style="color:${c.hex}">—</div>
+      </div>
+      <div class="eval-col-body" style="border-color:${c.border}">
+        ${sliders}
+      </div>
+    `;
+    grid.appendChild(col);
+    // Apply initial colors to all sliders in this column
+    S.criteria.forEach(cr => {
+      const sl = document.getElementById(`sl-${oi}-${cr.id}`);
+      const vd = document.getElementById(`sv-${oi}-${cr.id}`);
+      const v  = S.scores[cr.id]?.[oi] ?? 5;
+      if (sl) applySliderStyle(sl, vd, v, cr.invert ?? false);
+    });
+    refreshLive(oi);
+  });
+
+  // Notes
+  const notesRow = document.getElementById('notesRow');
+  notesRow.style.gridTemplateColumns = `repeat(${Math.min(nOpts,3)},1fr)`;
+  notesRow.innerHTML = S.options.map((opt,oi) => {
+    const c = COLORS[oi];
+    return `
+      <div>
+        <span class="notes-lbl" style="color:${c.hex}">Notes — Option ${LETTERS[oi]} (${esc(opt.name)})</span>
+        <textarea id="note-${oi}" rows="2" placeholder="Vos réflexions…"
+          oninput="S.notes[${oi}]=this.value">${esc(S.notes[oi]||'')}</textarea>
+      </div>
+    `;
+  }).join('');
+}
+
+/* Returns a red→grey→green color based on effective value 1-10 */
+function sliderColor(rawVal, invert) {
+  let eff = invert ? (11 - rawVal) : rawVal;
+  // eff: 1=worst(red), 5=neutral(grey), 10=best(green)
+  const t = (eff - 1) / 9; // 0..1
+  if (t < 0.5) {
+    // red → grey: interpolate from #e05252 to #4a4a56
+    const r = Math.round(224 + (74  - 224) * (t / 0.5));
+    const g = Math.round(82  + (74  - 82)  * (t / 0.5));
+    const b = Math.round(82  + (86  - 82)  * (t / 0.5));
+    return `rgb(${r},${g},${b})`;
+  } else {
+    // grey → green: interpolate from #4a4a56 to #52b87a
+    const t2 = (t - 0.5) / 0.5;
+    const r = Math.round(74  + (82  - 74)  * t2);
+    const g = Math.round(74  + (184 - 74)  * t2);
+    const b = Math.round(86  + (122 - 86)  * t2);
+    return `rgb(${r},${g},${b})`;
+  }
+}
+
+function applySliderStyle(sl, valDisplay, rawVal, invert) {
+  const color = sliderColor(rawVal, invert);
+  const pct = ((rawVal - 1) / 9 * 100).toFixed(1) + '%';
+  sl.style.background = `linear-gradient(90deg, ${color} ${pct}, var(--border2) ${pct})`;
+  sl.style.accentColor = color;
+  sl.style.setProperty('--pct', pct);
+  // Thumb color via a dynamic style tag keyed by slider id
+  let styleTag = document.getElementById('thumb-' + sl.id);
+  if (!styleTag) {
+    styleTag = document.createElement('style');
+    styleTag.id = 'thumb-' + sl.id;
+    document.head.appendChild(styleTag);
+  }
+  styleTag.textContent = `#${sl.id}::-webkit-slider-thumb { background: ${color} !important; }`;
+  if (valDisplay) { valDisplay.style.color = color; valDisplay.textContent = rawVal; }
+}
+
+function updateSlider(oi, cid, val) {
+  val = parseInt(val);
+  if (!S.scores[cid]) S.scores[cid] = S.options.map(()=>5);
+  S.scores[cid][oi] = val;
+  const sl = document.getElementById(`sl-${oi}-${cid}`);
+  const vd = document.getElementById(`sv-${oi}-${cid}`);
+  const crit = S.criteria.find(c => c.id === cid);
+  applySliderStyle(sl, vd, val, crit?.invert ?? false);
+  refreshLive(oi);
+}
+
+function calcScore(oi) {
+  let tot = 0, max = 0;
+  S.criteria.forEach(c => {
+    let v = S.scores[c.id]?.[oi] ?? 5;
+    if (c.invert) v = 11 - v;
+    tot += v * c.weight;
+    max += 10 * c.weight;
+  });
+  return Math.round((tot / max) * 100);
+}
+
+function refreshLive(oi) {
+  const el = document.getElementById(`live-${oi}`);
+  if (el) el.textContent = calcScore(oi);
+}
+
+/* ══════════════════════════════════════
+   RESULTS
+══════════════════════════════════════ */
+function showResults() {
+  S.notes = S.options.map((_,i) => document.getElementById(`note-${i}`)?.value || '');
+  buildResults();
+  nav('page-results');
+  setTimeout(drawCharts, 120);
+}
+
+function buildResults() {
+  const scores = S.options.map((_,i) => calcScore(i));
+  const ranked = [...S.options.map((_,i)=>i)].sort((a,b) => scores[b]-scores[a]);
+  const winner = ranked[0];
+  const runnerUp = ranked[1];
+  const diff = scores[winner] - scores[runnerUp];
+  const tie = diff <= 4;
+
+  const cW = COLORS[winner];
+
+  // Verdict
+  let vstyle, vemoji, vtitle, vsub;
+  if (tie) {
+    vstyle = `background:rgba(200,162,74,0.07);border-color:rgba(200,162,74,0.3)`;
+    vemoji = '⚖️';
+    vtitle = `<span style="color:var(--gold2)">Résultat très serré !</span>`;
+    vsub = `Seulement ${diff} point(s) d'écart. Votre intuition et vos valeurs profondes sont décisives.`;
+  } else {
+    vstyle = `background:${cW.bg};border-color:${cW.border}`;
+    vemoji = '✦';
+    vtitle = `<span style="color:${cW.hex}">"${esc(S.options[winner].name)}" ressort favorablement</span>`;
+    vsub = `Avantage de ${diff} points sur l'ensemble de vos critères pondérés — devant "${esc(S.options[runnerUp].name)}" (${scores[runnerUp]} pts).`;
+  }
+
+  // Score cards
+  const scoreCards = ranked.map((oi, rank) => {
+    const c = COLORS[oi];
+    const sc = scores[oi];
+    const rankCls = rank < 3 ? `rank-${rank+1}` : '';
+    const rankAfterColor = rank===0 ? `background:${c.bg};color:${c.hex}` : `background:var(--border2);color:var(--muted)`;
+    return `
+      <div class="score-card ${rankCls}" style="background:${c.bg};border-color:${c.border}">
+        <style>#resContent .score-card.${rankCls}::after{${rankAfterColor}}</style>
+        <div class="sc-label" style="color:${c.hex}">Option ${LETTERS[oi]}</div>
+        <div class="sc-name">${esc(S.options[oi].name)}</div>
+        ${S.options[oi].desc ? `<div style="font-size:.75rem;color:var(--muted);margin-bottom:10px">${esc(S.options[oi].desc)}</div>` : ''}
+        <div class="sc-score-row">
+          <div class="sc-num" style="color:${c.hex}">${sc}</div>
+          <div class="sc-denom">/100</div>
+        </div>
+        <div class="sc-bar-track"><div class="sc-bar-fill" style="width:${sc}%;background:${c.hex}"></div></div>
+        ${S.criteria.slice(0,4).map(cr=>{
+          const v = S.scores[cr.id]?.[oi]??5;
+          return `<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;font-size:.72rem;color:var(--muted)">
+            <span style="width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${cr.icon} ${cr.name}</span>
+            <div style="flex:1;height:4px;background:var(--border2);border-radius:2px;overflow:hidden">
+              <div style="height:100%;width:${v*10}%;background:${c.hex};border-radius:2px"></div>
+            </div>
+            <span style="width:14px;text-align:right">${v}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    `;
+  }).join('');
+
+  // Columns count for score grid
+  const ncols = Math.min(S.options.length, 3);
+
+  // Breakdown table header
+  const bkHeader = `
+    <div class="bk-row hdr">
+      <div class="bk-cell crit-col hdr-cell">Critère</div>
+      ${S.options.map((o,i)=>`
+        <div class="bk-cell opt-col hdr-cell" style="color:${COLORS[i].hex}">
+          ${LETTERS[i]}. ${esc(o.name.substring(0,12))}${o.name.length>12?'…':''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  const bkRows = S.criteria.map(cr => {
+    const vals = S.options.map((_,i) => S.scores[cr.id]?.[i] ?? 5);
+    const maxV = Math.max(...vals);
+    return `
+      <div class="bk-row">
+        <div class="bk-cell crit-col">
+          ${cr.icon} ${cr.name}
+          ${cr.weight>1 ? `<span class="sl-wtag">×${cr.weight}</span>` : ''}
+          ${cr.invert ? `<span class="inv-tag" style="font-size:.6rem">↓</span>` : ''}
+        </div>
+        ${vals.map((v,i) => {
+          const c = COLORS[i];
+          const isMax = v === maxV;
+          return `
+            <div class="bk-cell opt-col">
+              <div class="opt-cell-inner">
+                <div class="opt-pill" style="background:${c.bg};color:${c.hex};font-weight:${isMax?700:400}">${v}</div>
+                <div class="mini-bar"><div class="mini-bar-fill" style="width:${v*10}%;background:${c.hex}"></div></div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }).join('');
+
+  // Analysis
+  const an = genAnalysis(scores, winner, ranked);
+
+  // Notes
+  const hasNotes = S.notes.some(n => n.trim());
+  const notesHTML = hasNotes ? `
+    <div class="notes-res">
+      <div class="notes-res-head">📝 Vos notes personnelles</div>
+      <div class="notes-res-body" style="grid-template-columns:repeat(${Math.min(S.options.length,3)},1fr)">
+        ${S.options.map((o,i) => `
+          <div class="note-col" style="border-right-color:var(--border)">
+            <div class="note-col-lbl" style="color:${COLORS[i].hex}">${LETTERS[i]}. ${esc(o.name)}</div>
+            <div class="note-col-txt">${esc(S.notes[i]) || '<em style="color:var(--muted2)">Aucune note</em>'}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  ` : '';
+
+  document.getElementById('resContent').innerHTML = `
+    <div class="res-header">
+      <div class="eyebrow">Résultats de l'analyse</div>
+      <div class="res-decision">${esc(S.decision)}</div>
+    </div>
+
+    <div class="verdict-strip" style="${vstyle}">
+      <div class="verdict-icon">${vemoji}</div>
+      <div>
+        <div class="verdict-title">${vtitle}</div>
+        <div class="verdict-sub">${vsub}</div>
+      </div>
+    </div>
+
+    <div class="scores-row" style="grid-template-columns:repeat(${ncols},1fr)">
+      ${scoreCards}
+    </div>
+
+    <div class="radar-wrap">
+      <h3>Comparaison visuelle des critères</h3>
+      <canvas id="radarC" width="500" height="380"></canvas>
+      <div class="radar-legend">
+        ${S.options.map((o,i)=>`<span><span class="legend-dot" style="background:${COLORS[i].hex}"></span>${esc(o.name)}</span>`).join('')}
+      </div>
+    </div>
+
+    <div class="section-hd">Détail par critère</div>
+    <div class="bk-table">
+      ${bkHeader}
+      ${bkRows}
+    </div>
+
+    <div class="analysis-box">
+      <div class="analysis-head">
+        <span>🧠</span>
+        <h3>Analyse synthétique</h3>
+        <div class="ai-badge">Auto-générée</div>
+      </div>
+      <div class="analysis-body">
+        <div class="an-col pros">
+          <h4>✦ Points forts de "${esc(S.options[winner].name)}"</h4>
+          ${an.pros.map(p=>`<div class="an-item"><div class="an-dot"></div><span>${p}</span></div>`).join('')}
+        </div>
+        <div class="an-col cons">
+          <h4>⚠ Points d'attention</h4>
+          ${an.cons.map(p=>`<div class="an-item"><div class="an-dot"></div><span>${p}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    ${notesHTML}
+
+    <div class="res-actions">
+      <button class="btn btn-secondary" onclick="nav('page-step3')">← Modifier</button>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-secondary" onclick="window.print()">🖨️ Exporter PDF</button>
+        <button class="btn btn-primary" onclick="restart()">↺ Nouvelle décision</button>
+      </div>
+    </div>
+  `;
+}
+
+function genAnalysis(scores, winner, ranked) {
+  const wName = S.options[winner].name;
+  const pros = [], cons = [];
+
+  // Top criteria for winner
+  const sortedCrits = [...S.criteria].sort((a,b) => {
+    let va = S.scores[a.id]?.[winner]??5, vb = S.scores[b.id]?.[winner]??5;
+    if(a.invert) va=11-va; if(b.invert) vb=11-vb;
+    return (vb*b.weight)-(va*a.weight);
+  });
+
+  sortedCrits.slice(0,2).forEach(c => {
+    const v = S.scores[c.id]?.[winner]??5;
+    pros.push(`Score élevé sur « ${c.name} » (${v}/10)${c.weight>1?`, critère ×${c.weight}`:''}. `);
+  });
+
+  const diff = scores[ranked[0]] - scores[ranked[1]];
+  if (diff > 15) pros.push(`Domination claire avec ${diff} points d'avance — choix peu ambigu.`);
+  else if (diff <= 4) pros.push(`Les options sont très proches — valeur de l'intuition à ne pas sous-estimer.`);
+
+  // Runner-up advantages
+  if (ranked.length > 1) {
+    const ru = ranked[1];
+    const ruCrits = [...S.criteria].sort((a,b) => {
+      let va=S.scores[a.id]?.[ru]??5, vb=S.scores[b.id]?.[ru]??5;
+      if(a.invert) va=11-va; if(b.invert) vb=11-vb;
+      return (vb*b.weight)-(va*a.weight);
+    });
+    ruCrits.slice(0,2).forEach(c => {
+      const vW = S.scores[c.id]?.[winner]??5, vR = S.scores[c.id]?.[ru]??5;
+      if (vR > vW) cons.push(`"${esc(S.options[ru].name)}" surpasse sur « ${c.name} » (${vR} vs ${vW}).`);
+    });
+  }
+
+  // Crucial criteria where winner is weak
+  S.criteria.filter(c=>c.weight===3).forEach(c => {
+    const v = S.scores[c.id]?.[winner]??5;
+    if (v < 5) cons.push(`Critère crucial « ${c.name} » : score faible pour "${esc(wName)}" (${v}/10) — à surveiller.`);
+  });
+
+  if (!cons.length) cons.push(`Aucune faiblesse critique identifiée — l'option est solide sur l'ensemble des critères.`);
+
+  return { pros: pros.slice(0,3), cons: cons.slice(0,3) };
+}
+
+/* ══════════════════════════════════════
+   RADAR CHART
+══════════════════════════════════════ */
+function drawCharts() {
+  const canvas = document.getElementById('radarC');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W/2, cy = H/2;
+  const N = S.criteria.length;
+  if (N < 3) return;
+  const R = Math.min(W,H)/2 - 64;
+  ctx.clearRect(0,0,W,H);
+
+  const angle = i => (i/N)*Math.PI*2 - Math.PI/2;
+
+  // Grid rings
+  [2,4,6,8,10].forEach(lvl => {
+    ctx.beginPath();
+    S.criteria.forEach((_,i) => {
+      const a=angle(i), r=(lvl/10)*R;
+      i===0 ? ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a))
+             : ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
+    });
+    ctx.closePath();
+    ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1; ctx.stroke();
+  });
+
+  // Axes
+  S.criteria.forEach((_,i) => {
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+R*Math.cos(angle(i)), cy+R*Math.sin(angle(i)));
+    ctx.strokeStyle='rgba(255,255,255,0.08)'; ctx.lineWidth=1; ctx.stroke();
+  });
+
+  // Labels
+  ctx.font='11px Outfit,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  S.criteria.forEach((c,i) => {
+    const a=angle(i), x=cx+(R+46)*Math.cos(a), y=cy+(R+46)*Math.sin(a);
+    ctx.fillStyle='rgba(100,100,110,0.9)';
+    ctx.fillText(c.icon, x, y-6);
+    const short = c.name.length>13 ? c.name.substring(0,12)+'…' : c.name;
+    ctx.fillText(short, x, y+8);
+  });
+
+  // Polygons per option
+  S.options.forEach((_, oi) => {
+    const col = COLORS[oi];
+    ctx.beginPath();
+    S.criteria.forEach((c,i) => {
+      const v = S.scores[c.id]?.[oi]??5;
+      const a=angle(i), r=(v/10)*R;
+      i===0 ? ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a))
+             : ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
+    });
+    ctx.closePath();
+    // Fill with transparency based on option index (later = more transparent to not hide earlier)
+    const alpha = 0.18 - oi * 0.02;
+    ctx.fillStyle = col.hex + Math.round(Math.max(alpha,0.06)*255).toString(16).padStart(2,'0');
+    ctx.fill();
+    ctx.strokeStyle = col.hex;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+}
+
+/* ══════════════════════════════════════
+   UTILS
+══════════════════════════════════════ */
+function esc(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function shake(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.borderColor='var(--red)'; el.focus();
+  setTimeout(()=>el.style.borderColor='',1800);
+}
+
+function restart() {
+  S = {
+    decision:'', options:[{name:'',desc:''},{name:'',desc:''}],
+    criteria:[], scores:{}, notes:[], currentCat:'Tous'
+  };
+  document.getElementById('inp-dec').value='';
+  renderOptionsBuilder();
+  nav('page-intro');
+}
+</script>
+</body>
+</html>
