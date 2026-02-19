@@ -176,6 +176,38 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 .btn-secondary:hover{border-color:var(--border2);background:var(--bg);}
 .btn-row{display:flex;align-items:center;justify-content:space-between;margin-top:32px;gap:12px;}
 
+/* ── MASCOT ──────────────────────────────── */
+.mascot-wrap{
+  margin-bottom:18px;
+  animation:up .5s ease both;
+}
+.mascot{
+  width:100px;height:auto;
+  animation:mascot-float 3.2s ease-in-out infinite;
+  overflow:visible;
+}
+.mascot-shadow{
+  animation:mascot-shadow 3.2s ease-in-out infinite;
+}
+
+.mascot-blink{
+  animation:blink-anim 5s ease-in-out infinite;
+}
+
+@keyframes mascot-float{
+  0%,100%{ transform:translateY(0); }
+  50%     { transform:translateY(-7px); }
+}
+@keyframes mascot-shadow{
+  0%,100%{ transform:scaleX(1);   opacity:.7; }
+  50%     { transform:scaleX(.75); opacity:.35; }
+}
+
+@keyframes blink-anim{
+  0%,88%,94%,100%{ opacity:0; }
+  90%,92%        { opacity:1; }
+}
+
 /* ── INTRO PAGE ──────────────────────────── */
 #page-intro{ background:var(--white); }
 
@@ -300,6 +332,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 /* ── STEP 1 — OPTIONS ────────────────────── */
 .decision-card{
   padding:24px;margin-bottom:20px;
+  position:relative;overflow:visible;
 }
 .options-list{display:flex;flex-direction:column;gap:12px;margin-bottom:14px;}
 .opt-card{border-radius:var(--r);overflow:hidden;border:1.5px solid var(--border);background:var(--white);box-shadow:var(--shadow);}
@@ -422,20 +455,40 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 .sel-item{
   display:flex;align-items:center;gap:8px;
   padding:9px 12px;border-radius:8px;transition:background .12s;
+  flex-wrap:wrap;
 }
 .sel-item:hover{background:var(--bg);}
 .sel-icon{font-size:.9rem;flex-shrink:0;}
-.sel-name{font-size:.82rem;font-weight:500;color:var(--ink);flex:1;}
+.sel-name{font-size:.82rem;font-weight:500;color:var(--ink);flex:1;min-width:80px;}
 .inv-tag{
   font-size:.63rem;background:var(--amber-bg);
   color:var(--amber);padding:2px 6px;border-radius:4px;
   border:1px solid #f0d080;font-weight:600;
+  flex-shrink:0;white-space:nowrap;
+}
+.weight-wrap{
+  display:flex;flex-direction:column;gap:2px;flex-shrink:0;
+}
+.weight-lbl{
+  font-size:.62rem;font-weight:700;
+  color:var(--muted);letter-spacing:.05em;
+  text-transform:uppercase;
+}
+.weight-sel-wrap{
+  position:relative;display:flex;align-items:center;
 }
 .weight-sel{
-  padding:4px 8px;font-size:.72rem;border-radius:6px;
+  padding:4px 22px 4px 8px;font-size:.72rem;border-radius:6px;
   background:var(--bg);border:1.5px solid var(--border);
   color:var(--ink2);cursor:pointer;
   font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;
+  flex-shrink:0;
+  appearance:none;-webkit-appearance:none;
+}
+.weight-chevron{
+  position:absolute;right:6px;
+  font-size:.6rem;color:var(--muted);
+  pointer-events:none;line-height:1;
 }
 .inv-btn{
   font-size:.63rem;padding:4px 8px;
@@ -443,6 +496,8 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   border-radius:5px;color:var(--muted);cursor:pointer;
   font-family:'Plus Jakarta Sans',sans-serif;
   white-space:nowrap;font-weight:600;transition:all .12s;
+  flex-shrink:0;
+  align-self:flex-end;
 }
 .inv-btn.on{border-color:var(--amber);color:var(--amber);background:var(--amber-bg);}
 .rm-btn{
@@ -510,8 +565,14 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 .pip{
   flex:1;border-radius:4px;
   background:var(--bg2);border:1px solid var(--border);
-  transition:background .18s,height .18s,border-color .18s;
+  transition:background .15s,height .15s,border-color .15s,transform .1s;
   min-height:8px;
+  cursor:pointer;
+}
+.pip:hover{
+  transform:scaleY(1.25);
+  background:var(--border2);
+  border-color:var(--muted);
 }
 
 .stepper-val{
@@ -526,77 +587,149 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   font-size:.75rem;font-weight:700;color:var(--ink2);margin-bottom:6px;display:block;
 }
 
-/* ── RESULTS ─────────────────────────────── */
-.res-decision-banner{
-  background:var(--white);border:1px solid var(--border);
-  border-radius:var(--r);padding:20px 24px;
-  margin-bottom:24px;
-  display:flex;align-items:center;gap:14px;
-  box-shadow:var(--shadow);
+/* ── RESULTS HEADER ──────────────────────── */
+.res-header{ margin-bottom:32px; }
+.res-header .page-eyebrow{ margin-bottom:12px; }
+.res-decision-title{
+  font-family:'Lora',serif;
+  font-size:clamp(1.5rem,3vw,2.1rem);
+  font-weight:700;line-height:1.25;
+  color:var(--ink);max-width:680px;
+  padding-bottom:18px;
+  border-bottom:2px solid var(--border);
 }
-.res-dec-icon{font-size:1.6rem;flex-shrink:0;}
-.res-dec-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:3px;}
-.res-dec-text{font-size:1rem;font-weight:600;color:var(--ink);}
 
+/* ── VERDICT ─────────────────────────────── */
 .verdict-strip{
-  border-radius:var(--r);padding:20px 24px;
-  display:flex;align-items:flex-start;gap:16px;
-  margin-bottom:24px;border:1.5px solid;
+  border-radius:var(--r);padding:22px 26px;
+  display:flex;align-items:center;gap:18px;
+  margin-bottom:12px;border:1.5px solid;
   box-shadow:var(--shadow);
 }
-.verdict-icon{font-size:1.8rem;flex-shrink:0;margin-top:2px;}
-.verdict-title{font-family:'Lora',serif;font-size:1.25rem;font-weight:700;margin-bottom:4px;}
-.verdict-sub{font-size:.85rem;color:var(--muted);line-height:1.55;}
+.verdict-icon{font-size:2.2rem;flex-shrink:0;}
+.verdict-title{
+  font-family:'Lora',serif;
+  font-size:1.3rem;font-weight:700;margin-bottom:5px;
+}
+.verdict-sub{font-size:.86rem;color:var(--muted);line-height:1.6;}
 
-.scores-row{display:grid;gap:12px;margin-bottom:24px;}
+/* ── SECTION DIVIDER ─────────────────────── */
+.res-divider{
+  display:flex;align-items:center;gap:10px;
+  margin:32px 0 16px;
+}
+.res-divider-label{
+  font-size:.65rem;font-weight:800;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted2);white-space:nowrap;
+}
+.res-divider::before,.res-divider::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+
+/* ── SCORE CARDS ─────────────────────────── */
+.scores-row{display:grid;gap:14px;margin-bottom:0;}
 .score-card{
-  background:var(--white);border-radius:var(--r);
-  padding:20px 22px;border:1.5px solid var(--border);
-  position:relative;overflow:hidden;
-  box-shadow:var(--shadow);transition:box-shadow .15s;
+  background:var(--white);
+  border-radius:var(--r);
+  border:1.5px solid var(--border);
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  transition:box-shadow .18s;
+  display:flex;flex-direction:column;
 }
 .score-card:hover{box-shadow:var(--shadow-lg);}
 .score-card.rank-1{border-width:2px;}
+.sc-accent{height:4px;width:100%;flex-shrink:0;}
+.sc-body{padding:18px 20px 16px;}
 .rank-badge{
-  position:absolute;top:14px;right:14px;
-  font-size:.68rem;font-weight:700;
+  display:inline-flex;align-items:center;
+  font-size:.65rem;font-weight:700;
   padding:3px 10px;border-radius:20px;
-  letter-spacing:.06em;
+  letter-spacing:.05em;margin-bottom:10px;
   white-space:nowrap;
 }
 .sc-letter{
-  font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
-  margin-bottom:4px;
-  /* Leave room for the absolute badge on desktop */
-  padding-right:110px;
+  font-size:.65rem;font-weight:800;
+  letter-spacing:.14em;text-transform:uppercase;
+  margin-bottom:3px;padding-right:0;
 }
-.sc-name{font-family:'Lora',serif;font-size:1.25rem;font-weight:700;color:var(--ink);margin-bottom:4px;}
-.sc-desc{font-size:.78rem;color:var(--muted);margin-bottom:16px;}
-.sc-score-row{display:flex;align-items:flex-end;gap:5px;margin-bottom:10px;}
-.sc-num{font-family:'Lora',serif;font-size:2.8rem;font-weight:700;line-height:1;}
-.sc-denom{font-size:.8rem;color:var(--muted);margin-bottom:6px;font-weight:500;}
-.sc-bar{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;margin-bottom:14px;}
-.sc-bar-fill{height:100%;border-radius:4px;transition:width 1s ease;}
+.sc-name{
+  font-family:'Lora',serif;font-size:1.15rem;font-weight:700;
+  color:var(--ink);margin-bottom:14px;line-height:1.2;
+}
+.sc-desc{font-size:.78rem;color:var(--muted);margin-bottom:12px;}
+.sc-score-row{
+  display:flex;align-items:flex-end;gap:6px;margin-bottom:10px;
+}
+.sc-num{
+  font-family:'Lora',serif;font-size:3rem;
+  font-weight:700;line-height:1;transition:color .2s;
+}
+.sc-denom{
+  font-size:.78rem;color:var(--muted);
+  font-weight:500;padding-bottom:5px;
+}
+.sc-bar{
+  height:6px;background:var(--bg2);border-radius:3px;
+  overflow:hidden;margin-bottom:16px;
+}
+.sc-bar-fill{height:100%;border-radius:3px;transition:width .8s ease,background .2s;}
+.sc-mini-crits{
+  border-top:1px solid var(--border);
+  padding-top:12px;display:flex;flex-direction:column;gap:7px;
+}
+.sc-mini-row{display:flex;align-items:center;gap:8px;font-size:.73rem;}
+.sc-mini-name{
+  width:110px;flex-shrink:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;color:var(--muted);
+}
+.sc-mini-bar-wrap{flex:1;height:4px;background:var(--bg2);border-radius:2px;overflow:hidden;}
+.sc-mini-bar-fill{height:100%;border-radius:2px;}
+.sc-mini-val{width:18px;text-align:right;color:var(--ink2);font-weight:700;flex-shrink:0;}
 
-/* Breakdown */
+/* ── RADAR ───────────────────────────────── */
+.radar-section{
+  background:var(--white);border:1.5px solid var(--border);
+  border-radius:var(--r);padding:24px;box-shadow:var(--shadow);
+}
+.radar-section h3{
+  font-family:'Lora',serif;font-size:1rem;
+  font-weight:700;color:var(--ink);margin-bottom:16px;
+}
+.radar-canvas-wrap{display:flex;justify-content:center;}
+.radar-legend{
+  display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;
+  font-size:.78rem;color:var(--ink2);font-weight:500;justify-content:center;
+}
+.leg-dot{
+  width:9px;height:9px;border-radius:50%;
+  display:inline-block;margin-right:5px;vertical-align:middle;
+}
+
+/* ── BREAKDOWN TABLE ─────────────────────── */
 .section-title{
-  font-family:'Lora',serif;
-  font-size:1.1rem;font-weight:700;color:var(--ink);
-  margin-bottom:14px;padding-bottom:12px;
-  border-bottom:1.5px solid var(--border);
+  font-family:'Lora',serif;font-size:1rem;font-weight:700;
+  color:var(--ink);margin-bottom:14px;
+  padding-bottom:12px;border-bottom:1.5px solid var(--border);
 }
 .bk-table{
   background:var(--white);border:1.5px solid var(--border);
-  border-radius:var(--r);overflow:hidden;margin-bottom:24px;
-  box-shadow:var(--shadow);overflow-x:auto;
+  border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);overflow-x:auto;
 }
 .bk-row{display:flex;align-items:center;border-bottom:1px solid var(--border);}
 .bk-row:last-child{border-bottom:none;}
 .bk-row.hdr{background:var(--bg);border-bottom:1.5px solid var(--border);}
 .bk-row:not(.hdr):hover{background:var(--bg);}
-.bk-cell{padding:12px 14px;font-size:.8rem;}
-.bk-cell.crit-col{width:190px;flex-shrink:0;display:flex;align-items:center;gap:7px;color:var(--ink);font-weight:600;}
-.bk-cell.hdr-cell{color:var(--muted);font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;}
+.bk-cell{padding:11px 14px;font-size:.8rem;}
+.bk-cell.crit-col{
+  width:180px;flex-shrink:0;display:flex;
+  align-items:center;gap:7px;color:var(--ink);font-weight:600;
+}
+.bk-cell.hdr-cell{
+  color:var(--muted);font-weight:700;
+  font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;
+}
 .bk-cell.opt-col{flex:1;min-width:90px;}
 .opt-cell-in{display:flex;align-items:center;gap:7px;}
 .opt-pill{
@@ -604,59 +737,69 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   width:26px;height:26px;border-radius:7px;
   font-size:.82rem;font-weight:700;flex-shrink:0;
 }
-.mini-bar{flex:1;height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;}
+.mini-bar{flex:1;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden;}
 .mini-bar-fill{height:100%;border-radius:3px;}
 
-/* Radar */
-.radar-section{
-  background:var(--white);border:1.5px solid var(--border);
-  border-radius:var(--r);padding:22px;margin-bottom:24px;
-  box-shadow:var(--shadow);
-}
-.radar-section h3{font-family:'Lora',serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:18px;}
-.radar-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;font-size:.8rem;color:var(--muted);}
-.leg-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:5px;}
-
-/* Analysis */
+/* ── ANALYSIS BOX ────────────────────────── */
 .analysis-box{
   background:var(--white);border:1.5px solid var(--border);
-  border-radius:var(--r);overflow:hidden;margin-bottom:24px;
-  box-shadow:var(--shadow);
+  border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);
 }
 .analysis-head{
-  padding:14px 18px;border-bottom:1px solid var(--border);
+  padding:14px 20px;border-bottom:1px solid var(--border);
   display:flex;align-items:center;gap:9px;background:var(--bg);
 }
 .analysis-head h3{font-size:.88rem;font-weight:700;color:var(--ink);}
 .ai-badge{
-  font-size:.65rem;font-weight:700;letter-spacing:.08em;
+  font-size:.62rem;font-weight:700;letter-spacing:.08em;
   background:var(--teal-bg);color:var(--teal);
-  padding:3px 9px;border-radius:5px;text-transform:uppercase;
+  padding:2px 8px;border-radius:5px;text-transform:uppercase;
   border:1px solid var(--teal-bd);
 }
-.analysis-body{display:grid;grid-template-columns:1fr 1fr;gap:0;}
-.an-col{padding:18px;}
+.analysis-body{display:grid;grid-template-columns:1fr 1fr;}
+.an-col{padding:18px 20px;}
 .an-col:first-child{border-right:1px solid var(--border);}
-.an-col h4{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;}
+.an-col h4{
+  font-size:.7rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:.1em;margin-bottom:14px;
+}
 .an-col.pros h4{color:var(--green);}
 .an-col.cons h4{color:var(--red);}
-.an-item{display:flex;gap:8px;font-size:.82rem;color:var(--ink2);line-height:1.55;margin-bottom:8px;}
-.an-dot{width:6px;height:6px;border-radius:50%;margin-top:6px;flex-shrink:0;}
+.an-item{
+  display:flex;gap:9px;font-size:.83rem;
+  color:var(--ink2);line-height:1.6;margin-bottom:10px;
+}
+.an-dot{width:6px;height:6px;border-radius:50%;margin-top:7px;flex-shrink:0;}
 .pros .an-dot{background:var(--green);}
 .cons .an-dot{background:var(--red);}
 
-/* Notes result */
-.notes-res{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow);}
-.notes-res-head{padding:13px 18px;border-bottom:1px solid var(--border);font-size:.85rem;font-weight:700;color:var(--ink);background:var(--bg);}
+/* ── NOTES RESULT ────────────────────────── */
+.notes-res{
+  background:var(--white);border:1.5px solid var(--border);
+  border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);
+}
+.notes-res-head{
+  padding:13px 20px;border-bottom:1px solid var(--border);
+  font-size:.85rem;font-weight:700;color:var(--ink);background:var(--bg);
+}
 .notes-res-body{display:grid;}
-.note-col{padding:14px 18px;border-right:1px solid var(--border);}
-.note-col:last-child{border-right:none;}
-.note-col-lbl{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;}
-.note-col-txt{font-size:.83rem;color:var(--muted);line-height:1.6;font-style:italic;}
+.note-col{padding:16px 20px;}
+.note-col-lbl{
+  font-size:.68rem;font-weight:800;
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;
+}
+.note-col-txt{font-size:.84rem;color:var(--muted);line-height:1.65;font-style:italic;}
 
-.res-actions{display:flex;align-items:center;justify-content:space-between;margin-top:32px;padding-top:20px;border-top:1px solid var(--border);flex-wrap:wrap;gap:10px;}
+/* ── RES ACTIONS ─────────────────────────── */
+.res-actions{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:36px;padding-top:22px;
+  border-top:1px solid var(--border);
+  flex-wrap:wrap;gap:10px;
+}
 
-/* ── TOOLTIP ─────────────────────────────── */
+
+
 [data-tip]{position:relative;cursor:help;}
 [data-tip]::after{
   content:attr(data-tip);
@@ -942,6 +1085,18 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
   /* Notes row single column */
   .notes-row{grid-template-columns:1fr!important;}
+
+  /* Critères sélectionnés — croix centrée à gauche avec l'icône et le titre */
+  .sel-item{
+    position:relative;
+    padding-left:36px;
+    padding-right:12px;
+  }
+  .rm-btn{
+    position:absolute;
+    top:50%;left:10px;
+    transform:translateY(-50%);
+  }
 }
 
 @media print{
@@ -959,6 +1114,112 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 <div class="page active" id="page-intro">
   <div class="intro-wrap">
     <div class="intro-inner">
+
+      <!-- Hibou line-art style -->
+      <div class="mascot-wrap">
+        <svg class="mascot" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+
+          <!-- Ombre -->
+          <ellipse cx="60" cy="145" rx="22" ry="4" fill="rgba(0,0,0,0.06)" class="mascot-shadow"/>
+
+          <!-- Silhouette de fond (fill global) -->
+          <path d="M60 8 Q82 10 92 28 Q100 44 98 70 Q96 100 84 118 Q72 134 60 138 Q48 134 36 118 Q24 100 22 70 Q20 44 28 28 Q38 10 60 8Z" fill="#eef7f2"/>
+
+          <!-- ══ AIGRETTES ══ -->
+          <path d="M45 22 Q38 6 44 2 Q50 10 52 20Z" fill="none" stroke="#1a4d38" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M75 22 Q82 6 76 2 Q70 10 68 20Z" fill="none" stroke="#1a4d38" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M45 22 Q36 8 42 4" fill="none" stroke="#2d7d5a" stroke-width="1.2" opacity=".5"/>
+          <path d="M75 22 Q84 8 78 4" fill="none" stroke="#2d7d5a" stroke-width="1.2" opacity=".5"/>
+
+          <!-- ══ CONTOUR TÊTE / CORPS ══ -->
+          <path d="M60 8 Q82 10 92 28 Q100 44 98 70 Q96 100 84 118 Q72 134 60 138 Q48 134 36 118 Q24 100 22 70 Q20 44 28 28 Q38 10 60 8Z"
+                fill="none" stroke="#1a4d38" stroke-width="2.2"/>
+
+          <!-- ══ ARCADES SOURCILIÈRES ══ -->
+          <path d="M30 48 Q42 34 54 44" fill="none" stroke="#1a4d38" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M90 48 Q78 34 66 44" fill="none" stroke="#1a4d38" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Ligne interne sourcils -->
+          <path d="M34 50 Q44 38 52 46" fill="none" stroke="#2d7d5a" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
+          <path d="M86 50 Q76 38 68 46" fill="none" stroke="#2d7d5a" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
+
+          <!-- ══ DISQUES OCULAIRES ══ -->
+          <!-- Gauche -->
+          <path d="M28 60 Q36 46 52 52 Q58 62 50 72 Q38 78 28 68 Q24 64 28 60Z" fill="none" stroke="#1a4d38" stroke-width="2"/>
+          <path d="M30 62 Q38 50 52 56 Q56 64 50 70 Q40 74 30 66Z" fill="none" stroke="#2d7d5a" stroke-width="1.1" opacity=".5"/>
+          <!-- Droite -->
+          <path d="M92 60 Q84 46 68 52 Q62 62 70 72 Q82 78 92 68 Q96 64 92 60Z" fill="none" stroke="#1a4d38" stroke-width="2"/>
+          <path d="M90 62 Q82 50 68 56 Q64 64 70 70 Q80 74 90 66Z" fill="none" stroke="#2d7d5a" stroke-width="1.1" opacity=".5"/>
+
+          <!-- ══ YEUX ══ -->
+          <circle cx="40" cy="60" r="10" fill="#2d7d5a" opacity=".15"/>
+          <circle cx="80" cy="60" r="10" fill="#2d7d5a" opacity=".15"/>
+          <circle cx="40" cy="60" r="7" fill="none" stroke="#1a4d38" stroke-width="1.8"/>
+          <circle cx="80" cy="60" r="7" fill="none" stroke="#1a4d38" stroke-width="1.8"/>
+          <circle cx="40" cy="60" r="4.5" fill="#1a4d38" class="pupil-l"/>
+          <circle cx="80" cy="60" r="4.5" fill="#1a4d38" class="pupil-r"/>
+          <circle cx="41.8" cy="58.2" r="1.4" fill="white"/>
+          <circle cx="81.8" cy="58.2" r="1.4" fill="white"/>
+
+          <!-- Clignement -->
+          <g class="mascot-blink" style="opacity:0">
+            <ellipse cx="40" cy="60" rx="10" ry="5" fill="#eef7f2" stroke="#1a4d38" stroke-width="2"/>
+            <ellipse cx="80" cy="60" rx="10" ry="5" fill="#eef7f2" stroke="#1a4d38" stroke-width="2"/>
+          </g>
+
+          <!-- ══ BEC ══ -->
+          <path d="M54 72 Q60 80 66 72 Q62 68 60 70 Q58 68 54 72Z" fill="#1a4d38"/>
+          <!-- Ligne bec centrale -->
+          <path d="M60 70 L60 78" stroke="#eef7f2" stroke-width="1" stroke-linecap="round"/>
+
+          <!-- ══ MOTIF PLUMES VENTRE — style tatouage ══ -->
+          <!-- Ligne centrale -->
+          <line x1="60" y1="78" x2="60" y2="132" stroke="#1a4d38" stroke-width="1.6"/>
+
+          <!-- Ovales / feuilles superposés — rangée 1 -->
+          <path d="M60 82 Q66 88 60 94 Q54 88 60 82Z" fill="none" stroke="#1a4d38" stroke-width="1.6"/>
+          <path d="M60 84 Q65 89 60 93 Q55 89 60 84Z" fill="#2d7d5a" opacity=".12"/>
+
+          <!-- Rangée 2 -->
+          <path d="M60 94 Q68 102 60 110 Q52 102 60 94Z" fill="none" stroke="#1a4d38" stroke-width="1.6"/>
+          <path d="M60 96 Q67 103 60 109 Q53 103 60 96Z" fill="#2d7d5a" opacity=".12"/>
+
+          <!-- Rangée 3 -->
+          <path d="M60 110 Q69 119 60 128 Q51 119 60 110Z" fill="none" stroke="#1a4d38" stroke-width="1.6"/>
+          <path d="M60 112 Q68 120 60 127 Q52 120 60 112Z" fill="#2d7d5a" opacity=".12"/>
+
+          <!-- Lignes latérales gauches -->
+          <path d="M60 85 Q48 90 36 96" stroke="#1a4d38" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+          <path d="M60 92 Q46 98 32 106" stroke="#1a4d38" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+          <path d="M60 100 Q46 108 34 118" stroke="#1a4d38" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+          <path d="M60 110 Q48 120 38 128" stroke="#1a4d38" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+          <!-- Lignes latérales droites -->
+          <path d="M60 85 Q72 90 84 96" stroke="#1a4d38" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+          <path d="M60 92 Q74 98 88 106" stroke="#1a4d38" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+          <path d="M60 100 Q74 108 86 118" stroke="#1a4d38" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+          <path d="M60 110 Q72 120 82 128" stroke="#1a4d38" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+          <!-- Lignes internes gauches (double trait) -->
+          <path d="M60 88 Q52 93 44 98" stroke="#2d7d5a" stroke-width=".9" fill="none" stroke-linecap="round" opacity=".6"/>
+          <path d="M60 97 Q51 103 42 110" stroke="#2d7d5a" stroke-width=".9" fill="none" stroke-linecap="round" opacity=".6"/>
+          <path d="M60 106 Q52 114 46 122" stroke="#2d7d5a" stroke-width=".9" fill="none" stroke-linecap="round" opacity=".6"/>
+
+          <!-- Lignes internes droites (double trait) -->
+          <path d="M60 88 Q68 93 76 98" stroke="#2d7d5a" stroke-width=".9" fill="none" stroke-linecap="round" opacity=".6"/>
+          <path d="M60 97 Q69 103 78 110" stroke="#2d7d5a" stroke-width=".9" fill="none" stroke-linecap="round" opacity=".6"/>
+          <path d="M60 106 Q68 114 74 122" stroke="#2d7d5a" stroke-width=".9" fill="none" stroke-linecap="round" opacity=".6"/>
+
+          <!-- Courbes de raccord haut — entre yeux et corps -->
+          <path d="M28 68 Q32 76 38 80" stroke="#1a4d38" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path d="M92 68 Q88 76 82 80" stroke="#1a4d38" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+          <!-- Plumes haut tête (entre aigrettes) -->
+          <path d="M52 20 Q60 14 68 20 Q64 26 60 24 Q56 26 52 20Z" fill="none" stroke="#1a4d38" stroke-width="1.6"/>
+          <path d="M54 22 Q60 17 66 22 Q63 27 60 25 Q57 27 54 22Z" fill="#2d7d5a" opacity=".15"/>
+
+        </svg>
+      </div>
+
       <div class="intro-badge">✦ Outil d'aide à la décision</div>
       <div class="intro-logo">Lucid<span>.</span></div>
       <div class="intro-tagline">Comparez vos options avec Lucid et prenez vos décisions en toute confiance.</div>
@@ -1312,14 +1573,22 @@ function renderSelList(){
     item.innerHTML=`
       <div class="sel-icon">${c.icon}</div>
       <div class="sel-name">${c.name}${c.invert?` <span class="inv-tag" title="Score élevé = mauvais pour ce critère">↓ inversé</span>`:''}</div>
-      <label style="font-size:.72rem;color:var(--muted);margin-right:4px;white-space:nowrap">Importance</label>
-      <select class="weight-sel" onchange="setCW('${c.id}',this.value)">
-        ${[1,2,3].map(w=>`<option value="${w}"${c.weight===w?' selected':''}>${WEIGHTS[w]}</option>`).join('')}
-      </select>
-      <button class="inv-btn${c.invert?' on':''}" onclick="toggleInv('${c.id}')"
-        title="${c.invert?'Actuellement : score élevé = mauvais':'Actuellement : score élevé = bon'}">
-        ${c.invert?'↓ Inversé':'↑ Normal'}
-      </button>
+      <div class="weight-wrap">
+        <label class="weight-lbl">Importance</label>
+        <div class="weight-sel-wrap">
+          <select class="weight-sel" onchange="setCW('${c.id}',this.value)">
+            ${[1,2,3].map(w=>`<option value="${w}"${c.weight===w?' selected':''}>${WEIGHTS[w]}</option>`).join('')}
+          </select>
+          <span class="weight-chevron">▾</span>
+        </div>
+      </div>
+      <div class="weight-wrap">
+        <label class="weight-lbl">Sens</label>
+        <button class="inv-btn${c.invert?' on':''}" onclick="toggleInv('${c.id}')"
+          title="${c.invert?'Actuellement : score élevé = mauvais':'Actuellement : score élevé = bon'}">
+          ${c.invert?'↓ Inversé':'↑ Normal'}
+        </button>
+      </div>
       <button class="rm-btn" onclick="rmCrit('${c.id}')" title="Retirer ce critère">✕</button>`;
     list.appendChild(item);
   });
@@ -1366,7 +1635,7 @@ function buildEvalPage(){
       const inv=cr.invert?`<span class="inv-tag" title="Score élevé = mauvais pour ce critère">↓</span>`:'';
       const wt=cr.weight>1?`<span class="sl-wtag">×${cr.weight}</span>`:'';
       const pips=Array.from({length:10},(_,pi)=>
-        `<div class="pip" id="pip-${oi}-${cr.id}-${pi+1}"></div>`).join('');
+        `<div class="pip" id="pip-${oi}-${cr.id}-${pi+1}" onclick="setVal(${oi},'${cr.id}',${pi+1})" title="${pi+1}/10"></div>`).join('');
       return `
         <div class="sl-item">
           <div class="sl-head">
@@ -1453,6 +1722,14 @@ function stepVal(oi,cid,delta){
   refreshLive(oi);
 }
 
+function setVal(oi,cid,val){
+  if(!S.scores[cid]) S.scores[cid]=S.options.map(()=>5);
+  S.scores[cid][oi]=val;
+  const cr=S.criteria.find(c=>c.id===cid);
+  renderStepper(oi,cid,val,cr?.invert??false);
+  refreshLive(oi);
+}
+
 function calcScore(oi){
   let tot=0,max=0;
   S.criteria.forEach(c=>{
@@ -1508,25 +1785,27 @@ function buildResults(){
     const rankBadge=rank<3?`<div class="rank-badge" style="background:${c.bg};color:${c.hex};border:1px solid ${c.border}">${rankLabels[rank]}</div>`:'';
     const miniCrits=S.criteria.slice(0,4).map(cr=>{
       const v=S.scores[cr.id]?.[oi]??5;
-      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.75rem">
-        <span style="width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)">${cr.icon} ${cr.name}</span>
-        <div style="flex:1;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden">
-          <div style="height:100%;width:${v*10}%;background:${c.hex};border-radius:3px"></div>
-        </div>
-        <span style="width:16px;text-align:right;color:var(--ink2);font-weight:600">${v}</span>
+      return `<div class="sc-mini-row">
+        <span class="sc-mini-name">${cr.icon} ${cr.name}</span>
+        <div class="sc-mini-bar-wrap"><div class="sc-mini-bar-fill" style="width:${v*10}%;background:${c.hex}"></div></div>
+        <span class="sc-mini-val">${v}</span>
       </div>`;
     }).join('');
     return `
       <div class="score-card${rank===0?' rank-1':''}" style="border-color:${rank===0?c.hex:c.border}">
-        ${rankBadge}
-        <div class="sc-letter" style="color:${c.hex}">Option ${LETTERS[oi]}</div>        <div class="sc-name">${esc(S.options[oi].name)}</div>
-        ${S.options[oi].desc?`<div class="sc-desc">${esc(S.options[oi].desc)}</div>`:''}
-        <div class="sc-score-row">
-          <div class="sc-num" style="color:${c.hex}">${sc}</div>
-          <div class="sc-denom">/100</div>
+        <div class="sc-accent" style="background:${c.hex}"></div>
+        <div class="sc-body">
+          ${rankBadge}
+
+          <div class="sc-name">${esc(S.options[oi].name)}</div>
+          ${S.options[oi].desc?`<div class="sc-desc">${esc(S.options[oi].desc)}</div>`:''}
+          <div class="sc-score-row">
+            <div class="sc-num" style="color:${c.hex}">${sc}</div>
+            <div class="sc-denom">/100</div>
+          </div>
+          <div class="sc-bar"><div class="sc-bar-fill" style="width:${sc}%;background:${c.hex}"></div></div>
+          <div class="sc-mini-crits">${miniCrits}</div>
         </div>
-        <div class="sc-bar"><div class="sc-bar-fill" style="width:${sc}%;background:${c.hex}"></div></div>
-        ${miniCrits}
       </div>`;
   }).join('');
 
@@ -1554,10 +1833,11 @@ function buildResults(){
     </div>`;
   }).join('');
 
+
+  // Notes
   // Analysis
   const an=genAnalysis(scores,winner,ranked);
 
-  // Notes
   const hasNotes=S.notes.some(n=>n.trim());
   const notesHTML=hasNotes?`
     <div class="notes-res">
@@ -1572,12 +1852,9 @@ function buildResults(){
     </div>`:'';
 
   document.getElementById('resContent').innerHTML=`
-    <div class="res-decision-banner">
-      <div class="res-dec-icon">🤔</div>
-      <div>
-        <div class="res-dec-label">Votre décision</div>
-        <div class="res-dec-text">${esc(S.decision)}</div>
-      </div>
+    <div class="res-header">
+      <div class="page-eyebrow">✦ Votre analyse</div>
+      <div class="res-decision-title">${esc(S.decision)}</div>
     </div>
 
     <div class="verdict-strip" style="${vstyle}">
@@ -1603,6 +1880,8 @@ function buildResults(){
         </div>
       </div>
     </div>
+
+    <div class="res-divider"><span class="res-divider-label">Scores</span></div>
 
     <div class="fear-box" id="fearBox">
       <div class="fear-head" onclick="toggleFearBox()">
@@ -1635,18 +1914,24 @@ function buildResults(){
       <div class="scenario-body" id="scenarioBody"></div>
     </div>
 
-    <div class="scores-row" id="scoresRow" style="grid-template-columns:repeat(${ncols},1fr)">${scoreCards}</div>
+    <div class="scores-row" id="scoresRow" style="grid-template-columns:repeat(${ncols},1fr);margin-top:16px">${scoreCards}</div>
+
+    <div class="res-divider" style="margin-top:36px"><span class="res-divider-label">Profil visuel</span></div>
 
     <div class="radar-section">
-      <h3>🕸️ Profil visuel des options</h3>
-      <canvas id="radarC" width="480" height="360" style="max-width:100%"></canvas>
+      <div style="display:flex;justify-content:center">
+        <canvas id="radarC" width="480" height="360" style="max-width:100%"></canvas>
+      </div>
       <div class="radar-legend">
         ${S.options.map((o,i)=>`<span><span class="leg-dot" style="background:${COLORS[i].hex}"></span>${esc(o.name)}</span>`).join('')}
       </div>
     </div>
 
-    <div class="section-title">📊 Détail des scores par critère</div>
+    <div class="res-divider"><span class="res-divider-label">Détail par critère</span></div>
+
     <div class="bk-table">${bkHeader}${bkRows}</div>
+
+    <div class="res-divider"><span class="res-divider-label">Synthèse</span></div>
 
     <div class="analysis-box">
       <div class="analysis-head">
@@ -1666,6 +1951,7 @@ function buildResults(){
       </div>
     </div>
 
+    ${hasNotes?`<div class="res-divider"><span class="res-divider-label">Notes personnelles</span></div>`:''}
     ${notesHTML}
 
     <div class="res-actions">
@@ -1942,28 +2228,29 @@ function updateScenarioScores(){
     const miniCrits = [...S_active].map(id=>{
       const cr = S.criteria.find(x=>x.id===id); if(!cr) return '';
       const v = S.scores[cr.id]?.[oi]??5;
-      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.75rem">
-        <span style="width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)">${cr.icon} ${cr.name}</span>
-        <div style="flex:1;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden">
-          <div style="height:100%;width:${v*10}%;background:${c.hex};border-radius:3px"></div>
-        </div>
-        <span style="width:16px;text-align:right;color:var(--ink2);font-weight:600">${v}</span>
+      return `<div class="sc-mini-row">
+        <span class="sc-mini-name">${cr.icon} ${cr.name}</span>
+        <div class="sc-mini-bar-wrap"><div class="sc-mini-bar-fill" style="width:${v*10}%;background:${c.hex}"></div></div>
+        <span class="sc-mini-val">${v}</span>
       </div>`;
     }).slice(0,4).join('');
 
     return `
       <div class="score-card${rank===0?' rank-1':''}" style="border-color:${rank===0?c.hex:c.border}">
-        ${rankBadge}
-        <div class="sc-letter" style="color:${c.hex}">Option ${LETTERS[oi]}</div>
-        <div class="sc-name">${esc(S.options[oi].name)}</div>
-        ${S.options[oi].desc?`<div class="sc-desc">${esc(S.options[oi].desc)}</div>`:''}
-        <div class="sc-score-row">
-          <div class="sc-num" style="color:${c.hex}">${sc}</div>
-          <div class="sc-denom">/100</div>
-          ${deltaHTML}
+        <div class="sc-accent" style="background:${c.hex}"></div>
+        <div class="sc-body">
+          ${rankBadge}
+
+          <div class="sc-name">${esc(S.options[oi].name)}</div>
+          ${S.options[oi].desc?`<div class="sc-desc">${esc(S.options[oi].desc)}</div>`:''}
+          <div class="sc-score-row">
+            <div class="sc-num" style="color:${c.hex}">${sc}</div>
+            <div class="sc-denom">/100</div>
+            ${deltaHTML}
+          </div>
+          <div class="sc-bar"><div class="sc-bar-fill" style="width:${sc}%;background:${c.hex}"></div></div>
+          <div class="sc-mini-crits">${miniCrits}</div>
         </div>
-        <div class="sc-bar"><div class="sc-bar-fill" style="width:${sc}%;background:${c.hex}"></div></div>
-        ${miniCrits}
       </div>`;
   }).join('');
 
