@@ -17,10 +17,10 @@
   --ink2:     #3d3b36;
   --muted:    #8a877f;
   --muted2:   #b8b4ac;
-  --teal:     #2563eb;
-  --teal2:    #3b82f6;
-  --teal-bg:  #eff6ff;
-  --teal-bd:  #bfdbfe;
+  --teal:     #2d7d5a;
+  --teal2:    #389e71;
+  --teal-bg:  #eef7f2;
+  --teal-bd:  #b6ddc9;
   --green:    #2d8a4e;
   --green-bg: #eaf4ee;
   --red:      #c0392b;
@@ -35,7 +35,7 @@
 
 /* ── RESET ───────────────────────────────── */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
 body{
   background:var(--bg);
   color:var(--ink);
@@ -43,6 +43,7 @@ body{
   font-size:15px;
   line-height:1.6;
   min-height:100vh;
+  overflow-x:hidden;
 }
 
 /* ── PAGES ───────────────────────────────── */
@@ -156,7 +157,7 @@ input[type=text],textarea,select{
 }
 input[type=text]:focus,textarea:focus,select:focus{
   border-color:var(--teal2);
-  box-shadow:0 0 0 3px rgba(37,99,235,.12);
+  box-shadow:0 0 0 3px rgba(45,125,90,.12);
 }
 input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
@@ -170,25 +171,29 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   display:inline-flex;align-items:center;gap:7px;
 }
 .btn-primary{background:var(--teal);color:#fff;}
-.btn-primary:hover{background:var(--teal2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,99,235,.25);}
+.btn-primary:hover{background:var(--teal2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(45,125,90,.25);}
 .btn-secondary{background:var(--white);color:var(--ink2);border:1.5px solid var(--border);}
 .btn-secondary:hover{border-color:var(--border2);background:var(--bg);}
 .btn-row{display:flex;align-items:center;justify-content:space-between;margin-top:32px;gap:12px;}
 
 /* ── INTRO PAGE ──────────────────────────── */
-#page-intro{
-  background:var(--white);
-  align-items:center;justify-content:center;
-  text-align:center;padding:40px 28px;
+#page-intro{ background:var(--white); }
+
+.intro-wrap{
+  width:100%;
   min-height:100dvh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:32px 20px;
+  box-sizing:border-box;
 }
 .intro-inner{
   display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  width:100%;max-width:680px;
-  gap:0;
-  /* Fill screen height and distribute space evenly */
-  min-height:calc(100dvh - 80px);
+  align-items:center;
+  text-align:center;
+  width:100%;
+  max-width:600px;
 }
 .intro-badge{
   display:inline-flex;align-items:center;gap:6px;
@@ -236,10 +241,10 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   background:var(--teal);color:#fff;
   border:none;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;
   cursor:pointer;transition:all .2s;flex-shrink:0;
-  box-shadow:0 4px 16px rgba(37,99,235,.3);
+  box-shadow:0 4px 16px rgba(45,125,90,.3);
   width:100%;max-width:320px;
 }
-.intro-start-btn:hover{background:var(--teal2);transform:translateY(-2px);box-shadow:0 10px 28px rgba(37,99,235,.35);}
+.intro-start-btn:hover{background:var(--teal2);transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,125,90,.35);}
 
 /* On very small screens, hide how-cards description text */
 @media(max-height:640px){
@@ -557,8 +562,14 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   font-size:.68rem;font-weight:700;
   padding:3px 10px;border-radius:20px;
   letter-spacing:.06em;
+  white-space:nowrap;
 }
-.sc-letter{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+.sc-letter{
+  font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:4px;
+  /* Leave room for the absolute badge on desktop */
+  padding-right:110px;
+}
 .sc-name{font-family:'Lora',serif;font-size:1.25rem;font-weight:700;color:var(--ink);margin-bottom:4px;}
 .sc-desc{font-size:.78rem;color:var(--muted);margin-bottom:16px;}
 .sc-score-row{display:flex;align-items:flex-end;gap:5px;margin-bottom:10px;}
@@ -656,6 +667,248 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 }
 [data-tip]:hover::after{opacity:1;}
 
+/* ── FEAR TOGGLE ─────────────────────────── */
+.fear-box{
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:var(--r);
+  margin-bottom:24px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.fear-head{
+  display:flex;align-items:center;gap:12px;
+  padding:16px 20px;
+  cursor:pointer;
+  user-select:none;
+  transition:background .15s;
+}
+.fear-head:hover{ background:var(--bg); }
+.fear-icon{ font-size:1.4rem; flex-shrink:0; }
+.fear-head-text{ flex:1; }
+.fear-head-title{
+  font-size:.92rem;font-weight:700;color:var(--ink);
+  margin-bottom:2px;
+}
+.fear-head-sub{
+  font-size:.75rem;color:var(--muted);line-height:1.4;
+}
+
+/* Toggle switch */
+.toggle-wrap{
+  display:flex;align-items:center;gap:8px;flex-shrink:0;
+}
+.toggle-label{
+  font-size:.75rem;font-weight:600;
+  color:var(--muted);transition:color .2s;
+  white-space:nowrap;
+}
+.toggle-label.on{ color:var(--teal); }
+.toggle{
+  position:relative;width:44px;height:24px;flex-shrink:0;
+}
+.toggle input{ opacity:0;width:0;height:0;position:absolute; }
+.toggle-track{
+  position:absolute;inset:0;
+  background:var(--border2);border-radius:12px;
+  transition:background .2s;cursor:pointer;
+}
+.toggle input:checked + .toggle-track{ background:var(--teal); }
+.toggle-thumb{
+  position:absolute;top:3px;left:3px;
+  width:18px;height:18px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2);
+  transition:transform .2s;pointer-events:none;
+}
+.toggle input:checked ~ .toggle-thumb{ transform:translateX(20px); }
+
+/* Fear body — criteria tags + comparison */
+.fear-body{
+  border-top:1px solid var(--border);
+  padding:16px 20px;
+  display:none;
+}
+.fear-box.open .fear-body{ display:block; }
+
+.fear-crits{
+  display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;
+}
+.fear-crit-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:.72rem;font-weight:600;
+  padding:3px 10px;border-radius:20px;
+  border:1px solid;
+}
+.fear-crit-tag.active{
+  background:rgba(124,58,237,0.08);
+  color:#7c3aed;border-color:rgba(124,58,237,0.3);
+}
+.fear-crit-tag.inactive{
+  background:var(--bg);color:var(--muted2);border-color:var(--border);
+  text-decoration:line-through;opacity:.6;
+}
+
+.fear-comparison{
+  display:grid;gap:10px;
+}
+.fear-opt-row{
+  background:var(--bg);border-radius:10px;padding:12px 14px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.fear-opt-name{
+  font-size:.82rem;font-weight:700;min-width:90px;
+}
+.fear-scores{
+  display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap;
+}
+.fear-score-block{
+  display:flex;flex-direction:column;align-items:center;
+  min-width:64px;
+}
+.fear-score-val{
+  font-family:'Lora',serif;
+  font-size:1.5rem;font-weight:700;line-height:1;
+}
+.fear-score-lbl{
+  font-size:.62rem;color:var(--muted);font-weight:500;margin-top:1px;
+}
+.fear-arrow{
+  font-size:1rem;color:var(--muted2);
+}
+.fear-delta{
+  font-size:.78rem;font-weight:700;
+  padding:2px 8px;border-radius:6px;
+}
+.fear-delta.up{
+  background:rgba(45,125,90,.08);color:var(--teal);
+}
+.fear-delta.down{
+  background:rgba(192,57,43,.06);color:var(--red);
+}
+.fear-delta.same{
+  background:var(--bg2);color:var(--muted);
+}
+
+.fear-insight{
+  margin-top:14px;padding:12px 14px;
+  background:rgba(124,58,237,0.05);
+  border:1px solid rgba(124,58,237,0.18);
+  border-radius:10px;
+  font-size:.82rem;color:var(--ink2);line-height:1.6;
+}
+.fear-insight strong{ color:#7c3aed; }
+
+.fear-none{
+  font-size:.82rem;color:var(--muted);
+  font-style:italic;padding:8px 0;
+}
+
+/* ── SCENARIO PANEL ──────────────────────── */
+.scenario-box{
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:var(--r);
+  margin-bottom:24px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.scenario-head{
+  display:flex;align-items:center;gap:12px;
+  padding:16px 20px;cursor:pointer;user-select:none;
+  transition:background .15s;
+}
+.scenario-head:hover{ background:var(--bg); }
+.scenario-head-icon{ font-size:1.3rem;flex-shrink:0; }
+.scenario-head-text{ flex:1; }
+.scenario-head-title{ font-size:.92rem;font-weight:700;color:var(--ink);margin-bottom:2px; }
+.scenario-head-sub{ font-size:.75rem;color:var(--muted);line-height:1.4; }
+.scenario-chevron{ color:var(--muted2);font-size:.8rem;transition:transform .22s; }
+.scenario-box.open .scenario-chevron{ transform:rotate(180deg); }
+
+.scenario-body{
+  display:none;
+  border-top:1px solid var(--border);
+  padding:16px 20px 20px;
+}
+.scenario-box.open .scenario-body{ display:block; }
+
+.scenario-reset{
+  font-size:.75rem;font-weight:600;color:var(--teal);
+  background:none;border:none;cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  padding:0;text-decoration:underline;text-underline-offset:2px;
+  float:right;
+}
+.scenario-reset:hover{ color:var(--teal2); }
+
+.sc-crit-list{
+  display:flex;flex-direction:column;gap:6px;
+  margin-top:10px;
+  clear:both;
+}
+.sc-crit-row{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:9px;
+  border:1.5px solid var(--border);
+  background:var(--bg);
+  transition:all .15s;
+}
+.sc-crit-row.off{
+  opacity:.45;
+}
+.sc-crit-row.off .sc-crit-name{ text-decoration:line-through; }
+.sc-crit-icon{ font-size:.95rem;flex-shrink:0; }
+.sc-crit-name{ font-size:.82rem;font-weight:600;color:var(--ink);flex:1; }
+.sc-crit-weight{
+  font-size:.65rem;background:var(--amber-bg);
+  color:var(--amber);padding:2px 6px;border-radius:4px;
+  border:1px solid #f0d080;font-weight:700;flex-shrink:0;
+}
+.sc-crit-inv{
+  font-size:.65rem;background:var(--bg2);
+  color:var(--muted);padding:2px 6px;border-radius:4px;
+  border:1px solid var(--border2);font-weight:600;flex-shrink:0;
+}
+
+/* Mini toggle — smaller than the fear one */
+.mini-toggle{
+  position:relative;width:36px;height:20px;flex-shrink:0;
+}
+.mini-toggle input{ opacity:0;width:0;height:0;position:absolute; }
+.mini-toggle-track{
+  position:absolute;inset:0;
+  background:var(--border2);border-radius:10px;
+  transition:background .18s;cursor:pointer;
+}
+.mini-toggle input:checked + .mini-toggle-track{ background:var(--teal); }
+.mini-toggle-thumb{
+  position:absolute;top:3px;left:3px;
+  width:14px;height:14px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);
+  transition:transform .18s;pointer-events:none;
+}
+.mini-toggle input:checked ~ .mini-toggle-thumb{ transform:translateX(16px); }
+
+/* Dynamic score cards */
+.sc-num{ transition:color .2s; }
+.sc-bar-fill{ transition:width .4s ease,background .2s; }
+.sc-scenario-delta{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:.72rem;font-weight:700;
+  padding:2px 8px;border-radius:6px;margin-left:6px;
+  vertical-align:middle;
+}
+.sc-scenario-delta.up{ background:rgba(45,125,90,.1);color:var(--teal); }
+.sc-scenario-delta.down{ background:rgba(192,57,43,.07);color:var(--red); }
+.sc-scenario-delta.same{ display:none; }
+
+.scenario-summary{
+  margin-top:14px;padding:11px 14px;
+  background:var(--teal-bg);border:1px solid var(--teal-bd);
+  border-radius:9px;font-size:.8rem;color:var(--ink2);line-height:1.6;
+}
+.scenario-summary strong{ color:var(--teal); }
+
 /* ── RESPONSIVE ──────────────────────────── */
 @media(max-width:640px){
   .app-header{padding:12px 16px;}
@@ -667,6 +920,28 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   .an-col:first-child{border-right:none;border-bottom:1px solid var(--border);}
   .notes-res-body{grid-template-columns:1fr!important;}
   .note-col{border-right:none!important;border-bottom:1px solid var(--border);}
+
+  /* Scores cards — rank badge inline on mobile */
+  .scores-row{grid-template-columns:1fr!important;}
+  .rank-badge{
+    position:static;
+    display:inline-flex;
+    margin-bottom:8px;
+  }
+  .sc-letter{padding-right:0;}
+  .eval-grid{grid-template-columns:1fr!important;}
+  .eval-col-name{font-size:.88rem;}
+
+  /* Stepper: shrink buttons, tighten gap */
+  .stepper{grid-template-columns:38px 1fr 38px;gap:6px;}
+  .stepper-btn{width:38px;height:38px;font-size:1.1rem;}
+
+  /* Prevent pip row from pushing layout */
+  .pip-row{gap:3px;}
+  .pip{border-radius:3px;}
+
+  /* Notes row single column */
+  .notes-row{grid-template-columns:1fr!important;}
 }
 
 @media print{
@@ -682,11 +957,11 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
 <!-- ══════════════════════════ INTRO ══════════════════════════ -->
 <div class="page active" id="page-intro">
-  <div class="main" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:24px 28px">
+  <div class="intro-wrap">
     <div class="intro-inner">
-      <div class="intro-badge">✦ Aide à la décision</div>
+      <div class="intro-badge">✦ Outil d'aide à la décision</div>
       <div class="intro-logo">Lucid<span>.</span></div>
-      <div class="intro-tagline">Comparez vos options clairement, prenez des décisions avec confiance.</div>
+      <div class="intro-tagline">Comparez vos options avec Lucid et prenez vos décisions en toute confiance.</div>
 
       <div class="intro-how">
         <div class="how-card">
@@ -721,7 +996,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   <div class="main">
     <div class="page-eyebrow anim">Étape 1 sur 3</div>
     <div class="page-title anim d1">Quelle décision devez-vous prendre ?</div>
-    <div class="page-sub anim d2">Commencez par décrire votre situation, puis ajoutez les options que vous hésitez entre.</div>
+    <div class="page-sub anim d2">Formulez votre situation et renseignez les options que vous envisagez.</div>
 
     <div class="card decision-card anim d2">
       <div class="field" style="margin-bottom:0">
@@ -838,7 +1113,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 <script>
 /* ─── PALETTE ───────────────────────────── */
 const COLORS = [
-  {hex:'#2563eb',bg:'rgba(37,99,235,0.08)',  border:'rgba(37,99,235,0.3)'  },
+  {hex:'#2d7d5a',bg:'rgba(45,125,90,0.08)',  border:'rgba(45,125,90,0.3)'  },
   {hex:'#e07040',bg:'rgba(224,112,64,0.08)', border:'rgba(224,112,64,0.3)' },
   {hex:'#7c3aed',bg:'rgba(124,58,237,0.08)', border:'rgba(124,58,237,0.3)' },
   {hex:'#d97706',bg:'rgba(217,119,6,0.08)',  border:'rgba(217,119,6,0.3)'  },
@@ -1078,6 +1353,7 @@ function buildEvalPage(){
   const nOpts=S.options.length;
   const grid=document.getElementById('evalGrid');
   grid.style.gridTemplateColumns=`repeat(${Math.min(nOpts,2)},1fr)`;
+  grid.style.width='100%';
   grid.innerHTML='';
 
   S.options.forEach((opt,oi)=>{
@@ -1197,6 +1473,7 @@ function showResults(){
   S.notes=S.options.map((_,i)=>document.getElementById(`note-${i}`)?.value||'');
   buildResults();
   nav('page-results');
+  initScenario();
   setTimeout(drawRadar,150);
   generateInterpretation();
 }
@@ -1242,8 +1519,7 @@ function buildResults(){
     return `
       <div class="score-card${rank===0?' rank-1':''}" style="border-color:${rank===0?c.hex:c.border}">
         ${rankBadge}
-        <div class="sc-letter" style="color:${c.hex}">Option ${LETTERS[oi]}</div>
-        <div class="sc-name">${esc(S.options[oi].name)}</div>
+        <div class="sc-letter" style="color:${c.hex}">Option ${LETTERS[oi]}</div>        <div class="sc-name">${esc(S.options[oi].name)}</div>
         ${S.options[oi].desc?`<div class="sc-desc">${esc(S.options[oi].desc)}</div>`:''}
         <div class="sc-score-row">
           <div class="sc-num" style="color:${c.hex}">${sc}</div>
@@ -1328,7 +1604,38 @@ function buildResults(){
       </div>
     </div>
 
-    <div class="scores-row" style="grid-template-columns:repeat(${ncols},1fr)">${scoreCards}</div>
+    <div class="fear-box" id="fearBox">
+      <div class="fear-head" onclick="toggleFearBox()">
+        <div class="fear-icon">🫀</div>
+        <div class="fear-head-text">
+          <div class="fear-head-title">Et si la peur n'était pas un facteur ?</div>
+          <div class="fear-head-sub">Lucid masque les critères liés au risque et à la prudence pour révéler votre choix sans biais de peur.</div>
+        </div>
+        <div class="toggle-wrap">
+          <span class="toggle-label" id="fearToggleLabel">Non</span>
+          <label class="toggle">
+            <input type="checkbox" id="fearToggle" onchange="onFearToggle(this.checked)" onclick="event.stopPropagation()">
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </label>
+        </div>
+      </div>
+      <div class="fear-body" id="fearBody"></div>
+    </div>
+
+    <div class="scenario-box" id="scenarioBox">
+      <div class="scenario-head" onclick="toggleScenarioBox()">
+        <div class="scenario-head-icon">🎛️</div>
+        <div class="scenario-head-text">
+          <div class="scenario-head-title">Testez vos scénarios</div>
+          <div class="scenario-head-sub">Activez ou désactivez des critères pour recalculer les scores instantanément.</div>
+        </div>
+        <div class="scenario-chevron">▾</div>
+      </div>
+      <div class="scenario-body" id="scenarioBody"></div>
+    </div>
+
+    <div class="scores-row" id="scoresRow" style="grid-template-columns:repeat(${ncols},1fr)">${scoreCards}</div>
 
     <div class="radar-section">
       <h3>🕸️ Profil visuel des options</h3>
@@ -1461,6 +1768,367 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
   }
 }
 
+/* ─── SCENARIO PANEL ────────────────────── */
+
+// Set des IDs de critères actifs dans le scénario (tous actifs par défaut)
+let S_active = new Set();
+
+function initScenario(){
+  S_active = new Set(S.criteria.map(c=>c.id));
+  renderScenarioBody();
+}
+
+function toggleScenarioBox(){
+  document.getElementById('scenarioBox').classList.toggle('open');
+}
+
+function calcScoreScenario(oi){
+  let tot=0, max=0;
+  S.criteria.forEach(c=>{
+    if(!S_active.has(c.id)) return;
+    let v=S.scores[c.id]?.[oi]??5;
+    if(c.invert) v=11-v;
+    tot+=v*c.weight; max+=10*c.weight;
+  });
+  if(max===0) return 0;
+  return Math.round((tot/max)*100);
+}
+
+function toggleScenarioCrit(id){
+  if(S_active.has(id)) S_active.delete(id);
+  else S_active.add(id);
+  // Toujours au moins 1 critère actif
+  if(S_active.size===0) S_active.add(id);
+  renderScenarioBody();
+  updateScenarioScores();
+}
+
+function resetScenario(){
+  S_active = new Set(S.criteria.map(c=>c.id));
+  renderScenarioBody();
+  updateScenarioScores();
+}
+
+function renderScenarioBody(){
+  const body = document.getElementById('scenarioBody');
+  if(!body) return;
+  const activeCount = S_active.size;
+  const rows = S.criteria.map(c=>{
+    const on = S_active.has(c.id);
+    return `
+      <div class="sc-crit-row${on?'':' off'}">
+        <div class="sc-crit-icon">${c.icon}</div>
+        <div class="sc-crit-name">${c.name}</div>
+        ${c.weight>1?`<span class="sc-crit-weight">×${c.weight}</span>`:''}
+        ${c.invert?`<span class="sc-crit-inv">↓ inversé</span>`:''}
+        <label class="mini-toggle" title="${on?'Désactiver':'Activer'} ce critère">
+          <input type="checkbox" ${on?'checked':''} onchange="toggleScenarioCrit('${c.id}')">
+          <div class="mini-toggle-track"></div>
+          <div class="mini-toggle-thumb"></div>
+        </label>
+      </div>`;
+  }).join('');
+
+  const insight = genScenarioInsight();
+
+  body.innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+      <span style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">
+        ${activeCount} / ${S.criteria.length} critères actifs
+      </span>
+      <button class="scenario-reset" onclick="resetScenario()">Tout réactiver</button>
+    </div>
+    <div class="sc-crit-list">${rows}</div>
+    <div class="scenario-summary">${insight}</div>`;
+}
+
+function genScenarioInsight(){
+  const disabledCrits = S.criteria.filter(c=>!S_active.has(c.id));
+
+  // Aucun critère désactivé — analyse complète
+  if(disabledCrits.length === 0){
+    return `✅ Tous les critères sont actifs — c'est votre analyse complète, sans filtre.`;
+  }
+
+  const baseScores  = S.options.map((_,i)=>calcScore(i));
+  const scenScores  = S.options.map((_,i)=>calcScoreScenario(i));
+  const baseRanked  = [...S.options.map((_,i)=>i)].sort((a,b)=>baseScores[b]-baseScores[a]);
+  const scenRanked  = [...S.options.map((_,i)=>i)].sort((a,b)=>scenScores[b]-scenScores[a]);
+
+  const baseWinner  = baseRanked[0];
+  const scenWinner  = scenRanked[0];
+  const switched    = scenWinner !== baseWinner;
+
+  const disabledNames = disabledCrits.map(c=>`<strong>${c.name}</strong>`).join(' et ');
+  const plural        = disabledCrits.length > 1;
+
+  // Trouver l'option la plus impactée (+ ou -)
+  const deltas = S.options.map((_,i)=>({ i, d: scenScores[i]-baseScores[i] }));
+  const bigGainer  = deltas.reduce((a,b)=>b.d>a.d?b:a);
+  const bigLoser   = deltas.reduce((a,b)=>b.d<a.d?b:a);
+
+  // Cas 1 — le classement s'inverse
+  if(switched){
+    const newName  = S.options[scenWinner].name;
+    const oldName  = S.options[baseWinner].name;
+    const gain     = scenScores[scenWinner] - baseScores[scenWinner];
+    const gainSign = gain>=0?`+${gain}`:gain;
+    return `🔄 Sans ${disabledNames}, le classement <strong>s'inverse</strong> : <strong>"${esc(newName)}"</strong> passe en tête (${gainSign} pts), devant <strong>"${esc(oldName)}"</strong>. Ce${plural?'s':''} critère${plural?'s':''} ${plural?'jouaient':'jouait'} donc un rôle décisif en faveur de l'option initiale.`;
+  }
+
+  // Cas 2 — même gagnant mais écart significativement réduit
+  const baseGap = baseScores[baseWinner] - baseScores[baseRanked[1]];
+  const scenGap = scenScores[scenWinner] - scenScores[scenRanked[1]];
+  if(scenGap < baseGap && baseGap - scenGap >= 6){
+    const gapDiff = baseGap - scenGap;
+    return `⚠️ <strong>"${esc(S.options[baseWinner].name)}"</strong> reste en tête, mais son avantage se réduit de <strong>${gapDiff} points</strong> sans ${disabledNames}. Ce${plural?'s':''} critère${plural?'s':''} ${plural?'constituent':'constitue'} une part importante de son avance — la décision serait plus serrée sans ${plural?'eux':'lui'}.`;
+  }
+
+  // Cas 3 — même gagnant, écart qui se creuse
+  if(scenGap > baseGap + 5){
+    return `✅ Sans ${disabledNames}, <strong>"${esc(S.options[baseWinner].name)}"</strong> se détache encore davantage (+${scenGap - baseGap} pts d'écart supplémentaires). Ce${plural?'s':''} critère${plural?'s':''} ne ${plural?'sont':'est'} pas ce qui fait la force de cette option — son avance repose sur d'autres facteurs.`;
+  }
+
+  // Cas 4 — une option gagne beaucoup, une autre perd beaucoup
+  if(bigGainer.d >= 8 && bigGainer.i !== bigLoser.i && bigLoser.d <= -8){
+    const gName = S.options[bigGainer.i].name;
+    const lName = S.options[bigLoser.i].name;
+    return `📊 Ce scénario révèle une divergence nette : <strong>"${esc(gName)}"</strong> gagne +${bigGainer.d} pts tandis que <strong>"${esc(lName)}"</strong> en perd ${Math.abs(bigLoser.d)}. ${disabledNames} ${plural?'pèsent':'pèse'} donc différemment sur chaque option.`;
+  }
+
+  // Cas 5 — impact faible sur tous
+  const maxDelta = Math.max(...deltas.map(d=>Math.abs(d.d)));
+  if(maxDelta <= 4){
+    return `📌 Désactiver ${disabledNames} ne change presque rien aux scores (moins de ${maxDelta+1} pts d'écart). ${plural?'Ces critères ne sont pas':'Ce critère n\u2019est pas'} déterminant${plural?'s':''} dans cette décision — les autres facteurs portent l'essentiel du résultat.`;
+  }
+
+  // Cas 6 — fallback générique mais enrichi
+  const mostImpacted = deltas.reduce((a,b)=>Math.abs(b.d)>Math.abs(a.d)?b:a);
+  const sign = mostImpacted.d >= 0 ? `+${mostImpacted.d}` : `${mostImpacted.d}`;
+  return `🎯 Sans ${disabledNames}, l'option la plus impactée est <strong>"${esc(S.options[mostImpacted.i].name)}"</strong> (${sign} pts). Le classement reste identique, mais ce scénario montre à quel point ${plural?'ces critères influencent':'ce critère influence'} la position de cette option.`;
+}
+
+
+function updateScenarioScores(){
+  const baseScores  = S.options.map((_,i)=>calcScore(i));
+  const scenScores  = S.options.map((_,i)=>calcScoreScenario(i));
+  const scenRanked  = [...S.options.map((_,i)=>i)].sort((a,b)=>scenScores[b]-scenScores[a]);
+  const baseRanked  = [...S.options.map((_,i)=>i)].sort((a,b)=>baseScores[b]-baseScores[a]);
+  const allActive   = S_active.size === S.criteria.length;
+
+  const row = document.getElementById('scoresRow');
+  if(!row) return;
+
+  // Rebuild score cards with updated values
+  const ncols = Math.min(S.options.length,3);
+  row.style.gridTemplateColumns=`repeat(${ncols},1fr)`;
+
+  // Re-rank by scenario scores
+  const rankLabels=['🥇 1ère option','🥈 2ème option','🥉 3ème option'];
+  row.innerHTML = scenRanked.map((oi,rank)=>{
+    const c = COLORS[oi];
+    const sc = scenScores[oi];
+    const base = baseScores[oi];
+    const delta = sc - base;
+    const deltaHTML = allActive ? '' :
+      `<span class="sc-scenario-delta ${delta>2?'up':delta<-2?'down':'same'}">
+        ${delta>0?'+':''}${delta} pts
+      </span>`;
+
+    const rankBadge = rank<3
+      ? `<div class="rank-badge" style="background:${c.bg};color:${c.hex};border:1px solid ${c.border}">${rankLabels[rank]}</div>`
+      : '';
+
+    const miniCrits = [...S_active].map(id=>{
+      const cr = S.criteria.find(x=>x.id===id); if(!cr) return '';
+      const v = S.scores[cr.id]?.[oi]??5;
+      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.75rem">
+        <span style="width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)">${cr.icon} ${cr.name}</span>
+        <div style="flex:1;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${v*10}%;background:${c.hex};border-radius:3px"></div>
+        </div>
+        <span style="width:16px;text-align:right;color:var(--ink2);font-weight:600">${v}</span>
+      </div>`;
+    }).slice(0,4).join('');
+
+    return `
+      <div class="score-card${rank===0?' rank-1':''}" style="border-color:${rank===0?c.hex:c.border}">
+        ${rankBadge}
+        <div class="sc-letter" style="color:${c.hex}">Option ${LETTERS[oi]}</div>
+        <div class="sc-name">${esc(S.options[oi].name)}</div>
+        ${S.options[oi].desc?`<div class="sc-desc">${esc(S.options[oi].desc)}</div>`:''}
+        <div class="sc-score-row">
+          <div class="sc-num" style="color:${c.hex}">${sc}</div>
+          <div class="sc-denom">/100</div>
+          ${deltaHTML}
+        </div>
+        <div class="sc-bar"><div class="sc-bar-fill" style="width:${sc}%;background:${c.hex}"></div></div>
+        ${miniCrits}
+      </div>`;
+  }).join('');
+
+  // Redraw radar with scenario scores
+  setTimeout(()=>drawRadarScenario(scenScores),50);
+
+  // Refresh narrative insight in panel
+  const insightEl = document.querySelector('#scenarioBody .scenario-summary');
+  if(insightEl) insightEl.innerHTML = genScenarioInsight();
+}
+
+/* ─── FEAR TOGGLE ───────────────────────── */
+
+// IDs de critères considérés comme "liés à la peur/prudence"
+// Ces critères sont détectés silencieusement, l'utilisateur ne les nomme jamais
+const FEAR_IDS = new Set([
+  'fin_risk',  // Risque financier
+  'risk',      // Risque global
+  'stress',    // Niveau de stress
+  'jobsec',    // Sécurité de l'emploi
+  'fin_stab',  // Stabilité financière
+  'cost',      // Coût initial
+  'rev',       // Réversibilité
+  'complex',   // Complexité
+  'dep',       // Dépendances
+  'workload',  // Charge de travail
+]);
+
+// Détecte aussi les critères custom qui contiennent des mots-clés de peur
+function isFearCrit(c){
+  if(FEAR_IDS.has(c.id)) return true;
+  if(c.custom){
+    const fearWords=/risque|peur|stress|sécurité|securite|danger|incertitude|coût|cout|complexité|complexite|difficulté|difficulte|charge|instabilité|instabilite|anxiété|anxiete/i;
+    return fearWords.test(c.name);
+  }
+  return false;
+}
+
+function calcScoreFiltered(oi, excludeIds){
+  let tot=0, max=0;
+  S.criteria.forEach(c=>{
+    if(excludeIds.has(c.id)) return;
+    let v=S.scores[c.id]?.[oi]??5;
+    if(c.invert) v=11-v;
+    tot+=v*c.weight; max+=10*c.weight;
+  });
+  if(max===0) return null;
+  return Math.round((tot/max)*100);
+}
+
+function toggleFearBox(){
+  document.getElementById('fearBox').classList.toggle('open');
+}
+
+function onFearToggle(checked){
+  document.getElementById('fearBox').classList.add('open');
+  document.getElementById('fearToggleLabel').textContent = checked ? 'Oui' : 'Non';
+  document.getElementById('fearToggleLabel').className = 'toggle-label' + (checked ? ' on' : '');
+  renderFearBody(checked);
+}
+
+function renderFearBody(active){
+  const fearCrits = S.criteria.filter(isFearCrit);
+  const fearIds   = new Set(fearCrits.map(c=>c.id));
+  const body      = document.getElementById('fearBody');
+
+  if(fearCrits.length === 0){
+    body.innerHTML=`<div class="fear-none">Aucun critère lié à la peur ou au risque n'a été sélectionné dans votre analyse.</div>`;
+    return;
+  }
+
+  // Tags des critères détectés
+  const allTags = S.criteria.map(c=>{
+    const isFear = isFearCrit(c);
+    const cls = (!active || !isFear) ? 'active' : 'inactive';
+    return `<span class="fear-crit-tag ${cls}">${c.icon} ${c.name}${isFear&&active?' ✕':''}</span>`;
+  }).join('');
+
+  // Scores normaux vs sans peur
+  const normalScores = S.options.map((_,i)=>calcScore(i));
+  const fearlessScores = S.options.map((_,i)=>active?calcScoreFiltered(i,fearIds):null);
+
+  const ranked = [...S.options.map((_,i)=>i)].sort((a,b)=>normalScores[b]-normalScores[a]);
+  const fearlessRanked = active
+    ? [...S.options.map((_,i)=>i)].sort((a,b)=>(fearlessScores[b]??0)-(fearlessScores[a]??0))
+    : null;
+
+  const winnerNormal    = ranked[0];
+  const winnerFearless  = fearlessRanked?.[0];
+  const switchedWinner  = active && winnerFearless !== winnerNormal;
+
+  // Lignes de comparaison par option
+  const rows = ranked.map(oi=>{
+    const c = COLORS[oi];
+    const ns = normalScores[oi];
+    const fs = fearlessScores?.[oi] ?? null;
+    let deltaHTML = '';
+    if(active && fs !== null){
+      const d = fs - ns;
+      const cls = d > 2 ? 'up' : d < -2 ? 'down' : 'same';
+      const sign = d > 0 ? '+' : '';
+      deltaHTML = `<span class="fear-delta ${cls}">${sign}${d} pts sans peur</span>`;
+    }
+    return `
+      <div class="fear-opt-row">
+        <div class="fear-opt-name" style="color:${c.hex}">${LETTERS[oi]}. ${esc(S.options[oi].name)}</div>
+        <div class="fear-scores">
+          <div class="fear-score-block">
+            <div class="fear-score-val" style="color:${c.hex}">${ns}</div>
+            <div class="fear-score-lbl">Score réel</div>
+          </div>
+          ${active && fs!==null ? `
+          <div class="fear-arrow">→</div>
+          <div class="fear-score-block">
+            <div class="fear-score-val" style="color:#7c3aed">${fs}</div>
+            <div class="fear-score-lbl">Sans peur</div>
+          </div>
+          ${deltaHTML}` : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  // Insight narratif
+  let insight = '';
+  if(active){
+    if(switchedWinner){
+      insight=`<div class="fear-insight">
+        💡 Sans les critères de prudence, <strong>"${esc(S.options[winnerFearless].name)}"</strong> passerait en tête — 
+        alors que <strong>"${esc(S.options[winnerNormal].name)}"</strong> gagne dans l'analyse complète.
+        Ce que cela révèle : <strong>c'est probablement la peur qui oriente votre décision vers "${esc(S.options[winnerNormal].name)}"</strong>.
+        Est-ce un choix voulu ou un réflexe de prudence ?
+      </div>`;
+    } else {
+      const maxDelta = ranked.reduce((best,oi)=>{
+        const d = (fearlessScores[oi]??0) - normalScores[oi];
+        return Math.abs(d) > Math.abs(best.d) ? {oi,d} : best;
+      },{oi:ranked[0],d:0});
+
+      if(Math.abs(maxDelta.d) > 5){
+        const dir = maxDelta.d > 0 ? 'gagne' : 'perd';
+        insight=`<div class="fear-insight">
+          💡 Le classement ne change pas, mais <strong>"${esc(S.options[maxDelta.oi].name)}"</strong>
+          ${dir} <strong>${Math.abs(maxDelta.d)} points</strong> une fois la peur mise de côté.
+          ${maxDelta.d > 0
+            ? `Votre intuition profonde lui est plus favorable que vos chiffres actuels ne le montrent.`
+            : `La prudence vous protège mais pèse aussi sur cette option.`}
+        </div>`;
+      } else {
+        insight=`<div class="fear-insight">
+          💡 Le classement reste identique avec ou sans les critères de peur.
+          Votre décision semble cohérente — elle n'est pas fortement biaisée par la prudence.
+        </div>`;
+      }
+    }
+  }
+
+  body.innerHTML=`
+    <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">
+      ${active ? '🎭 Critères masqués (liés à la peur)' : '🔍 Critères détectés comme liés à la peur'}
+    </div>
+    <div class="fear-crits">${allTags}</div>
+    <div class="fear-comparison">${rows}</div>
+    ${insight}`;
+}
+
 function genAnalysis(scores,winner,ranked){
   const wName=S.options[winner].name;
   const pros=[],cons=[];
@@ -1497,11 +2165,19 @@ function genAnalysis(scores,winner,ranked){
 }
 
 /* ─── RADAR ─────────────────────────────── */
-function drawRadar(){
+function drawRadar(){ drawRadarScenario(null); }
+
+function drawRadarScenario(overrideScores){
   const canvas=document.getElementById('radarC'); if(!canvas) return;
+  // Only draw axes for active criteria in scenario mode
+  const activeCrits = overrideScores
+    ? S.criteria.filter(c=>S_active.has(c.id))
+    : S.criteria;
+  if(activeCrits.length<3) return;
+
   const ctx=canvas.getContext('2d');
   const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2;
-  const N=S.criteria.length; if(N<3) return;
+  const N=activeCrits.length;
   const R=Math.min(W,H)/2-64;
   ctx.clearRect(0,0,W,H);
   const angle=i=>(i/N)*Math.PI*2-Math.PI/2;
@@ -1509,14 +2185,14 @@ function drawRadar(){
   // Grid
   [2,4,6,8,10].forEach(lvl=>{
     ctx.beginPath();
-    S.criteria.forEach((_,i)=>{
+    activeCrits.forEach((_,i)=>{
       const a=angle(i),r=(lvl/10)*R;
       i===0?ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a)):ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
     });
     ctx.closePath();
     ctx.strokeStyle='rgba(0,0,0,0.07)';ctx.lineWidth=1;ctx.stroke();
   });
-  S.criteria.forEach((_,i)=>{
+  activeCrits.forEach((_,i)=>{
     ctx.beginPath();ctx.moveTo(cx,cy);
     ctx.lineTo(cx+R*Math.cos(angle(i)),cy+R*Math.sin(angle(i)));
     ctx.strokeStyle='rgba(0,0,0,0.08)';ctx.lineWidth=1;ctx.stroke();
@@ -1524,7 +2200,7 @@ function drawRadar(){
 
   // Labels
   ctx.font='11px Plus Jakarta Sans,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-  S.criteria.forEach((c,i)=>{
+  activeCrits.forEach((c,i)=>{
     const a=angle(i),x=cx+(R+44)*Math.cos(a),y=cy+(R+44)*Math.sin(a);
     ctx.fillStyle='#8a877f';
     ctx.fillText(c.icon,x,y-6);
@@ -1532,22 +2208,22 @@ function drawRadar(){
     ctx.fillText(short,x,y+8);
   });
 
-  // Polygons
+  // Polygons — per-criteria raw score on active axes
   S.options.forEach((_,oi)=>{
     const col=COLORS[oi];
     ctx.beginPath();
-    S.criteria.forEach((c,i)=>{
+    activeCrits.forEach((c,i)=>{
       const v=S.scores[c.id]?.[oi]??5,a=angle(i),r=(v/10)*R;
       i===0?ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a)):ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
     });
     ctx.closePath();
-    // Parse hex to rgba
     const hex=col.hex.replace('#','');
     const r=parseInt(hex.substring(0,2),16),g=parseInt(hex.substring(2,4),16),b=parseInt(hex.substring(4,6),16);
     ctx.fillStyle=`rgba(${r},${g},${b},0.12)`;ctx.fill();
     ctx.strokeStyle=col.hex;ctx.lineWidth=2.5;ctx.stroke();
   });
 }
+
 
 /* ─── UTILS ─────────────────────────────── */
 function esc(s){
