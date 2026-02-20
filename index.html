@@ -35,20 +35,25 @@
 
 /* ── RESET ───────────────────────────────── */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;overflow-x:hidden;}
+html,body{height:100%;overflow:hidden;}
 body{
   background:var(--bg);
   color:var(--ink);
   font-family:'Plus Jakarta Sans',sans-serif;
   font-size:15px;
   line-height:1.6;
-  min-height:100vh;
-  overflow-x:hidden;
 }
 
 /* ── PAGES ───────────────────────────────── */
-.page{display:none;min-height:100vh;flex-direction:column;}
+.page{display:none;height:100vh;flex-direction:column;overflow:hidden;}
 .page.active{display:flex;}
+
+/* Contenu scrollable sous le header */
+.page-scroll{
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+}
 
 /* ── HEADER ──────────────────────────────── */
 .app-header{
@@ -56,7 +61,8 @@ body{
   border-bottom:1px solid var(--border);
   padding:14px 28px;
   display:flex;align-items:center;
-  position:sticky;top:0;z-index:50;
+  flex-shrink:0;
+  z-index:50;
   box-shadow:0 1px 4px rgba(0,0,0,0.05);
 }
 .app-header .step-progress{
@@ -105,11 +111,11 @@ body{
 
 /* ── MAIN ────────────────────────────────── */
 .main{
-  flex:1;
   padding:36px 28px 72px;
   max-width:960px;
   margin:0 auto;
   width:100%;
+  min-height:100%;
 }
 
 /* ── ANIMATIONS ──────────────────────────── */
@@ -593,295 +599,416 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   font-size:.75rem;font-weight:700;color:var(--ink2);margin-bottom:6px;display:block;
 }
 
-/* ── RESULTS HEADER ──────────────────────── */
-.res-header{ margin-bottom:32px; }
-.res-header .page-eyebrow{ margin-bottom:12px; }
-.res-decision-title{
-  font-family:'Lora',serif;
-  font-size:clamp(1.5rem,3vw,2.1rem);
-  font-weight:700;line-height:1.25;
-  color:var(--ink);max-width:680px;
-  padding-bottom:18px;
-  border-bottom:2px solid var(--border);
-}
+/* ══════════════════════════════════════════
+   PAGE RÉSULTATS
+   ══════════════════════════════════════════ */
 
-/* ── VERDICT ─────────────────────────────── */
-.verdict-strip{
-  border-radius:var(--r);padding:22px 26px;
-  display:flex;align-items:center;gap:18px;
-  margin-bottom:12px;border:1.5px solid;
-  box-shadow:var(--shadow);
-}
-.verdict-icon{font-size:2.2rem;flex-shrink:0;}
-.verdict-title{
-  font-family:'Lora',serif;
-  font-size:1.3rem;font-weight:700;margin-bottom:5px;
-}
-.verdict-sub{font-size:.86rem;color:var(--muted);line-height:1.6;}
+/* Le conteneur utilise .main comme les autres pages */
+#resContent{ padding:0; }
 
-/* verdict intégré dans le header résultats */
-.verdict-inline{
-  display:flex;align-items:center;gap:14px;
-  border-radius:10px;padding:14px 18px;
-  margin-top:14px;
+/* ── SCORE CARDS RECTANGULAIRES ─────────── */
+.sc-cards-row{
+  display:grid;
+  gap:12px;
+  margin:20px 0 24px;
 }
-.verdict-inline-emoji{font-size:1.6rem;flex-shrink:0;}
-.verdict-inline-title{
-  font-family:'Lora',serif;
-  font-size:1.05rem;font-weight:700;margin-bottom:3px;
-}
-.verdict-inline-sub{font-size:.82rem;color:var(--muted);line-height:1.5;}
-
-/* ── SECTION DIVIDER ─────────────────────── */
-.res-divider{
-  display:flex;align-items:center;gap:10px;
-  margin:32px 0 16px;
-}
-.res-divider-label{
-  font-size:.65rem;font-weight:800;
-  letter-spacing:.14em;text-transform:uppercase;
-  color:var(--muted2);white-space:nowrap;
-}
-.res-divider::before,.res-divider::after{
-  content:'';flex:1;height:1px;background:var(--border);
-}
-
-/* ── SCORE CARDS ─────────────────────────── */
-.scores-row{display:grid;gap:14px;margin-bottom:0;}
-.score-card{
-  background:var(--white);
-  border-radius:var(--r);
-  border:1.5px solid var(--border);
-  overflow:hidden;
-  box-shadow:var(--shadow);
-  transition:box-shadow .2s, transform .2s;
-  display:flex;flex-direction:column;
-}
-.score-card:hover{ box-shadow:var(--shadow-lg); transform:translateY(-2px); }
-.score-card.rank-1{ border-width:2px; }
-.sc-accent{ display:none; }
-
-.sc-body{ padding:0; display:flex; flex-direction:column; flex:1; }
-
-/* Bande colorée tout en haut */
-.sc-top-band{
-  height:6px; width:100%; flex-shrink:0;
-}
-
-/* Zone principale */
-.sc-main{
-  display:flex; align-items:center; padding:16px 16px 12px; gap:12px;
-}
-
-/* Bloc score (à droite) */
-.sc-score-block{
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  flex-shrink:0;
-  background:var(--bg);
-  border-radius:10px;
-  padding:10px 14px;
-  min-width:68px;
-}
-.sc-num{
-  font-family:'Lora',serif; font-size:2rem;
-  font-weight:700; line-height:1; transition:color .2s;
-}
-.sc-denom{
-  font-size:.6rem; color:var(--muted); font-weight:600;
-  letter-spacing:.04em; margin-top:2px;
-}
-
-/* Contenu gauche */
-.sc-content{ flex:1; min-width:0; }
-
-.rank-badge{
-  display:inline-flex; align-items:center;
-  font-size:.6rem; font-weight:700;
-  padding:2px 8px; border-radius:20px;
-  letter-spacing:.05em; margin-bottom:6px;
-  white-space:nowrap;
-}
-.sc-name{
-  font-family:'Lora',serif; font-size:1rem; font-weight:700;
-  color:var(--ink); line-height:1.25; margin-bottom:2px;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
-.sc-desc{
-  font-size:.72rem; color:var(--muted); line-height:1.4;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
-
-/* Barre de progression en bas */
-.sc-bar-row{ padding:0; }
-.sc-bar{
-  height:4px; background:var(--bg2);
-  overflow:hidden;
-}
-.sc-bar-fill{ height:100%; transition:width .9s cubic-bezier(.4,0,.2,1), background .2s; }
-
-.sc-mini-crits{ display:none; }
-.sc-score-row{ display:none; }
-.sc-mini-row{ display:flex; align-items:center; gap:8px; font-size:.73rem; }
-.sc-mini-name{
-  width:110px; flex-shrink:0; overflow:hidden;
-  text-overflow:ellipsis; white-space:nowrap; color:var(--muted);
-}
-.sc-mini-bar-wrap{ flex:1; height:4px; background:var(--bg2); border-radius:2px; overflow:hidden; }
-.sc-mini-bar-fill{ height:100%; border-radius:2px; }
-.sc-mini-val{ width:18px; text-align:right; color:var(--ink2); font-weight:700; flex-shrink:0; }
-
-/* ── TOOL PILLS ──────────────────────────── */
-.tool-pills{
-  display:grid;grid-template-columns:1fr 1fr;gap:10px;
-  margin-bottom:0;
-}
-.tool-pill{
+.sc-card{
   background:var(--white);
   border:1.5px solid var(--border);
   border-radius:12px;
   overflow:hidden;
   box-shadow:var(--shadow);
-  transition:box-shadow .15s;
+  display:flex;
+  transition:box-shadow .2s, transform .2s;
 }
-.tool-pill:hover{ box-shadow:var(--shadow-lg); }
-.tool-pill-head{
+.sc-card:hover{ box-shadow:var(--shadow-lg); transform:translateY(-2px); }
+.sc-card-winner{ border-width:2px; }
+
+/* Barre colorée à gauche */
+.sc-card-accent{ width:4px; flex-shrink:0; }
+
+.sc-card-body{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 16px;
+  gap:12px;
+  min-width:0;
+}
+.sc-card-top{ flex:1; min-width:0; }
+.sc-card-rank{
+  display:inline-flex;align-items:center;
+  font-size:.58rem;font-weight:700;
+  padding:2px 8px;border-radius:20px;
+  border:1px solid;
+  letter-spacing:.05em;
+  margin-bottom:6px;
+}
+.sc-card-name{
+  font-family:'Lora',serif;
+  font-size:.95rem;font-weight:700;
+  color:var(--ink);line-height:1.25;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* Jauge circulaire à droite */
+.sc-card-gauge{
+  position:relative;flex-shrink:0;
+  width:52px;height:52px;
+}
+.sc-card-gauge-label{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.sc-card-num{
+  font-family:'Lora',serif;
+  font-size:1.1rem;font-weight:700;line-height:1;
+}
+.sc-card-den{
+  font-size:.48rem;color:var(--muted);font-weight:600;letter-spacing:.04em;margin-top:1px;
+}
+
+.sc-card-left{ flex:1; min-width:0; }
+.sc-card-top{ margin-bottom:10px; }
+
+/* Mini critères dans les cards */
+.sc-card-crits{ display:flex;flex-direction:column;gap:4px; }
+.sc-mini-crit{
+  display:flex;align-items:center;gap:6px;
+  font-size:.68rem;
+}
+.sc-mini-crit-name{
+  width:90px;flex-shrink:0;
+  color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.sc-mini-bar{
+  flex:1;height:3px;background:var(--bg2);border-radius:2px;overflow:hidden;
+}
+.sc-mini-bar-fill{ height:100%;border-radius:2px; }
+.sc-mini-crit-val{
+  width:14px;flex-shrink:0;text-align:right;
+  font-weight:700;font-size:.65rem;
+}
+
+/* Delta scénario sur les cards */
+.sc-card-delta{
+  font-size:.65rem;font-weight:700;
+  padding:2px 6px;border-radius:5px;margin-top:4px;display:inline-block;
+}
+.sc-card-delta.up{ background:rgba(45,125,90,.1);color:var(--teal); }
+.sc-card-delta.down{ background:rgba(192,57,43,.07);color:var(--red); }
+.sc-card-delta.same{ display:none; }
+
+/* ── VERDICT ENCADRÉ ─────────────────────── */
+.verdict-inline{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:14px 18px;
+  border-radius:12px;
+  margin-bottom:6px;
+}
+.verdict-inline-emoji{ font-size:1.5rem;flex-shrink:0;line-height:1.2; }
+.verdict-inline-text{ flex:1;min-width:0; }
+.verdict-inline-title{
+  font-family:'Lora',serif;
+  font-size:1rem;font-weight:700;
+  line-height:1.3;margin-bottom:3px;
+}
+.verdict-inline-sub{
+  font-size:.8rem;color:var(--ink2);line-height:1.5;
+}
+
+/* ── LAYOUT RÉSULTATS ────────────────────── */
+.res-cols{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin-top:0;
+}
+@media(max-width:700px){
+  .res-cols{ grid-template-columns:1fr; }
+  .sc-cards-row{ grid-template-columns:1fr!important; }
+}
+
+.res-section{
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.res-section + .res-section{ margin-top:0; }
+.res-section-head{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 16px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg);
+}
+.res-section-icon{ font-size:.95rem; }
+.res-section-title{
+  font-size:.72rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:.09em;
+  color:var(--muted2);flex:1;
+}
+.res-section-body{ padding:18px; }
+
+/* Interp IA */
+.res-interp-badge{
+  display:inline-flex;align-items:center;
+  font-size:.58rem;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;
+  background:var(--teal-bg);color:var(--teal);
+  padding:2px 7px;border-radius:5px;
+  border:1px solid var(--teal-bd);
+}
+.res-interp-text{
+  font-size:.84rem;color:var(--ink2);line-height:1.75;
+}
+.res-interp-text p{ margin-bottom:.75em; }
+.res-interp-text p:last-child{ margin-bottom:0; }
+.res-interp-text strong{ color:var(--ink);font-weight:700; }
+.res-interp-loading{ display:flex;flex-direction:column;gap:8px; }
+
+/* Radar */
+.res-radar-wrap{ display:flex;justify-content:center; }
+.res-radar-legend{
+  display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;
+  font-size:.75rem;color:var(--ink2);font-weight:500;justify-content:center;
+}
+
+/* Dividers */
+.res-divider{
   display:flex;align-items:center;gap:10px;
-  padding:12px 14px;
+  margin:22px 0 12px;color:var(--muted2);
+}
+.res-divider::before,.res-divider::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+.res-divider-label{
+  font-size:.62rem;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;white-space:nowrap;
+}
+
+/* Actions */
+.res-actions{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:28px;padding-top:20px;
+  border-top:1px solid var(--border);flex-wrap:wrap;gap:10px;
+}
+
+/* ── PANNEAU SCÉNARIO ────────────────────── */
+.scenario-panel{
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.scenario-panel-head{
+  display:flex;align-items:center;gap:10px;
+  padding:13px 18px;
   cursor:pointer;user-select:none;
   transition:background .15s;
 }
-.tool-pill-head:hover{ background:var(--bg); }
-.tool-pill-icon{ font-size:1.2rem;flex-shrink:0; }
-.tool-pill-text{ flex:1;min-width:0; }
-.tool-pill-title{
-  font-size:.82rem;font-weight:700;color:var(--ink);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.tool-pill-sub{
-  font-size:.68rem;color:var(--muted);line-height:1.3;margin-top:1px;
-}
-.tool-pill-body{
-  display:none;
-  border-top:1px solid var(--border);
-  padding:14px 16px 16px;
-}
-.tool-pill.open .scenario-chevron{ transform:rotate(180deg); }
-@media(max-width:560px){
-  .tool-pills{ grid-template-columns:1fr; }
-}
+.scenario-panel-head:hover{ background:var(--bg); }
+.scenario-panel-icon{ font-size:1.1rem;flex-shrink:0; }
+.scenario-panel-text{ flex:1;min-width:0; }
+.scenario-panel-title{ font-size:.82rem;font-weight:700;color:var(--ink); }
+.scenario-panel-sub{ font-size:.68rem;color:var(--muted);line-height:1.3;margin-top:1px; }
+.scenario-panel-chevron{ color:var(--muted2);font-size:.8rem;transition:transform .22s;margin-left:6px; }
+.scenario-panel.open .scenario-panel-chevron{ transform:rotate(180deg); }
+.scenario-panel-body{ display:none;border-top:1px solid var(--border); }
+.scenario-panel.open .scenario-panel-body{ display:block; }
 
+/* ── ONGLETS SCÉNARIO ────────────────────── */
+.sc-tabs{
+  display:flex;border-bottom:1px solid var(--border);background:var(--bg);
+}
+.sc-tab{
+  flex:1;padding:9px 12px;
+  font-size:.78rem;font-weight:600;color:var(--muted);
+  cursor:pointer;border:none;background:none;
+  border-bottom:2px solid transparent;
+  transition:color .15s,border-color .15s;
+  font-family:'Plus Jakarta Sans',sans-serif;user-select:none;
+}
+.sc-tab.active{ color:var(--teal);border-bottom-color:var(--teal);background:var(--white); }
+.sc-tab-content{ padding:14px 18px 18px; }
+.sc-tab-pane{ display:none; }
+.sc-tab-pane.active{ display:block; }
 
-/* ── RADAR ───────────────────────────────── */
-.radar-section{
-  background:var(--white);border:1.5px solid var(--border);
-  border-radius:var(--r);padding:24px;box-shadow:var(--shadow);
+/* Filtres émotions */
+.emotion-filters{ display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px; }
+.emotion-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 12px;border-radius:20px;
+  font-size:.75rem;font-weight:600;
+  border:1.5px solid var(--border);background:var(--bg);color:var(--ink2);
+  cursor:pointer;transition:all .15s;user-select:none;
 }
-.radar-section h3{
-  font-family:'Lora',serif;font-size:1rem;
-  font-weight:700;color:var(--ink);margin-bottom:16px;
+.emotion-chip:hover{ border-color:var(--teal);color:var(--teal); }
+.emotion-chip.active{ background:var(--teal-bg);border-color:var(--teal);color:var(--teal); }
+.emotion-chip-count{
+  font-size:.65rem;font-weight:700;
+  background:var(--border2);color:var(--muted);padding:1px 5px;border-radius:8px;
 }
-.radar-canvas-wrap{display:flex;justify-content:center;}
-.radar-legend{
-  display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;
-  font-size:.78rem;color:var(--ink2);font-weight:500;justify-content:center;
+.emotion-chip.active .emotion-chip-count{ background:var(--teal);color:#fff; }
+.emotion-crit-tags{ display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px; }
+.emotion-crit-tag{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:.7rem;font-weight:600;padding:2px 9px;border-radius:14px;border:1px solid;
 }
-.leg-dot{
-  width:9px;height:9px;border-radius:50%;
-  display:inline-block;margin-right:5px;vertical-align:middle;
+.emotion-crit-tag.included{ background:rgba(124,58,237,.07);color:#7c3aed;border-color:rgba(124,58,237,.25); }
+.emotion-crit-tag.excluded{ background:var(--bg);color:var(--muted2);border-color:var(--border);text-decoration:line-through;opacity:.6; }
+.emotion-none{ font-size:.8rem;color:var(--muted);font-style:italic;padding:8px 0; }
+.emotion-insight{
+  margin-top:12px;padding:11px 13px;
+  background:rgba(124,58,237,.05);border:1px solid rgba(124,58,237,.18);
+  border-radius:9px;font-size:.8rem;color:var(--ink2);line-height:1.6;
 }
+.emotion-insight strong{ color:#7c3aed; }
 
-/* ── BREAKDOWN TABLE ─────────────────────── */
-.section-title{
-  font-family:'Lora',serif;font-size:1rem;font-weight:700;
-  color:var(--ink);margin-bottom:14px;
-  padding-bottom:12px;border-bottom:1.5px solid var(--border);
+/* Critères scénario */
+.scenario-reset{
+  font-size:.73rem;font-weight:600;color:var(--teal);
+  background:none;border:none;cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  padding:0;text-decoration:underline;text-underline-offset:2px;
 }
+.scenario-reset:hover{ color:var(--teal2); }
+.sc-crit-list{ display:flex;flex-direction:column;gap:5px;margin-top:10px;clear:both; }
+.sc-crit-row{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 11px;border-radius:8px;
+  border:1.5px solid var(--border);background:var(--bg);transition:all .15s;
+}
+.sc-crit-row.off{ opacity:.45; }
+.sc-crit-row.off .sc-crit-name{ text-decoration:line-through; }
+.sc-crit-icon{ font-size:.9rem;flex-shrink:0; }
+.sc-crit-name{ font-size:.8rem;font-weight:600;color:var(--ink);flex:1; }
+.sc-crit-weight{
+  font-size:.62rem;background:var(--amber-bg);color:var(--amber);
+  padding:2px 5px;border-radius:4px;border:1px solid #f0d080;font-weight:700;flex-shrink:0;
+}
+.sc-crit-inv{
+  font-size:.62rem;background:var(--bg2);color:var(--muted);
+  padding:2px 5px;border-radius:4px;border:1px solid var(--border2);font-weight:600;flex-shrink:0;
+}
+.scenario-summary{
+  margin-top:12px;padding:10px 13px;
+  background:var(--teal-bg);border:1px solid var(--teal-bd);
+  border-radius:9px;font-size:.79rem;color:var(--ink2);line-height:1.6;
+}
+.scenario-summary strong{ color:var(--teal2); }
+
+/* Mini toggle */
+.mini-toggle{ position:relative;width:34px;height:19px;flex-shrink:0; }
+.mini-toggle input{ opacity:0;width:0;height:0;position:absolute; }
+.mini-toggle-track{
+  position:absolute;inset:0;background:var(--border2);border-radius:10px;
+  transition:background .18s;cursor:pointer;
+}
+.mini-toggle input:checked + .mini-toggle-track{ background:var(--teal); }
+.mini-toggle-thumb{
+  position:absolute;top:2.5px;left:2.5px;
+  width:14px;height:14px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);
+  transition:transform .18s;pointer-events:none;
+}
+.mini-toggle input:checked ~ .mini-toggle-thumb{ transform:translateX(15px); }
+
+/* Scores scénario (delta) */
+.fear-opt-row{ display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border); }
+.fear-opt-row:last-child{ border-bottom:none; }
+.fear-opt-name{ font-size:.8rem;font-weight:700;flex:1;min-width:0; }
+.fear-scores{ display:flex;align-items:center;gap:8px;flex-shrink:0; }
+.fear-score-block{ text-align:center; }
+.fear-score-val{ font-family:'Lora',serif;font-size:1.1rem;font-weight:700;line-height:1; }
+.fear-score-lbl{ font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.04em; }
+.fear-arrow{ color:var(--muted2);font-size:.9rem; }
+.fear-delta{ font-size:.72rem;font-weight:700;padding:2px 6px;border-radius:5px; }
+.fear-delta.up{ background:rgba(45,125,90,.1);color:var(--teal); }
+.fear-delta.down{ background:rgba(192,57,43,.07);color:var(--red); }
+.fear-delta.same{ display:none; }
+
+/* ── TABLEAU BREAKDOWN ───────────────────── */
 .bk-table{
   background:var(--white);border:1.5px solid var(--border);
-  border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);overflow-x:auto;
+  border-radius:14px;overflow:hidden;box-shadow:var(--shadow);overflow-x:auto;
 }
-.bk-row{display:flex;align-items:center;border-bottom:1px solid var(--border);}
-.bk-row:last-child{border-bottom:none;}
-.bk-row.hdr{background:var(--bg);border-bottom:1.5px solid var(--border);}
-.bk-row:not(.hdr):hover{background:var(--bg);}
-.bk-cell{padding:11px 14px;font-size:.8rem;}
+.bk-row{ display:flex;align-items:center;border-bottom:1px solid var(--border); }
+.bk-row:last-child{ border-bottom:none; }
+.bk-row.hdr{ background:var(--bg);border-bottom:1.5px solid var(--border); }
+.bk-row:not(.hdr):hover{ background:var(--bg); }
+.bk-cell{ padding:10px 13px;font-size:.79rem; }
 .bk-cell.crit-col{
   width:180px;flex-shrink:0;display:flex;
   align-items:center;gap:7px;color:var(--ink);font-weight:600;
 }
 .bk-cell.hdr-cell{
-  color:var(--muted);font-weight:700;
-  font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--muted);font-weight:700;font-size:.69rem;
+  text-transform:uppercase;letter-spacing:.07em;
 }
-.bk-cell.opt-col{flex:1;min-width:90px;}
-.opt-cell-in{display:flex;align-items:center;gap:7px;}
+.bk-cell.opt-col{ flex:1;min-width:90px; }
+.opt-cell-in{ display:flex;align-items:center;gap:6px; }
 .opt-pill{
   display:inline-flex;align-items:center;justify-content:center;
-  width:26px;height:26px;border-radius:7px;
-  font-size:.82rem;font-weight:700;flex-shrink:0;
+  width:24px;height:24px;border-radius:6px;
+  font-size:.8rem;font-weight:700;flex-shrink:0;
 }
-.mini-bar{flex:1;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden;}
-.mini-bar-fill{height:100%;border-radius:3px;}
+.mini-bar{ flex:1;height:4px;background:var(--bg2);border-radius:3px;overflow:hidden; }
+.mini-bar-fill{ height:100%;border-radius:3px; }
+.inv-tag{
+  font-size:.58rem;color:var(--muted);background:var(--bg2);
+  padding:1px 4px;border-radius:3px;border:1px solid var(--border2);
+}
 
-/* ── ANALYSIS BOX ────────────────────────── */
-.analysis-box{
-  background:var(--white);border:1.5px solid var(--border);
-  border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);
-}
-.analysis-head{
-  padding:14px 20px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:9px;background:var(--bg);
-}
-.analysis-head h3{font-size:.88rem;font-weight:700;color:var(--ink);}
-.ai-badge{
-  font-size:.62rem;font-weight:700;letter-spacing:.08em;
-  background:var(--teal-bg);color:var(--teal);
-  padding:2px 8px;border-radius:5px;text-transform:uppercase;
-  border:1px solid var(--teal-bd);
-}
-.analysis-body{display:grid;grid-template-columns:1fr 1fr;}
-.an-col{padding:18px 20px;}
-.an-col:first-child{border-right:1px solid var(--border);}
-.an-col h4{
-  font-size:.7rem;font-weight:800;text-transform:uppercase;
-  letter-spacing:.1em;margin-bottom:14px;
-}
-.an-col.pros h4{color:var(--green);}
-.an-col.cons h4{color:var(--red);}
-.an-item{
-  display:flex;gap:9px;font-size:.83rem;
-  color:var(--ink2);line-height:1.6;margin-bottom:10px;
-}
-.an-dot{width:6px;height:6px;border-radius:50%;margin-top:7px;flex-shrink:0;}
-.pros .an-dot{background:var(--green);}
-.cons .an-dot{background:var(--red);}
-
-/* ── NOTES RESULT ────────────────────────── */
+/* ── NOTES ───────────────────────────────── */
 .notes-res{
   background:var(--white);border:1.5px solid var(--border);
-  border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);
+  border-radius:14px;overflow:hidden;box-shadow:var(--shadow);
 }
 .notes-res-head{
-  padding:13px 20px;border-bottom:1px solid var(--border);
-  font-size:.85rem;font-weight:700;color:var(--ink);background:var(--bg);
+  padding:12px 18px;border-bottom:1px solid var(--border);
+  font-size:.8rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:.09em;color:var(--muted2);background:var(--bg);
 }
-.notes-res-body{display:grid;}
-.note-col{padding:16px 20px;}
+.notes-res-body{ display:grid; }
+.note-col{ padding:15px 18px; }
 .note-col-lbl{
-  font-size:.68rem;font-weight:800;
-  letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;
+  font-size:.65rem;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:7px;
 }
-.note-col-txt{font-size:.84rem;color:var(--muted);line-height:1.65;font-style:italic;}
+.note-col-txt{ font-size:.82rem;color:var(--muted);line-height:1.65;font-style:italic; }
 
-/* ── RES ACTIONS ─────────────────────────── */
+/* ── ACTIONS ─────────────────────────────── */
 .res-actions{
   display:flex;align-items:center;justify-content:space-between;
-  margin-top:36px;padding-top:22px;
-  border-top:1px solid var(--border);
-  flex-wrap:wrap;gap:10px;
+  margin-top:28px;padding:20px 0 0;
+  border-top:1px solid var(--border);flex-wrap:wrap;gap:10px;
 }
 
+/* ── DIVIDER SECTION ─────────────────────── */
+.res-divider{
+  display:flex;align-items:center;gap:10px;
+  margin:20px 0 10px;color:var(--muted2);
+}
+.res-divider::before,.res-divider::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+.res-divider-label{
+  font-size:.62rem;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;white-space:nowrap;
+}
 
+/* Fallback score cards (updateScenarioScores) */
+.scores-row{ display:none; }
+.score-card,.sc-body,.sc-top-band,.sc-main,.rank-badge,
+.sc-name,.sc-gauge,.sc-gauge-track,.sc-gauge-fill,
+.sc-gauge-label,.sc-num,.sc-denom,.sc-scenario-delta{ display:revert; }
+.sc-scenario-delta.same{ display:none; }
 
 /* ── LANG SWITCHER ───────────────────────── */
 .lang-switcher{
@@ -1321,6 +1448,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
       <button class="lang-btn" id="btn-en2" onclick="setLang('en')">EN</button>
     </div>
   </div>
+  <div class="page-scroll">
   <div class="main">
     <div class="page-eyebrow anim" data-i18n="s1_eyebrow">Étape 1 sur 3</div>
     <div class="page-title anim d1" data-i18n="s1_title">Quelle décision devez-vous prendre ?</div>
@@ -1350,6 +1478,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
       <button class="btn btn-primary" onclick="validateStep1()" data-i18n="s1_next">Choisir mes critères →</button>
     </div>
   </div>
+  </div><!-- /page-scroll -->
 </div>
 
 <!-- ══════════════════════════ STEP 2 ══════════════════════════ -->
@@ -1362,6 +1491,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
       <button class="lang-btn" id="btn-en3" onclick="setLang('en')">EN</button>
     </div>
   </div>
+  <div class="page-scroll">
   <div class="main">
     <div class="page-eyebrow" data-i18n="s2_eyebrow">Étape 2 sur 3</div>
     <div class="page-title" data-i18n="s2_title">Qu'est-ce qui compte pour vous ?</div>
@@ -1405,6 +1535,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
       <button class="btn btn-primary" onclick="validateStep2()" data-i18n="s2_next">Évaluer mes options →</button>
     </div>
   </div>
+  </div><!-- /page-scroll -->
 </div>
 
 <!-- ══════════════════════════ STEP 3 ══════════════════════════ -->
@@ -1417,6 +1548,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
       <button class="lang-btn" id="btn-en4" onclick="setLang('en')">EN</button>
     </div>
   </div>
+  <div class="page-scroll">
   <div class="main">
     <div class="page-eyebrow" data-i18n="s3_eyebrow">Étape 3 sur 3</div>
     <div class="page-title" id="eval-title" data-i18n="s3_title">Notez chaque option</div>
@@ -1430,6 +1562,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
       <button class="btn btn-primary" onclick="showResults()" data-i18n="s3_next">Voir mon analyse →</button>
     </div>
   </div>
+  </div><!-- /page-scroll -->
 </div>
 
 <!-- ══════════════════════════ RESULTS ══════════════════════════ -->
@@ -1442,7 +1575,9 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
       <button class="lang-btn" id="btn-en5" onclick="setLang('en')">EN</button>
     </div>
   </div>
-  <div class="main" id="resContent"></div>
+  <div class="page-scroll" id="resScroll">
+    <div id="resContent"></div>
+  </div>
 </div>
 
 </div>
@@ -2245,47 +2380,62 @@ function buildResults(){
   } else {
     vstyle=`background:${cW.bg};border-color:${cW.border}`;
     vemoji='🎯';
-    vtitle=`<span style="color:${cW.hex}">"${esc(S.options[winner].name)}" ${LANG==='fr'?'ressort en tête':'comes out on top'}</span>`;
+    vtitle=`<span style="color:#92700a">"${esc(S.options[winner].name)}" ${LANG==='fr'?'ressort en tête':'comes out on top'}</span>`;
     vsub=tr('res_win_sub',diff);
   }
 
-  // Score cards (ranked)
-  const ncols=Math.min(S.options.length,3);
-  const scoreCards=ranked.map((oi,rank)=>{
-    const c=COLORS[oi]; const sc=scores[oi];
-    const rankLabels=tr('rank_labels');
-    const rankBadge=rank<3?`<div class="rank-badge" style="background:${c.bg};color:${c.hex};border:1px solid ${c.border}">${rankLabels[rank]}</div>`:'';
-    const miniCrits=S.criteria.slice(0,4).map(cr=>{
-      const v=S.scores[cr.id]?.[oi]??5;
-      return `<div class="sc-mini-row">
-        <span class="sc-mini-name">${cr.icon} ${cr.name}</span>
-        <div class="sc-mini-bar-wrap"><div class="sc-mini-bar-fill" style="width:${v*10}%;background:${c.hex}"></div></div>
-        <span class="sc-mini-val">${v}</span>
+  // Score cards rectangulaires — une par option, classées
+  const ncols = Math.min(S.options.length, 4);
+  const scoreCards = ranked.map((oi, rank) => {
+    const c = COLORS[oi]; const sc = scores[oi];
+    const rankLabels = tr('rank_labels');
+    const rankLbl = rank < 3 ? rankLabels[rank] : `#${rank+1}`;
+    const r = 22, circ = (2*Math.PI*r).toFixed(2);
+    const off = (circ - (sc/100)*circ).toFixed(2);
+    // Mini critères — top 4 par score effectif
+    const sortedCrits = [...S.criteria].sort((a,b)=>{
+      const va = S.scores[a.id]?.[oi]??5; const vb = S.scores[b.id]?.[oi]??5;
+      const ea = a.invert?11-va:va; const eb = b.invert?11-vb:vb;
+      return (eb*b.weight)-(ea*a.weight);
+    }).slice(0,4);
+    const miniCrits = sortedCrits.map(cr=>{
+      const v = S.scores[cr.id]?.[oi]??5;
+      const eff = cr.invert ? 11-v : v;
+      return `<div class="sc-mini-crit">
+        <span class="sc-mini-crit-name">${cr.icon} ${cr.name}</span>
+        <div class="sc-mini-bar"><div class="sc-mini-bar-fill" style="width:${eff*10}%;background:${c.hex}"></div></div>
+        <span class="sc-mini-crit-val" style="color:${c.hex}">${v}</span>
       </div>`;
     }).join('');
     return `
-      <div class="score-card${rank===0?' rank-1':''}" style="border-color:${rank===0?c.hex:c.border}">
-        <div class="sc-body">
-          <div class="sc-top-band" style="background:${c.hex}"></div>
-          <div class="sc-main">
-            <div class="sc-content">
-              ${rankBadge}
-              <div class="sc-name">${esc(S.options[oi].name)}</div>
-              ${S.options[oi].desc?`<div class="sc-desc">${esc(S.options[oi].desc)}</div>`:''}
+      <div class="sc-card${rank===0?' sc-card-winner':''}" style="border-color:${rank===0?c.hex:c.border}">
+        <div class="sc-card-accent" style="background:${c.hex}"></div>
+        <div class="sc-card-body">
+          <div class="sc-card-left">
+            <div class="sc-card-top">
+              <div class="sc-card-rank" style="background:${c.bg};color:${c.hex};border-color:${c.border}">${rankLbl}</div>
+              <div class="sc-card-name">${esc(S.options[oi].name)}</div>
             </div>
-            <div class="sc-score-block">
-              <div class="sc-num" style="color:${c.hex}">${sc}</div>
-              <div class="sc-denom">/100</div>
-            </div>
+            <div class="sc-card-crits">${miniCrits}</div>
           </div>
-          <div class="sc-bar-row">
-            <div class="sc-bar"><div class="sc-bar-fill" style="width:${sc}%;background:${c.hex}"></div></div>
+          <div class="sc-card-gauge">
+            <svg viewBox="0 0 52 52" width="52" height="52" style="transform:rotate(-90deg)">
+              <circle fill="none" stroke="var(--bg2)" stroke-width="5" cx="26" cy="26" r="${r}"/>
+              <circle fill="none" stroke="${c.hex}" stroke-width="5" stroke-linecap="round"
+                cx="26" cy="26" r="${r}"
+                stroke-dasharray="${circ}" stroke-dashoffset="${off}"
+                style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1)"/>
+            </svg>
+            <div class="sc-card-gauge-label">
+              <div class="sc-card-num" style="color:${c.hex}">${sc}</div>
+              <div class="sc-card-den">/100</div>
+            </div>
           </div>
         </div>
       </div>`;
   }).join('');
 
-  // Breakdown
+  // Breakdown table
   const bkHeader=`<div class="bk-row hdr">
     <div class="bk-cell crit-col hdr-cell">${tr('bk_crit')}</div>
     ${S.options.map((o,i)=>`<div class="bk-cell opt-col hdr-cell" style="color:${COLORS[i].hex}">${LETTERS[i]}. ${esc(o.name.substring(0,10))}${o.name.length>10?'…':''}</div>`).join('')}
@@ -2299,24 +2449,17 @@ function buildResults(){
         ${cr.weight>1?`<span style="font-size:.62rem;background:var(--amber-bg);color:var(--amber);padding:2px 5px;border-radius:3px;border:1px solid #f0d080;font-weight:700">×${cr.weight}</span>`:''}
         ${cr.invert?`<span class="inv-tag">↓</span>`:''}
       </div>
-      ${vals.map((v,i)=>{
-        const c=COLORS[i];
-        return `<div class="bk-cell opt-col"><div class="opt-cell-in">
-          <div class="opt-pill" style="background:${c.bg};color:${c.hex};font-weight:${v===maxV?700:400}">${v}</div>
-          <div class="mini-bar"><div class="mini-bar-fill" style="width:${v*10}%;background:${c.hex}"></div></div>
-        </div></div>`;
-      }).join('')}
+      ${vals.map((v,i)=>{const c=COLORS[i];return `<div class="bk-cell opt-col"><div class="opt-cell-in">
+        <div class="opt-pill" style="background:${c.bg};color:${c.hex};font-weight:${v===maxV?700:400}">${v}</div>
+        <div class="mini-bar"><div class="mini-bar-fill" style="width:${v*10}%;background:${c.hex}"></div></div>
+      </div></div>`;}).join('')}
     </div>`;
   }).join('');
 
-
   // Notes
-  // Analysis
-  const an=genAnalysis(scores,winner,ranked);
-
   const hasNotes=S.notes.some(n=>n.trim());
   const notesHTML=hasNotes?`
-    <div class="notes-res">
+    <div class="notes-res" style="margin-top:14px">
       <div class="notes-res-head">${tr('notes_head')}</div>
       <div class="notes-res-body" style="grid-template-columns:repeat(${Math.min(S.options.length,3)},1fr)">
         ${S.options.map((o,i)=>`
@@ -2329,102 +2472,70 @@ function buildResults(){
 
   document.getElementById('resContent').innerHTML=`
 
-    <!-- ① EN-TÊTE + VERDICT COMPACT -->
-    <div class="res-header">
-      <div class="page-eyebrow">${tr('res_eyebrow')}</div>
-      <div class="res-decision-title">${esc(S.decision)}</div>
-      <div class="verdict-inline" style="background:${vstyle.includes('fffbea')?'#fffbea':cW.bg};border:1.5px solid ${vstyle.includes('fffbea')?'#f0d080':cW.border}">
+    <!-- ① EN-TÊTE -->
+    <div class="main">
+      <div class="page-eyebrow anim">${tr('res_eyebrow')}</div>
+      <div class="page-title anim d1">${esc(S.decision)}</div>
+      <div class="verdict-inline anim d2" style="background:#fffbea;border:1.5px solid #f0d080">
         <span class="verdict-inline-emoji">${vemoji}</span>
         <div class="verdict-inline-text">
           <div class="verdict-inline-title">${vtitle}</div>
-          <div class="verdict-inline-sub">${vsub}</div>
+          <div class="verdict-inline-sub" id="interpSub">${vsub}</div>
         </div>
       </div>
-    </div>
 
-    <!-- ② OUTILS EN PILLS CÔTE À CÔTE -->
-    <div class="tool-pills">
+      <!-- ② SCORES -->
+      <div class="sc-cards-row anim d3" id="scoresRow" style="grid-template-columns:repeat(${ncols},1fr)">${scoreCards}</div>
 
-      <!-- Peur -->
-      <div class="tool-pill" id="fearBox">
-        <div class="tool-pill-head" onclick="toggleFearBox()">
-          <div class="tool-pill-icon">🫀</div>
-          <div class="tool-pill-text">
-            <div class="tool-pill-title">${tr('fear_title')}</div>
-            <div class="tool-pill-sub">${tr('fear_sub')}</div>
+      <!-- ③ SCÉNARIOS — juste sous les scores -->
+      <div class="scenario-panel" id="scenarioBox" style="margin-top:14px">
+        <div class="scenario-panel-head" onclick="toggleScenarioBox()">
+          <span class="scenario-panel-icon">🎛️</span>
+          <div class="scenario-panel-text">
+            <div class="scenario-panel-title">${tr('scenario_title')}</div>
+            <div class="scenario-panel-sub">${tr('scenario_sub')}</div>
           </div>
-          <div class="toggle-wrap" style="margin-left:8px">
-            <span class="toggle-label" id="fearToggleLabel">${LANG==='fr'?'Non':'Off'}</span>
-            <label class="toggle" style="width:36px;height:20px">
-              <input type="checkbox" id="fearToggle" onchange="onFearToggle(this.checked)" onclick="event.stopPropagation()">
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb" style="width:14px;height:14px;top:3px;left:3px"></div>
-            </label>
+          <div class="scenario-panel-chevron">▾</div>
+        </div>
+        <div class="scenario-panel-body">
+          <div class="sc-tabs">
+            <button class="sc-tab active" onclick="switchScTab('crits',this)">${LANG==='fr'?'🎚️ Critères':'🎚️ Criteria'}</button>
+            <button class="sc-tab" onclick="switchScTab('emotions',this)">${LANG==='fr'?'🫀 Émotions':'🫀 Emotions'}</button>
+          </div>
+          <div class="sc-tab-content">
+            <div class="sc-tab-pane active" id="scPaneCrits"></div>
+            <div class="sc-tab-pane" id="scPaneEmotions"></div>
           </div>
         </div>
-        <div class="tool-pill-body" id="fearBody"></div>
       </div>
 
-      <!-- Scénarios -->
-      <div class="tool-pill" id="scenarioBox">
-        <div class="tool-pill-head" onclick="toggleScenarioBox()">
-          <div class="tool-pill-icon">🎛️</div>
-          <div class="tool-pill-text">
-            <div class="tool-pill-title">${tr('scenario_title')}</div>
-            <div class="tool-pill-sub">${tr('scenario_sub')}</div>
+      <!-- ④ Radar -->
+      <div class="res-divider" style="margin-top:22px"><span class="res-divider-label">${tr('div_visual')}</span></div>
+      <div class="res-section">
+        <div class="res-section-body" style="padding:16px">
+          <div class="res-radar-wrap">
+            <canvas id="radarC" width="480" height="320" style="max-width:100%"></canvas>
           </div>
-          <div class="scenario-chevron" style="color:var(--muted2);font-size:.8rem;margin-left:8px">▾</div>
-        </div>
-        <div class="tool-pill-body scenario-body" id="scenarioBody"></div>
-      </div>
-
-    </div>
-
-    <!-- ③ SCORES -->
-    <div class="res-divider" style="margin-top:24px"><span class="res-divider-label">${tr('div_scores')}</span></div>
-    <div class="scores-row" id="scoresRow" style="grid-template-columns:repeat(${ncols},1fr)">${scoreCards}</div>
-
-    <!-- ④ INTERPRÉTATION IA -->
-    <div class="interp-box" style="margin-top:20px">
-      <div class="interp-head">
-        <span>💬</span>
-        <div class="interp-head-title">${tr('interp_title')}</div>
-        <div class="interp-badge">IA</div>
-      </div>
-      <div id="interpContent">
-        <div class="interp-loading">
-          <div class="skel w100"></div>
-          <div class="skel w80"></div>
-          <div class="skel w100"></div>
-          <div class="skel w60"></div>
+          <div class="res-radar-legend">
+            ${S.options.map((o,i)=>`<span><span class="leg-dot" style="background:${COLORS[i].hex}"></span>${esc(o.name)}</span>`).join('')}
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- ⑤ PROFIL VISUEL -->
-    <div class="res-divider" style="margin-top:32px"><span class="res-divider-label">${tr('div_visual')}</span></div>
-    <div class="radar-section">
-      <div style="display:flex;justify-content:center">
-        <canvas id="radarC" width="480" height="360" style="max-width:100%"></canvas>
-      </div>
-      <div class="radar-legend">
-        ${S.options.map((o,i)=>`<span><span class="leg-dot" style="background:${COLORS[i].hex}"></span>${esc(o.name)}</span>`).join('')}
-      </div>
-    </div>
+      <!-- ⑤ Tableau -->
+      <div class="res-divider"><span class="res-divider-label">${tr('div_detail')}</span></div>
+      <div class="bk-table">${bkHeader}${bkRows}</div>
 
-    <!-- ⑥ DÉTAIL PAR CRITÈRE -->
-    <div class="res-divider"><span class="res-divider-label">${tr('div_detail')}</span></div>
-    <div class="bk-table">${bkHeader}${bkRows}</div>
+      <!-- ⑥ Notes -->
+      ${hasNotes?`<div class="res-divider"><span class="res-divider-label">${tr('div_notes')}</span></div>${notesHTML}`:''}
 
-    <!-- ⑦ NOTES PERSONNELLES -->
-    ${hasNotes?`<div class="res-divider"><span class="res-divider-label">${tr('div_notes')}</span></div>${notesHTML}`:''}
-
-    <!-- ⑧ ACTIONS -->
-    <div class="res-actions">
-      <button class="btn btn-secondary" onclick="nav('page-step3')">${tr('back_notes')}</button>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn btn-secondary" onclick="window.print()">${tr('export_pdf')}</button>
-        <button class="btn btn-primary" onclick="restart()">${tr('new_decision')}</button>
+      <!-- ⑦ Actions -->
+      <div class="res-actions">
+        <button class="btn btn-secondary" onclick="nav('page-step3')">${tr('back_notes')}</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-secondary" onclick="window.print()">${tr('export_pdf')}</button>
+          <button class="btn btn-primary" onclick="restart()">${tr('new_decision')}</button>
+        </div>
       </div>
     </div>`;
 }
@@ -2501,14 +2612,14 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
     });
     const data = await res.json();
     const text = data?.content?.[0]?.text || null;
-    const el = document.getElementById('interpContent');
+    const el = document.getElementById('interpSub');
     if (!el) return;
     if (text) {
       const formatted = text
         .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-        .replace(/\n\n/g,'</p><p>')
-        .replace(/\n/g,'<br>');
-      el.innerHTML=`<div class="interp-body"><div class="interp-text"><p>${formatted}</p></div></div>`;
+        .replace(/\n\n+/g,' ')
+        .replace(/\n/g,' ');
+      el.innerHTML = formatted;
     } else { throw new Error(); }
   } catch(e) {
     // Fallback local si l'API échoue
@@ -2542,29 +2653,64 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
             +(topR?` "${S.options[r].name}" remains stronger on <strong>${topR.name}</strong> — worth considering if that's a priority.`:'')
           : `"${S.options[w].name}" ressort en tête avec ${diff} points d'avance.`
             +(topW?` Son principal atout : <strong>${topW.name}</strong>.`:'')
-            +(topR?` "${S.options[r].name}" reste plus fort sur <strong>${topR.name}</strong> — à peser si c'est une priorité.`:'')); 
+            +(topR?` "${S.options[r].name}" reste plus fort sur <strong>${topR.name}</strong> — à peser si c'est une priorité.`:''));
 
-    const el=document.getElementById('interpContent');
-    if(el) el.innerHTML=`<div class="interp-body"><div class="interp-text"><p>${msg}</p></div></div>`;
+    const el2=document.getElementById('interpSub');
+    if(el2) el2.innerHTML = msg;
   }
 }
 
-/* ─── SCENARIO PANEL ────────────────────── */
+/* ─── SCENARIO PANEL UNIFIÉ ──────────────── */
 
-// Set des IDs de critères actifs dans le scénario (tous actifs par défaut)
+// Critères actifs dans le scénario
 let S_active = new Set();
+// Émotion active (null = aucune)
+let S_emotion = null;
+
+// Définition des émotions avec mots-clés
+const EMOTIONS = {
+  fear:    { ids: new Set(['fin_risk','risk','stress','jobsec','fin_stab','cost','rev','complex','dep','workload']),
+             words: /risque|peur|stress|sécurité|securite|danger|incertitude|coût|cout|complexité|complexite|difficulté|difficulte|charge|instabilité|instabilite|anxiété|anxiete/i,
+             label: { fr:'😨 Peur', en:'😨 Fear' } },
+  urgency: { ids: new Set(['deadline','time','workload','stress']),
+             words: /urgence|délai|delai|pression|temps|rapidité|rapidite|vitesse|stress/i,
+             label: { fr:'⏱️ Urgence', en:'⏱️ Urgency' } },
+  ego:     { ids: new Set(['prestige','status','recog','social','rep']),
+             words: /prestige|statut|réputation|reputation|reconnaissance|fierté|fierte|image|ego|status/i,
+             label: { fr:'🎭 Ego', en:'🎭 Ego' } },
+};
+
+function getEmotionCrits(emotion){
+  const def = EMOTIONS[emotion];
+  if(!def) return new Set();
+  return new Set(S.criteria.filter(c=>{
+    if(def.ids.has(c.id)) return true;
+    if(c.custom) return def.words.test(c.name);
+    return false;
+  }).map(c=>c.id));
+}
 
 function initScenario(){
   S_active = new Set(S.criteria.map(c=>c.id));
+  S_emotion = null;
   renderScenarioBody();
+  renderEmotionPane();
 }
 
 function toggleScenarioBox(){
   const sb = document.getElementById('scenarioBox');
   if(!sb) return;
-  const opening = !sb.classList.contains('open');
-  _setPillOpen('scenarioBox', opening);
-  if(opening) _setPillOpen('fearBox', false);
+  sb.classList.toggle('open');
+  const body = sb.querySelector('.scenario-panel-body');
+  if(body) body.style.display = sb.classList.contains('open') ? 'block' : 'none';
+}
+
+function switchScTab(tab, el){
+  document.querySelectorAll('.sc-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.sc-tab-pane').forEach(p=>p.classList.remove('active'));
+  const pane = document.getElementById(tab==='crits'?'scPaneCrits':'scPaneEmotions');
+  if(pane) pane.classList.add('active');
 }
 
 function calcScoreScenario(oi){
@@ -2579,10 +2725,21 @@ function calcScoreScenario(oi){
   return Math.round((tot/max)*100);
 }
 
+function calcScoreFiltered(oi, excludeIds){
+  let tot=0, max=0;
+  S.criteria.forEach(c=>{
+    if(excludeIds.has(c.id)) return;
+    let v=S.scores[c.id]?.[oi]??5;
+    if(c.invert) v=11-v;
+    tot+=v*c.weight; max+=10*c.weight;
+  });
+  if(max===0) return null;
+  return Math.round((tot/max)*100);
+}
+
 function toggleScenarioCrit(id){
   if(S_active.has(id)) S_active.delete(id);
   else S_active.add(id);
-  // Toujours au moins 1 critère actif
   if(S_active.size===0) S_active.add(id);
   renderScenarioBody();
   updateScenarioScores();
@@ -2595,7 +2752,7 @@ function resetScenario(){
 }
 
 function renderScenarioBody(){
-  const body = document.getElementById('scenarioBody');
+  const body = document.getElementById('scPaneCrits');
   if(!body) return;
   const activeCount = S_active.size;
   const rows = S.criteria.map(c=>{
@@ -2613,12 +2770,10 @@ function renderScenarioBody(){
         </label>
       </div>`;
   }).join('');
-
   const insight = genScenarioInsight();
-
   body.innerHTML=`
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
-      <span style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <span style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">
         ${tr('scenario_active',activeCount,S.criteria.length)}
       </span>
       <button class="scenario-reset" onclick="resetScenario()">${tr('scenario_reset')}</button>
@@ -2626,6 +2781,123 @@ function renderScenarioBody(){
     <div class="sc-crit-list">${rows}</div>
     <div class="scenario-summary">${insight}</div>`;
 }
+
+function renderEmotionPane(){
+  const pane = document.getElementById('scPaneEmotions');
+  if(!pane) return;
+
+  // Chips émotions
+  const chips = Object.entries(EMOTIONS).map(([key,def])=>{
+    const crits = [...getEmotionCrits(key)];
+    const count = crits.length;
+    const label = def.label[LANG]||def.label.fr;
+    const active = S_emotion===key;
+    return `<div class="emotion-chip${active?' active':''}" onclick="toggleEmotion('${key}')">
+      ${label}
+      <span class="emotion-chip-count">${count}</span>
+    </div>`;
+  }).join('');
+
+  pane.innerHTML=`
+    <p style="font-size:.75rem;color:var(--muted);margin-bottom:10px;line-height:1.5">
+      ${LANG==='fr'
+        ? 'Sélectionnez une émotion pour voir comment vos scores changent si ces critères étaient mis de côté.'
+        : 'Select an emotion to see how scores change if those criteria were excluded.'}
+    </p>
+    <div class="emotion-filters">${chips}</div>
+    <div id="emotionResult"></div>`;
+
+  renderEmotionResult();
+}
+
+function toggleEmotion(key){
+  S_emotion = S_emotion===key ? null : key;
+  renderEmotionPane();
+  updateScenarioScores();
+}
+
+function renderEmotionResult(){
+  const el = document.getElementById('emotionResult');
+  if(!el) return;
+
+  if(!S_emotion){
+    el.innerHTML=`<div class="emotion-none">${LANG==='fr'
+      ? 'Aucune émotion sélectionnée — tous les critères sont inclus.'
+      : 'No emotion selected — all criteria are included.'}</div>`;
+    return;
+  }
+
+  const emotionIds = getEmotionCrits(S_emotion);
+  if(emotionIds.size===0){
+    el.innerHTML=`<div class="emotion-none">${LANG==='fr'
+      ? 'Aucun critère lié à cette émotion n\'a été sélectionné dans votre analyse.'
+      : 'No criteria linked to this emotion were selected in your analysis.'}</div>`;
+    return;
+  }
+
+  const tags = S.criteria.map(c=>{
+    const excluded = emotionIds.has(c.id);
+    return `<span class="emotion-crit-tag ${excluded?'excluded':'included'}">${c.icon} ${c.name}${excluded?' ✕':''}</span>`;
+  }).join('');
+
+  const normalScores   = S.options.map((_,i)=>calcScore(i));
+  const filteredScores = S.options.map((_,i)=>calcScoreFiltered(i,emotionIds));
+  const ranked         = [...S.options.map((_,i)=>i)].sort((a,b)=>normalScores[b]-normalScores[a]);
+  const filtRanked     = [...S.options.map((_,i)=>i)].sort((a,b)=>(filteredScores[b]??0)-(filteredScores[a]??0));
+  const switchedWinner = filtRanked[0] !== ranked[0];
+
+  const rows = ranked.map(oi=>{
+    const c  = COLORS[oi];
+    const ns = normalScores[oi];
+    const fs = filteredScores[oi];
+    const d  = fs!==null ? fs-ns : 0;
+    const cls= d>2?'up':d<-2?'down':'same';
+    const sign=d>0?'+':'';
+    return `<div class="fear-opt-row">
+      <div class="fear-opt-name" style="color:${c.hex}">${LETTERS[oi]}. ${esc(S.options[oi].name)}</div>
+      <div class="fear-scores">
+        <div class="fear-score-block">
+          <div class="fear-score-val" style="color:${c.hex}">${ns}</div>
+          <div class="fear-score-lbl">${tr('fear_score_real')}</div>
+        </div>
+        ${fs!==null?`
+        <div class="fear-arrow">→</div>
+        <div class="fear-score-block">
+          <div class="fear-score-val" style="color:#7c3aed">${fs}</div>
+          <div class="fear-score-lbl">${LANG==='fr'?'Sans émotion':'Emotion-free'}</div>
+        </div>
+        <span class="fear-delta ${cls}">${sign}${d}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Insight narratif
+  let insight='';
+  if(switchedWinner){
+    const nN=esc(S.options[filtRanked[0]].name), oN=esc(S.options[ranked[0]].name);
+    insight=`<div class="emotion-insight">💡 ${LANG==='fr'
+      ?`Sans ces critères, <strong>"${nN}"</strong> passerait en tête — c'est probablement cette émotion qui oriente votre décision vers <strong>"${oN}"</strong>.`
+      :`Without these criteria, <strong>"${nN}"</strong> would take the lead — this emotion may be steering your decision toward <strong>"${oN}"</strong>.`}</div>`;
+  } else {
+    const maxD = ranked.reduce((b,oi)=>{const d=(filteredScores[oi]??0)-normalScores[oi];return Math.abs(d)>Math.abs(b.d)?{oi,d}:b},{oi:ranked[0],d:0});
+    if(Math.abs(maxD.d)>4){
+      insight=`<div class="emotion-insight">💡 ${LANG==='fr'
+        ?`Le classement reste identique, mais <strong>"${esc(S.options[maxD.oi].name)}"</strong> ${maxD.d>0?'gagne':'perd'} <strong>${Math.abs(maxD.d)} pts</strong> sans ces critères.`
+        :`The ranking stays the same, but <strong>"${esc(S.options[maxD.oi].name)}"</strong> ${maxD.d>0?'gains':'loses'} <strong>${Math.abs(maxD.d)} pts</strong> without these criteria.`}</div>`;
+    } else {
+      insight=`<div class="emotion-insight">💡 ${LANG==='fr'
+        ?'Le classement reste identique — votre décision n\'est pas fortement influencée par cette émotion.'
+        :'The ranking stays the same — your decision is not strongly influenced by this emotion.'}</div>`;
+    }
+  }
+
+  el.innerHTML=`
+    <div class="emotion-crit-tags">${tags}</div>
+    <div class="fear-comparison">${rows}</div>
+    ${insight}`;
+}
+
+
 
 function genScenarioInsight(){
   const disabledCrits = S.criteria.filter(c=>!S_active.has(c.id));
@@ -2706,225 +2978,73 @@ function genScenarioInsight(){
 
 
 function updateScenarioScores(){
-  const baseScores  = S.options.map((_,i)=>calcScore(i));
-  const scenScores  = S.options.map((_,i)=>calcScoreScenario(i));
-  const scenRanked  = [...S.options.map((_,i)=>i)].sort((a,b)=>scenScores[b]-scenScores[a]);
-  const baseRanked  = [...S.options.map((_,i)=>i)].sort((a,b)=>baseScores[b]-baseScores[a]);
-  const allActive   = S_active.size === S.criteria.length;
+  const baseScores = S.options.map((_,i)=>calcScore(i));
+  const scenScores = S.options.map((_,i)=>calcScoreScenario(i));
+  const scenRanked = [...S.options.map((_,i)=>i)].sort((a,b)=>scenScores[b]-scenScores[a]);
+  const allActive  = S_active.size === S.criteria.length && !S_emotion;
 
   const row = document.getElementById('scoresRow');
   if(!row) return;
 
-  // Rebuild score cards with updated values
-  const ncols = Math.min(S.options.length,3);
-  row.style.gridTemplateColumns=`repeat(${ncols},1fr)`;
-
-  // Re-rank by scenario scores
-  const rankLabels=tr('rank_labels');
-  row.innerHTML = scenRanked.map((oi,rank)=>{
+  const rankLabels = tr('rank_labels');
+  row.innerHTML = scenRanked.map((oi, rank) => {
     const c = COLORS[oi];
     const sc = scenScores[oi];
     const base = baseScores[oi];
     const delta = sc - base;
-    const deltaHTML = allActive ? '' :
-      `<span class="sc-scenario-delta ${delta>2?'up':delta<-2?'down':'same'}">
-        ${delta>0?'+':''}${delta} pts
-      </span>`;
-
-    const rankBadge = rank<3
-      ? `<div class="rank-badge" style="background:${c.bg};color:${c.hex};border:1px solid ${c.border}">${rankLabels[rank]}</div>`
-      : '';
-
-    const miniCrits = [...S_active].map(id=>{
-      const cr = S.criteria.find(x=>x.id===id); if(!cr) return '';
-      const v = S.scores[cr.id]?.[oi]??5;
-      return `<div class="sc-mini-row">
-        <span class="sc-mini-name">${cr.icon} ${cr.name}</span>
-        <div class="sc-mini-bar-wrap"><div class="sc-mini-bar-fill" style="width:${v*10}%;background:${c.hex}"></div></div>
-        <span class="sc-mini-val">${v}</span>
+    const rankLbl = rank < 3 ? rankLabels[rank] : `#${rank+1}`;
+    const r = 22, circ = (2*Math.PI*r).toFixed(2);
+    const off = (circ - (sc/100)*circ).toFixed(2);
+    const deltaTag = allActive ? '' :
+      `<div class="sc-card-delta ${delta>2?'up':delta<-2?'down':'same'}">${delta>0?'+':''}${delta} pts</div>`;
+    const sortedCrits = [...S.criteria].filter(cr=>S_active.has(cr.id)).sort((a,b)=>{
+      const va=S.scores[a.id]?.[oi]??5; const vb=S.scores[b.id]?.[oi]??5;
+      const ea=a.invert?11-va:va; const eb=b.invert?11-vb:vb;
+      return (eb*b.weight)-(ea*a.weight);
+    }).slice(0,4);
+    const miniCrits = sortedCrits.map(cr=>{
+      const v=S.scores[cr.id]?.[oi]??5; const eff=cr.invert?11-v:v;
+      return `<div class="sc-mini-crit">
+        <span class="sc-mini-crit-name">${cr.icon} ${cr.name}</span>
+        <div class="sc-mini-bar"><div class="sc-mini-bar-fill" style="width:${eff*10}%;background:${c.hex}"></div></div>
+        <span class="sc-mini-crit-val" style="color:${c.hex}">${v}</span>
       </div>`;
-    }).slice(0,4).join('');
-
+    }).join('');
     return `
-      <div class="score-card${rank===0?' rank-1':''}" style="border-color:${rank===0?c.hex:c.border}">
-        <div class="sc-body">
-          <div class="sc-top-band" style="background:${c.hex}"></div>
-          <div class="sc-main">
-            <div class="sc-content">
-              ${rankBadge}
-              <div class="sc-name">${esc(S.options[oi].name)}</div>
-              ${S.options[oi].desc?`<div class="sc-desc">${esc(S.options[oi].desc)}</div>`:''}
-              ${deltaHTML}
+      <div class="sc-card${rank===0?' sc-card-winner':''}" style="border-color:${rank===0?c.hex:c.border}">
+        <div class="sc-card-accent" style="background:${c.hex}"></div>
+        <div class="sc-card-body">
+          <div class="sc-card-left">
+            <div class="sc-card-top">
+              <div class="sc-card-rank" style="background:${c.bg};color:${c.hex};border-color:${c.border}">${rankLbl}</div>
+              <div class="sc-card-name">${esc(S.options[oi].name)}</div>
+              ${deltaTag}
             </div>
-            <div class="sc-score-block">
-              <div class="sc-num" style="color:${c.hex}">${sc}</div>
-              <div class="sc-denom">/100</div>
-            </div>
+            <div class="sc-card-crits">${miniCrits}</div>
           </div>
-          <div class="sc-bar-row">
-            <div class="sc-bar"><div class="sc-bar-fill" style="width:${sc}%;background:${c.hex}"></div></div>
+          <div class="sc-card-gauge">
+            <svg viewBox="0 0 52 52" width="52" height="52" style="transform:rotate(-90deg)">
+              <circle fill="none" stroke="var(--bg2)" stroke-width="5" cx="26" cy="26" r="${r}"/>
+              <circle fill="none" stroke="${c.hex}" stroke-width="5" stroke-linecap="round"
+                cx="26" cy="26" r="${r}"
+                stroke-dasharray="${circ}" stroke-dashoffset="${off}"
+                style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1)"/>
+            </svg>
+            <div class="sc-card-gauge-label">
+              <div class="sc-card-num" style="color:${c.hex}">${sc}</div>
+              <div class="sc-card-den">/100</div>
+            </div>
           </div>
         </div>
       </div>`;
   }).join('');
 
-  // Redraw radar with scenario scores
-  setTimeout(()=>drawRadarScenario(scenScores),50);
-
-  // Refresh narrative insight in panel
-  const insightEl = document.querySelector('#scenarioBody .scenario-summary');
+  setTimeout(()=>drawRadarScenario(scenScores), 50);
+  const insightEl = document.querySelector('#scPaneCrits .scenario-summary');
   if(insightEl) insightEl.innerHTML = genScenarioInsight();
 }
 
-/* ─── FEAR TOGGLE ───────────────────────── */
 
-// IDs de critères considérés comme "liés à la peur/prudence"
-// Ces critères sont détectés silencieusement, l'utilisateur ne les nomme jamais
-const FEAR_IDS = new Set([
-  'fin_risk',  // Risque financier
-  'risk',      // Risque global
-  'stress',    // Niveau de stress
-  'jobsec',    // Sécurité de l'emploi
-  'fin_stab',  // Stabilité financière
-  'cost',      // Coût initial
-  'rev',       // Réversibilité
-  'complex',   // Complexité
-  'dep',       // Dépendances
-  'workload',  // Charge de travail
-]);
-
-// Détecte aussi les critères custom qui contiennent des mots-clés de peur
-function isFearCrit(c){
-  if(FEAR_IDS.has(c.id)) return true;
-  if(c.custom){
-    const fearWords=/risque|peur|stress|sécurité|securite|danger|incertitude|coût|cout|complexité|complexite|difficulté|difficulte|charge|instabilité|instabilite|anxiété|anxiete/i;
-    return fearWords.test(c.name);
-  }
-  return false;
-}
-
-function calcScoreFiltered(oi, excludeIds){
-  let tot=0, max=0;
-  S.criteria.forEach(c=>{
-    if(excludeIds.has(c.id)) return;
-    let v=S.scores[c.id]?.[oi]??5;
-    if(c.invert) v=11-v;
-    tot+=v*c.weight; max+=10*c.weight;
-  });
-  if(max===0) return null;
-  return Math.round((tot/max)*100);
-}
-
-function _setPillOpen(id, open){
-  const el = document.getElementById(id);
-  if(!el) return;
-  if(open) el.classList.add('open'); else el.classList.remove('open');
-  const body = el.querySelector('.tool-pill-body');
-  if(body) body.style.display = open ? 'block' : 'none';
-}
-
-function toggleFearBox(){
-  const fb = document.getElementById('fearBox');
-  if(!fb) return;
-  const opening = !fb.classList.contains('open');
-  _setPillOpen('fearBox', opening);
-  if(opening) _setPillOpen('scenarioBox', false);
-}
-
-function onFearToggle(checked){
-  _setPillOpen('fearBox', true);
-  _setPillOpen('scenarioBox', false);
-  document.getElementById('fearToggleLabel').textContent = checked ? (LANG==='fr'?'Oui':'On') : (LANG==='fr'?'Non':'Off');
-  document.getElementById('fearToggleLabel').className = 'toggle-label' + (checked ? ' on' : '');
-  renderFearBody(checked);
-}
-
-function renderFearBody(active){
-  const fearCrits = S.criteria.filter(isFearCrit);
-  const fearIds   = new Set(fearCrits.map(c=>c.id));
-  const body      = document.getElementById('fearBody');
-
-  if(fearCrits.length === 0){
-    body.innerHTML=`<div class="fear-none">${tr('fear_none')}</div>`;
-    return;
-  }
-
-  const allTags = S.criteria.map(c=>{
-    const isFear = isFearCrit(c);
-    const cls = (!active || !isFear) ? 'active' : 'inactive';
-    return `<span class="fear-crit-tag ${cls}">${c.icon} ${c.name}${isFear&&active?' ✕':''}</span>`;
-  }).join('');
-
-  const normalScores   = S.options.map((_,i)=>calcScore(i));
-  const fearlessScores = S.options.map((_,i)=>active?calcScoreFiltered(i,fearIds):null);
-
-  const ranked         = [...S.options.map((_,i)=>i)].sort((a,b)=>normalScores[b]-normalScores[a]);
-  const fearlessRanked = active
-    ? [...S.options.map((_,i)=>i)].sort((a,b)=>(fearlessScores[b]??0)-(fearlessScores[a]??0))
-    : null;
-
-  const winnerNormal   = ranked[0];
-  const winnerFearless = fearlessRanked?.[0];
-  const switchedWinner = active && winnerFearless !== winnerNormal;
-
-  const rows = ranked.map(oi=>{
-    const c  = COLORS[oi];
-    const ns = normalScores[oi];
-    const fs = fearlessScores?.[oi] ?? null;
-    let deltaHTML = '';
-    if(active && fs !== null){
-      const d    = fs - ns;
-      const cls  = d > 2 ? 'up' : d < -2 ? 'down' : 'same';
-      const sign = d > 0 ? '+' : '';
-      deltaHTML  = `<span class="fear-delta ${cls}">${tr('fear_delta_lbl',sign,d)}</span>`;
-    }
-    return `
-      <div class="fear-opt-row">
-        <div class="fear-opt-name" style="color:${c.hex}">${LETTERS[oi]}. ${esc(S.options[oi].name)}</div>
-        <div class="fear-scores">
-          <div class="fear-score-block">
-            <div class="fear-score-val" style="color:${c.hex}">${ns}</div>
-            <div class="fear-score-lbl">${tr('fear_score_real')}</div>
-          </div>
-          ${active && fs!==null ? `
-          <div class="fear-arrow">→</div>
-          <div class="fear-score-block">
-            <div class="fear-score-val" style="color:#7c3aed">${fs}</div>
-            <div class="fear-score-lbl">${tr('fear_score_fearless')}</div>
-          </div>
-          ${deltaHTML}` : ''}
-        </div>
-      </div>`;
-  }).join('');
-
-  let insight = '';
-  if(active){
-    if(switchedWinner){
-      insight = `<div class="fear-insight">${tr('fear_switched', esc(S.options[winnerFearless].name), esc(S.options[winnerNormal].name))}</div>`;
-    } else {
-      const maxDelta = ranked.reduce((best,oi)=>{
-        const d = (fearlessScores[oi]??0) - normalScores[oi];
-        return Math.abs(d) > Math.abs(best.d) ? {oi,d} : best;
-      },{oi:ranked[0],d:0});
-
-      if(Math.abs(maxDelta.d) > 5){
-        const optN = esc(S.options[maxDelta.oi].name);
-        const pts  = Math.abs(maxDelta.d);
-        insight = `<div class="fear-insight">${maxDelta.d > 0 ? tr('fear_gains',optN,pts) : tr('fear_loses',optN,pts)}</div>`;
-      } else {
-        insight = `<div class="fear-insight">${tr('fear_consistent')}</div>`;
-      }
-    }
-  }
-
-  body.innerHTML=`
-    <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">
-      ${active ? tr('fear_toggle_lbl_on') : tr('fear_toggle_lbl_off')}
-    </div>
-    <div class="fear-crits">${allTags}</div>
-    <div class="fear-comparison">${rows}</div>
-    ${insight}`;
-}
 
 function genAnalysis(scores,winner,ranked){
   const wName=S.options[winner].name;
