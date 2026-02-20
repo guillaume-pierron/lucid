@@ -55,9 +55,15 @@ body{
   background:var(--white);
   border-bottom:1px solid var(--border);
   padding:14px 28px;
-  display:flex;align-items:center;gap:16px;
+  display:flex;align-items:center;
   position:sticky;top:0;z-index:50;
   box-shadow:0 1px 4px rgba(0,0,0,0.05);
+}
+.app-header .step-progress{
+  position:absolute;left:50%;transform:translateX(-50%);
+}
+.app-header .lang-switcher{
+  margin-left:auto;position:static;
 }
 .logo{
   font-family:'Lora',serif;
@@ -613,6 +619,19 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 }
 .verdict-sub{font-size:.86rem;color:var(--muted);line-height:1.6;}
 
+/* verdict intégré dans le header résultats */
+.verdict-inline{
+  display:flex;align-items:center;gap:14px;
+  border-radius:10px;padding:14px 18px;
+  margin-top:14px;
+}
+.verdict-inline-emoji{font-size:1.6rem;flex-shrink:0;}
+.verdict-inline-title{
+  font-family:'Lora',serif;
+  font-size:1.05rem;font-weight:700;margin-bottom:3px;
+}
+.verdict-inline-sub{font-size:.82rem;color:var(--muted);line-height:1.5;}
+
 /* ── SECTION DIVIDER ─────────────────────── */
 .res-divider{
   display:flex;align-items:center;gap:10px;
@@ -635,58 +654,122 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   border:1.5px solid var(--border);
   overflow:hidden;
   box-shadow:var(--shadow);
-  transition:box-shadow .18s;
+  transition:box-shadow .2s, transform .2s;
   display:flex;flex-direction:column;
 }
-.score-card:hover{box-shadow:var(--shadow-lg);}
-.score-card.rank-1{border-width:2px;}
-.sc-accent{height:4px;width:100%;flex-shrink:0;}
-.sc-body{padding:18px 20px 16px;}
-.rank-badge{
-  display:inline-flex;align-items:center;
-  font-size:.65rem;font-weight:700;
-  padding:3px 10px;border-radius:20px;
-  letter-spacing:.05em;margin-bottom:10px;
-  white-space:nowrap;
+.score-card:hover{ box-shadow:var(--shadow-lg); transform:translateY(-2px); }
+.score-card.rank-1{ border-width:2px; }
+.sc-accent{ display:none; }
+
+.sc-body{ padding:0; display:flex; flex-direction:column; flex:1; }
+
+/* Bande colorée tout en haut */
+.sc-top-band{
+  height:6px; width:100%; flex-shrink:0;
 }
-.sc-letter{
-  font-size:.65rem;font-weight:800;
-  letter-spacing:.14em;text-transform:uppercase;
-  margin-bottom:3px;padding-right:0;
+
+/* Zone principale */
+.sc-main{
+  display:flex; align-items:center; padding:16px 16px 12px; gap:12px;
 }
-.sc-name{
-  font-family:'Lora',serif;font-size:1.15rem;font-weight:700;
-  color:var(--ink);margin-bottom:14px;line-height:1.2;
-}
-.sc-desc{font-size:.78rem;color:var(--muted);margin-bottom:12px;}
-.sc-score-row{
-  display:flex;align-items:flex-end;gap:6px;margin-bottom:10px;
+
+/* Bloc score (à droite) */
+.sc-score-block{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  flex-shrink:0;
+  background:var(--bg);
+  border-radius:10px;
+  padding:10px 14px;
+  min-width:68px;
 }
 .sc-num{
-  font-family:'Lora',serif;font-size:3rem;
-  font-weight:700;line-height:1;transition:color .2s;
+  font-family:'Lora',serif; font-size:2rem;
+  font-weight:700; line-height:1; transition:color .2s;
 }
 .sc-denom{
-  font-size:.78rem;color:var(--muted);
-  font-weight:500;padding-bottom:5px;
+  font-size:.6rem; color:var(--muted); font-weight:600;
+  letter-spacing:.04em; margin-top:2px;
 }
+
+/* Contenu gauche */
+.sc-content{ flex:1; min-width:0; }
+
+.rank-badge{
+  display:inline-flex; align-items:center;
+  font-size:.6rem; font-weight:700;
+  padding:2px 8px; border-radius:20px;
+  letter-spacing:.05em; margin-bottom:6px;
+  white-space:nowrap;
+}
+.sc-name{
+  font-family:'Lora',serif; font-size:1rem; font-weight:700;
+  color:var(--ink); line-height:1.25; margin-bottom:2px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.sc-desc{
+  font-size:.72rem; color:var(--muted); line-height:1.4;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+/* Barre de progression en bas */
+.sc-bar-row{ padding:0; }
 .sc-bar{
-  height:6px;background:var(--bg2);border-radius:3px;
-  overflow:hidden;margin-bottom:16px;
+  height:4px; background:var(--bg2);
+  overflow:hidden;
 }
-.sc-bar-fill{height:100%;border-radius:3px;transition:width .8s ease,background .2s;}
-.sc-mini-crits{
-  border-top:1px solid var(--border);
-  padding-top:12px;display:flex;flex-direction:column;gap:7px;
-}
-.sc-mini-row{display:flex;align-items:center;gap:8px;font-size:.73rem;}
+.sc-bar-fill{ height:100%; transition:width .9s cubic-bezier(.4,0,.2,1), background .2s; }
+
+.sc-mini-crits{ display:none; }
+.sc-score-row{ display:none; }
+.sc-mini-row{ display:flex; align-items:center; gap:8px; font-size:.73rem; }
 .sc-mini-name{
-  width:110px;flex-shrink:0;overflow:hidden;
-  text-overflow:ellipsis;white-space:nowrap;color:var(--muted);
+  width:110px; flex-shrink:0; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap; color:var(--muted);
 }
-.sc-mini-bar-wrap{flex:1;height:4px;background:var(--bg2);border-radius:2px;overflow:hidden;}
-.sc-mini-bar-fill{height:100%;border-radius:2px;}
-.sc-mini-val{width:18px;text-align:right;color:var(--ink2);font-weight:700;flex-shrink:0;}
+.sc-mini-bar-wrap{ flex:1; height:4px; background:var(--bg2); border-radius:2px; overflow:hidden; }
+.sc-mini-bar-fill{ height:100%; border-radius:2px; }
+.sc-mini-val{ width:18px; text-align:right; color:var(--ink2); font-weight:700; flex-shrink:0; }
+
+/* ── TOOL PILLS ──────────────────────────── */
+.tool-pills{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  margin-bottom:0;
+}
+.tool-pill{
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  transition:box-shadow .15s;
+}
+.tool-pill:hover{ box-shadow:var(--shadow-lg); }
+.tool-pill-head{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;
+  cursor:pointer;user-select:none;
+  transition:background .15s;
+}
+.tool-pill-head:hover{ background:var(--bg); }
+.tool-pill-icon{ font-size:1.2rem;flex-shrink:0; }
+.tool-pill-text{ flex:1;min-width:0; }
+.tool-pill-title{
+  font-size:.82rem;font-weight:700;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.tool-pill-sub{
+  font-size:.68rem;color:var(--muted);line-height:1.3;margin-top:1px;
+}
+.tool-pill-body{
+  display:none;
+  border-top:1px solid var(--border);
+  padding:14px 16px 16px;
+}
+.tool-pill.open .scenario-chevron{ transform:rotate(180deg); }
+@media(max-width:560px){
+  .tool-pills{ grid-template-columns:1fr; }
+}
+
 
 /* ── RADAR ───────────────────────────────── */
 .radar-section{
@@ -799,6 +882,29 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 }
 
 
+
+/* ── LANG SWITCHER ───────────────────────── */
+.lang-switcher{
+  position:absolute;top:18px;right:20px;
+  display:flex;gap:4px;
+  background:var(--bg2);
+  border-radius:8px;
+  padding:3px;
+  border:1px solid var(--border);
+}
+.lang-btn{
+  padding:4px 10px;
+  font-size:.72rem;font-weight:700;
+  border-radius:6px;border:none;
+  background:transparent;color:var(--muted);
+  cursor:pointer;transition:all .15s;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  letter-spacing:.04em;
+}
+.lang-btn.active{
+  background:var(--white);color:var(--teal);
+  box-shadow:0 1px 4px rgba(0,0,0,0.08);
+}
 
 [data-tip]{position:relative;cursor:help;}
 [data-tip]::after{
@@ -1112,138 +1218,95 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
 <!-- ══════════════════════════ INTRO ══════════════════════════ -->
 <div class="page active" id="page-intro">
+  <!-- Sélecteur de langue -->
+  <div class="lang-switcher">
+    <button class="lang-btn active" id="btn-fr" onclick="setLang('fr')">FR</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
   <div class="intro-wrap">
     <div class="intro-inner">
 
-      <!-- Hibou line-art style -->
+      <!-- Hibou cartoon animé -->
       <div class="mascot-wrap">
-        <svg class="mascot" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <svg class="mascot" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 
           <!-- Ombre -->
-          <ellipse cx="60" cy="145" rx="22" ry="4" fill="rgba(0,0,0,0.06)" class="mascot-shadow"/>
+          <ellipse cx="50" cy="106" rx="22" ry="4" fill="rgba(0,0,0,0.07)" class="mascot-shadow"/>
 
-          <!-- Silhouette de fond (fill global) -->
-          <path d="M60 8 Q82 10 92 28 Q100 44 98 70 Q96 100 84 118 Q72 134 60 138 Q48 134 36 118 Q24 100 22 70 Q20 44 28 28 Q38 10 60 8Z" fill="#eef7f2"/>
+          <!-- Corps super rond et dodu -->
+          <ellipse cx="50" cy="76" rx="28" ry="30" fill="#2d7d5a"/>
 
-          <!-- ══ AIGRETTES ══ -->
-          <path d="M45 22 Q38 6 44 2 Q50 10 52 20Z" fill="none" stroke="#1a4d38" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M75 22 Q82 6 76 2 Q70 10 68 20Z" fill="none" stroke="#1a4d38" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M45 22 Q36 8 42 4" fill="none" stroke="#2d7d5a" stroke-width="1.2" opacity=".5"/>
-          <path d="M75 22 Q84 8 78 4" fill="none" stroke="#2d7d5a" stroke-width="1.2" opacity=".5"/>
+          <!-- Ventre doux -->
+          <ellipse cx="50" cy="82" rx="18" ry="20" fill="#c8ead9"/>
+          <ellipse cx="50" cy="86" rx="12" ry="13" fill="#eef7f2"/>
 
-          <!-- ══ CONTOUR TÊTE / CORPS ══ -->
-          <path d="M60 8 Q82 10 92 28 Q100 44 98 70 Q96 100 84 118 Q72 134 60 138 Q48 134 36 118 Q24 100 22 70 Q20 44 28 28 Q38 10 60 8Z"
-                fill="none" stroke="#1a4d38" stroke-width="2.2"/>
+          <!-- Tête grosse et ronde -->
+          <ellipse cx="50" cy="42" rx="26" ry="25" fill="#2d7d5a"/>
 
-          <!-- ══ ARCADES SOURCILIÈRES ══ -->
-          <path d="M30 48 Q42 34 54 44" fill="none" stroke="#1a4d38" stroke-width="2.5" stroke-linecap="round"/>
-          <path d="M90 48 Q78 34 66 44" fill="none" stroke="#1a4d38" stroke-width="2.5" stroke-linecap="round"/>
-          <!-- Ligne interne sourcils -->
-          <path d="M34 50 Q44 38 52 46" fill="none" stroke="#2d7d5a" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
-          <path d="M86 50 Q76 38 68 46" fill="none" stroke="#2d7d5a" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
+          <!-- Aigrettes moelleuses -->
+          <path d="M34 24 Q28 8 36 5 Q40 16 38 23Z" fill="#1a4d38"/>
+          <path d="M66 24 Q72 8 64 5 Q60 16 62 23Z" fill="#1a4d38"/>
 
-          <!-- ══ DISQUES OCULAIRES ══ -->
-          <!-- Gauche -->
-          <path d="M28 60 Q36 46 52 52 Q58 62 50 72 Q38 78 28 68 Q24 64 28 60Z" fill="none" stroke="#1a4d38" stroke-width="2"/>
-          <path d="M30 62 Q38 50 52 56 Q56 64 50 70 Q40 74 30 66Z" fill="none" stroke="#2d7d5a" stroke-width="1.1" opacity=".5"/>
-          <!-- Droite -->
-          <path d="M92 60 Q84 46 68 52 Q62 62 70 72 Q82 78 92 68 Q96 64 92 60Z" fill="none" stroke="#1a4d38" stroke-width="2"/>
-          <path d="M90 62 Q82 50 68 56 Q64 64 70 70 Q80 74 90 66Z" fill="none" stroke="#2d7d5a" stroke-width="1.1" opacity=".5"/>
-
-          <!-- ══ YEUX ══ -->
-          <circle cx="40" cy="60" r="10" fill="#2d7d5a" opacity=".15"/>
-          <circle cx="80" cy="60" r="10" fill="#2d7d5a" opacity=".15"/>
-          <circle cx="40" cy="60" r="7" fill="none" stroke="#1a4d38" stroke-width="1.8"/>
-          <circle cx="80" cy="60" r="7" fill="none" stroke="#1a4d38" stroke-width="1.8"/>
-          <circle cx="40" cy="60" r="4.5" fill="#1a4d38" class="pupil-l"/>
-          <circle cx="80" cy="60" r="4.5" fill="#1a4d38" class="pupil-r"/>
-          <circle cx="41.8" cy="58.2" r="1.4" fill="white"/>
-          <circle cx="81.8" cy="58.2" r="1.4" fill="white"/>
+          <!-- Yeux très grands et kawaii -->
+          <circle cx="37" cy="42" r="14" fill="white"/>
+          <circle cx="63" cy="42" r="14" fill="white"/>
+          <circle cx="37" cy="42" r="9" fill="#389e71"/>
+          <circle cx="63" cy="42" r="9" fill="#389e71"/>
+          <circle cx="37" cy="42" r="5.5" fill="#0a0a0a" class="pupil-l"/>
+          <circle cx="63" cy="42" r="5.5" fill="#0a0a0a" class="pupil-r"/>
+          <circle cx="39.5" cy="39.5" r="2.2" fill="white"/>
+          <circle cx="65.5" cy="39.5" r="2.2" fill="white"/>
+          <circle cx="35" cy="44.5" r=".9" fill="white" opacity=".6"/>
+          <circle cx="61" cy="44.5" r=".9" fill="white" opacity=".6"/>
 
           <!-- Clignement -->
           <g class="mascot-blink" style="opacity:0">
-            <ellipse cx="40" cy="60" rx="10" ry="5" fill="#eef7f2" stroke="#1a4d38" stroke-width="2"/>
-            <ellipse cx="80" cy="60" rx="10" ry="5" fill="#eef7f2" stroke="#1a4d38" stroke-width="2"/>
+            <ellipse cx="37" cy="42" rx="14" ry="8" fill="#2d7d5a"/>
+            <ellipse cx="63" cy="42" rx="14" ry="8" fill="#2d7d5a"/>
           </g>
 
-          <!-- ══ BEC ══ -->
-          <path d="M54 72 Q60 80 66 72 Q62 68 60 70 Q58 68 54 72Z" fill="#1a4d38"/>
-          <!-- Ligne bec centrale -->
-          <path d="M60 70 L60 78" stroke="#eef7f2" stroke-width="1" stroke-linecap="round"/>
+          <!-- Petites joues rondes -->
+          <ellipse cx="24" cy="52" rx="7" ry="5" fill="#c8ead9" opacity=".5"/>
+          <ellipse cx="76" cy="52" rx="7" ry="5" fill="#c8ead9" opacity=".5"/>
 
-          <!-- ══ MOTIF PLUMES VENTRE — style tatouage ══ -->
-          <!-- Ligne centrale -->
-          <line x1="60" y1="78" x2="60" y2="132" stroke="#1a4d38" stroke-width="1.6"/>
+          <!-- Bec petit et mignon -->
+          <path d="M45 54 Q50 60 55 54 Q53 50 50 51 Q47 50 45 54Z" fill="#f0a830"/>
 
-          <!-- Ovales / feuilles superposés — rangée 1 -->
-          <path d="M60 82 Q66 88 60 94 Q54 88 60 82Z" fill="none" stroke="#1a4d38" stroke-width="1.6"/>
-          <path d="M60 84 Q65 89 60 93 Q55 89 60 84Z" fill="#2d7d5a" opacity=".12"/>
-
-          <!-- Rangée 2 -->
-          <path d="M60 94 Q68 102 60 110 Q52 102 60 94Z" fill="none" stroke="#1a4d38" stroke-width="1.6"/>
-          <path d="M60 96 Q67 103 60 109 Q53 103 60 96Z" fill="#2d7d5a" opacity=".12"/>
-
-          <!-- Rangée 3 -->
-          <path d="M60 110 Q69 119 60 128 Q51 119 60 110Z" fill="none" stroke="#1a4d38" stroke-width="1.6"/>
-          <path d="M60 112 Q68 120 60 127 Q52 120 60 112Z" fill="#2d7d5a" opacity=".12"/>
-
-          <!-- Lignes latérales gauches -->
-          <path d="M60 85 Q48 90 36 96" stroke="#1a4d38" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-          <path d="M60 92 Q46 98 32 106" stroke="#1a4d38" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-          <path d="M60 100 Q46 108 34 118" stroke="#1a4d38" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-          <path d="M60 110 Q48 120 38 128" stroke="#1a4d38" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-
-          <!-- Lignes latérales droites -->
-          <path d="M60 85 Q72 90 84 96" stroke="#1a4d38" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-          <path d="M60 92 Q74 98 88 106" stroke="#1a4d38" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-          <path d="M60 100 Q74 108 86 118" stroke="#1a4d38" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-          <path d="M60 110 Q72 120 82 128" stroke="#1a4d38" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-
-          <!-- Lignes internes gauches (double trait) -->
-          <path d="M60 88 Q52 93 44 98" stroke="#2d7d5a" stroke-width=".9" fill="none" stroke-linecap="round" opacity=".6"/>
-          <path d="M60 97 Q51 103 42 110" stroke="#2d7d5a" stroke-width=".9" fill="none" stroke-linecap="round" opacity=".6"/>
-          <path d="M60 106 Q52 114 46 122" stroke="#2d7d5a" stroke-width=".9" fill="none" stroke-linecap="round" opacity=".6"/>
-
-          <!-- Lignes internes droites (double trait) -->
-          <path d="M60 88 Q68 93 76 98" stroke="#2d7d5a" stroke-width=".9" fill="none" stroke-linecap="round" opacity=".6"/>
-          <path d="M60 97 Q69 103 78 110" stroke="#2d7d5a" stroke-width=".9" fill="none" stroke-linecap="round" opacity=".6"/>
-          <path d="M60 106 Q68 114 74 122" stroke="#2d7d5a" stroke-width=".9" fill="none" stroke-linecap="round" opacity=".6"/>
-
-          <!-- Courbes de raccord haut — entre yeux et corps -->
-          <path d="M28 68 Q32 76 38 80" stroke="#1a4d38" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-          <path d="M92 68 Q88 76 82 80" stroke="#1a4d38" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-
-          <!-- Plumes haut tête (entre aigrettes) -->
-          <path d="M52 20 Q60 14 68 20 Q64 26 60 24 Q56 26 52 20Z" fill="none" stroke="#1a4d38" stroke-width="1.6"/>
-          <path d="M54 22 Q60 17 66 22 Q63 27 60 25 Q57 27 54 22Z" fill="#2d7d5a" opacity=".15"/>
+          <!-- Petites pattes -->
+          <path d="M38 103 Q34 108 30 106" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M38 103 Q36 109 32 110" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M38 103 Q38 110 36 112" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M62 103 Q66 108 70 106" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M62 103 Q64 109 68 110" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M62 103 Q62 110 64 112" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
 
         </svg>
       </div>
 
-      <div class="intro-badge">✦ Outil d'aide à la décision</div>
+      <div class="intro-badge" data-i18n="badge">✦ Outil d'aide à la décision</div>
       <div class="intro-logo">Lucid<span>.</span></div>
-      <div class="intro-tagline">Comparez vos options avec Lucid et prenez vos décisions en toute confiance.</div>
+      <div class="intro-tagline" data-i18n="tagline">Comparez vos options avec Lucid et prenez vos décisions en toute confiance.</div>
 
       <div class="intro-how">
         <div class="how-card">
           <div class="how-num">1</div>
-          <div class="how-title">Posez votre question</div>
-          <div class="how-desc">Décrivez votre décision et listez vos options à comparer.</div>
+          <div class="how-title" data-i18n="how1_title">Posez votre question</div>
+          <div class="how-desc" data-i18n="how1_desc">Formulez votre situation et listez les options à comparer.</div>
         </div>
         <div class="how-card">
           <div class="how-num">2</div>
-          <div class="how-title">Choisissez vos critères</div>
-          <div class="how-desc">Sélectionnez ce qui compte vraiment pour vous.</div>
+          <div class="how-title" data-i18n="how2_title">Choisissez vos critères</div>
+          <div class="how-desc" data-i18n="how2_desc">Sélectionnez ce qui compte vraiment pour vous.</div>
         </div>
         <div class="how-card">
           <div class="how-num">3</div>
-          <div class="how-title">Obtenez votre analyse</div>
-          <div class="how-desc">Lucid calcule les scores et vous présente un résultat clair.</div>
+          <div class="how-title" data-i18n="how3_title">Obtenez votre analyse</div>
+          <div class="how-desc" data-i18n="how3_desc">Lucid calcule les scores et vous présente un résultat clair.</div>
         </div>
       </div>
 
-      <button class="intro-start-btn" onclick="nav('page-step1')">Commencer →</button>
-      <p style="margin-top:12px;font-size:.75rem;color:var(--muted2)">Gratuit · Aucun compte requis · 100% privé</p>
+      <button class="intro-start-btn" onclick="nav('page-step1')" data-i18n="start_btn">Commencer →</button>
+      <p style="margin-top:12px;font-size:.75rem;color:var(--muted2)" data-i18n="footer_note">Gratuit · Aucun compte requis · 100% privé</p>
     </div>
   </div>
 </div>
@@ -1253,11 +1316,15 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   <div class="app-header">
     <div class="logo"><div class="logo-dot"></div>Lucid</div>
     <div class="step-progress" id="sp1"></div>
+    <div class="lang-switcher" style="margin-left:auto;position:static">
+      <button class="lang-btn active" id="btn-fr2" onclick="setLang('fr')">FR</button>
+      <button class="lang-btn" id="btn-en2" onclick="setLang('en')">EN</button>
+    </div>
   </div>
   <div class="main">
-    <div class="page-eyebrow anim">Étape 1 sur 3</div>
-    <div class="page-title anim d1">Quelle décision devez-vous prendre ?</div>
-    <div class="page-sub anim d2">Formulez votre situation et renseignez les options que vous envisagez.</div>
+    <div class="page-eyebrow anim" data-i18n="s1_eyebrow">Étape 1 sur 3</div>
+    <div class="page-title anim d1" data-i18n="s1_title">Quelle décision devez-vous prendre ?</div>
+    <div class="page-sub anim d2" data-i18n="s1_sub">Formulez votre situation et renseignez les options que vous envisagez.</div>
 
     <div class="card decision-card anim d2">
       <div class="field" style="margin-bottom:0">
@@ -1268,19 +1335,19 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
     <div class="anim d3">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <label style="font-size:.85rem;font-weight:700;color:var(--ink2)">🔀 Vos options</label>
+        <label style="font-size:.85rem;font-weight:700;color:var(--ink2)" data-i18n="opt_section_label">🔀 Vos options</label>
         <span id="opt-count-lbl" style="font-size:.75rem;color:var(--muted);background:var(--bg2);padding:3px 10px;border-radius:20px;font-weight:600">2 options</span>
       </div>
       <div class="options-list" id="optBuilder"></div>
       <button class="add-option-btn" id="addOptBtn" onclick="addOption()">
         <div class="add-option-icon">+</div>
-        Ajouter une option <span style="color:var(--muted2);font-weight:400">(max 6)</span>
+        <span data-i18n="opt_add_label">Ajouter une option</span> <span style="color:var(--muted2);font-weight:400" data-i18n="opt_add_max">(max 6)</span>
       </button>
     </div>
 
     <div class="btn-row anim d4">
-      <button class="btn btn-secondary" onclick="nav('page-intro')">← Retour</button>
-      <button class="btn btn-primary" onclick="validateStep1()">Choisir mes critères →</button>
+      <button class="btn btn-secondary" onclick="nav('page-intro')" data-i18n="back_intro">← Retour</button>
+      <button class="btn btn-primary" onclick="validateStep1()" data-i18n="s1_next">Choisir mes critères →</button>
     </div>
   </div>
 </div>
@@ -1290,48 +1357,52 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   <div class="app-header">
     <div class="logo"><div class="logo-dot"></div>Lucid</div>
     <div class="step-progress" id="sp2"></div>
+    <div class="lang-switcher">
+      <button class="lang-btn active" id="btn-fr3" onclick="setLang('fr')">FR</button>
+      <button class="lang-btn" id="btn-en3" onclick="setLang('en')">EN</button>
+    </div>
   </div>
   <div class="main">
-    <div class="page-eyebrow">Étape 2 sur 3</div>
-    <div class="page-title">Qu'est-ce qui compte pour vous ?</div>
-    <div class="page-sub">Sélectionnez les critères importants dans votre situation. Vous pouvez en choisir autant que vous voulez.</div>
+    <div class="page-eyebrow" data-i18n="s2_eyebrow">Étape 2 sur 3</div>
+    <div class="page-title" data-i18n="s2_title">Qu'est-ce qui compte pour vous ?</div>
+    <div class="page-sub" data-i18n="s2_sub">Sélectionnez les critères importants dans votre situation. Vous pouvez en choisir autant que vous voulez.</div>
 
     <div class="criteria-intro">
       <div class="criteria-intro-icon">💡</div>
-      <div>Cliquez sur les critères pour les sélectionner. Vous pourrez ensuite ajuster leur <strong>importance</strong> (poids) et choisir si un score élevé est positif ou négatif pour ce critère.</div>
+      <div data-i18n="s2_hint">Cliquez sur les critères pour les sélectionner. Vous pourrez ensuite ajuster leur <strong>importance</strong> (poids) et choisir si un score élevé est positif ou négatif pour ce critère.</div>
     </div>
 
     <div class="cat-tabs" id="catTabs"></div>
     <div class="crit-grid" id="critGrid"></div>
 
     <div class="custom-form">
-      <div class="custom-form-title">✦ Ajouter un critère personnalisé</div>
+      <div class="custom-form-title" data-i18n="custom_title">✦ Ajouter un critère personnalisé</div>
       <div class="custom-row">
-        <div class="field" style="margin:0"><label>Nom</label><input type="text" id="cust-name" placeholder="Ex : Impact sur ma famille"></div>
-        <div class="field" style="margin:0"><label>Icône</label><input type="text" id="cust-icon" placeholder="🎯" style="text-align:center"></div>
+        <div class="field" style="margin:0"><label data-i18n="custom_name">Nom</label><input type="text" id="cust-name" placeholder="Ex : Impact sur ma famille"></div>
+        <div class="field" style="margin:0"><label data-i18n="custom_icon">Icône</label><input type="text" id="cust-icon" placeholder="🎯" style="text-align:center"></div>
         <div class="field" style="margin:0">
-          <label>Catégorie</label>
+          <label data-i18n="custom_cat">Catégorie</label>
           <select id="cust-cat">
             <option>Finance</option><option>Pro</option><option selected>Perso</option><option>Social</option><option>Stratégique</option>
           </select>
         </div>
       </div>
-      <button class="btn btn-secondary" style="margin-top:12px;font-size:.8rem;padding:9px 18px" onclick="addCustom()">+ Ajouter ce critère</button>
+      <button class="btn btn-secondary" style="margin-top:12px;font-size:.8rem;padding:9px 18px" onclick="addCustom()" data-i18n="custom_add">+ Ajouter ce critère</button>
     </div>
 
     <div class="selected-box">
       <div class="selected-box-head">
-        <h3>✅ Critères sélectionnés</h3>
+        <h3 data-i18n="sel_title">✅ Critères sélectionnés</h3>
         <div class="sel-count" id="crit-badge">0</div>
       </div>
       <div class="sel-list" id="activeList">
-        <div class="empty-hint">👆 Sélectionnez au moins 2 critères ci-dessus pour continuer</div>
+        <div class="empty-hint" data-i18n="sel_empty">👆 Sélectionnez au moins 2 critères ci-dessus pour continuer</div>
       </div>
     </div>
 
     <div class="btn-row">
-      <button class="btn btn-secondary" onclick="nav('page-step1')">← Retour</button>
-      <button class="btn btn-primary" onclick="validateStep2()">Évaluer mes options →</button>
+      <button class="btn btn-secondary" onclick="nav('page-step1')" data-i18n="back">← Retour</button>
+      <button class="btn btn-primary" onclick="validateStep2()" data-i18n="s2_next">Évaluer mes options →</button>
     </div>
   </div>
 </div>
@@ -1341,18 +1412,22 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   <div class="app-header">
     <div class="logo"><div class="logo-dot"></div>Lucid</div>
     <div class="step-progress" id="sp3"></div>
+    <div class="lang-switcher">
+      <button class="lang-btn active" id="btn-fr4" onclick="setLang('fr')">FR</button>
+      <button class="lang-btn" id="btn-en4" onclick="setLang('en')">EN</button>
+    </div>
   </div>
   <div class="main">
-    <div class="page-eyebrow">Étape 3 sur 3</div>
-    <div class="page-title" id="eval-title">Notez chaque option</div>
-    <div class="page-sub">Pour chaque critère, donnez une note de <strong>1</strong> (très faible) à <strong>10</strong> (excellent) à chaque option. Le score global se met à jour en direct.</div>
+    <div class="page-eyebrow" data-i18n="s3_eyebrow">Étape 3 sur 3</div>
+    <div class="page-title" id="eval-title" data-i18n="s3_title">Notez chaque option</div>
+    <div class="page-sub" data-i18n="s3_sub">Pour chaque critère, donnez une note de <strong>1</strong> (très faible) à <strong>10</strong> (excellent) à chaque option. Le score global se met à jour en direct.</div>
 
     <div class="eval-grid" id="evalGrid"></div>
     <div class="notes-row" id="notesRow"></div>
 
     <div class="btn-row">
-      <button class="btn btn-secondary" onclick="nav('page-step2')">← Retour</button>
-      <button class="btn btn-primary" onclick="showResults()">Voir mon analyse →</button>
+      <button class="btn btn-secondary" onclick="nav('page-step2')" data-i18n="back">← Retour</button>
+      <button class="btn btn-primary" onclick="showResults()" data-i18n="s3_next">Voir mon analyse →</button>
     </div>
   </div>
 </div>
@@ -1361,9 +1436,10 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 <div class="page" id="page-results">
   <div class="app-header">
     <div class="logo"><div class="logo-dot"></div>Lucid</div>
-    <div style="margin-left:auto;display:flex;gap:8px">
-      <button class="btn btn-secondary" style="font-size:.82rem" onclick="window.print()">🖨️ Exporter en PDF</button>
-      <button class="btn btn-primary" style="font-size:.82rem" onclick="restart()">↺ Nouvelle décision</button>
+    <div class="step-progress" id="sp4"></div>
+    <div class="lang-switcher">
+      <button class="lang-btn active" id="btn-fr5" onclick="setLang('fr')">FR</button>
+      <button class="lang-btn" id="btn-en5" onclick="setLang('en')">EN</button>
     </div>
   </div>
   <div class="main" id="resContent"></div>
@@ -1372,6 +1448,400 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 </div>
 
 <script>
+/* ─── I18N ───────────────────────────────── */
+let LANG = 'fr';
+
+const T = {
+  fr: {
+    /* Intro */
+    badge:       '✦ Outil d\'aide à la décision',
+    tagline:     'Comparez vos options avec Lucid et prenez vos décisions en toute confiance.',
+    how1_title:  'Posez votre question',
+    how1_desc:   'Formulez votre situation et listez les options à comparer.',
+    how2_title:  'Choisissez vos critères',
+    how2_desc:   'Sélectionnez ce qui compte vraiment pour vous.',
+    how3_title:  'Obtenez votre analyse',
+    how3_desc:   'Lucid calcule les scores et vous présente un résultat clair.',
+    start_btn:   'Commencer →',
+    footer_note: 'Gratuit · Aucun compte requis · 100% privé',
+    /* Step 1 */
+    s1_eyebrow:  'Étape 1 sur 3',
+    s1_title:    'Quelle décision devez-vous prendre ?',
+    s1_sub:      'Formulez votre situation et renseignez les options que vous envisagez.',
+    s1_next:     'Choisir mes critères →',
+    back_intro:  '← Retour',
+    inp_dec_lbl: '📝 Votre décision en une phrase',
+    inp_dec_ph:  'Ex : Dois-je accepter ce nouvel emploi ou rester dans mon poste actuel ?',
+    opt_name_lbl:'Nom de l\'option',
+    opt_name_ph: 'Ex : Rester à Paris',
+    opt_desc_lbl:'Description courte',
+    opt_desc_opt:'(optionnel)',
+    opt_desc_ph: 'Ex : Stabilité, famille proche…',
+    opt_add:     '+ Ajouter une option',
+    opt_section_label: '🔀 Vos options',
+    opt_add_label: 'Ajouter une option',
+    opt_add_max:   '(max 6)',
+    err_name:    'Veuillez donner un nom à chaque option.',
+    /* Step 2 */
+    s2_eyebrow:  'Étape 2 sur 3',
+    s2_title:    'Qu\'est-ce qui compte pour vous ?',
+    s2_sub:      'Sélectionnez les critères importants dans votre situation. Vous pouvez en choisir autant que vous voulez.',
+    s2_hint:     'Cliquez sur les critères pour les sélectionner. Vous pourrez ensuite ajuster leur <strong>importance</strong> (poids) et choisir si un score élevé est positif ou négatif pour ce critère.',
+    custom_title:'✦ Ajouter un critère personnalisé',
+    custom_name: 'Nom',
+    custom_icon: 'Icône',
+    custom_cat:  'Catégorie',
+    custom_add:  '+ Ajouter ce critère',
+    custom_ph:   'Ex : Impact sur ma famille',
+    sel_title:   '✅ Critères sélectionnés',
+    sel_empty:   '👆 Sélectionnez au moins 2 critères ci-dessus pour continuer',
+    back:        '← Retour',
+    s2_next:     'Évaluer mes options →',
+    err_crit:    'Veuillez sélectionner au moins 2 critères.',
+    lbl_importance:'Importance',
+    lbl_sens:    'Sens',
+    inv_off:     '↑ Normal',
+    inv_on:      '↓ Inversé',
+    inv_tip_off: 'Actuellement : score élevé = bon',
+    inv_tip_on:  'Actuellement : score élevé = mauvais',
+    inv_tag:     '↓ inversé',
+    /* Step 3 */
+    s3_eyebrow:  'Étape 3 sur 3',
+    s3_title:    'Notez chaque option',
+    s3_sub:      'Pour chaque critère, donnez une note de <strong>1</strong> (très faible) à <strong>10</strong> (excellent) à chaque option. Le score global se met à jour en direct.',
+    s3_next:     'Voir mon analyse →',
+    notes_ph:    '💭 Notes personnelles sur cette option…',
+    notes_lbl:   (ltr, name) => `📝 Notes libres — Option ${ltr} (${name})`,
+    /* Results */
+    res_eyebrow: '✦ Votre analyse',
+    export_pdf:  '🖨️ Exporter en PDF',
+    new_decision:'↺ Nouvelle décision',
+    back_notes:  '← Modifier mes notes',
+    res_tie_title:'Résultat très serré !',
+    res_tie_sub: (diff) => `Seulement ${diff} point${diff>1?'s':''} d'écart — les deux premières options sont quasiment équivalentes. Faites confiance à votre intuition.`,
+    res_win_sub: (diff) => `Avantage de ${diff} points sur vos critères pondérés. N'oubliez pas de prendre en compte vos notes et votre ressenti.`,
+    rank_labels: ['🥇 1ère option','🥈 2ème option','🥉 3ème option'],
+    div_scores:  'Scores',
+    div_visual:  'Profil visuel',
+    div_detail:  'Détail par critère',
+    div_synth:   'Synthèse',
+    div_notes:   'Notes personnelles',
+    div_explore: 'Exploration',
+    bk_crit:     'Critère',
+    interp_title:'Interprétation personnalisée',
+    analysis_title:'Analyse synthétique',
+    analysis_badge:'Automatique',
+    pros_title:  (name) => `✦ Points forts de "${name}"`,
+    cons_title:  '⚠ Points d\'attention',
+    no_notes:    'Aucune note',
+    notes_head:  '📝 Vos notes personnelles',
+    fear_title:  'Et si la peur n\'était pas un facteur ?',
+    fear_sub:    'Lucid masque les critères liés au risque et à la prudence pour révéler votre choix sans biais de peur.',
+    scenario_title:'Testez vos scénarios',
+    scenario_sub:'Activez ou désactivez des critères pour recalculer les scores instantanément.',
+    scenario_reset:'Tout réactiver',
+    scenario_active:(a,t)=>`${a} / ${t} critères actifs`,
+    sc_inv:        '↓ inversé',
+    sc_toggle_on:  'Désactiver ce critère',
+    sc_toggle_off: 'Activer ce critère',
+    /* Scenario insights */
+    sc_all_active: `✅ Tous les critères sont actifs — c'est votre analyse complète, sans filtre.`,
+    sc_switched:   (dis,newN,gainSign,oldN,s,p1,p2) => `🔄 Sans ${dis}, le classement <strong>s'inverse</strong> : <strong>"${newN}"</strong> passe en tête (${gainSign} pts), devant <strong>"${oldN}"</strong>. Ce${s} critère${s} ${p1} donc un rôle décisif en faveur de l'option initiale.`,
+    sc_reduced:    (winN,gapDiff,dis,s,p2) => `⚠️ <strong>"${winN}"</strong> reste en tête, mais son avantage se réduit de <strong>${gapDiff} points</strong> sans ${dis}. Ce${s} critère${s} ${p2} une part importante de son avance — la décision serait plus serrée sans ${s?'eux':'lui'}.`,
+    sc_wider:      (winN,extra,dis,s,p3) => `✅ Sans ${dis}, <strong>"${winN}"</strong> se détache encore davantage (+${extra} pts d'écart supplémentaires). Ce${s} critère${s} ${p3} — son avance repose sur d'autres facteurs.`,
+    sc_diverge:    (gN,gd,lN,ld,dis,p4) => `📊 Ce scénario révèle une divergence nette : <strong>"${gN}"</strong> gagne +${gd} pts tandis que <strong>"${lN}"</strong> en perd ${ld}. ${dis} ${p4} donc différemment sur chaque option.`,
+    sc_nochange:   (dis,max,s,p5) => `📌 Désactiver ${dis} ne change presque rien aux scores (moins de ${max} pts d'écart). Ce${s} critère${s} ${p5} dans cette décision — les autres facteurs portent l'essentiel du résultat.`,
+    sc_fallback:   (dis,impN,sign,s,p6) => `🎯 Sans ${dis}, l'option la plus impactée est <strong>"${impN}"</strong> (${sign} pts). Le classement reste identique, mais ce scénario montre à quel point ce${s} critère${s} ${p6} la position de cette option.`,
+    /* Fear panel */
+    fear_toggle_lbl_on:  '🎭 Critères masqués (liés à la peur)',
+    fear_toggle_lbl_off: '🔍 Critères détectés comme liés à la peur',
+    fear_none:     "Aucun critère lié à la peur ou au risque n'a été sélectionné dans votre analyse.",
+    fear_score_real:'Score réel',
+    fear_score_fearless:'Sans peur',
+    fear_delta_lbl:(sign,d)=>`${sign}${d} pts sans peur`,
+    fear_switched: (fearlessN,normalN) => `💡 Sans les critères de prudence, <strong>"${fearlessN}"</strong> passerait en tête — alors que <strong>"${normalN}"</strong> gagne dans l'analyse complète. Ce que cela révèle : <strong>c'est probablement la peur qui oriente votre décision vers "${normalN}"</strong>. Est-ce un choix voulu ou un réflexe de prudence ?`,
+    fear_gains:    (optN,pts) => `💡 Le classement ne change pas, mais <strong>"${optN}"</strong> gagne <strong>${pts} points</strong> une fois la peur mise de côté. Votre intuition profonde lui est plus favorable que vos chiffres actuels ne le montrent.`,
+    fear_loses:    (optN,pts) => `💡 Le classement ne change pas, mais <strong>"${optN}"</strong> perd <strong>${pts} points</strong> une fois la peur mise de côté. La prudence vous protège mais pèse aussi sur cette option.`,
+    fear_consistent:'💡 Le classement reste identique avec ou sans les critères de peur. Votre décision semble cohérente — elle n\'est pas fortement biaisée par la prudence.',
+    /* Step progress */
+    sp_labels:   ['Mes options','Mes critères','Mes notes'],
+    /* Weights */
+    weights:     {1:'×1 Normal', 2:'×2 Important', 3:'×3 Crucial'},
+    /* CATS */
+    cats:        ['Tous','Finance','Pro','Perso','Social','Stratégique'],
+    /* AI prompt lang */
+    ai_lang:     'français',
+    /* genAnalysis */
+    an_score_high: (name,v,w) => `Score élevé sur « ${name} » (${v}/10)${w>1?` — critère d'importance ×${w}`:''}. `,
+    an_clear:    (diff) => `Avantage significatif de ${diff} points — la recommandation est claire.`,
+    an_tight:    'Résultat serré — d\'autres facteurs non quantifiables peuvent faire la différence.',
+    an_runner:   (rName,cName,vR,vW) => `"${rName}" fait mieux sur « ${cName} » (${vR} vs ${vW}).`,
+    an_weak:     (cName,v,wName) => `Critère crucial « ${cName} » : score faible pour "${wName}" (${v}/10) — à surveiller.`,
+    an_no_cons:  'Pas de faiblesse critique identifiée — l\'option est solide sur tous les critères.',
+    /* opt builder */
+    opt_label:   (ltr) => `Option ${ltr}`,
+    opt_count:   (n) => `${n} option${n>1?'s':''}`,
+    /* eval */
+    eval_title:  (dec) => `Notez vos options pour : "${dec}"`,
+  },
+  en: {
+    /* Intro */
+    badge:       '✦ Decision-making tool',
+    tagline:     'Compare your options with Lucid and make decisions with confidence.',
+    how1_title:  'State your question',
+    how1_desc:   'Describe your situation and list the options to compare.',
+    how2_title:  'Choose your criteria',
+    how2_desc:   'Select what truly matters to you.',
+    how3_title:  'Get your analysis',
+    how3_desc:   'Lucid calculates scores and presents a clear result.',
+    start_btn:   'Get started →',
+    footer_note: 'Free · No account required · 100% private',
+    /* Step 1 */
+    s1_eyebrow:  'Step 1 of 3',
+    s1_title:    'What decision are you facing?',
+    s1_sub:      'Describe your situation and enter the options you are considering.',
+    s1_next:     'Choose my criteria →',
+    back_intro:  '← Back',
+    inp_dec_lbl: '📝 Your decision in one sentence',
+    inp_dec_ph:  'e.g. Should I accept this new job or stay in my current position?',
+    opt_name_lbl:'Option name',
+    opt_name_ph: 'e.g. Stay in Paris',
+    opt_desc_lbl:'Short description',
+    opt_desc_opt:'(optional)',
+    opt_desc_ph: 'e.g. Stability, family nearby…',
+    opt_add:     '+ Add an option',
+    opt_section_label: '🔀 Your options',
+    opt_add_label: 'Add an option',
+    opt_add_max:   '(max 6)',
+    err_name:    'Please give a name to each option.',
+    /* Step 2 */
+    s2_eyebrow:  'Step 2 of 3',
+    s2_title:    'What matters to you?',
+    s2_sub:      'Select the criteria that are important in your situation. You can choose as many as you want.',
+    s2_hint:     'Click on criteria to select them. You can then adjust their <strong>importance</strong> (weight) and choose whether a high score is positive or negative for that criterion.',
+    custom_title:'✦ Add a custom criterion',
+    custom_name: 'Name',
+    custom_icon: 'Icon',
+    custom_cat:  'Category',
+    custom_add:  '+ Add this criterion',
+    custom_ph:   'e.g. Impact on my family',
+    sel_title:   '✅ Selected criteria',
+    sel_empty:   '👆 Select at least 2 criteria above to continue',
+    back:        '← Back',
+    s2_next:     'Evaluate my options →',
+    err_crit:    'Please select at least 2 criteria.',
+    lbl_importance:'Importance',
+    lbl_sens:    'Direction',
+    inv_off:     '↑ Normal',
+    inv_on:      '↓ Inverted',
+    inv_tip_off: 'Currently: high score = good',
+    inv_tip_on:  'Currently: high score = bad',
+    inv_tag:     '↓ inverted',
+    /* Step 3 */
+    s3_eyebrow:  'Step 3 of 3',
+    s3_title:    'Rate each option',
+    s3_sub:      'For each criterion, give a score from <strong>1</strong> (very low) to <strong>10</strong> (excellent) for each option. The overall score updates live.',
+    s3_next:     'See my analysis →',
+    notes_ph:    '💭 Personal notes on this option…',
+    notes_lbl:   (ltr, name) => `📝 Free notes — Option ${ltr} (${name})`,
+    /* Results */
+    res_eyebrow: '✦ Your analysis',
+    export_pdf:  '🖨️ Export as PDF',
+    new_decision:'↺ New decision',
+    back_notes:  '← Edit my scores',
+    res_tie_title:'Very close result!',
+    res_tie_sub: (diff) => `Only ${diff} point${diff>1?'s':''} apart — the top two options are nearly equivalent. Trust your instincts.`,
+    res_win_sub: (diff) => `${diff}-point advantage on your weighted criteria. Don't forget to factor in your notes and gut feeling.`,
+    rank_labels: ['🥇 1st option','🥈 2nd option','🥉 3rd option'],
+    div_scores:  'Scores',
+    div_visual:  'Visual profile',
+    div_detail:  'Criterion breakdown',
+    div_synth:   'Summary',
+    div_notes:   'Personal notes',
+    div_explore: 'Explore further',
+    bk_crit:     'Criterion',
+    interp_title:'Personalised interpretation',
+    analysis_title:'Summary analysis',
+    analysis_badge:'Automatic',
+    pros_title:  (name) => `✦ Strengths of "${name}"`,
+    cons_title:  '⚠ Points of attention',
+    no_notes:    'No notes',
+    notes_head:  '📝 Your personal notes',
+    fear_title:  'What if fear wasn\'t a factor?',
+    fear_sub:    'Lucid hides risk and caution-related criteria to reveal your choice without fear bias.',
+    scenario_title:'Test your scenarios',
+    scenario_sub:'Enable or disable criteria to instantly recalculate scores.',
+    scenario_reset:'Re-enable all',
+    scenario_active:(a,t)=>`${a} / ${t} active criteria`,
+    sc_inv:        '↓ inverted',
+    sc_toggle_on:  'Disable this criterion',
+    sc_toggle_off: 'Enable this criterion',
+    /* Scenario insights */
+    sc_all_active: '✅ All criteria are active — this is your complete, unfiltered analysis.',
+    sc_switched:   (dis,newN,gainSign,oldN,s,p1,p2) => `🔄 Without ${dis}, the ranking <strong>flips</strong>: <strong>"${newN}"</strong> takes the lead (${gainSign} pts), ahead of <strong>"${oldN}"</strong>. ${s} ${p1} therefore played a decisive role in favour of the original option.`,
+    sc_reduced:    (winN,gapDiff,dis,s,p2) => `⚠️ <strong>"${winN}"</strong> stays on top, but its lead shrinks by <strong>${gapDiff} points</strong> without ${dis}. ${s} ${p2} a significant part of its advantage — the decision would be closer without ${LANG==='en'?'it/them':'it/them'}.`,
+    sc_wider:      (winN,extra,dis,s,p3) => `✅ Without ${dis}, <strong>"${winN}"</strong> pulls even further ahead (+${extra} pts extra gap). ${s} ${p3} — its lead rests on other factors.`,
+    sc_diverge:    (gN,gd,lN,ld,dis,p4) => `📊 This scenario reveals a clear divergence: <strong>"${gN}"</strong> gains +${gd} pts while <strong>"${lN}"</strong> loses ${ld}. ${dis} ${p4} differently on each option.`,
+    sc_nochange:   (dis,max,s,p5) => `📌 Disabling ${dis} barely changes the scores (less than ${max} pts difference). ${s} ${p5} — the other factors carry most of the result.`,
+    sc_fallback:   (dis,impN,sign,s,p6) => `🎯 Without ${dis}, the most impacted option is <strong>"${impN}"</strong> (${sign} pts). The ranking stays the same, but this scenario shows how much ${s} ${p6} this option's position.`,
+    /* Fear panel */
+    fear_toggle_lbl_on:  '🎭 Hidden criteria (fear-related)',
+    fear_toggle_lbl_off: '🔍 Criteria detected as fear-related',
+    fear_none:     'No fear- or risk-related criteria were selected in your analysis.',
+    fear_score_real:'Real score',
+    fear_score_fearless:'Fear-free',
+    fear_delta_lbl:(sign,d)=>`${sign}${d} pts fear-free`,
+    fear_switched: (fearlessN,normalN) => `💡 Without caution criteria, <strong>"${fearlessN}"</strong> would take the lead — while <strong>"${normalN}"</strong> wins in the full analysis. What this reveals: <strong>it's likely fear that steers your decision toward "${normalN}"</strong>. Is this a deliberate choice or a reflex of caution?`,
+    fear_gains:    (optN,pts) => `💡 The ranking doesn't change, but <strong>"${optN}"</strong> gains <strong>${pts} points</strong> once fear is set aside. Your deeper intuition is more favourable to it than your current numbers show.`,
+    fear_loses:    (optN,pts) => `💡 The ranking doesn't change, but <strong>"${optN}"</strong> loses <strong>${pts} points</strong> once fear is set aside. Caution protects you but also weighs on this option.`,
+    fear_consistent:'💡 The ranking stays the same with or without fear criteria. Your decision seems consistent — it is not strongly biased by caution.',
+    /* Step progress */
+    sp_labels:   ['My options','My criteria','My scores'],
+    /* Weights */
+    weights:     {1:'×1 Normal', 2:'×2 Important', 3:'×3 Critical'},
+    /* CATS */
+    cats:        ['All','Finance','Work','Personal','Social','Strategic'],
+    /* AI prompt lang */
+    ai_lang:     'English',
+    /* genAnalysis */
+    an_score_high: (name,v,w) => `High score on "${name}" (${v}/10)${w>1?` — importance ×${w}`:''}. `,
+    an_clear:    (diff) => `Significant ${diff}-point advantage — the recommendation is clear.`,
+    an_tight:    'Close result — other non-quantifiable factors may make the difference.',
+    an_runner:   (rName,cName,vR,vW) => `"${rName}" performs better on "${cName}" (${vR} vs ${vW}).`,
+    an_weak:     (cName,v,wName) => `Critical criterion "${cName}": low score for "${wName}" (${v}/10) — worth monitoring.`,
+    an_no_cons:  'No critical weakness identified — the option is solid across all criteria.',
+    /* opt builder */
+    opt_label:   (ltr) => `Option ${ltr}`,
+    opt_count:   (n) => `${n} option${n>1?'s':''}`,
+    /* eval */
+    eval_title:  (dec) => `Rate your options for: "${dec}"`,
+  }
+};
+
+/* LIB EN — English criterion names */
+const LIB_EN = {
+  fin_gain: {name:'Financial gain',       hint:'Revenue, salary, profits'},
+  fin_risk: {name:'Financial risk',       hint:'Potential losses, debts'},
+  roi:      {name:'Return on investment', hint:'ROI in the medium/long term'},
+  cost:     {name:'Initial cost',         hint:'Upfront investment'},
+  fin_stab: {name:'Financial stability',  hint:'Income security'},
+  career:   {name:'Career growth',        hint:'Professional prospects'},
+  skills:   {name:'Skill development',    hint:'Learning, upskilling'},
+  workload: {name:'Workload',             hint:'Volume and intensity of work'},
+  jobsec:   {name:'Job security',         hint:'Stability and sustainability'},
+  autonom:  {name:'Autonomy',             hint:'Freedom to act and decide'},
+  flex:     {name:'Schedule flexibility', hint:'Remote work, flexible hours'},
+  recog:    {name:'Recognition',          hint:'Appreciation, prestige'},
+  wellb:    {name:'Personal well-being',  hint:'Happiness, fulfilment'},
+  stress:   {name:'Stress level',         hint:'Pressure, anxiety generated'},
+  health:   {name:'Health impact',        hint:'Effects on physical/mental health'},
+  time:     {name:'Free time',            hint:'Leisure, rest, time for yourself'},
+  values:   {name:'Values alignment',     hint:'Coherence with your principles'},
+  passion:  {name:'Passion & interest',   hint:'Intrinsic motivation'},
+  risk:     {name:'Overall risk',         hint:'Uncertainty, exposure to danger'},
+  family:   {name:'Family impact',        hint:'Effects on relationships & family life'},
+  social:   {name:'Social life',          hint:'Friendships, social environment'},
+  ethics:   {name:'Ethics & values',      hint:'Coherence with your moral convictions'},
+  repute:   {name:'Reputation',           hint:'Image, social perception'},
+  env:      {name:'Environmental impact', hint:'Ecological footprint'},
+  vision:   {name:'Long-term vision',     hint:'Alignment with your 5–10 year goals'},
+  innov:    {name:'Innovation',           hint:'Creative potential, disruption'},
+  impact:   {name:'Impact & meaning',     hint:'Positive contribution to society'},
+  speed:    {name:'Speed of execution',   hint:'Time to results'},
+  rev:      {name:'Reversibility',        hint:'Ease of going back'},
+  complex:  {name:'Complexity',           hint:'Difficulty of implementation'},
+  dep:      {name:'Dependencies',         hint:'Constraints linked to other factors'},
+};
+
+function tr(key,...args){
+  const val = T[LANG][key];
+  if(typeof val === 'function') return val(...args);
+  return val ?? T['fr'][key] ?? key;
+}
+
+function setLang(lang){
+  LANG = lang;
+  /* Toggle active button — all headers */
+  ['btn-fr','btn-fr2','btn-fr3','btn-fr4','btn-fr5'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.classList.toggle('active',lang==='fr');
+  });
+  ['btn-en','btn-en2','btn-en3','btn-en4','btn-en5'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.classList.toggle('active',lang==='en');
+  });
+
+  /* Update all static data-i18n elements */
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    const val = T[lang][key];
+    if(val !== undefined && typeof val === 'string') el.innerHTML = val;
+  });
+
+  /* Update placeholders with data-i18n-ph */
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+    const key = el.getAttribute('data-i18n-ph');
+    const val = T[lang][key];
+    if(val) el.placeholder = val;
+  });
+
+  /* Update select label in inp-dec */
+  const decLbl = document.querySelector('label[for="inp-dec"]');
+  if(decLbl) decLbl.textContent = tr('inp_dec_lbl');
+  const decInp = document.getElementById('inp-dec');
+  if(decInp) decInp.placeholder = tr('inp_dec_ph');
+
+  /* Update custom form placeholder */
+  const custName = document.getElementById('cust-name');
+  if(custName) custName.placeholder = tr('custom_ph');
+
+  /* Update CATS & WEIGHTS globals */
+  CATS.length = 0;
+  tr('cats').forEach(c=>CATS.push(c));
+  Object.assign(WEIGHTS, tr('weights'));
+
+  /* Update LIB names/hints if EN */
+  LIB.forEach(c=>{
+    if(lang==='en' && LIB_EN[c.id]){
+      c._name_fr = c._name_fr || c.name;
+      c._hint_fr = c._hint_fr || c.hint;
+      c.name = LIB_EN[c.id].name;
+      c.hint = LIB_EN[c.id].hint;
+      c.cat  = ['Finance','Pro','Perso','Social','Stratégique'].indexOf(c.cat) >= 0
+        ? ['Finance','Work','Personal','Social','Strategic'][['Finance','Pro','Perso','Social','Stratégique'].indexOf(c.cat)]
+        : c.cat;
+    } else if(lang==='fr'){
+      if(c._name_fr){ c.name = c._name_fr; c.hint = c._hint_fr; }
+      c.cat = ['Finance','Work','Personal','Social','Strategic'].indexOf(c.cat) >= 0
+        ? ['Finance','Pro','Perso','Social','Stratégique'][['Finance','Work','Personal','Social','Strategic'].indexOf(c.cat)]
+        : c.cat;
+    }
+  });
+
+  /* Also update selected criteria names */
+  S.criteria.forEach(c=>{
+    const orig = LIB.find(l=>l.id===c.id);
+    if(orig){ c.name = orig.name; c.hint = orig.hint; }
+  });
+
+  /* Update step progress labels */
+  renderStepProgress(getCurrentStep());
+
+  /* Re-render open panels */
+  renderOptBuilder();
+  if(document.getElementById('page-step2').classList.contains('active')){
+    buildCriteriaPage();
+  }
+  if(document.getElementById('page-step3').classList.contains('active')){
+    buildEvalPage();
+  }
+}
+
+function getCurrentStep(){
+  if(document.getElementById('page-step3').classList.contains('active')) return 3;
+  if(document.getElementById('page-step2').classList.contains('active')) return 2;
+  return 1;
+}
+
+
 /* ─── PALETTE ───────────────────────────── */
 const COLORS = [
   {hex:'#2d7d5a',bg:'rgba(45,125,90,0.08)',  border:'rgba(45,125,90,0.3)'  },
@@ -1441,13 +1911,15 @@ function nav(id){
 }
 
 function renderStepProgress(active){
-  ['sp1','sp2','sp3'].forEach((id,i)=>{
+  ['sp1','sp2','sp3','sp4'].forEach((id,i)=>{
     const el=document.getElementById(id); if(!el) return;
-    const labels=['Mes options','Mes critères','Mes notes'];
+    const labels=tr('sp_labels');
+    // sp4 = results page: show all steps as done
+    const a = id==='sp4' ? 4 : active;
     el.innerHTML=[1,2,3].map(s=>{
-      const cls=s<active?'done':s===active?'active':'';
+      const cls=s<a?'done':s===a?'active':'';
       return `<div class="sp-step ${cls}">
-        <div class="sp-num">${s<active?'✓':s}</div>
+        <div class="sp-num">${s<a?'✓':s}</div>
         <span>${labels[s-1]}</span>
       </div>${s<3?'<div class="sp-arrow">›</div>':''}`;
     }).join('');
@@ -1468,28 +1940,28 @@ function renderOptBuilder(){
     card.innerHTML=`
       <div class="opt-card-head" onclick="toggleOpt(${i})">
         <div class="opt-dot" style="background:${c.hex}"></div>
-        <div class="opt-letter" style="color:${c.hex}">Option ${ltr}</div>
+        <div class="opt-letter" style="color:${c.hex}">${tr('opt_label',ltr)}</div>
         <div class="opt-name-preview" id="opt-prev-${i}">${esc(opt.name)||'—'}</div>
         ${i>=2?`<button class="opt-rm" onclick="event.stopPropagation();removeOpt(${i})" title="Supprimer">✕</button>`:''}
         <div class="opt-chevron">▾</div>
       </div>
       <div class="opt-card-body">
         <div class="field">
-          <label>Nom de l'option</label>
+          <label>${tr('opt_name_lbl')}</label>
           <input type="text" id="opt-name-${i}" value="${esc(opt.name)}"
-            placeholder="Ex : Rester à Paris"
+            placeholder="${tr('opt_name_ph')}"
             oninput="S.options[${i}].name=this.value;document.getElementById('opt-prev-${i}').textContent=this.value||'—'">
         </div>
         <div class="field" style="margin-bottom:0">
-          <label>Description courte <span style="font-weight:400;color:var(--muted)">(optionnel)</span></label>
+          <label>${tr('opt_desc_lbl')} <span style="font-weight:400;color:var(--muted)">${tr('opt_desc_opt')}</span></label>
           <input type="text" id="opt-desc-${i}" value="${esc(opt.desc)}"
-            placeholder="Ex : Stabilité, famille proche…"
+            placeholder="${tr('opt_desc_ph')}"
             oninput="S.options[${i}].desc=this.value">
         </div>
       </div>`;
     b.appendChild(card);
   });
-  document.getElementById('opt-count-lbl').textContent=`${S.options.length} option${S.options.length>1?'s':''}`;
+  document.getElementById('opt-count-lbl').textContent=tr('opt_count',S.options.length);
   document.getElementById('addOptBtn').style.display=S.options.length>=6?'none':'flex';
 }
 
@@ -1501,7 +1973,7 @@ function validateStep1(){
   const dec=document.getElementById('inp-dec').value.trim();
   if(!dec){ shake('inp-dec'); return; }
   const allNamed=S.options.every((_,i)=>document.getElementById(`opt-name-${i}`)?.value.trim());
-  if(!allNamed){ alert('Veuillez donner un nom à chaque option.'); return; }
+  if(!allNamed){ alert(tr('err_name')); return; }
   S.decision=dec;
   S.options=S.options.map((_,i)=>({
     name:document.getElementById(`opt-name-${i}`).value.trim(),
@@ -1516,7 +1988,7 @@ function validateStep1(){
 initOptions();
 
 /* ─── STEP 2 ────────────────────────────── */
-function buildCriteriaPage(){ renderCatTabs(); filterGrid('Tous'); renderSelList(); }
+function buildCriteriaPage(){ S.currentCat=tr('cats')[0]; renderCatTabs(); filterGrid(tr('cats')[0]); renderSelList(); }
 
 function renderCatTabs(){
   const t=document.getElementById('catTabs'); t.innerHTML='';
@@ -1530,7 +2002,7 @@ function renderCatTabs(){
 function filterGrid(cat){
   S.currentCat=cat; renderCatTabs();
   const g=document.getElementById('critGrid'); g.innerHTML='';
-  (cat==='Tous'?LIB:LIB.filter(c=>c.cat===cat)).forEach(c=>{
+  (cat===tr('cats')[0]?LIB:LIB.filter(c=>c.cat===cat)).forEach(c=>{
     const on=S.criteria.some(x=>x.id===c.id);
     const pill=document.createElement('div');
     pill.className='crit-pill'+(on?' on':''); pill.id='pill-'+c.id;
@@ -1564,7 +2036,7 @@ function renderSelList(){
   const list=document.getElementById('activeList');
   document.getElementById('crit-badge').textContent=S.criteria.length;
   if(!S.criteria.length){
-    list.innerHTML='<div class="empty-hint">👆 Sélectionnez au moins 2 critères ci-dessus pour continuer</div>';
+    list.innerHTML=`<div class="empty-hint">${tr('sel_empty')}</div>`;
     return;
   }
   list.innerHTML='';
@@ -1572,9 +2044,9 @@ function renderSelList(){
     const item=document.createElement('div'); item.className='sel-item';
     item.innerHTML=`
       <div class="sel-icon">${c.icon}</div>
-      <div class="sel-name">${c.name}${c.invert?` <span class="inv-tag" title="Score élevé = mauvais pour ce critère">↓ inversé</span>`:''}</div>
+      <div class="sel-name">${c.name}${c.invert?` <span class="inv-tag" title="${tr('inv_tip_on')}">${tr('inv_tag')}</span>`:''}</div>
       <div class="weight-wrap">
-        <label class="weight-lbl">Importance</label>
+        <label class="weight-lbl">${tr('lbl_importance')}</label>
         <div class="weight-sel-wrap">
           <select class="weight-sel" onchange="setCW('${c.id}',this.value)">
             ${[1,2,3].map(w=>`<option value="${w}"${c.weight===w?' selected':''}>${WEIGHTS[w]}</option>`).join('')}
@@ -1583,10 +2055,10 @@ function renderSelList(){
         </div>
       </div>
       <div class="weight-wrap">
-        <label class="weight-lbl">Sens</label>
+        <label class="weight-lbl">${tr('lbl_sens')}</label>
         <button class="inv-btn${c.invert?' on':''}" onclick="toggleInv('${c.id}')"
-          title="${c.invert?'Actuellement : score élevé = mauvais':'Actuellement : score élevé = bon'}">
-          ${c.invert?'↓ Inversé':'↑ Normal'}
+          title="${c.invert?tr('inv_tip_on'):tr('inv_tip_off')}">
+          ${c.invert?tr('inv_on'):tr('inv_off')}
         </button>
       </div>
       <button class="rm-btn" onclick="rmCrit('${c.id}')" title="Retirer ce critère">✕</button>`;
@@ -1604,7 +2076,7 @@ function rmCrit(id){
 }
 
 function validateStep2(){
-  if(S.criteria.length<2){alert('Veuillez sélectionner au moins 2 critères.');return;}
+  if(S.criteria.length<2){alert(tr('err_crit'));return;}
   S.criteria.forEach(c=>{
     if(!S.scores[c.id]||S.scores[c.id].length!==S.options.length)
       S.scores[c.id]=S.options.map(()=>5);
@@ -1617,8 +2089,7 @@ function validateStep2(){
 /* ─── STEP 3 ────────────────────────────── */
 function buildEvalPage(){
   document.getElementById('eval-title').textContent=
-    `Notez vos options pour : "${S.decision.substring(0,50)}${S.decision.length>50?'…':''}"`;
-
+    tr('eval_title', S.decision.substring(0,50)+(S.decision.length>50?'…':''));
   const nOpts=S.options.length;
   const grid=document.getElementById('evalGrid');
   grid.style.gridTemplateColumns=`repeat(${Math.min(nOpts,2)},1fr)`;
@@ -1672,10 +2143,10 @@ function buildEvalPage(){
   notesRow.innerHTML=S.options.map((opt,oi)=>`
     <div>
       <span class="notes-lbl" style="color:${COLORS[oi].hex}">
-        📝 Notes libres — Option ${LETTERS[oi]} (${esc(opt.name)})
+        📝 ${tr('notes_lbl', LETTERS[oi], esc(opt.name))}
       </span>
       <textarea id="note-${oi}" rows="3"
-        placeholder="Vos réflexions, intuitions, ce que les chiffres ne disent pas…"
+        placeholder="${tr('notes_ph')}"
         oninput="S.notes[${oi}]=this.value">${esc(S.notes[oi]||'')}</textarea>
     </div>`).join('');
 }
@@ -1749,6 +2220,7 @@ function refreshLive(oi){
 function showResults(){
   S.notes=S.options.map((_,i)=>document.getElementById(`note-${i}`)?.value||'');
   buildResults();
+  renderStepProgress(4);
   nav('page-results');
   initScenario();
   setTimeout(drawRadar,150);
@@ -1768,20 +2240,20 @@ function buildResults(){
   if(tie){
     vstyle=`background:#fffbea;border-color:#f0d080`;
     vemoji='⚖️';
-    vtitle=`<span style="color:var(--amber)">Résultat très serré !</span>`;
-    vsub=`Seulement ${diff} point${diff>1?'s':''} d'écart — les deux premières options sont quasiment équivalentes. Faites confiance à votre intuition.`;
+    vtitle=`<span style="color:var(--amber)">${tr('res_tie_title')}</span>`;
+    vsub=tr('res_tie_sub',diff);
   } else {
     vstyle=`background:${cW.bg};border-color:${cW.border}`;
     vemoji='🎯';
-    vtitle=`<span style="color:${cW.hex}">"${esc(S.options[winner].name)}" ressort en tête</span>`;
-    vsub=`Avantage de ${diff} points sur vos critères pondérés. N'oubliez pas de prendre en compte vos notes et votre ressenti.`;
+    vtitle=`<span style="color:${cW.hex}">"${esc(S.options[winner].name)}" ${LANG==='fr'?'ressort en tête':'comes out on top'}</span>`;
+    vsub=tr('res_win_sub',diff);
   }
 
   // Score cards (ranked)
   const ncols=Math.min(S.options.length,3);
   const scoreCards=ranked.map((oi,rank)=>{
     const c=COLORS[oi]; const sc=scores[oi];
-    const rankLabels=['🥇 1ère option','🥈 2ème option','🥉 3ème option'];
+    const rankLabels=tr('rank_labels');
     const rankBadge=rank<3?`<div class="rank-badge" style="background:${c.bg};color:${c.hex};border:1px solid ${c.border}">${rankLabels[rank]}</div>`:'';
     const miniCrits=S.criteria.slice(0,4).map(cr=>{
       const v=S.scores[cr.id]?.[oi]??5;
@@ -1793,25 +2265,29 @@ function buildResults(){
     }).join('');
     return `
       <div class="score-card${rank===0?' rank-1':''}" style="border-color:${rank===0?c.hex:c.border}">
-        <div class="sc-accent" style="background:${c.hex}"></div>
         <div class="sc-body">
-          ${rankBadge}
-
-          <div class="sc-name">${esc(S.options[oi].name)}</div>
-          ${S.options[oi].desc?`<div class="sc-desc">${esc(S.options[oi].desc)}</div>`:''}
-          <div class="sc-score-row">
-            <div class="sc-num" style="color:${c.hex}">${sc}</div>
-            <div class="sc-denom">/100</div>
+          <div class="sc-top-band" style="background:${c.hex}"></div>
+          <div class="sc-main">
+            <div class="sc-content">
+              ${rankBadge}
+              <div class="sc-name">${esc(S.options[oi].name)}</div>
+              ${S.options[oi].desc?`<div class="sc-desc">${esc(S.options[oi].desc)}</div>`:''}
+            </div>
+            <div class="sc-score-block">
+              <div class="sc-num" style="color:${c.hex}">${sc}</div>
+              <div class="sc-denom">/100</div>
+            </div>
           </div>
-          <div class="sc-bar"><div class="sc-bar-fill" style="width:${sc}%;background:${c.hex}"></div></div>
-          <div class="sc-mini-crits">${miniCrits}</div>
+          <div class="sc-bar-row">
+            <div class="sc-bar"><div class="sc-bar-fill" style="width:${sc}%;background:${c.hex}"></div></div>
+          </div>
         </div>
       </div>`;
   }).join('');
 
   // Breakdown
   const bkHeader=`<div class="bk-row hdr">
-    <div class="bk-cell crit-col hdr-cell">Critère</div>
+    <div class="bk-cell crit-col hdr-cell">${tr('bk_crit')}</div>
     ${S.options.map((o,i)=>`<div class="bk-cell opt-col hdr-cell" style="color:${COLORS[i].hex}">${LETTERS[i]}. ${esc(o.name.substring(0,10))}${o.name.length>10?'…':''}</div>`).join('')}
   </div>`;
   const bkRows=S.criteria.map(cr=>{
@@ -1841,34 +2317,78 @@ function buildResults(){
   const hasNotes=S.notes.some(n=>n.trim());
   const notesHTML=hasNotes?`
     <div class="notes-res">
-      <div class="notes-res-head">📝 Vos notes personnelles</div>
+      <div class="notes-res-head">${tr('notes_head')}</div>
       <div class="notes-res-body" style="grid-template-columns:repeat(${Math.min(S.options.length,3)},1fr)">
         ${S.options.map((o,i)=>`
           <div class="note-col" style="${i<S.options.length-1?'border-right:1px solid var(--border)':''}">
             <div class="note-col-lbl" style="color:${COLORS[i].hex}">${LETTERS[i]}. ${esc(o.name)}</div>
-            <div class="note-col-txt">${esc(S.notes[i])||'<em style="color:var(--muted2)">Aucune note</em>'}</div>
+            <div class="note-col-txt">${esc(S.notes[i])||`<em style="color:var(--muted2)">${tr('no_notes')}</em>`}</div>
           </div>`).join('')}
       </div>
     </div>`:'';
 
   document.getElementById('resContent').innerHTML=`
-    <div class="res-header">
-      <div class="page-eyebrow">✦ Votre analyse</div>
-      <div class="res-decision-title">${esc(S.decision)}</div>
-    </div>
 
-    <div class="verdict-strip" style="${vstyle}">
-      <div class="verdict-icon">${vemoji}</div>
-      <div>
-        <div class="verdict-title">${vtitle}</div>
-        <div class="verdict-sub">${vsub}</div>
+    <!-- ① EN-TÊTE + VERDICT COMPACT -->
+    <div class="res-header">
+      <div class="page-eyebrow">${tr('res_eyebrow')}</div>
+      <div class="res-decision-title">${esc(S.decision)}</div>
+      <div class="verdict-inline" style="background:${vstyle.includes('fffbea')?'#fffbea':cW.bg};border:1.5px solid ${vstyle.includes('fffbea')?'#f0d080':cW.border}">
+        <span class="verdict-inline-emoji">${vemoji}</span>
+        <div class="verdict-inline-text">
+          <div class="verdict-inline-title">${vtitle}</div>
+          <div class="verdict-inline-sub">${vsub}</div>
+        </div>
       </div>
     </div>
 
-    <div class="interp-box">
+    <!-- ② OUTILS EN PILLS CÔTE À CÔTE -->
+    <div class="tool-pills">
+
+      <!-- Peur -->
+      <div class="tool-pill" id="fearBox">
+        <div class="tool-pill-head" onclick="toggleFearBox()">
+          <div class="tool-pill-icon">🫀</div>
+          <div class="tool-pill-text">
+            <div class="tool-pill-title">${tr('fear_title')}</div>
+            <div class="tool-pill-sub">${tr('fear_sub')}</div>
+          </div>
+          <div class="toggle-wrap" style="margin-left:8px">
+            <span class="toggle-label" id="fearToggleLabel">${LANG==='fr'?'Non':'Off'}</span>
+            <label class="toggle" style="width:36px;height:20px">
+              <input type="checkbox" id="fearToggle" onchange="onFearToggle(this.checked)" onclick="event.stopPropagation()">
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb" style="width:14px;height:14px;top:3px;left:3px"></div>
+            </label>
+          </div>
+        </div>
+        <div class="tool-pill-body" id="fearBody"></div>
+      </div>
+
+      <!-- Scénarios -->
+      <div class="tool-pill" id="scenarioBox">
+        <div class="tool-pill-head" onclick="toggleScenarioBox()">
+          <div class="tool-pill-icon">🎛️</div>
+          <div class="tool-pill-text">
+            <div class="tool-pill-title">${tr('scenario_title')}</div>
+            <div class="tool-pill-sub">${tr('scenario_sub')}</div>
+          </div>
+          <div class="scenario-chevron" style="color:var(--muted2);font-size:.8rem;margin-left:8px">▾</div>
+        </div>
+        <div class="tool-pill-body scenario-body" id="scenarioBody"></div>
+      </div>
+
+    </div>
+
+    <!-- ③ SCORES -->
+    <div class="res-divider" style="margin-top:24px"><span class="res-divider-label">${tr('div_scores')}</span></div>
+    <div class="scores-row" id="scoresRow" style="grid-template-columns:repeat(${ncols},1fr)">${scoreCards}</div>
+
+    <!-- ④ INTERPRÉTATION IA -->
+    <div class="interp-box" style="margin-top:20px">
       <div class="interp-head">
         <span>💬</span>
-        <div class="interp-head-title">Interprétation personnalisée</div>
+        <div class="interp-head-title">${tr('interp_title')}</div>
         <div class="interp-badge">IA</div>
       </div>
       <div id="interpContent">
@@ -1881,43 +2401,8 @@ function buildResults(){
       </div>
     </div>
 
-    <div class="res-divider"><span class="res-divider-label">Scores</span></div>
-
-    <div class="fear-box" id="fearBox">
-      <div class="fear-head" onclick="toggleFearBox()">
-        <div class="fear-icon">🫀</div>
-        <div class="fear-head-text">
-          <div class="fear-head-title">Et si la peur n'était pas un facteur ?</div>
-          <div class="fear-head-sub">Lucid masque les critères liés au risque et à la prudence pour révéler votre choix sans biais de peur.</div>
-        </div>
-        <div class="toggle-wrap">
-          <span class="toggle-label" id="fearToggleLabel">Non</span>
-          <label class="toggle">
-            <input type="checkbox" id="fearToggle" onchange="onFearToggle(this.checked)" onclick="event.stopPropagation()">
-            <div class="toggle-track"></div>
-            <div class="toggle-thumb"></div>
-          </label>
-        </div>
-      </div>
-      <div class="fear-body" id="fearBody"></div>
-    </div>
-
-    <div class="scenario-box" id="scenarioBox">
-      <div class="scenario-head" onclick="toggleScenarioBox()">
-        <div class="scenario-head-icon">🎛️</div>
-        <div class="scenario-head-text">
-          <div class="scenario-head-title">Testez vos scénarios</div>
-          <div class="scenario-head-sub">Activez ou désactivez des critères pour recalculer les scores instantanément.</div>
-        </div>
-        <div class="scenario-chevron">▾</div>
-      </div>
-      <div class="scenario-body" id="scenarioBody"></div>
-    </div>
-
-    <div class="scores-row" id="scoresRow" style="grid-template-columns:repeat(${ncols},1fr);margin-top:16px">${scoreCards}</div>
-
-    <div class="res-divider" style="margin-top:36px"><span class="res-divider-label">Profil visuel</span></div>
-
+    <!-- ⑤ PROFIL VISUEL -->
+    <div class="res-divider" style="margin-top:32px"><span class="res-divider-label">${tr('div_visual')}</span></div>
     <div class="radar-section">
       <div style="display:flex;justify-content:center">
         <canvas id="radarC" width="480" height="360" style="max-width:100%"></canvas>
@@ -1927,38 +2412,19 @@ function buildResults(){
       </div>
     </div>
 
-    <div class="res-divider"><span class="res-divider-label">Détail par critère</span></div>
-
+    <!-- ⑥ DÉTAIL PAR CRITÈRE -->
+    <div class="res-divider"><span class="res-divider-label">${tr('div_detail')}</span></div>
     <div class="bk-table">${bkHeader}${bkRows}</div>
 
-    <div class="res-divider"><span class="res-divider-label">Synthèse</span></div>
+    <!-- ⑦ NOTES PERSONNELLES -->
+    ${hasNotes?`<div class="res-divider"><span class="res-divider-label">${tr('div_notes')}</span></div>${notesHTML}`:''}
 
-    <div class="analysis-box">
-      <div class="analysis-head">
-        <span>🧠</span>
-        <h3>Analyse synthétique</h3>
-        <div class="ai-badge">Automatique</div>
-      </div>
-      <div class="analysis-body">
-        <div class="an-col pros">
-          <h4>✦ Points forts de "${esc(S.options[winner].name)}"</h4>
-          ${an.pros.map(p=>`<div class="an-item"><div class="an-dot"></div><span>${p}</span></div>`).join('')}
-        </div>
-        <div class="an-col cons">
-          <h4>⚠ Points d'attention</h4>
-          ${an.cons.map(p=>`<div class="an-item"><div class="an-dot"></div><span>${p}</span></div>`).join('')}
-        </div>
-      </div>
-    </div>
-
-    ${hasNotes?`<div class="res-divider"><span class="res-divider-label">Notes personnelles</span></div>`:''}
-    ${notesHTML}
-
+    <!-- ⑧ ACTIONS -->
     <div class="res-actions">
-      <button class="btn btn-secondary" onclick="nav('page-step3')">← Modifier mes notes</button>
+      <button class="btn btn-secondary" onclick="nav('page-step3')">${tr('back_notes')}</button>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn btn-secondary" onclick="window.print()">🖨️ Exporter en PDF</button>
-        <button class="btn btn-primary" onclick="restart()">↺ Nouvelle décision</button>
+        <button class="btn btn-secondary" onclick="window.print()">${tr('export_pdf')}</button>
+        <button class="btn btn-primary" onclick="restart()">${tr('new_decision')}</button>
       </div>
     </div>`;
 }
@@ -1982,7 +2448,28 @@ ${critDetails}${S.notes[i]?'\n  Note personnelle: "'+S.notes[i]+'"':''}`;
   const rankedNames = ranked.map(i=>`"${S.options[i].name}" (${scores[i]} pts)`).join(' > ');
   const crucialCriteria = S.criteria.filter(c=>c.weight>=2).map(c=>`${c.name} (×${c.weight})`).join(', ') || 'Aucun';
 
-  const prompt = `Tu es un conseiller bienveillant et direct qui aide les gens à prendre des décisions importantes.
+  const promptLang = tr('ai_lang');
+  const prompt = LANG === 'en'
+  ? `You are a friendly and direct advisor helping people make important decisions.
+
+The user must decide: "${S.decision}"
+
+Results of their multi-criteria analysis:
+Ranking: ${rankedNames}
+
+${optionsSummary}
+
+Most important criteria (×2 or ×3): ${crucialCriteria}
+
+Your mission: Write a short interpretive message (3 to 5 sentences) in English, natural and human.
+- Compare the options on the points where they diverge most
+- Reveal what the numbers actually say about the user's priorities
+- Make a nuanced recommendation taking into account the important criteria
+- If it's close, say so and point to what matters most
+- Write directly, no title, no bullets, no generic intro
+- Style: "Option X is stronger on…", "If you value…", "What the numbers reveal here…"
+- Use "you", be warm but factual. 3-5 sentences max.`
+  : `Tu es un conseiller bienveillant et direct qui aide les gens à prendre des décisions importantes.
 
 L'utilisateur doit décider : "${S.decision}"
 
@@ -2042,12 +2529,20 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
     })[0];
 
     const msg = diff<=4
-      ? `Les deux options sont très proches (${scores2[w]} vs ${scores2[r]} pts).`
-        +(topW?` "${S.options[w].name}" se démarque légèrement sur <strong>${topW.name}</strong>.`:'')
-        +` Dans ce cas serré, fais confiance à ton instinct.`
-      : `"${S.options[w].name}" ressort en tête avec ${diff} points d'avance.`
-        +(topW?` Son principal atout : <strong>${topW.name}</strong>.`:'')
-        +(topR?` "${S.options[r].name}" reste plus fort sur <strong>${topR.name}</strong> — à peser si c'est une priorité.`:'');
+      ? (LANG==='en'
+          ? `The two options are very close (${scores2[w]} vs ${scores2[r]} pts).`
+            +(topW?` "${S.options[w].name}" stands out slightly on <strong>${topW.name}</strong>.`:'')
+            +` In this tight call, trust your instincts.`
+          : `Les deux options sont très proches (${scores2[w]} vs ${scores2[r]} pts).`
+            +(topW?` "${S.options[w].name}" se démarque légèrement sur <strong>${topW.name}</strong>.`:'')
+            +` Dans ce cas serré, fais confiance à ton instinct.`)
+      : (LANG==='en'
+          ? `"${S.options[w].name}" comes out on top with a ${diff}-point lead.`
+            +(topW?` Its main strength: <strong>${topW.name}</strong>.`:'')
+            +(topR?` "${S.options[r].name}" remains stronger on <strong>${topR.name}</strong> — worth considering if that's a priority.`:'')
+          : `"${S.options[w].name}" ressort en tête avec ${diff} points d'avance.`
+            +(topW?` Son principal atout : <strong>${topW.name}</strong>.`:'')
+            +(topR?` "${S.options[r].name}" reste plus fort sur <strong>${topR.name}</strong> — à peser si c'est une priorité.`:'')); 
 
     const el=document.getElementById('interpContent');
     if(el) el.innerHTML=`<div class="interp-body"><div class="interp-text"><p>${msg}</p></div></div>`;
@@ -2065,7 +2560,11 @@ function initScenario(){
 }
 
 function toggleScenarioBox(){
-  document.getElementById('scenarioBox').classList.toggle('open');
+  const sb = document.getElementById('scenarioBox');
+  if(!sb) return;
+  const opening = !sb.classList.contains('open');
+  _setPillOpen('scenarioBox', opening);
+  if(opening) _setPillOpen('fearBox', false);
 }
 
 function calcScoreScenario(oi){
@@ -2106,8 +2605,8 @@ function renderScenarioBody(){
         <div class="sc-crit-icon">${c.icon}</div>
         <div class="sc-crit-name">${c.name}</div>
         ${c.weight>1?`<span class="sc-crit-weight">×${c.weight}</span>`:''}
-        ${c.invert?`<span class="sc-crit-inv">↓ inversé</span>`:''}
-        <label class="mini-toggle" title="${on?'Désactiver':'Activer'} ce critère">
+        ${c.invert?`<span class="sc-crit-inv">${tr('sc_inv')}</span>`:''}
+        <label class="mini-toggle" title="${on?tr('sc_toggle_on'):tr('sc_toggle_off')}">
           <input type="checkbox" ${on?'checked':''} onchange="toggleScenarioCrit('${c.id}')">
           <div class="mini-toggle-track"></div>
           <div class="mini-toggle-thumb"></div>
@@ -2120,9 +2619,9 @@ function renderScenarioBody(){
   body.innerHTML=`
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
       <span style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">
-        ${activeCount} / ${S.criteria.length} critères actifs
+        ${tr('scenario_active',activeCount,S.criteria.length)}
       </span>
-      <button class="scenario-reset" onclick="resetScenario()">Tout réactiver</button>
+      <button class="scenario-reset" onclick="resetScenario()">${tr('scenario_reset')}</button>
     </div>
     <div class="sc-crit-list">${rows}</div>
     <div class="scenario-summary">${insight}</div>`;
@@ -2131,9 +2630,8 @@ function renderScenarioBody(){
 function genScenarioInsight(){
   const disabledCrits = S.criteria.filter(c=>!S_active.has(c.id));
 
-  // Aucun critère désactivé — analyse complète
   if(disabledCrits.length === 0){
-    return `✅ Tous les critères sont actifs — c'est votre analyse complète, sans filtre.`;
+    return tr('sc_all_active');
   }
 
   const baseScores  = S.options.map((_,i)=>calcScore(i));
@@ -2145,53 +2643,65 @@ function genScenarioInsight(){
   const scenWinner  = scenRanked[0];
   const switched    = scenWinner !== baseWinner;
 
-  const disabledNames = disabledCrits.map(c=>`<strong>${c.name}</strong>`).join(' et ');
+  const disabledNames = disabledCrits.map(c=>`<strong>${c.name}</strong>`).join(LANG==='en'?' and ':' et ');
   const plural        = disabledCrits.length > 1;
+  const s             = plural ? 's' : '';
 
-  // Trouver l'option la plus impactée (+ ou -)
   const deltas = S.options.map((_,i)=>({ i, d: scenScores[i]-baseScores[i] }));
   const bigGainer  = deltas.reduce((a,b)=>b.d>a.d?b:a);
   const bigLoser   = deltas.reduce((a,b)=>b.d<a.d?b:a);
 
-  // Cas 1 — le classement s'inverse
+  // Cas 1 — classement inversé
   if(switched){
-    const newName  = S.options[scenWinner].name;
-    const oldName  = S.options[baseWinner].name;
+    const newName  = esc(S.options[scenWinner].name);
+    const oldName  = esc(S.options[baseWinner].name);
     const gain     = scenScores[scenWinner] - baseScores[scenWinner];
     const gainSign = gain>=0?`+${gain}`:gain;
-    return `🔄 Sans ${disabledNames}, le classement <strong>s'inverse</strong> : <strong>"${esc(newName)}"</strong> passe en tête (${gainSign} pts), devant <strong>"${esc(oldName)}"</strong>. Ce${plural?'s':''} critère${plural?'s':''} ${plural?'jouaient':'jouait'} donc un rôle décisif en faveur de l'option initiale.`;
+    const p1 = LANG==='en' ? (plural?'played':'played') : (plural?'jouaient':'jouait');
+    return tr('sc_switched', disabledNames, newName, gainSign, oldName, s, p1);
   }
 
-  // Cas 2 — même gagnant mais écart significativement réduit
+  // Cas 2 — écart réduit
   const baseGap = baseScores[baseWinner] - baseScores[baseRanked[1]];
   const scenGap = scenScores[scenWinner] - scenScores[scenRanked[1]];
   if(scenGap < baseGap && baseGap - scenGap >= 6){
     const gapDiff = baseGap - scenGap;
-    return `⚠️ <strong>"${esc(S.options[baseWinner].name)}"</strong> reste en tête, mais son avantage se réduit de <strong>${gapDiff} points</strong> sans ${disabledNames}. Ce${plural?'s':''} critère${plural?'s':''} ${plural?'constituent':'constitue'} une part importante de son avance — la décision serait plus serrée sans ${plural?'eux':'lui'}.`;
+    const p2 = LANG==='en' ? (plural?'constitute':'constitutes') : (plural?'constituent':'constitue');
+    return tr('sc_reduced', esc(S.options[baseWinner].name), gapDiff, disabledNames, s, p2);
   }
 
-  // Cas 3 — même gagnant, écart qui se creuse
+  // Cas 3 — écart qui se creuse
   if(scenGap > baseGap + 5){
-    return `✅ Sans ${disabledNames}, <strong>"${esc(S.options[baseWinner].name)}"</strong> se détache encore davantage (+${scenGap - baseGap} pts d'écart supplémentaires). Ce${plural?'s':''} critère${plural?'s':''} ne ${plural?'sont':'est'} pas ce qui fait la force de cette option — son avance repose sur d'autres facteurs.`;
+    const p3 = LANG==='en'
+      ? `${plural?'are':'is'} not what drives this option's strength`
+      : `ne ${plural?'sont':'est'} pas ce qui fait la force de cette option`;
+    return tr('sc_wider', esc(S.options[baseWinner].name), scenGap - baseGap, disabledNames, s, p3);
   }
 
-  // Cas 4 — une option gagne beaucoup, une autre perd beaucoup
+  // Cas 4 — divergence forte
   if(bigGainer.d >= 8 && bigGainer.i !== bigLoser.i && bigLoser.d <= -8){
-    const gName = S.options[bigGainer.i].name;
-    const lName = S.options[bigLoser.i].name;
-    return `📊 Ce scénario révèle une divergence nette : <strong>"${esc(gName)}"</strong> gagne +${bigGainer.d} pts tandis que <strong>"${esc(lName)}"</strong> en perd ${Math.abs(bigLoser.d)}. ${disabledNames} ${plural?'pèsent':'pèse'} donc différemment sur chaque option.`;
+    const gN = esc(S.options[bigGainer.i].name);
+    const lN = esc(S.options[bigLoser.i].name);
+    const p4 = LANG==='en' ? (plural?'weigh':'weighs') : (plural?'pèsent':'pèse');
+    return tr('sc_diverge', gN, bigGainer.d, lN, Math.abs(bigLoser.d), disabledNames, p4);
   }
 
-  // Cas 5 — impact faible sur tous
+  // Cas 5 — impact faible
   const maxDelta = Math.max(...deltas.map(d=>Math.abs(d.d)));
   if(maxDelta <= 4){
-    return `📌 Désactiver ${disabledNames} ne change presque rien aux scores (moins de ${maxDelta+1} pts d'écart). ${plural?'Ces critères ne sont pas':'Ce critère n\u2019est pas'} déterminant${plural?'s':''} dans cette décision — les autres facteurs portent l'essentiel du résultat.`;
+    const p5 = LANG==='en'
+      ? `${plural?'are not':'is not'} decisive`
+      : `n\u2019est pas déterminant${s}`;
+    return tr('sc_nochange', disabledNames, maxDelta+1, s, p5);
   }
 
-  // Cas 6 — fallback générique mais enrichi
+  // Cas 6 — fallback
   const mostImpacted = deltas.reduce((a,b)=>Math.abs(b.d)>Math.abs(a.d)?b:a);
   const sign = mostImpacted.d >= 0 ? `+${mostImpacted.d}` : `${mostImpacted.d}`;
-  return `🎯 Sans ${disabledNames}, l'option la plus impactée est <strong>"${esc(S.options[mostImpacted.i].name)}"</strong> (${sign} pts). Le classement reste identique, mais ce scénario montre à quel point ${plural?'ces critères influencent':'ce critère influence'} la position de cette option.`;
+  const p6 = LANG==='en'
+    ? (plural?'influence':'influences')
+    : (plural?'influencent':'influence');
+  return tr('sc_fallback', disabledNames, esc(S.options[mostImpacted.i].name), sign, s, p6);
 }
 
 
@@ -2210,7 +2720,7 @@ function updateScenarioScores(){
   row.style.gridTemplateColumns=`repeat(${ncols},1fr)`;
 
   // Re-rank by scenario scores
-  const rankLabels=['🥇 1ère option','🥈 2ème option','🥉 3ème option'];
+  const rankLabels=tr('rank_labels');
   row.innerHTML = scenRanked.map((oi,rank)=>{
     const c = COLORS[oi];
     const sc = scenScores[oi];
@@ -2237,19 +2747,23 @@ function updateScenarioScores(){
 
     return `
       <div class="score-card${rank===0?' rank-1':''}" style="border-color:${rank===0?c.hex:c.border}">
-        <div class="sc-accent" style="background:${c.hex}"></div>
         <div class="sc-body">
-          ${rankBadge}
-
-          <div class="sc-name">${esc(S.options[oi].name)}</div>
-          ${S.options[oi].desc?`<div class="sc-desc">${esc(S.options[oi].desc)}</div>`:''}
-          <div class="sc-score-row">
-            <div class="sc-num" style="color:${c.hex}">${sc}</div>
-            <div class="sc-denom">/100</div>
-            ${deltaHTML}
+          <div class="sc-top-band" style="background:${c.hex}"></div>
+          <div class="sc-main">
+            <div class="sc-content">
+              ${rankBadge}
+              <div class="sc-name">${esc(S.options[oi].name)}</div>
+              ${S.options[oi].desc?`<div class="sc-desc">${esc(S.options[oi].desc)}</div>`:''}
+              ${deltaHTML}
+            </div>
+            <div class="sc-score-block">
+              <div class="sc-num" style="color:${c.hex}">${sc}</div>
+              <div class="sc-denom">/100</div>
+            </div>
           </div>
-          <div class="sc-bar"><div class="sc-bar-fill" style="width:${sc}%;background:${c.hex}"></div></div>
-          <div class="sc-mini-crits">${miniCrits}</div>
+          <div class="sc-bar-row">
+            <div class="sc-bar"><div class="sc-bar-fill" style="width:${sc}%;background:${c.hex}"></div></div>
+          </div>
         </div>
       </div>`;
   }).join('');
@@ -2301,13 +2815,26 @@ function calcScoreFiltered(oi, excludeIds){
   return Math.round((tot/max)*100);
 }
 
+function _setPillOpen(id, open){
+  const el = document.getElementById(id);
+  if(!el) return;
+  if(open) el.classList.add('open'); else el.classList.remove('open');
+  const body = el.querySelector('.tool-pill-body');
+  if(body) body.style.display = open ? 'block' : 'none';
+}
+
 function toggleFearBox(){
-  document.getElementById('fearBox').classList.toggle('open');
+  const fb = document.getElementById('fearBox');
+  if(!fb) return;
+  const opening = !fb.classList.contains('open');
+  _setPillOpen('fearBox', opening);
+  if(opening) _setPillOpen('scenarioBox', false);
 }
 
 function onFearToggle(checked){
-  document.getElementById('fearBox').classList.add('open');
-  document.getElementById('fearToggleLabel').textContent = checked ? 'Oui' : 'Non';
+  _setPillOpen('fearBox', true);
+  _setPillOpen('scenarioBox', false);
+  document.getElementById('fearToggleLabel').textContent = checked ? (LANG==='fr'?'Oui':'On') : (LANG==='fr'?'Non':'Off');
   document.getElementById('fearToggleLabel').className = 'toggle-label' + (checked ? ' on' : '');
   renderFearBody(checked);
 }
@@ -2318,41 +2845,38 @@ function renderFearBody(active){
   const body      = document.getElementById('fearBody');
 
   if(fearCrits.length === 0){
-    body.innerHTML=`<div class="fear-none">Aucun critère lié à la peur ou au risque n'a été sélectionné dans votre analyse.</div>`;
+    body.innerHTML=`<div class="fear-none">${tr('fear_none')}</div>`;
     return;
   }
 
-  // Tags des critères détectés
   const allTags = S.criteria.map(c=>{
     const isFear = isFearCrit(c);
     const cls = (!active || !isFear) ? 'active' : 'inactive';
     return `<span class="fear-crit-tag ${cls}">${c.icon} ${c.name}${isFear&&active?' ✕':''}</span>`;
   }).join('');
 
-  // Scores normaux vs sans peur
-  const normalScores = S.options.map((_,i)=>calcScore(i));
+  const normalScores   = S.options.map((_,i)=>calcScore(i));
   const fearlessScores = S.options.map((_,i)=>active?calcScoreFiltered(i,fearIds):null);
 
-  const ranked = [...S.options.map((_,i)=>i)].sort((a,b)=>normalScores[b]-normalScores[a]);
+  const ranked         = [...S.options.map((_,i)=>i)].sort((a,b)=>normalScores[b]-normalScores[a]);
   const fearlessRanked = active
     ? [...S.options.map((_,i)=>i)].sort((a,b)=>(fearlessScores[b]??0)-(fearlessScores[a]??0))
     : null;
 
-  const winnerNormal    = ranked[0];
-  const winnerFearless  = fearlessRanked?.[0];
-  const switchedWinner  = active && winnerFearless !== winnerNormal;
+  const winnerNormal   = ranked[0];
+  const winnerFearless = fearlessRanked?.[0];
+  const switchedWinner = active && winnerFearless !== winnerNormal;
 
-  // Lignes de comparaison par option
   const rows = ranked.map(oi=>{
-    const c = COLORS[oi];
+    const c  = COLORS[oi];
     const ns = normalScores[oi];
     const fs = fearlessScores?.[oi] ?? null;
     let deltaHTML = '';
     if(active && fs !== null){
-      const d = fs - ns;
-      const cls = d > 2 ? 'up' : d < -2 ? 'down' : 'same';
+      const d    = fs - ns;
+      const cls  = d > 2 ? 'up' : d < -2 ? 'down' : 'same';
       const sign = d > 0 ? '+' : '';
-      deltaHTML = `<span class="fear-delta ${cls}">${sign}${d} pts sans peur</span>`;
+      deltaHTML  = `<span class="fear-delta ${cls}">${tr('fear_delta_lbl',sign,d)}</span>`;
     }
     return `
       <div class="fear-opt-row">
@@ -2360,29 +2884,23 @@ function renderFearBody(active){
         <div class="fear-scores">
           <div class="fear-score-block">
             <div class="fear-score-val" style="color:${c.hex}">${ns}</div>
-            <div class="fear-score-lbl">Score réel</div>
+            <div class="fear-score-lbl">${tr('fear_score_real')}</div>
           </div>
           ${active && fs!==null ? `
           <div class="fear-arrow">→</div>
           <div class="fear-score-block">
             <div class="fear-score-val" style="color:#7c3aed">${fs}</div>
-            <div class="fear-score-lbl">Sans peur</div>
+            <div class="fear-score-lbl">${tr('fear_score_fearless')}</div>
           </div>
           ${deltaHTML}` : ''}
         </div>
       </div>`;
   }).join('');
 
-  // Insight narratif
   let insight = '';
   if(active){
     if(switchedWinner){
-      insight=`<div class="fear-insight">
-        💡 Sans les critères de prudence, <strong>"${esc(S.options[winnerFearless].name)}"</strong> passerait en tête — 
-        alors que <strong>"${esc(S.options[winnerNormal].name)}"</strong> gagne dans l'analyse complète.
-        Ce que cela révèle : <strong>c'est probablement la peur qui oriente votre décision vers "${esc(S.options[winnerNormal].name)}"</strong>.
-        Est-ce un choix voulu ou un réflexe de prudence ?
-      </div>`;
+      insight = `<div class="fear-insight">${tr('fear_switched', esc(S.options[winnerFearless].name), esc(S.options[winnerNormal].name))}</div>`;
     } else {
       const maxDelta = ranked.reduce((best,oi)=>{
         const d = (fearlessScores[oi]??0) - normalScores[oi];
@@ -2390,26 +2908,18 @@ function renderFearBody(active){
       },{oi:ranked[0],d:0});
 
       if(Math.abs(maxDelta.d) > 5){
-        const dir = maxDelta.d > 0 ? 'gagne' : 'perd';
-        insight=`<div class="fear-insight">
-          💡 Le classement ne change pas, mais <strong>"${esc(S.options[maxDelta.oi].name)}"</strong>
-          ${dir} <strong>${Math.abs(maxDelta.d)} points</strong> une fois la peur mise de côté.
-          ${maxDelta.d > 0
-            ? `Votre intuition profonde lui est plus favorable que vos chiffres actuels ne le montrent.`
-            : `La prudence vous protège mais pèse aussi sur cette option.`}
-        </div>`;
+        const optN = esc(S.options[maxDelta.oi].name);
+        const pts  = Math.abs(maxDelta.d);
+        insight = `<div class="fear-insight">${maxDelta.d > 0 ? tr('fear_gains',optN,pts) : tr('fear_loses',optN,pts)}</div>`;
       } else {
-        insight=`<div class="fear-insight">
-          💡 Le classement reste identique avec ou sans les critères de peur.
-          Votre décision semble cohérente — elle n'est pas fortement biaisée par la prudence.
-        </div>`;
+        insight = `<div class="fear-insight">${tr('fear_consistent')}</div>`;
       }
     }
   }
 
   body.innerHTML=`
     <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">
-      ${active ? '🎭 Critères masqués (liés à la peur)' : '🔍 Critères détectés comme liés à la peur'}
+      ${active ? tr('fear_toggle_lbl_on') : tr('fear_toggle_lbl_off')}
     </div>
     <div class="fear-crits">${allTags}</div>
     <div class="fear-comparison">${rows}</div>
@@ -2426,11 +2936,11 @@ function genAnalysis(scores,winner,ranked){
   });
   sortW.slice(0,2).forEach(c=>{
     const v=S.scores[c.id]?.[winner]??5;
-    pros.push(`Score élevé sur « ${c.name} » (${v}/10)${c.weight>1?` — critère d'importance ×${c.weight}`:''}.`);
+    pros.push(tr('an_score_high',c.name,v,c.weight));
   });
   const diff=scores[ranked[0]]-scores[ranked[1]];
-  if(diff>15) pros.push(`Avantage significatif de ${diff} points — la recommandation est claire.`);
-  else if(diff<=4) pros.push(`Résultat serré — d'autres facteurs non quantifiables peuvent faire la différence.`);
+  if(diff>15) pros.push(tr('an_clear',diff));
+  else if(diff<=4) pros.push(tr('an_tight'));
   if(ranked.length>1){
     const ru=ranked[1];
     const sortR=[...S.criteria].sort((a,b)=>{
@@ -2440,18 +2950,18 @@ function genAnalysis(scores,winner,ranked){
     });
     sortR.slice(0,2).forEach(c=>{
       const vW=S.scores[c.id]?.[winner]??5,vR=S.scores[c.id]?.[ru]??5;
-      if(vR>vW) cons.push(`"${esc(S.options[ru].name)}" fait mieux sur « ${c.name} » (${vR} vs ${vW}).`);
+      if(vR>vW) cons.push(tr('an_runner',esc(S.options[ru].name),c.name,vR,vW));
     });
   }
   S.criteria.filter(c=>c.weight===3).forEach(c=>{
     const v=S.scores[c.id]?.[winner]??5;
-    if(v<5) cons.push(`Critère crucial « ${c.name} » : score faible pour "${esc(wName)}" (${v}/10) — à surveiller.`);
+    if(v<5) cons.push(tr('an_weak',c.name,v,esc(wName)));
   });
-  if(!cons.length) cons.push(`Pas de faiblesse critique identifiée — l'option est solide sur tous les critères.`);
+  if(!cons.length) cons.push(tr('an_no_cons'));
   return{pros:pros.slice(0,3),cons:cons.slice(0,3)};
 }
 
-/* ─── RADAR ─────────────────────────────── */
+
 function drawRadar(){ drawRadarScenario(null); }
 
 function drawRadarScenario(overrideScores){
@@ -2532,4 +3042,5 @@ function restart(){
 </script>
 </body>
 </html>
+
 
