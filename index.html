@@ -1457,10 +1457,10 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
       <!-- Hibou cartoon animé -->
       <div class="mascot-wrap">
-        <svg class="mascot" viewBox="0 0 100 115" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <svg class="mascot" viewBox="0 0 100 122" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 
           <!-- Ombre -->
-          <ellipse cx="50" cy="111" rx="23" ry="4.5" fill="rgba(0,0,0,0.08)" class="mascot-shadow"/>
+          <ellipse cx="50" cy="118" rx="26" ry="4" fill="rgba(0,0,0,0.08)" class="mascot-shadow"/>
 
           <!-- Ailes visibles sur les côtés -->
           <ellipse cx="21" cy="76" rx="11" ry="16" fill="#1a4d38" transform="rotate(-18 21 76)"/>
@@ -1492,24 +1492,17 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
           <circle cx="36" cy="44" r="13" fill="white"/>
           <circle cx="64" cy="44" r="13" fill="white"/>
 
-          <!-- Œil gauche ouvert -->
+          <!-- Œil gauche -->
           <circle cx="36" cy="44" r="8.5" fill="#389e71"/>
           <circle cx="36" cy="44" r="5" fill="#111" class="pupil-l"/>
           <circle cx="38.5" cy="41.5" r="2" fill="white"/>
           <circle cx="33.5" cy="46" r=".8" fill="white" opacity=".6"/>
 
-          <!-- Œil droit : clin d'œil (touche unique) -->
-          <path d="M53.5 44 Q64 35 74.5 44" stroke="#111" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-          <path d="M55.5 42 Q54 38.5 53 36.5" stroke="#111" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-          <path d="M62 39.5 Q62 36 61.5 34" stroke="#111" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-          <path d="M68.5 41 Q70 37.5 71.5 36" stroke="#111" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-
-          <!-- Sourcil gauche expressif -->
-          <path d="M26 33 Q36 27 46 32" stroke="#1a4d38" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-
-          <!-- Étoiles scintillantes près du clin d'œil -->
-          <path d="M82 26 L83 22 L84 26 L88 27 L84 28 L83 32 L82 28 L78 27 Z" fill="#f0a830"/>
-          <path d="M89 19 L89.6 21.5 L92 22 L89.6 22.5 L89 25 L88.4 22.5 L86 22 L88.4 21.5 Z" fill="#f0a830" opacity=".7"/>
+          <!-- Œil droit -->
+          <circle cx="64" cy="44" r="8.5" fill="#389e71"/>
+          <circle cx="64" cy="44" r="5" fill="#111" class="pupil-r"/>
+          <circle cx="66.5" cy="41.5" r="2" fill="white"/>
+          <circle cx="61.5" cy="46" r=".8" fill="white" opacity=".6"/>
 
           <!-- Joues rosées -->
           <ellipse cx="21" cy="55" rx="6" ry="4" fill="#c8ead9" opacity=".55"/>
@@ -1518,17 +1511,28 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
           <!-- Bec mignon -->
           <path d="M44 56 Q50 63 56 56 Q53 51 50 52 Q47 51 44 56Z" fill="#f0a830"/>
 
-          <!-- Pattes -->
-          <path d="M38 107 Q34 113 29 111" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M38 107 Q35 114 31 116" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M38 107 Q38 114 35 116" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M62 107 Q66 113 71 111" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M62 107 Q65 114 69 116" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M62 107 Q62 114 65 116" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- Branche perchoir -->
+          <rect x="14" y="106" width="72" height="7" rx="3.5" fill="#8b6340"/>
+          <rect x="16" y="107" width="68" height="2.5" rx="1.5" fill="#b07d50" opacity=".6"/>
 
-          <!-- Clignement (œil gauche uniquement) -->
+          <!-- Patte gauche -->
+          <path d="M38 107 Q37 109 36 110" stroke="#f0a830" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <path d="M33 113 Q28 116 25 120" stroke="#f0a830" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M36 114 Q35 117 34 121" stroke="#f0a830" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M39 113 Q41 116 43 120" stroke="#f0a830" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M36 112 Q41 109 45 108" stroke="#f0a830" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+          <!-- Patte droite -->
+          <path d="M62 107 Q63 109 64 110" stroke="#f0a830" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <path d="M57 113 Q52 116 49 120" stroke="#f0a830" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M61 114 Q60 117 59 121" stroke="#f0a830" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M64 113 Q66 116 68 120" stroke="#f0a830" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M63 112 Q68 109 72 108" stroke="#f0a830" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+          <!-- Clignement -->
           <g class="mascot-blink" style="opacity:0">
             <ellipse cx="36" cy="44" rx="13" ry="7" fill="#2d7d5a"/>
+            <ellipse cx="64" cy="44" rx="13" ry="7" fill="#2d7d5a"/>
           </g>
 
         </svg>
