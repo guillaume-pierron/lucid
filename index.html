@@ -221,11 +221,16 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 }
 
 /* ── INTRO PAGE ──────────────────────────── */
-#page-intro{ background:var(--white); }
+#page-intro{
+  background:var(--white);
+  height:100vh;
+  overflow-y:auto;
+  overflow-x:hidden;
+}
 
 .intro-wrap{
   width:100%;
-  min-height:100dvh;
+  min-height:100%;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -238,6 +243,16 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   text-align:center;
   width:100%;
   max-width:600px;
+}
+
+@media(max-height:700px){
+  .mascot{ width:72px !important; }
+  .mascot-wrap{ margin-bottom:10px; }
+  .intro-wrap{ padding:20px 20px; align-items:flex-start; }
+}
+@media(max-height:560px){
+  .mascot-wrap{ display:none; }
+  .intro-wrap{ padding:16px 20px; }
 }
 .intro-badge{
   display:inline-flex;align-items:center;gap:6px;
@@ -294,8 +309,8 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 @media(max-height:640px){
   .how-desc{display:none;}
   .how-card{padding:10px 8px;}
-  .intro-how{margin-bottom:16px;}
-  .intro-tagline{margin-bottom:14px;}
+  .intro-how{margin-bottom:12px;}
+  .intro-tagline{margin-bottom:10px;}
 }
 
 /* ── AI INTERPRETATION ───────────────────── */
@@ -614,7 +629,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 }
 .sc-card{
   background:var(--white);
-  border:1.5px solid var(--border);
+  border:1px solid var(--border);
   border-radius:12px;
   overflow:hidden;
   box-shadow:var(--shadow);
@@ -622,10 +637,10 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   transition:box-shadow .2s, transform .2s;
 }
 .sc-card:hover{ box-shadow:var(--shadow-lg); transform:translateY(-2px); }
-.sc-card-winner{ border-width:2px; }
+.sc-card-winner{ border-width:1px; }
 
-/* Barre colorée à gauche */
-.sc-card-accent{ width:4px; flex-shrink:0; }
+/* Barre colorée à gauche — supprimée */
+.sc-card-accent{ display:none; }
 
 .sc-card-body{
   flex:1;
@@ -775,7 +790,75 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 .res-radar-wrap{ display:flex;justify-content:center; }
 .res-radar-legend{
   display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;
-  font-size:.75rem;color:var(--ink2);font-weight:500;justify-content:center;
+  font-size:.75rem;color:var(--ink2);font-weight:500;
+  justify-content:center;align-items:center;
+}
+
+/* Bouton point d'interrogation */
+.radar-help-btn{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--bg2);border:1.5px solid var(--border2);
+  color:var(--muted);font-size:.7rem;font-weight:800;
+  cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  line-height:1;transition:all .15s;flex-shrink:0;
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
+.radar-help-btn:hover{ background:var(--teal-bg);border-color:var(--teal);color:var(--teal); }
+
+/* Encadré explicatif — caché par défaut */
+.radar-how{
+  display:none;
+  margin-top:12px;
+  padding:16px 18px;
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:12px;
+  position:relative;
+  overflow:hidden;
+}
+.radar-how.open{ display:block; }
+
+/* Lignes décoratives en arrière-plan */
+.radar-how::before{
+  content:'';
+  position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 18px,
+      rgba(45,125,90,0.04) 18px,
+      rgba(45,125,90,0.04) 19px
+    );
+  pointer-events:none;
+}
+/* Accent coloré en haut à gauche */
+.radar-how::after{
+  content:'';
+  position:absolute;top:0;left:0;
+  width:3px;height:100%;
+  background:linear-gradient(to bottom, var(--teal), transparent);
+  border-radius:12px 0 0 12px;
+}
+
+.radar-how-title{
+  font-size:.65rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:.12em;color:var(--teal);
+  margin-bottom:12px;
+  position:relative;
+}
+.radar-how-items{ display:flex;flex-direction:column;gap:10px;position:relative; }
+.radar-how-item{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:.76rem;color:var(--ink2);line-height:1.55;
+}
+.radar-how-item strong{ color:var(--ink);font-weight:700; }
+.radar-how-icon{
+  font-size:.85rem;flex-shrink:0;margin-top:1px;
+  width:24px;height:24px;
+  background:var(--teal-bg);border:1px solid var(--teal-bd);
+  border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
 }
 
 /* Dividers */
@@ -2509,15 +2592,45 @@ function buildResults(){
         </div>
       </div>
 
-      <!-- ④ Radar -->
+      <!-- ④ Profil visuel -->
       <div class="res-divider" style="margin-top:22px"><span class="res-divider-label">${tr('div_visual')}</span></div>
       <div class="res-section">
-        <div class="res-section-body" style="padding:16px">
+        <div class="res-section-body" style="padding:16px 20px 20px">
           <div class="res-radar-wrap">
-            <canvas id="radarC" width="480" height="320" style="max-width:100%"></canvas>
+            <canvas id="radarC" width="480" height="380" style="max-width:100%"></canvas>
           </div>
           <div class="res-radar-legend">
             ${S.options.map((o,i)=>`<span><span class="leg-dot" style="background:${COLORS[i].hex}"></span>${esc(o.name)}</span>`).join('')}
+            <button class="radar-help-btn" onclick="var el=document.getElementById('radarHow');el.classList.toggle('open')" title="${LANG==='fr'?'Comment lire ce graphique ?':'How to read this chart?'}">?</button>
+          </div>
+          <div class="radar-how" id="radarHow">
+            <div class="radar-how-title">${LANG==='fr'?'Comment lire ce graphique ?':'How to read this chart?'}</div>
+            <div class="radar-how-items">
+              <div class="radar-how-item">
+                <div class="radar-how-icon">⬡</div>
+                <div>${LANG==='fr'
+                  ?'Chaque axe représente un critère. <strong>Plus la surface colorée est grande</strong>, meilleure est l\'option sur l\'ensemble des critères.'
+                  :'Each axis is a criterion. <strong>The larger the colored area</strong>, the better the option across all criteria.'}</div>
+              </div>
+              <div class="radar-how-item">
+                <div class="radar-how-icon">📍</div>
+                <div>${LANG==='fr'
+                  ?'Les <strong>points sur chaque axe</strong> indiquent la note de l\'option pour ce critère (de 0 au centre à 10 à l\'extrémité).'
+                  :'The <strong>dots on each axis</strong> show the option\'s score for that criterion (0 at center, 10 at edge).'}</div>
+              </div>
+              <div class="radar-how-item">
+                <div class="radar-how-icon">🔀</div>
+                <div>${LANG==='fr'
+                  ?'Une option peut avoir une <strong>grande surface mais être faible sur un axe</strong> — regardez les creux pour identifier ses faiblesses.'
+                  :'An option may have a <strong>large area but dip on one axis</strong> — look for indentations to spot weaknesses.'}</div>
+              </div>
+              ${S.criteria.some(c=>c.weight>1)?`<div class="radar-how-item">
+                <div class="radar-how-icon">⚖️</div>
+                <div>${LANG==='fr'
+                  ?'Les critères marqués <strong>×2, ×3…</strong> ont plus d\'importance dans le score final, mais tous les axes sont égaux sur ce graphique.'
+                  :'Criteria marked <strong>×2, ×3…</strong> carry more weight in the final score, but all axes appear equal on this chart.'}</div>
+              </div>`:''}
+            </div>
           </div>
         </div>
       </div>
@@ -2742,13 +2855,11 @@ function toggleScenarioCrit(id){
   else S_active.add(id);
   if(S_active.size===0) S_active.add(id);
   renderScenarioBody();
-  updateScenarioScores();
 }
 
 function resetScenario(){
   S_active = new Set(S.criteria.map(c=>c.id));
   renderScenarioBody();
-  updateScenarioScores();
 }
 
 function renderScenarioBody(){
@@ -2770,7 +2881,66 @@ function renderScenarioBody(){
         </label>
       </div>`;
   }).join('');
-  const insight = genScenarioInsight();
+
+  // Bloc comparaison de scores — identique au comportement émotions
+  const allActive = S_active.size === S.criteria.length;
+  const baseScores = S.options.map((_,i)=>calcScore(i));
+  const scenScores = S.options.map((_,i)=>calcScoreScenario(i));
+  const ranked     = [...S.options.map((_,i)=>i)].sort((a,b)=>baseScores[b]-baseScores[a]);
+  const scenRanked = [...S.options.map((_,i)=>i)].sort((a,b)=>scenScores[b]-scenScores[a]);
+  const switchedWinner = scenRanked[0] !== ranked[0];
+
+  let comparisonBlock = '';
+  if(allActive){
+    comparisonBlock = `<div class="emotion-none">${LANG==='fr'
+      ? 'Aucun critère désélectionné — tous les critères sont inclus.'
+      : 'No criteria deselected — all criteria are included.'}</div>`;
+  } else {
+    const scoreRows = ranked.map(oi=>{
+      const c  = COLORS[oi];
+      const bs = baseScores[oi];
+      const ss = scenScores[oi];
+      const d  = ss - bs;
+      const cls= d>2?'up':d<-2?'down':'same';
+      const sign=d>0?'+':'';
+      return `<div class="fear-opt-row">
+        <div class="fear-opt-name" style="color:${c.hex}">${LETTERS[oi]}. ${esc(S.options[oi].name)}</div>
+        <div class="fear-scores">
+          <div class="fear-score-block">
+            <div class="fear-score-val" style="color:${c.hex}">${bs}</div>
+            <div class="fear-score-lbl">${tr('fear_score_real')}</div>
+          </div>
+          <div class="fear-arrow">→</div>
+          <div class="fear-score-block">
+            <div class="fear-score-val" style="color:var(--teal)">${ss}</div>
+            <div class="fear-score-lbl">${LANG==='fr'?'Scénario':'Scenario'}</div>
+          </div>
+          <span class="fear-delta ${cls}">${sign}${d}</span>
+        </div>
+      </div>`;
+    }).join('');
+
+    let insight='';
+    if(switchedWinner){
+      const nN=esc(S.options[scenRanked[0]].name), oN=esc(S.options[ranked[0]].name);
+      insight=`<div class="emotion-insight">💡 ${LANG==='fr'
+        ?`Sans ces critères, <strong>"${nN}"</strong> passerait en tête au lieu de <strong>"${oN}"</strong>.`
+        :`Without these criteria, <strong>"${nN}"</strong> would take the lead over <strong>"${oN}"</strong>.`}</div>`;
+    } else {
+      const maxD = ranked.reduce((b,oi)=>{const d=scenScores[oi]-baseScores[oi];return Math.abs(d)>Math.abs(b.d)?{oi,d}:b},{oi:ranked[0],d:0});
+      if(Math.abs(maxD.d)>4){
+        insight=`<div class="emotion-insight">💡 ${LANG==='fr'
+          ?`Le classement reste identique, mais <strong>"${esc(S.options[maxD.oi].name)}"</strong> ${maxD.d>0?'gagne':'perd'} <strong>${Math.abs(maxD.d)} pts</strong> dans ce scénario.`
+          :`The ranking stays the same, but <strong>"${esc(S.options[maxD.oi].name)}"</strong> ${maxD.d>0?'gains':'loses'} <strong>${Math.abs(maxD.d)} pts</strong> in this scenario.`}</div>`;
+      } else {
+        insight=`<div class="emotion-insight">💡 ${LANG==='fr'
+          ?'Le classement reste identique — ces critères ont peu d\'impact sur votre décision.'
+          :'The ranking stays the same — these criteria have little impact on your decision.'}</div>`;
+      }
+    }
+    comparisonBlock = `<div class="fear-comparison">${scoreRows}</div>${insight}`;
+  }
+
   body.innerHTML=`
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
       <span style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">
@@ -2779,7 +2949,7 @@ function renderScenarioBody(){
       <button class="scenario-reset" onclick="resetScenario()">${tr('scenario_reset')}</button>
     </div>
     <div class="sc-crit-list">${rows}</div>
-    <div class="scenario-summary">${insight}</div>`;
+    <div style="margin-top:14px;padding-top:10px;border-top:1px solid var(--border)">${comparisonBlock}</div>`;
 }
 
 function renderEmotionPane(){
@@ -3040,8 +3210,6 @@ function updateScenarioScores(){
   }).join('');
 
   setTimeout(()=>drawRadarScenario(scenScores), 50);
-  const insightEl = document.querySelector('#scPaneCrits .scenario-summary');
-  if(insightEl) insightEl.innerHTML = genScenarioInsight();
 }
 
 
@@ -3085,59 +3253,116 @@ function genAnalysis(scores,winner,ranked){
 function drawRadar(){ drawRadarScenario(null); }
 
 function drawRadarScenario(overrideScores){
-  const canvas=document.getElementById('radarC'); if(!canvas) return;
-  // Only draw axes for active criteria in scenario mode
+  const canvas = document.getElementById('radarC'); if(!canvas) return;
   const activeCrits = overrideScores
-    ? S.criteria.filter(c=>S_active.has(c.id))
+    ? S.criteria.filter(c => S_active.has(c.id))
     : S.criteria;
-  if(activeCrits.length<3) return;
+  if(activeCrits.length < 3){ return; }
 
-  const ctx=canvas.getContext('2d');
-  const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2;
-  const N=activeCrits.length;
-  const R=Math.min(W,H)/2-64;
-  ctx.clearRect(0,0,W,H);
-  const angle=i=>(i/N)*Math.PI*2-Math.PI/2;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const N = activeCrits.length;
+  const R = Math.min(W, H) / 2 - 72;
+  ctx.clearRect(0, 0, W, H);
+  const angle = i => (i / N) * Math.PI * 2 - Math.PI / 2;
 
-  // Grid
-  [2,4,6,8,10].forEach(lvl=>{
+  // Grille de fond
+  [2,4,6,8,10].forEach(lvl => {
     ctx.beginPath();
-    activeCrits.forEach((_,i)=>{
-      const a=angle(i),r=(lvl/10)*R;
-      i===0?ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a)):ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
+    activeCrits.forEach((_, i) => {
+      const a = angle(i), r = (lvl / 10) * R;
+      i === 0 ? ctx.moveTo(cx + r*Math.cos(a), cy + r*Math.sin(a))
+              : ctx.lineTo(cx + r*Math.cos(a), cy + r*Math.sin(a));
     });
     ctx.closePath();
-    ctx.strokeStyle='rgba(0,0,0,0.07)';ctx.lineWidth=1;ctx.stroke();
-  });
-  activeCrits.forEach((_,i)=>{
-    ctx.beginPath();ctx.moveTo(cx,cy);
-    ctx.lineTo(cx+R*Math.cos(angle(i)),cy+R*Math.sin(angle(i)));
-    ctx.strokeStyle='rgba(0,0,0,0.08)';ctx.lineWidth=1;ctx.stroke();
-  });
-
-  // Labels
-  ctx.font='11px Plus Jakarta Sans,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-  activeCrits.forEach((c,i)=>{
-    const a=angle(i),x=cx+(R+44)*Math.cos(a),y=cy+(R+44)*Math.sin(a);
-    ctx.fillStyle='#8a877f';
-    ctx.fillText(c.icon,x,y-6);
-    const short=c.name.length>13?c.name.substring(0,12)+'…':c.name;
-    ctx.fillText(short,x,y+8);
+    ctx.strokeStyle = lvl === 10 ? 'rgba(0,0,0,0.13)' : 'rgba(0,0,0,0.06)';
+    ctx.lineWidth = lvl === 10 ? 1.5 : 1;
+    ctx.stroke();
+    // Label de niveau sur l'axe du haut
+    const labelR = (lvl / 10) * R;
+    ctx.font = '9px Plus Jakarta Sans,sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    if(lvl % 4 === 0) ctx.fillText(lvl, cx + 4, cy - labelR + 10);
   });
 
-  // Polygons — per-criteria raw score on active axes
-  S.options.forEach((_,oi)=>{
-    const col=COLORS[oi];
+  // Axes radiaux
+  activeCrits.forEach((_, i) => {
     ctx.beginPath();
-    activeCrits.forEach((c,i)=>{
-      const v=S.scores[c.id]?.[oi]??5,a=angle(i),r=(v/10)*R;
-      i===0?ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a)):ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + R * Math.cos(angle(i)), cy + R * Math.sin(angle(i)));
+    ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  // Labels critères
+  activeCrits.forEach((c, i) => {
+    const a = angle(i);
+    const dist = R + 48;
+    const x = cx + dist * Math.cos(a);
+    const y = cy + dist * Math.sin(a);
+
+    // Fond de label pour lisibilité
+    const short = c.name.length > 12 ? c.name.substring(0, 11) + '…' : c.name;
+    ctx.font = 'bold 11px Plus Jakarta Sans,sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Icône
+    ctx.font = '13px serif';
+    ctx.fillText(c.icon, x, y - 8);
+
+    // Nom
+    ctx.font = '10px Plus Jakarta Sans,sans-serif';
+    ctx.fillStyle = '#555';
+    ctx.fillText(short, x, y + 6);
+
+    // Badge poids
+    if(c.weight > 1){
+      const bx = x + ctx.measureText(short).width / 2 + 8;
+      ctx.font = 'bold 9px Plus Jakarta Sans,sans-serif';
+      ctx.fillStyle = '#b47d0a';
+      ctx.fillText(`×${c.weight}`, bx, y + 6);
+    }
+  });
+
+  // Polygones par option
+  S.options.forEach((_, oi) => {
+    const col = COLORS[oi];
+    const hex = col.hex.replace('#','');
+    const r = parseInt(hex.substring(0,2),16);
+    const g = parseInt(hex.substring(2,4),16);
+    const b = parseInt(hex.substring(4,6),16);
+
+    // Score effectif (invert pris en compte)
+    const pts = activeCrits.map((c, i) => {
+      const v = S.scores[c.id]?.[oi] ?? 5;
+      const eff = c.invert ? 11 - v : v;
+      const rad = (eff / 10) * R;
+      return [cx + rad * Math.cos(angle(i)), cy + rad * Math.sin(angle(i))];
     });
+
+    ctx.beginPath();
+    pts.forEach(([px, py], i) => i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py));
     ctx.closePath();
-    const hex=col.hex.replace('#','');
-    const r=parseInt(hex.substring(0,2),16),g=parseInt(hex.substring(2,4),16),b=parseInt(hex.substring(4,6),16);
-    ctx.fillStyle=`rgba(${r},${g},${b},0.12)`;ctx.fill();
-    ctx.strokeStyle=col.hex;ctx.lineWidth=2.5;ctx.stroke();
+    ctx.fillStyle = `rgba(${r},${g},${b},0.10)`;
+    ctx.fill();
+    ctx.strokeStyle = col.hex;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Points sur chaque axe
+    pts.forEach(([px, py]) => {
+      ctx.beginPath();
+      ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = col.hex;
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    });
   });
 }
 
