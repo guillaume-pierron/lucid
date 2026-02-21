@@ -2925,9 +2925,9 @@ function renderScenarioBody(){
       const d  = ss - bs;
       const cls= d>2?'up':d<-2?'down':'same';
       const sign=d>0?'+':'';
-      return `<div class="fear-opt-row">
-        <div class="fear-opt-name" style="color:${c.hex}">${LETTERS[oi]}. ${esc(S.options[oi].name)}</div>
-        <div class="fear-scores">
+      return `<div class="fear-opt-row" style="flex-direction:column;align-items:center;text-align:center;flex:1;min-width:110px;">
+        <div class="fear-opt-name" style="color:${c.hex};min-width:unset;margin-bottom:8px;">${LETTERS[oi]}. ${esc(S.options[oi].name)}</div>
+        <div class="fear-scores" style="flex:unset;justify-content:center;">
           <div class="fear-score-block">
             <div class="fear-score-val" style="color:${c.hex}">${bs}</div>
             <div class="fear-score-lbl">${tr('fear_score_real')}</div>
@@ -2960,7 +2960,7 @@ function renderScenarioBody(){
           :'The ranking stays the same — these criteria have little impact on your decision.'}</div>`;
       }
     }
-    comparisonBlock = `<div class="fear-comparison scen-comparison">${scoreRows}</div>${insight}`;
+    comparisonBlock = `<div class="fear-comparison" style="display:flex;gap:12px;flex-wrap:wrap;">${scoreRows}</div>${insight}`;
   }
 
   body.innerHTML=`
