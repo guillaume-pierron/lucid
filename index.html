@@ -2470,7 +2470,10 @@ function buildResults(){
   const winner=ranked[0], runner=ranked[1];
   const diff=scores[winner]-scores[runner];
   const tie=diff<=4;
-  const cW=COLORS[winner];
+  // Couleurs basées sur le rang : gagnant = vert, 2ème = orange, etc.
+  resultColors = {};
+  ranked.forEach((oi, rank) => { resultColors[oi] = COLORS[rank]; });
+  const cW=resultColors[winner];
 
   // Verdict
   let vstyle,vemoji,vtitle,vsub;
@@ -2489,7 +2492,7 @@ function buildResults(){
   // Score cards rectangulaires — une par option, classées
   const ncols = Math.min(S.options.length, 4);
   const scoreCards = ranked.map((oi, rank) => {
-    const c = COLORS[oi]; const sc = scores[oi];
+    const c = resultColors[oi]; const sc = scores[oi];
     const rankLabels = tr('rank_labels');
     const rankLbl = rank < 3 ? rankLabels[rank] : `#${rank+1}`;
     const r = 22, circ = (2*Math.PI*r).toFixed(2);
@@ -2540,7 +2543,7 @@ function buildResults(){
   // Breakdown table
   const bkHeader=`<div class="bk-row hdr">
     <div class="bk-cell crit-col hdr-cell">${tr('bk_crit')}</div>
-    ${S.options.map((o,i)=>`<div class="bk-cell opt-col hdr-cell" style="color:${COLORS[i].hex}">${LETTERS[i]}. ${esc(o.name.substring(0,10))}${o.name.length>10?'…':''}</div>`).join('')}
+    ${S.options.map((o,i)=>`<div class="bk-cell opt-col hdr-cell" style="color:${resultColors[i].hex}">${LETTERS[i]}. ${esc(o.name.substring(0,10))}${o.name.length>10?'…':''}</div>`).join('')}
   </div>`;
   const bkRows=S.criteria.map(cr=>{
     const vals=S.options.map((_,i)=>S.scores[cr.id]?.[i]??5);
@@ -2551,7 +2554,7 @@ function buildResults(){
         ${cr.weight>1?`<span style="font-size:.62rem;background:var(--amber-bg);color:var(--amber);padding:2px 5px;border-radius:3px;border:1px solid #f0d080;font-weight:700">×${cr.weight}</span>`:''}
         ${cr.invert?`<span class="inv-tag">↓</span>`:''}
       </div>
-      ${vals.map((v,i)=>{const c=COLORS[i];return `<div class="bk-cell opt-col"><div class="opt-cell-in">
+      ${vals.map((v,i)=>{const c=resultColors[i];return `<div class="bk-cell opt-col"><div class="opt-cell-in">
         <div class="opt-pill" style="background:${c.bg};color:${c.hex};font-weight:${v===maxV?700:400}">${v}</div>
         <div class="mini-bar"><div class="mini-bar-fill" style="width:${v*10}%;background:${c.hex}"></div></div>
       </div></div>`;}).join('')}
@@ -2566,7 +2569,7 @@ function buildResults(){
       <div class="notes-res-body" style="grid-template-columns:repeat(${Math.min(S.options.length,3)},1fr)">
         ${S.options.map((o,i)=>`
           <div class="note-col" style="${i<S.options.length-1?'border-right:1px solid var(--border)':''}">
-            <div class="note-col-lbl" style="color:${COLORS[i].hex}">${LETTERS[i]}. ${esc(o.name)}</div>
+            <div class="note-col-lbl" style="color:${resultColors[i].hex}">${LETTERS[i]}. ${esc(o.name)}</div>
             <div class="note-col-txt">${esc(S.notes[i])||`<em style="color:var(--muted2)">${tr('no_notes')}</em>`}</div>
           </div>`).join('')}
       </div>
@@ -2619,7 +2622,7 @@ function buildResults(){
             <canvas id="radarC" width="480" height="380" style="max-width:100%"></canvas>
           </div>
           <div class="res-radar-legend">
-            ${S.options.map((o,i)=>`<span><span class="leg-dot" style="background:${COLORS[i].hex}"></span>${esc(o.name)}</span>`).join('')}
+            ${S.options.map((o,i)=>`<span><span class="leg-dot" style="background:${resultColors[i].hex}"></span>${esc(o.name)}</span>`).join('')}
             <button class="radar-help-btn" onclick="var el=document.getElementById('radarHow');el.classList.toggle('open')" title="${LANG==='fr'?'Comment lire ce graphique ?':'How to read this chart?'}">?</button>
           </div>
           <div class="radar-how" id="radarHow">
@@ -2798,6 +2801,8 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
 let S_active = new Set();
 // Émotion active (null = aucune)
 let S_emotion = null;
+// Couleurs basées sur le rang (gagnant=vert, 2ème=orange…) — calculé dans buildResults()
+let resultColors = {};
 
 // Définition des émotions avec mots-clés
 const EMOTIONS = {
@@ -2916,7 +2921,7 @@ function renderScenarioBody(){
       : 'No criteria deselected — all criteria are included.'}</div>`;
   } else {
     const scoreRows = ranked.map(oi=>{
-      const c  = COLORS[oi];
+      const c  = resultColors[oi] || COLORS[oi];
       const bs = baseScores[oi];
       const ss = scenScores[oi];
       const d  = ss - bs;
@@ -3036,7 +3041,7 @@ function renderEmotionResult(){
   const switchedWinner = filtRanked[0] !== ranked[0];
 
   const rows = ranked.map(oi=>{
-    const c  = COLORS[oi];
+    const c  = resultColors[oi] || COLORS[oi];
     const ns = normalScores[oi];
     const fs = filteredScores[oi];
     const d  = fs!==null ? fs-ns : 0;
@@ -3177,7 +3182,7 @@ function updateScenarioScores(){
 
   const rankLabels = tr('rank_labels');
   row.innerHTML = scenRanked.map((oi, rank) => {
-    const c = COLORS[oi];
+    const c = resultColors[oi] || COLORS[oi];
     const sc = scenScores[oi];
     const base = baseScores[oi];
     const delta = sc - base;
@@ -3349,7 +3354,7 @@ function drawRadarScenario(overrideScores){
 
   // Polygones par option
   S.options.forEach((_, oi) => {
-    const col = COLORS[oi];
+    const col = resultColors[oi] || COLORS[oi];
     const hex = col.hex.replace('#','');
     const r = parseInt(hex.substring(0,2),16);
     const g = parseInt(hex.substring(2,4),16);
