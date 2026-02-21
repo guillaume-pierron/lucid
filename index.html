@@ -193,9 +193,15 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 .mascot-wrap{
   margin-bottom:18px;
   animation:up .5s ease both;
+  flex-shrink:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 .mascot{
-  width:100px;height:auto;
+  width:100px;
+  height:auto;
+  max-height:18dvh;
   animation:mascot-float 3.2s ease-in-out infinite;
   overflow:visible;
 }
@@ -235,11 +241,9 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   width:100%;
   min-height:100%;
   display:flex;
-  align-items:center;
+  align-items:safe center;
   justify-content:center;
-  padding:env(safe-area-inset-top, 24px) 20px env(safe-area-inset-bottom, 24px);
-  padding-top:max(24px, env(safe-area-inset-top));
-  padding-bottom:max(32px, env(safe-area-inset-bottom));
+  padding:max(24px, env(safe-area-inset-top)) 20px max(32px, env(safe-area-inset-bottom));
   box-sizing:border-box;
 }
 .intro-inner{
@@ -248,6 +252,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   text-align:center;
   width:100%;
   max-width:600px;
+  flex-shrink:1;
 }
 
 @media(max-height:700px){
@@ -3391,5 +3396,4 @@ function restart(){
 </script>
 </body>
 </html>
-
 
