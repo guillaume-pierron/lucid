@@ -2379,7 +2379,7 @@ function buildEvalPage(){
   notesRow.innerHTML=S.options.map((opt,oi)=>`
     <div>
       <span class="notes-lbl" style="color:var(--muted)">
-        📝 ${tr('notes_lbl', LETTERS[oi], esc(opt.name))}
+        ${tr('notes_lbl', LETTERS[oi], esc(opt.name))}
       </span>
       <textarea id="note-${oi}" rows="3"
         placeholder="${tr('notes_ph')}"
