@@ -1512,49 +1512,23 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
           <path d="M44 56 Q50 63 56 56 Q53 51 50 52 Q47 51 44 56Z" fill="#f0a830"/>
 
           <!-- ═══ PATTES PERCHÉES ═══
-               Ordre des calques :
-               1. Orteils arrière (hallux) — dessinés AVANT la branche → apparaissent derrière
-               2. Branche — recouvre la base des orteils
-               3. Tarse visible — posé sur le dessus de la branche
-               4. Orteils avant — dessinés APRÈS la branche → apparaissent devant
+               Orteils dessinés AVANT la branche → apparaissent derrière.
+               La branche recouvre leur moitié haute → effet de grip.
           -->
 
-          <!-- Hallux gauche (orteil arrière, derrière la branche) -->
-          <path d="M 38 108 C 43 107 47 104 49 101 C 50 99 49 97 47 98"
-                stroke="#f0a830" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-          <!-- Hallux droit -->
-          <path d="M 62 108 C 57 107 53 104 51 101 C 50 99 51 97 53 98"
-                stroke="#f0a830" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <!-- Orteils gauche (3 segments arrondis) -->
+          <rect x="23" y="108" width="8" height="12" rx="4" fill="#f0a830"/>
+          <rect x="32" y="108" width="8" height="12" rx="4" fill="#f0a830"/>
+          <rect x="41" y="108" width="8" height="12" rx="4" fill="#f0a830"/>
 
-          <!-- Branche perchoir (par-dessus les hallux) -->
+          <!-- Orteils droite (3 segments arrondis) -->
+          <rect x="51" y="108" width="8" height="12" rx="4" fill="#f0a830"/>
+          <rect x="60" y="108" width="8" height="12" rx="4" fill="#f0a830"/>
+          <rect x="69" y="108" width="8" height="12" rx="4" fill="#f0a830"/>
+
+          <!-- Branche (recouvre la moitié haute des orteils) -->
           <rect x="13" y="106" width="74" height="8" rx="4" fill="#7a4a28"/>
           <rect x="15" y="107" width="70" height="2.5" rx="1.5" fill="#a06235" opacity=".6"/>
-
-          <!-- Tarses visibles sur le dessus de la branche -->
-          <path d="M 38 106 L 38 108" stroke="#f0a830" stroke-width="4" stroke-linecap="round" fill="none"/>
-          <path d="M 62 106 L 62 108" stroke="#f0a830" stroke-width="4" stroke-linecap="round" fill="none"/>
-
-          <!-- Orteils avant gauche (par-dessus la branche) -->
-          <!-- orteil 1 — écarté à gauche -->
-          <path d="M 33 114 C 30 117 28 121 29 125 C 30 127 32 126 31 124"
-                stroke="#f0a830" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-          <!-- orteil 2 — milieu -->
-          <path d="M 38 114 C 37 118 36 122 37 125 C 38 127 40 126 39 124"
-                stroke="#f0a830" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-          <!-- orteil 3 — écarté à droite -->
-          <path d="M 43 114 C 46 117 47 121 45 125 C 44 127 42 126 43 124"
-                stroke="#f0a830" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-
-          <!-- Orteils avant droite (par-dessus la branche) -->
-          <!-- orteil 1 — écarté à gauche -->
-          <path d="M 57 114 C 54 117 53 121 55 125 C 56 127 58 126 57 124"
-                stroke="#f0a830" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-          <!-- orteil 2 — milieu -->
-          <path d="M 62 114 C 61 118 60 122 61 125 C 62 127 64 126 63 124"
-                stroke="#f0a830" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-          <!-- orteil 3 — écarté à droite -->
-          <path d="M 67 114 C 70 117 72 121 71 125 C 70 127 68 126 69 124"
-                stroke="#f0a830" stroke-width="2.2" fill="none" stroke-linecap="round"/>
 
           <!-- Clignement -->
           <g class="mascot-blink" style="opacity:0">
