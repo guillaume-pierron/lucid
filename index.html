@@ -1457,57 +1457,79 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
       <!-- Hibou cartoon animé -->
       <div class="mascot-wrap">
-        <svg class="mascot" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <svg class="mascot" viewBox="0 0 100 115" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 
           <!-- Ombre -->
-          <ellipse cx="50" cy="106" rx="22" ry="4" fill="rgba(0,0,0,0.07)" class="mascot-shadow"/>
+          <ellipse cx="50" cy="111" rx="23" ry="4.5" fill="rgba(0,0,0,0.08)" class="mascot-shadow"/>
 
-          <!-- Corps super rond et dodu -->
-          <ellipse cx="50" cy="76" rx="28" ry="30" fill="#2d7d5a"/>
+          <!-- Ailes visibles sur les côtés -->
+          <ellipse cx="21" cy="76" rx="11" ry="16" fill="#1a4d38" transform="rotate(-18 21 76)"/>
+          <ellipse cx="21" cy="76" rx="7.5" ry="12" fill="#2d7d5a" transform="rotate(-18 21 76)"/>
+          <ellipse cx="79" cy="76" rx="11" ry="16" fill="#1a4d38" transform="rotate(18 79 76)"/>
+          <ellipse cx="79" cy="76" rx="7.5" ry="12" fill="#2d7d5a" transform="rotate(18 79 76)"/>
+
+          <!-- Corps dodu -->
+          <ellipse cx="50" cy="78" rx="28" ry="30" fill="#2d7d5a"/>
 
           <!-- Ventre doux -->
-          <ellipse cx="50" cy="82" rx="18" ry="20" fill="#c8ead9"/>
-          <ellipse cx="50" cy="86" rx="12" ry="13" fill="#eef7f2"/>
+          <ellipse cx="50" cy="85" rx="19" ry="20" fill="#c8ead9"/>
+          <ellipse cx="50" cy="89" rx="12" ry="13" fill="#eef7f2"/>
 
-          <!-- Tête grosse et ronde -->
-          <ellipse cx="50" cy="42" rx="26" ry="25" fill="#2d7d5a"/>
+          <!-- Tête ronde -->
+          <ellipse cx="50" cy="44" rx="26" ry="25" fill="#2d7d5a"/>
 
-          <!-- Aigrettes moelleuses -->
-          <path d="M34 24 Q28 8 36 5 Q40 16 38 23Z" fill="#1a4d38"/>
-          <path d="M66 24 Q72 8 64 5 Q60 16 62 23Z" fill="#1a4d38"/>
+          <!-- Aigrettes -->
+          <path d="M33 26 Q27 9 35 6 Q39 17 37 25Z" fill="#1a4d38"/>
+          <path d="M67 26 Q73 9 65 6 Q61 17 63 25Z" fill="#1a4d38"/>
+          <path d="M34 25 Q29 12 35 9 Q38 17 37 24Z" fill="#2d7d5a"/>
+          <path d="M66 25 Q71 12 65 9 Q62 17 63 24Z" fill="#2d7d5a"/>
 
-          <!-- Yeux très grands et kawaii -->
-          <circle cx="37" cy="42" r="14" fill="white"/>
-          <circle cx="63" cy="42" r="14" fill="white"/>
-          <circle cx="37" cy="42" r="9" fill="#389e71"/>
-          <circle cx="63" cy="42" r="9" fill="#389e71"/>
-          <circle cx="37" cy="42" r="5.5" fill="#0a0a0a" class="pupil-l"/>
-          <circle cx="63" cy="42" r="5.5" fill="#0a0a0a" class="pupil-r"/>
-          <circle cx="39.5" cy="39.5" r="2.2" fill="white"/>
-          <circle cx="65.5" cy="39.5" r="2.2" fill="white"/>
-          <circle cx="35" cy="44.5" r=".9" fill="white" opacity=".6"/>
-          <circle cx="61" cy="44.5" r=".9" fill="white" opacity=".6"/>
+          <!-- Masque oculaire -->
+          <circle cx="36" cy="44" r="14.5" fill="#1a4d38"/>
+          <circle cx="64" cy="44" r="14.5" fill="#1a4d38"/>
 
-          <!-- Clignement -->
+          <!-- Sclérotiques -->
+          <circle cx="36" cy="44" r="13" fill="white"/>
+          <circle cx="64" cy="44" r="13" fill="white"/>
+
+          <!-- Œil gauche ouvert -->
+          <circle cx="36" cy="44" r="8.5" fill="#389e71"/>
+          <circle cx="36" cy="44" r="5" fill="#111" class="pupil-l"/>
+          <circle cx="38.5" cy="41.5" r="2" fill="white"/>
+          <circle cx="33.5" cy="46" r=".8" fill="white" opacity=".6"/>
+
+          <!-- Œil droit : clin d'œil (touche unique) -->
+          <path d="M53.5 44 Q64 35 74.5 44" stroke="#111" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+          <path d="M55.5 42 Q54 38.5 53 36.5" stroke="#111" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+          <path d="M62 39.5 Q62 36 61.5 34" stroke="#111" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+          <path d="M68.5 41 Q70 37.5 71.5 36" stroke="#111" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+
+          <!-- Sourcil gauche expressif -->
+          <path d="M26 33 Q36 27 46 32" stroke="#1a4d38" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+          <!-- Étoiles scintillantes près du clin d'œil -->
+          <path d="M82 26 L83 22 L84 26 L88 27 L84 28 L83 32 L82 28 L78 27 Z" fill="#f0a830"/>
+          <path d="M89 19 L89.6 21.5 L92 22 L89.6 22.5 L89 25 L88.4 22.5 L86 22 L88.4 21.5 Z" fill="#f0a830" opacity=".7"/>
+
+          <!-- Joues rosées -->
+          <ellipse cx="21" cy="55" rx="6" ry="4" fill="#c8ead9" opacity=".55"/>
+          <ellipse cx="79" cy="55" rx="6" ry="4" fill="#c8ead9" opacity=".55"/>
+
+          <!-- Bec mignon -->
+          <path d="M44 56 Q50 63 56 56 Q53 51 50 52 Q47 51 44 56Z" fill="#f0a830"/>
+
+          <!-- Pattes -->
+          <path d="M38 107 Q34 113 29 111" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M38 107 Q35 114 31 116" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M38 107 Q38 114 35 116" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M62 107 Q66 113 71 111" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M62 107 Q65 114 69 116" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M62 107 Q62 114 65 116" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+          <!-- Clignement (œil gauche uniquement) -->
           <g class="mascot-blink" style="opacity:0">
-            <ellipse cx="37" cy="42" rx="14" ry="8" fill="#2d7d5a"/>
-            <ellipse cx="63" cy="42" rx="14" ry="8" fill="#2d7d5a"/>
+            <ellipse cx="36" cy="44" rx="13" ry="7" fill="#2d7d5a"/>
           </g>
-
-          <!-- Petites joues rondes -->
-          <ellipse cx="24" cy="52" rx="7" ry="5" fill="#c8ead9" opacity=".5"/>
-          <ellipse cx="76" cy="52" rx="7" ry="5" fill="#c8ead9" opacity=".5"/>
-
-          <!-- Bec petit et mignon -->
-          <path d="M45 54 Q50 60 55 54 Q53 50 50 51 Q47 50 45 54Z" fill="#f0a830"/>
-
-          <!-- Petites pattes -->
-          <path d="M38 103 Q34 108 30 106" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M38 103 Q36 109 32 110" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M38 103 Q38 110 36 112" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M62 103 Q66 108 70 106" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M62 103 Q64 109 68 110" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M62 103 Q62 110 64 112" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
 
         </svg>
       </div>
