@@ -2171,13 +2171,13 @@ function renderOptBuilder(){
   const b=document.getElementById('optBuilder');
   b.innerHTML='';
   S.options.forEach((opt,i)=>{
-    const c=COLORS[i], ltr=LETTERS[i];
+    const ltr=LETTERS[i];
     const card=document.createElement('div');
     card.className='opt-card open'; card.id=`opt-card-${i}`;
     card.innerHTML=`
       <div class="opt-card-head" onclick="toggleOpt(${i})">
-        <div class="opt-dot" style="background:${c.hex}"></div>
-        <div class="opt-letter" style="color:${c.hex}">${tr('opt_label',ltr)}</div>
+        <div class="opt-dot" style="background:var(--muted2)"></div>
+        <div class="opt-letter" style="color:var(--muted)">${tr('opt_label',ltr)}</div>
         <div class="opt-name-preview" id="opt-prev-${i}">${esc(opt.name)||'—'}</div>
         ${i>=2?`<button class="opt-rm" onclick="event.stopPropagation();removeOpt(${i})" title="Supprimer">✕</button>`:''}
         <div class="opt-chevron">▾</div>
@@ -2334,7 +2334,6 @@ function buildEvalPage(){
   grid.innerHTML='';
 
   S.options.forEach((opt,oi)=>{
-    const c=COLORS[oi];
     const col=document.createElement('div');
     col.className='eval-col';
 
@@ -2361,14 +2360,14 @@ function buildEvalPage(){
     }).join('');
 
     col.innerHTML=`
-      <div class="eval-col-head" style="background:${c.bg};border-color:${c.border}">
-        <div class="eval-col-name" style="color:${c.hex}">Option ${LETTERS[oi]} — ${esc(opt.name)}</div>
+      <div class="eval-col-head" style="background:var(--bg2);border-color:var(--border)">
+        <div class="eval-col-name">Option ${LETTERS[oi]} — ${esc(opt.name)}</div>
         <div class="eval-live-score">
-          <div class="eval-live-num" id="live-${oi}" style="color:${c.hex}">—</div>
+          <div class="eval-live-num" id="live-${oi}" style="color:var(--muted)">—</div>
           <div class="eval-live-label">/ 100</div>
         </div>
       </div>
-      <div class="eval-col-body" style="border-color:${c.border}">${items}</div>`;
+      <div class="eval-col-body" style="border-color:var(--border)">${items}</div>`;
 
     grid.appendChild(col);
     S.criteria.forEach(cr=>renderStepper(oi,cr.id,S.scores[cr.id]?.[oi]??5,cr.invert??false));
@@ -2379,7 +2378,7 @@ function buildEvalPage(){
   notesRow.style.gridTemplateColumns=`repeat(${Math.min(nOpts,3)},1fr)`;
   notesRow.innerHTML=S.options.map((opt,oi)=>`
     <div>
-      <span class="notes-lbl" style="color:${COLORS[oi].hex}">
+      <span class="notes-lbl" style="color:var(--muted)">
         📝 ${tr('notes_lbl', LETTERS[oi], esc(opt.name))}
       </span>
       <textarea id="note-${oi}" rows="3"
