@@ -1219,6 +1219,19 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 .fear-comparison{
   display:grid;gap:10px;
 }
+.scen-comparison{
+  display:flex;gap:12px;flex-wrap:wrap;
+}
+.scen-comparison .fear-opt-row{
+  flex:1;min-width:120px;
+  flex-direction:column;align-items:center;text-align:center;
+}
+.scen-comparison .fear-opt-name{
+  min-width:unset;margin-bottom:8px;
+}
+.scen-comparison .fear-scores{
+  flex:unset;justify-content:center;
+}
 .fear-opt-row{
   background:var(--bg);border-radius:10px;padding:12px 14px;
   display:flex;align-items:center;gap:12px;flex-wrap:wrap;
@@ -2947,7 +2960,7 @@ function renderScenarioBody(){
           :'The ranking stays the same — these criteria have little impact on your decision.'}</div>`;
       }
     }
-    comparisonBlock = `<div class="fear-comparison">${scoreRows}</div>${insight}`;
+    comparisonBlock = `<div class="fear-comparison scen-comparison">${scoreRows}</div>${insight}`;
   }
 
   body.innerHTML=`
