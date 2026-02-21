@@ -1219,6 +1219,19 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 .fear-comparison{
   display:grid;gap:10px;
 }
+.scen-comparison{
+  display:flex;gap:12px;flex-wrap:wrap;
+}
+.scen-comparison .fear-opt-row{
+  flex:1;min-width:120px;
+  flex-direction:column;align-items:center;text-align:center;
+}
+.scen-comparison .fear-opt-name{
+  min-width:unset;margin-bottom:8px;
+}
+.scen-comparison .fear-scores{
+  flex:unset;justify-content:center;
+}
 .fear-opt-row{
   background:var(--bg);border-radius:10px;padding:12px 14px;
   display:flex;align-items:center;gap:12px;flex-wrap:wrap;
@@ -2912,9 +2925,9 @@ function renderScenarioBody(){
       const d  = ss - bs;
       const cls= d>2?'up':d<-2?'down':'same';
       const sign=d>0?'+':'';
-      return `<div class="fear-opt-row">
-        <div class="fear-opt-name" style="color:${c.hex}">${LETTERS[oi]}. ${esc(S.options[oi].name)}</div>
-        <div class="fear-scores">
+      return `<div class="fear-opt-row" style="flex-direction:column;align-items:center;text-align:center;flex:1;min-width:110px;">
+        <div class="fear-opt-name" style="color:${c.hex};min-width:unset;margin-bottom:8px;">${LETTERS[oi]}. ${esc(S.options[oi].name)}</div>
+        <div class="fear-scores" style="flex:unset;justify-content:center;">
           <div class="fear-score-block">
             <div class="fear-score-val" style="color:${c.hex}">${bs}</div>
             <div class="fear-score-lbl">${tr('fear_score_real')}</div>
@@ -2947,7 +2960,7 @@ function renderScenarioBody(){
           :'The ranking stays the same — these criteria have little impact on your decision.'}</div>`;
       }
     }
-    comparisonBlock = `<div class="fear-comparison">${scoreRows}</div>${insight}`;
+    comparisonBlock = `<div class="fear-comparison" style="display:grid;grid-template-columns:repeat(${S.options.length},1fr);gap:12px;">${scoreRows}</div>${insight}`;
   }
 
   body.innerHTML=`
@@ -2957,8 +2970,10 @@ function renderScenarioBody(){
       </span>
       <button class="scenario-reset" onclick="resetScenario()">${tr('scenario_reset')}</button>
     </div>
-    <div class="sc-crit-list">${rows}</div>
-    <div style="margin-top:14px;padding-top:10px;border-top:1px solid var(--border)">${comparisonBlock}</div>`;
+    <div style="display:flex;gap:16px;align-items:flex-start">
+      <div class="sc-crit-list" style="flex:1;margin-top:0">${rows}</div>
+      <div style="flex:1;padding-left:16px;border-left:1px solid var(--border)">${comparisonBlock}</div>
+    </div>`;
 }
 
 function renderEmotionPane(){
