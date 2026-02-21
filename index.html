@@ -2960,7 +2960,7 @@ function renderScenarioBody(){
           :'The ranking stays the same — these criteria have little impact on your decision.'}</div>`;
       }
     }
-    comparisonBlock = `<div class="fear-comparison" style="display:flex;gap:12px;flex-wrap:wrap;">${scoreRows}</div>${insight}`;
+    comparisonBlock = `<div class="fear-comparison" style="display:grid;grid-template-columns:repeat(${S.options.length},1fr);gap:12px;">${scoreRows}</div>${insight}`;
   }
 
   body.innerHTML=`
