@@ -2970,8 +2970,10 @@ function renderScenarioBody(){
       </span>
       <button class="scenario-reset" onclick="resetScenario()">${tr('scenario_reset')}</button>
     </div>
-    <div class="sc-crit-list">${rows}</div>
-    <div style="margin-top:14px;padding-top:10px;border-top:1px solid var(--border)">${comparisonBlock}</div>`;
+    <div style="display:flex;gap:16px;align-items:flex-start">
+      <div class="sc-crit-list" style="flex:1;margin-top:0">${rows}</div>
+      <div style="flex:1;padding-left:16px;border-left:1px solid var(--border)">${comparisonBlock}</div>
+    </div>`;
 }
 
 function renderEmotionPane(){
