@@ -3344,34 +3344,8 @@ function restart(){
 (function(){
   var player = document.querySelector('lottie-player.mascot');
   if (!player) return;
-
-  function getAnim() {
-    return (typeof player.getLottie === 'function') ? player.getLottie() : null;
-  }
-
-  function scheduleBlink() {
-    setTimeout(doBlink, 3000);
-  }
-
-  function doBlink() {
-    var anim = getAnim();
-    if (!anim) return;
-    // Frames 60-73 : corps à 0° de rotation, clignement des yeux à 61-71
-    anim.playSegments([60, 73], true);
-    function onDone() {
-      anim.removeEventListener('complete', onDone);
-      anim.goToAndStop(60, true);
-      scheduleBlink();
-    }
-    anim.addEventListener('complete', onDone);
-  }
-
-  // Après la lecture complète de l'animation principale, geler au frame 60
-  player.addEventListener('complete', function onMain() {
-    player.removeEventListener('complete', onMain);
-    var anim = getAnim();
-    if (anim) anim.goToAndStop(60, true);
-    scheduleBlink();
+  player.addEventListener('complete', function() {
+    setTimeout(function(){ player.play(); }, 3000);
   });
 })();
 </script>
