@@ -1430,19 +1430,30 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   display:flex;align-items:center;justify-content:center;
 }
 .swing-first .swing-rank-num{background:var(--ink);}
-.swing-move-btns{
-  display:flex;flex-direction:column;gap:3px;flex-shrink:0;padding-top:1px;
-}
-.swing-move-btn{
-  width:22px;height:18px;border-radius:4px;
-  background:var(--bg);border:1px solid var(--border);
-  color:var(--muted);cursor:pointer;font-size:.6rem;
+
+/* MODIF DRAG AND DROP — Poignée de glissement */
+.swing-drag-handle{
   display:flex;align-items:center;justify-content:center;
-  font-family:'Plus Jakarta Sans',sans-serif;transition:all .1s;
-  padding:0;
+  flex-shrink:0;width:20px;padding:0 2px;
+  cursor:grab;color:var(--muted2);
+  font-size:.95rem;letter-spacing:-.1em;
+  user-select:none;-webkit-user-select:none;
+  touch-action:none;
 }
-.swing-move-btn:hover:not(:disabled){background:var(--bg2);border-color:var(--border2);color:var(--ink2);}
-.swing-move-btn:disabled{opacity:.3;cursor:default;}
+.swing-drag-handle:active{cursor:grabbing;}
+.swing-item{transition:opacity .15s,box-shadow .1s;}
+.swing-item.dragging{opacity:.35;}
+.swing-item.drag-over-above{box-shadow:0 -2px 0 0 var(--teal);border-top-color:var(--teal);}
+.swing-item.drag-over-below{box-shadow:0 2px 0 0 var(--teal);border-bottom-color:var(--teal);}
+.swing-ghost{
+  position:fixed;z-index:9999;pointer-events:none;
+  opacity:.88;border-radius:var(--r-sm);
+  box-shadow:0 8px 28px rgba(0,0,0,.18);
+  background:var(--white);padding:10px 12px;
+  border:1.5px solid var(--teal);
+  overflow:hidden;
+}
+/* FIN MODIF DRAG AND DROP */
 
 /* Contenu principal swing item */
 .swing-item-main{flex:1;min-width:0;}
@@ -2583,6 +2594,7 @@ function renderSelList(){
 
   if(swingActive){
     list.innerHTML = methodBar + buildSwingHTML();
+    _attachSwingDnD(); // MODIF DRAG AND DROP
     return;
   }
   // FIN MODIF SWING
@@ -2675,14 +2687,11 @@ function buildSwingHTML(){
     const sug=getSwingSuggestion(c);
     // FIN MODIF PLACEHOLDERS DYNAMIQUES
     return `
-      <div class="swing-item${isFirst?' swing-first':''}" id="swing-item-${c.id}">
+      <div class="swing-item${isFirst?' swing-first':''}" id="swing-item-${c.id}" data-id="${c.id}">
         <div class="swing-rank-num">${i+1}</div>
-        <div class="swing-move-btns">
-          <button class="swing-move-btn" onclick="swingMove('${c.id}',-1)"
-            ${i===0?'disabled':''} title="${LANG==='fr'?'Monter':'Move up'}">▲</button>
-          <button class="swing-move-btn" onclick="swingMove('${c.id}',+1)"
-            ${i===sorted.length-1?'disabled':''} title="${LANG==='fr'?'Descendre':'Move down'}">▼</button>
-        </div>
+        <!-- MODIF DRAG AND DROP — handle de glissement -->
+        <div class="swing-drag-handle" title="${LANG==='fr'?'Glisser pour réordonner':'Drag to reorder'}">⠿</div>
+        <!-- FIN MODIF DRAG AND DROP -->
         <div class="swing-item-main">
           <div class="swing-item-header">
             <span style="font-size:.9rem">${c.icon}</span>
@@ -2758,22 +2767,144 @@ function setSwingField(id,field,val){
   if(c) c[field]=val;
 }
 
-/** Déplace un critère dans le classement swing (dir = -1 ou +1). */
-function swingMove(id,dir){
-  const c=S.criteria.find(x=>x.id===id);
-  if(!c) return;
+/* ══════════════════════════════════════════
+   MODIF DRAG AND DROP — Glisser-déposer pour le classement swing
+   ══════════════════════════════════════════ */
+
+let _dragId  = null;           // id du critère en cours de drag souris
+let _touchDragId  = null;      // id du critère en cours de drag tactile
+let _touchGhost   = null;      // fantôme affiché sous le doigt
+let _touchTargetId= null;      // id de la cible de drop courante
+let _touchBefore  = true;      // insérer avant (true) ou après (false) la cible
+let _swingTouchListened = false;// flag anti-duplication des listeners document
+
+/** Réordonne en déplaçant fromId avant/après toId dans les swingRank. */
+function _swingReorder(fromId, toId, before){
+  if(fromId===toId) return;
   const sorted=[...S.criteria].sort((a,b)=>(a.swingRank??0)-(b.swingRank??0));
-  const idx=sorted.findIndex(x=>x.id===id);
-  const newIdx=idx+dir;
-  if(newIdx<0||newIdx>=sorted.length) return;
-  // Échange des rangs
-  const other=sorted[newIdx];
-  const tmp=c.swingRank; c.swingRank=other.swingRank; other.swingRank=tmp;
-  // Le critère en rang 0 est toujours à 100
-  const newFirst=S.criteria.find(x=>x.swingRank===0);
-  if(newFirst) newFirst.swingPoints=100;
-  renderSelList();
+  const fromIdx=sorted.findIndex(c=>c.id===fromId);
+  if(fromIdx===-1) return;
+  const [moved]=sorted.splice(fromIdx,1);
+  const insertAt=before
+    ? sorted.findIndex(c=>c.id===toId)
+    : sorted.findIndex(c=>c.id===toId)+1;
+  if(insertAt<0) return;
+  sorted.splice(insertAt,0,moved);
+  sorted.forEach((c,i)=>{ c.swingRank=i; });
+  if(sorted.length>0) sorted[0].swingPoints=100;
 }
+
+/** Attache les événements drag souris (HTML5) + tactile après chaque rendu swing. */
+function _attachSwingDnD(){
+  /* ─── Drag souris ─── */
+  document.querySelectorAll('#activeList .swing-drag-handle').forEach(handle=>{
+    // Rend l'item draggable seulement si le drag part du handle (ne bloque pas les inputs)
+    handle.addEventListener('mousedown',()=>{
+      handle.closest('.swing-item').setAttribute('draggable','true');
+    });
+  });
+
+  document.querySelectorAll('#activeList .swing-item').forEach(item=>{
+    item.addEventListener('dragstart',e=>{
+      _dragId=item.dataset.id;
+      item.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+    });
+
+    item.addEventListener('dragend',()=>{
+      _dragId=null;
+      item.removeAttribute('draggable');
+      item.classList.remove('dragging');
+      document.querySelectorAll('#activeList .swing-item')
+        .forEach(el=>el.classList.remove('drag-over-above','drag-over-below'));
+    });
+
+    item.addEventListener('dragover',e=>{
+      e.preventDefault();
+      if(!_dragId||item.dataset.id===_dragId) return;
+      const before=e.clientY < item.getBoundingClientRect().top+item.offsetHeight/2;
+      document.querySelectorAll('#activeList .swing-item')
+        .forEach(el=>el.classList.remove('drag-over-above','drag-over-below'));
+      item.classList.add(before?'drag-over-above':'drag-over-below');
+    });
+
+    item.addEventListener('dragleave',e=>{
+      if(!item.contains(e.relatedTarget))
+        item.classList.remove('drag-over-above','drag-over-below');
+    });
+
+    item.addEventListener('drop',e=>{
+      e.preventDefault();
+      if(!_dragId||item.dataset.id===_dragId) return;
+      const before=e.clientY < item.getBoundingClientRect().top+item.offsetHeight/2;
+      _swingReorder(_dragId,item.dataset.id,before);
+      renderSelList();
+    });
+  });
+
+  /* ─── Drag tactile ─── */
+  document.querySelectorAll('#activeList .swing-drag-handle').forEach(handle=>{
+    handle.addEventListener('touchstart',e=>{
+      e.preventDefault();
+      const item=handle.closest('.swing-item');
+      _touchDragId=item.dataset.id;
+      // Créer le fantôme (clone léger de l'item)
+      _touchGhost=item.cloneNode(true);
+      _touchGhost.classList.add('swing-ghost');
+      _touchGhost.style.width=item.offsetWidth+'px';
+      document.body.appendChild(_touchGhost);
+      item.classList.add('dragging');
+      const t=e.touches[0];
+      _touchGhost.style.left=(t.clientX-20)+'px';
+      _touchGhost.style.top =(t.clientY-item.offsetHeight/2)+'px';
+    },{passive:false});
+  });
+
+  // Listeners document ajoutés une seule fois pour toute la session
+  if(!_swingTouchListened){
+    _swingTouchListened=true;
+    document.addEventListener('touchmove',  _swingTouchMove,  {passive:false});
+    document.addEventListener('touchend',   _swingTouchEnd,   {passive:false});
+    document.addEventListener('touchcancel',_swingTouchEnd,   {passive:false});
+  }
+}
+
+function _swingTouchMove(e){
+  if(!_touchDragId) return;
+  e.preventDefault();
+  const t=e.touches[0];
+  // Déplacer le fantôme
+  if(_touchGhost){
+    _touchGhost.style.left=(t.clientX-20)+'px';
+    _touchGhost.style.top =(t.clientY-30)+'px';
+  }
+  // Trouver la cible sous le doigt
+  _touchTargetId=null; _touchBefore=true;
+  document.querySelectorAll('#activeList .swing-item').forEach(el=>{
+    el.classList.remove('drag-over-above','drag-over-below');
+    if(el.dataset.id===_touchDragId) return;
+    const r=el.getBoundingClientRect();
+    if(t.clientY>=r.top&&t.clientY<=r.bottom){
+      _touchTargetId=el.dataset.id;
+      _touchBefore=t.clientY<r.top+r.height/2;
+      el.classList.add(_touchBefore?'drag-over-above':'drag-over-below');
+    }
+  });
+}
+
+function _swingTouchEnd(){
+  if(!_touchDragId) return;
+  if(_touchGhost){ _touchGhost.remove(); _touchGhost=null; }
+  document.querySelectorAll('#activeList .swing-item')
+    .forEach(el=>el.classList.remove('dragging','drag-over-above','drag-over-below'));
+  if(_touchTargetId){
+    _swingReorder(_touchDragId,_touchTargetId,_touchBefore);
+    renderSelList();
+  }
+  _touchDragId=null; _touchTargetId=null;
+}
+
+/* FIN MODIF DRAG AND DROP */
 
 /* FIN MODIF SWING */
 function rmCrit(id){
