@@ -199,9 +199,9 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   justify-content:center;
 }
 .mascot{
-  width:240px;
+  width:160px;
   aspect-ratio:10/9;
-  max-height:28dvh;
+  max-height:20dvh;
 }
 
 /* ── INTRO PAGE ──────────────────────────── */
@@ -233,7 +233,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 }
 
 @media(max-height:700px){
-  .mascot{ width:140px !important; }
+  .mascot{ width:100px !important; }
   .mascot-wrap{ margin-bottom:10px; }
   .intro-wrap{ align-items:flex-start; }
 }
@@ -1439,7 +1439,6 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
           background="transparent"
           speed="1"
           autoplay
-          loop
           aria-hidden="true">
         </lottie-player>
       </div>
@@ -3341,6 +3340,15 @@ function restart(){
 }
 </script>
 <script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.8/dist/lottie-player.js"></script>
+<script>
+(function(){
+  var player = document.querySelector('lottie-player.mascot');
+  if (!player) return;
+  player.addEventListener('complete', function() {
+    setTimeout(function(){ player.play(); }, 3000);
+  });
+})();
+</script>
 </body>
 </html>
 
