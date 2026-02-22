@@ -1475,6 +1475,14 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   box-shadow:0 0 0 3px rgba(45,125,90,.12);
 }
 
+/* MODIF PLACEHOLDERS DYNAMIQUES — Indice texte sous les champs pire/meilleur */
+.swing-field-hint{
+  font-size:.6rem;color:var(--muted);
+  line-height:1.4;margin-top:4px;
+  font-style:italic;
+}
+/* FIN MODIF PLACEHOLDERS DYNAMIQUES */
+
 /* Zone points + badge % */
 .swing-points-wrap{
   display:flex;flex-direction:column;gap:3px;flex-shrink:0;
@@ -1956,6 +1964,10 @@ const T = {
     swing_best_ph:    'Ex : 60 000 €/an',
     swing_points_err: 'Les points doivent être entre 1 et 100 (le premier critère est fixé à 100). Vérifiez vos valeurs.',
     swing_weight_lbl: 'Poids',
+    /* MODIF PLACEHOLDERS DYNAMIQUES */
+    swing_field_hint: 'Décris librement (qualitatif ou quantitatif) le pire/meilleur scénario pour ce critère dans ta décision.',
+    swing_empty_err:  'Veuillez décrire le pire et le meilleur niveau pour chaque critère avant de continuer.',
+    /* FIN MODIF PLACEHOLDERS DYNAMIQUES */
     /* FIN MODIF SWING */
   },
   en: {
@@ -2101,6 +2113,10 @@ const T = {
     swing_best_ph:    'e.g. €60,000/yr',
     swing_points_err: 'Points must be between 1 and 100 (the first criterion is fixed at 100). Please check your values.',
     swing_weight_lbl: 'Weight',
+    /* MODIF PLACEHOLDERS DYNAMIQUES */
+    swing_field_hint: 'Freely describe (qualitative or quantitative) the worst/best scenario for this criterion in your decision.',
+    swing_empty_err:  'Please describe the worst and best level for each criterion before continuing.',
+    /* FIN MODIF PLACEHOLDERS DYNAMIQUES */
     /* FIN MODIF SWING */
   }
 };
@@ -2279,6 +2295,110 @@ const LIB = [
 
 const CATS = ['Tous','Finance','Pro','Perso','Social','Stratégique'];
 const WEIGHTS = {1:'×1 Normal', 2:'×2 Important', 3:'×3 Crucial'};
+
+/* ══════════════════════════════════════════
+   MODIF PLACEHOLDERS DYNAMIQUES
+   Suggestions contextuelles pire/meilleur pour le Swing Weighting.
+   Clé = id du critère (correspondance exacte, prioritaire) ou 'default'.
+   ══════════════════════════════════════════ */
+const SWING_SUGGESTIONS = {
+  fr: {
+    /* Finance */
+    fin_gain: { worst:'Très faible (ex : 10 000 €/an)',          best:'Très élevé (ex : 80 000 €/an)' },
+    fin_risk: { worst:'Très élevé (ex : perte totale, faillite)', best:'Quasi nul (ex : risque maîtrisé, couvert)' },
+    roi:      { worst:'ROI négatif (ex : perte nette sur 3 ans)', best:'ROI excellent (ex : ×3 en 2 ans)' },
+    cost:     { worst:'Très élevé (ex : 50 000 € à débourser)',   best:'Très faible ou nul (ex : 0 €, gratuit)' },
+    fin_stab: { worst:'Très instable (ex : chômage probable, revenus irréguliers)', best:'Très stable (ex : CDI, revenus garantis)' },
+    /* Pro */
+    career:   { worst:'Impasse professionnelle (ex : poste sans débouché, aucune évolution)', best:'Tremplin majeur (ex : directeur dans 5 ans, forte reconnaissance)' },
+    skills:   { worst:'Aucun apprentissage (ex : tâches répétitives, rien de nouveau)', best:'Montée en compétences forte (ex : formations régulières, projets innovants)' },
+    workload: { worst:'Épuisant (ex : 70 h/sem, aucun répit, pression constante)', best:'Très léger (ex : 35 h, rythme choisi, pas de stress)' },
+    jobsec:   { worst:'Très précaire (ex : CDD court, licenciement probable)', best:'Très sécurisé (ex : CDI, secteur stable, poste pérenne)' },
+    autonom:  { worst:'Aucune autonomie (ex : micro-management, tout à valider)', best:'Autonomie totale (ex : décisions libres, organisation personnelle)' },
+    flex:     { worst:'Totalement rigide (ex : horaires fixes, 0 télétravail)', best:'Entièrement flexible (ex : full remote, horaires libres)' },
+    recog:    { worst:'Aucune reconnaissance (ex : invisible, critiqué, ignoré)', best:'Très valorisé (ex : promotions, prestige public, admiration)' },
+    /* Perso */
+    wellb:    { worst:'Très bas (ex : dépression, épuisement, manque d\'énergie)', best:'Très élevé (ex : épanouissement quotidien, joie, vitalité)' },
+    stress:   { worst:'Très élevé (ex : crises fréquentes, épuisement nerveux)', best:'Très faible (ex : sérénité totale, équilibre, calme)' },
+    health:   { worst:'Très négatif (ex : burn-out, maladies chroniques)', best:'Très positif (ex : vitalité optimale, santé préservée)' },
+    time:     { worst:'Quasi nul (ex : aucun loisir, week-ends occupés, pas de repos)', best:'Abondant (ex : temps libre choisi, rythme personnel)' },
+    values:   { worst:'En contradiction totale (ex : contre mes principes fondamentaux)', best:'Parfaitement aligné (ex : cohérent avec mes convictions profondes)' },
+    passion:  { worst:'Aucun intérêt (ex : ennui profond, corvée quotidienne)', best:'Passion totale (ex : motivation débordante, plaisir chaque jour)' },
+    risk:     { worst:'Très élevé (ex : échec probable, conséquences graves et durables)', best:'Très faible (ex : sécurité maximale, succès quasi assuré)' },
+    /* Social */
+    family:   { worst:'Très négatif (ex : conflits permanents, éloignement, tensions)', best:'Très positif (ex : harmonie familiale, temps de qualité)' },
+    social:   { worst:'Isolement total (ex : perte du réseau, solitude, repli)', best:'Vie sociale riche (ex : entourage varié, sorties, appartenance)' },
+    location: { worst:'Lieu de vie difficile (ex : loin de tout, environnement stressant)', best:'Lieu de vie idéal (ex : ville choisie, logement confortable)' },
+    ethics:   { worst:'Contre mes valeurs (ex : secteur controversé, pratiques douteuses)', best:'Parfaitement éthique (ex : impact positif, transparence totale)' },
+    repute:   { worst:'Très mauvaise (ex : perte de confiance, critiques publiques)', best:'Excellente (ex : admiration, respect, image valorisée)' },
+    impact:   { worst:'Aucun impact (ex : travail inutile, contribution non visible)', best:'Impact fort (ex : contribution majeure, utilité reconnue)' },
+    /* Stratégique */
+    lt:       { worst:'Risque de regret élevé (ex : impasse dans 5 ans, obsolescence)', best:'Très prometteur (ex : croissance durable, satisfaction à long terme)' },
+    rev:      { worst:'Irréversible (ex : impossible de revenir en arrière, verrouillé)', best:'Totalement réversible (ex : essayable sans engagement fort)' },
+    opp:      { worst:'Opportunité banale (ex : se représente souvent, rien d\'unique)', best:'Chance unique (ex : offre rare, fenêtre courte, maintenant ou jamais)' },
+    complex:  { worst:'Très complexe (ex : nombreux obstacles, mise en œuvre difficile)', best:'Très simple (ex : démarrage rapide, peu d\'efforts requis)' },
+    dep:      { worst:'Très dépendant (ex : bloqué par d\'autres facteurs extérieurs)', best:'Indépendant (ex : sous mon contrôle total, peu de contraintes)' },
+    /* Fallback */
+    default:  { worst:'Décris le pire cas imaginable pour ce critère (ex : situation catastrophique, très mauvaise)', best:'Décris le meilleur cas imaginable pour ce critère (ex : situation idéale, excellente)' },
+  },
+  en: {
+    /* Finance */
+    fin_gain: { worst:'Very low (e.g. €10,000/yr)',              best:'Very high (e.g. €80,000/yr)' },
+    fin_risk: { worst:'Very high (e.g. total loss, bankruptcy)',  best:'Near zero (e.g. risk controlled, fully covered)' },
+    roi:      { worst:'Negative ROI (e.g. net loss over 3 years)', best:'Excellent ROI (e.g. ×3 in 2 years)' },
+    cost:     { worst:'Very high (e.g. €50,000 upfront)',         best:'Very low or zero (e.g. €0, free)' },
+    fin_stab: { worst:'Very unstable (e.g. likely unemployed, irregular income)', best:'Very stable (e.g. permanent contract, guaranteed income)' },
+    /* Work */
+    career:   { worst:'Dead-end (e.g. no progression, no prospects)', best:'Major springboard (e.g. senior leadership in 5 years)' },
+    skills:   { worst:'No learning (e.g. repetitive tasks, nothing new)', best:'Strong upskilling (e.g. regular training, innovative projects)' },
+    workload: { worst:'Exhausting (e.g. 70h/week, no rest, constant pressure)', best:'Very light (e.g. 35h, chosen pace, stress-free)' },
+    jobsec:   { worst:'Very precarious (e.g. short-term contract, likely laid off)', best:'Very secure (e.g. permanent job, stable sector)' },
+    autonom:  { worst:'No autonomy (e.g. micromanagement, everything approved)', best:'Full autonomy (e.g. free decisions, self-organised)' },
+    flex:     { worst:'Totally rigid (e.g. fixed hours, no remote work)', best:'Fully flexible (e.g. full remote, free schedule)' },
+    recog:    { worst:'No recognition (e.g. invisible, criticised, ignored)', best:'Highly valued (e.g. promotions, prestige, admired)' },
+    /* Personal */
+    wellb:    { worst:'Very low (e.g. depression, burnout, low energy)', best:'Very high (e.g. daily fulfilment, joy, vitality)' },
+    stress:   { worst:'Very high (e.g. frequent crises, nervous exhaustion)', best:'Very low (e.g. serenity, balance, calm)' },
+    health:   { worst:'Very negative (e.g. burnout, chronic illness)', best:'Very positive (e.g. optimal vitality, preserved health)' },
+    time:     { worst:'Nearly zero (e.g. no leisure, busy weekends, no rest)', best:'Abundant (e.g. chosen free time, personal pace)' },
+    values:   { worst:'Total contradiction (e.g. against my core principles)', best:'Perfectly aligned (e.g. consistent with my deepest convictions)' },
+    passion:  { worst:'No interest (e.g. deep boredom, a daily chore)', best:'Total passion (e.g. overflowing motivation, daily pleasure)' },
+    risk:     { worst:'Very high (e.g. probable failure, serious lasting consequences)', best:'Very low (e.g. maximum safety, near-guaranteed success)' },
+    /* Social */
+    family:   { worst:'Very negative (e.g. permanent conflicts, estrangement)', best:'Very positive (e.g. family harmony, quality time)' },
+    social:   { worst:'Total isolation (e.g. lost network, loneliness, withdrawal)', best:'Rich social life (e.g. varied circle, regular outings, belonging)' },
+    location: { worst:'Difficult living environment (e.g. far from everything, stressful)', best:'Ideal living environment (e.g. chosen city, comfortable home)' },
+    ethics:   { worst:'Against my values (e.g. controversial sector, dubious practices)', best:'Perfectly ethical (e.g. positive impact, full transparency)' },
+    repute:   { worst:'Very poor (e.g. loss of trust, public criticism)', best:'Excellent (e.g. admiration, total respect, valued image)' },
+    impact:   { worst:'No impact (e.g. useless work, unrecognised contribution)', best:'Strong impact (e.g. major contribution, recognised value)' },
+    /* Strategic */
+    lt:       { worst:'High regret risk (e.g. dead-end in 5 years, obsolescence)', best:'Very promising (e.g. sustainable growth, long-term satisfaction)' },
+    rev:      { worst:'Irreversible (e.g. impossible to go back, locked in)', best:'Fully reversible (e.g. try without strong commitment)' },
+    opp:      { worst:'Ordinary opportunity (e.g. comes up often, nothing unique)', best:'Unique chance (e.g. rare offer, short window, now or never)' },
+    complex:  { worst:'Very complex (e.g. many obstacles, difficult implementation)', best:'Very simple (e.g. quick start, little effort required)' },
+    dep:      { worst:'Highly dependent (e.g. blocked by external factors)', best:'Independent (e.g. fully under my control, few constraints)' },
+    /* Fallback */
+    default:  { worst:'Describe the worst imaginable case for this criterion (e.g. catastrophic, very bad situation)', best:'Describe the best imaginable case for this criterion (e.g. ideal, excellent situation)' },
+  }
+};
+
+/** Retourne la suggestion {worst, best} pour un critère donné (par id exact, puis nom approché, puis défaut).
+ * @param {object} c — objet critère de S.criteria
+ */
+function getSwingSuggestion(c){
+  const sug = SWING_SUGGESTIONS[LANG] || SWING_SUGGESTIONS.fr;
+  // 1. Correspondance exacte par identifiant de bibliothèque
+  if(sug[c.id]) return sug[c.id];
+  // 2. Correspondance approximative par nom (critères personnalisés)
+  const name=(c.name||'').toLowerCase();
+  for(const key of Object.keys(sug)){
+    if(key==='default') continue;
+    if(name.includes(key.replace(/_/g,' '))) return sug[key];
+  }
+  // 3. Fallback générique
+  return sug.default;
+}
+/* FIN MODIF PLACEHOLDERS DYNAMIQUES */
 
 /* ─── STATE ─────────────────────────────── */
 let S = {
@@ -2551,6 +2671,9 @@ function buildSwingHTML(){
   const items=sorted.map((c,i)=>{
     const isFirst=i===0;
     const pct=total>0?Math.round((c.swingPoints??100)/total*100):0;
+    // MODIF PLACEHOLDERS DYNAMIQUES — suggestion contextuelle selon le critère
+    const sug=getSwingSuggestion(c);
+    // FIN MODIF PLACEHOLDERS DYNAMIQUES
     return `
       <div class="swing-item${isFirst?' swing-first':''}" id="swing-item-${c.id}">
         <div class="swing-rank-num">${i+1}</div>
@@ -2574,17 +2697,21 @@ function buildSwingHTML(){
           <div class="swing-fields">
             <div class="swing-field-group">
               <label class="swing-field-lbl">⬇ ${tr('swing_worst_lbl')}</label>
+              <!-- MODIF PLACEHOLDERS DYNAMIQUES — placeholder contextuel au critère -->
               <input class="swing-field-inp" type="text"
                 value="${esc(c.swingWorst||'')}"
-                placeholder="${tr('swing_worst_ph')}"
+                placeholder="${sug.worst}"
                 oninput="setSwingField('${c.id}','swingWorst',this.value)">
+              <!-- FIN MODIF PLACEHOLDERS DYNAMIQUES -->
             </div>
             <div class="swing-field-group">
               <label class="swing-field-lbl">⬆ ${tr('swing_best_lbl')}</label>
+              <!-- MODIF PLACEHOLDERS DYNAMIQUES — placeholder contextuel au critère -->
               <input class="swing-field-inp" type="text"
                 value="${esc(c.swingBest||'')}"
-                placeholder="${tr('swing_best_ph')}"
+                placeholder="${sug.best}"
                 oninput="setSwingField('${c.id}','swingBest',this.value)">
+              <!-- FIN MODIF PLACEHOLDERS DYNAMIQUES -->
             </div>
             <div class="swing-points-wrap">
               <label class="swing-field-lbl">${tr('swing_points_lbl')}</label>
@@ -2596,6 +2723,9 @@ function buildSwingHTML(){
               <div class="swing-weight-tag" id="swing-pct-${c.id}">${pct}%</div>
             </div>
           </div>
+          <!-- MODIF PLACEHOLDERS DYNAMIQUES — indice guidant l'utilisateur -->
+          <div class="swing-field-hint">💡 ${tr('swing_field_hint')}</div>
+          <!-- FIN MODIF PLACEHOLDERS DYNAMIQUES -->
         </div>
       </div>`;
   }).join('');
@@ -2662,6 +2792,10 @@ function validateStep2(){
   if(S.weightingMethod==='swing'){
     const invalid=S.criteria.some(c=>!c.swingPoints||c.swingPoints<1||c.swingPoints>100);
     if(invalid){alert(tr('swing_points_err'));return;}
+    // MODIF PLACEHOLDERS DYNAMIQUES — champs pire/meilleur obligatoires
+    const missingLevels=S.criteria.some(c=>!c.swingWorst?.trim()||!c.swingBest?.trim());
+    if(missingLevels){alert(tr('swing_empty_err'));return;}
+    // FIN MODIF PLACEHOLDERS DYNAMIQUES
   }
   // FIN MODIF SWING
   S.criteria.forEach(c=>{
