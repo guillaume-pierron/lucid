@@ -191,7 +191,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
 /* ── MASCOT ──────────────────────────────── */
 .mascot-wrap{
-  margin-bottom:18px;
+  margin-bottom:4px;
   animation:up .5s ease both;
   flex-shrink:1;
   display:flex;
@@ -234,7 +234,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
 @media(max-height:700px){
   .mascot{ width:100px !important; }
-  .mascot-wrap{ margin-bottom:10px; }
+  .mascot-wrap{ margin-bottom:4px; }
   .intro-wrap{ align-items:flex-start; }
 }
 @media(max-height:560px){
@@ -3344,8 +3344,34 @@ function restart(){
 (function(){
   var player = document.querySelector('lottie-player.mascot');
   if (!player) return;
-  player.addEventListener('complete', function() {
-    setTimeout(function(){ player.play(); }, 3000);
+
+  function getAnim() {
+    return (typeof player.getLottie === 'function') ? player.getLottie() : null;
+  }
+
+  function scheduleBlink() {
+    setTimeout(doBlink, 3000);
+  }
+
+  function doBlink() {
+    var anim = getAnim();
+    if (!anim) return;
+    // Frames 60-73 : corps à 0° de rotation, clignement des yeux à 61-71
+    anim.playSegments([60, 73], true);
+    function onDone() {
+      anim.removeEventListener('complete', onDone);
+      anim.goToAndStop(60, true);
+      scheduleBlink();
+    }
+    anim.addEventListener('complete', onDone);
+  }
+
+  // Après la lecture complète de l'animation principale, geler au frame 60
+  player.addEventListener('complete', function onMain() {
+    player.removeEventListener('complete', onMain);
+    var anim = getAnim();
+    if (anim) anim.goToAndStop(60, true);
+    scheduleBlink();
   });
 })();
 </script>
