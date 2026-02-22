@@ -1459,7 +1459,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 .swing-item-header{
   display:flex;align-items:center;gap:6px;margin-bottom:8px;
 }
-.swing-item-name{font-size:.82rem;font-weight:700;color:var(--ink);flex:1;min-width:0;}
+.swing-item-name{font-size:.82rem;font-weight:700;color:var(--ink);flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
 
 /* Champs worst/best/points */
 .swing-fields{
@@ -2508,14 +2508,16 @@ function buildSwingHTML(){
         <div class="swing-drag-handle" title="${LANG==='fr'?'Glisser pour réordonner':'Drag to reorder'}">⠿</div>
         <div class="swing-item-main">
           <div class="swing-item-header">
-            <span style="font-size:.9rem">${c.icon}</span>
+            <span style="font-size:.9rem;flex-shrink:0">${c.icon}</span>
             <span class="swing-item-name">${c.name}</span>
-            <button class="inv-btn${c.invert?' on':''}" onclick="toggleInv('${c.id}')"
-              style="font-size:.6rem;padding:3px 7px"
-              title="${c.invert?tr('inv_tip_on'):tr('inv_tip_off')}">
-              ${c.invert?tr('inv_on'):tr('inv_off')}
-            </button>
-            <button class="rm-btn" onclick="rmCrit('${c.id}')" title="${LANG==='fr'?'Retirer':'Remove'}">✕</button>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:4px;flex-shrink:0">
+              <button class="inv-btn${c.invert?' on':''}" onclick="toggleInv('${c.id}')"
+                style="font-size:.6rem;padding:3px 7px"
+                title="${c.invert?tr('inv_tip_on'):tr('inv_tip_off')}">
+                ${c.invert?tr('inv_on'):tr('inv_off')}
+              </button>
+              <button class="rm-btn" onclick="rmCrit('${c.id}')" title="${LANG==='fr'?'Retirer':'Remove'}">✕</button>
+            </div>
           </div>
           <div class="swing-fields">
             <div class="swing-points-wrap">
@@ -2581,7 +2583,12 @@ function _swingReorder(fromId, toId, before){
   if(insertAt<0) return;
   sorted.splice(insertAt,0,moved);
   sorted.forEach((c,i)=>{ c.swingRank=i; });
-  if(sorted.length>0) sorted[0].swingPoints=100;
+  if(sorted.length>0){
+    sorted[0].swingPoints=100;
+    // Si l'ancien critère #1 (100 pts) a été déplacé, on réinitialise ses points à 70
+    // pour éviter qu'un critère de rang 4 ait autant de poids que le rang 1
+    sorted.slice(1).forEach(c=>{ if((c.swingPoints??100)>=100) c.swingPoints=70; });
+  }
 }
 
 /** Attache les événements drag souris (HTML5) + tactile après chaque rendu swing. */
