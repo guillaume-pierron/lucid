@@ -191,7 +191,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
 /* ── MASCOT ──────────────────────────────── */
 .mascot-wrap{
-  margin-bottom:18px;
+  margin-bottom:4px;
   animation:up .5s ease both;
   flex-shrink:1;
   display:flex;
@@ -199,32 +199,9 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   justify-content:center;
 }
 .mascot{
-  width:100px;
-  height:auto;
-  max-height:18dvh;
-  animation:mascot-float 3.2s ease-in-out infinite;
-  overflow:visible;
-}
-.mascot-shadow{
-  animation:mascot-shadow 3.2s ease-in-out infinite;
-}
-
-.mascot-blink{
-  animation:blink-anim 5s ease-in-out infinite;
-}
-
-@keyframes mascot-float{
-  0%,100%{ transform:translateY(0); }
-  50%     { transform:translateY(-7px); }
-}
-@keyframes mascot-shadow{
-  0%,100%{ transform:scaleX(1);   opacity:.7; }
-  50%     { transform:scaleX(.75); opacity:.35; }
-}
-
-@keyframes blink-anim{
-  0%,88%,94%,100%{ opacity:0; }
-  90%,92%        { opacity:1; }
+  width:160px;
+  aspect-ratio:10/9;
+  max-height:20dvh;
 }
 
 /* ── INTRO PAGE ──────────────────────────── */
@@ -256,8 +233,8 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 }
 
 @media(max-height:700px){
-  .mascot{ width:72px !important; }
-  .mascot-wrap{ margin-bottom:10px; }
+  .mascot{ width:100px !important; }
+  .mascot-wrap{ margin-bottom:4px; }
   .intro-wrap{ align-items:flex-start; }
 }
 @media(max-height:560px){
@@ -1457,59 +1434,13 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
       <!-- Hibou cartoon animé -->
       <div class="mascot-wrap">
-        <svg class="mascot" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-
-          <!-- Ombre -->
-          <ellipse cx="50" cy="106" rx="22" ry="4" fill="rgba(0,0,0,0.07)" class="mascot-shadow"/>
-
-          <!-- Corps super rond et dodu -->
-          <ellipse cx="50" cy="76" rx="28" ry="30" fill="#2d7d5a"/>
-
-          <!-- Ventre doux -->
-          <ellipse cx="50" cy="82" rx="18" ry="20" fill="#c8ead9"/>
-          <ellipse cx="50" cy="86" rx="12" ry="13" fill="#eef7f2"/>
-
-          <!-- Tête grosse et ronde -->
-          <ellipse cx="50" cy="42" rx="26" ry="25" fill="#2d7d5a"/>
-
-          <!-- Aigrettes moelleuses -->
-          <path d="M34 24 Q28 8 36 5 Q40 16 38 23Z" fill="#1a4d38"/>
-          <path d="M66 24 Q72 8 64 5 Q60 16 62 23Z" fill="#1a4d38"/>
-
-          <!-- Yeux très grands et kawaii -->
-          <circle cx="37" cy="42" r="14" fill="white"/>
-          <circle cx="63" cy="42" r="14" fill="white"/>
-          <circle cx="37" cy="42" r="9" fill="#389e71"/>
-          <circle cx="63" cy="42" r="9" fill="#389e71"/>
-          <circle cx="37" cy="42" r="5.5" fill="#0a0a0a" class="pupil-l"/>
-          <circle cx="63" cy="42" r="5.5" fill="#0a0a0a" class="pupil-r"/>
-          <circle cx="39.5" cy="39.5" r="2.2" fill="white"/>
-          <circle cx="65.5" cy="39.5" r="2.2" fill="white"/>
-          <circle cx="35" cy="44.5" r=".9" fill="white" opacity=".6"/>
-          <circle cx="61" cy="44.5" r=".9" fill="white" opacity=".6"/>
-
-          <!-- Clignement -->
-          <g class="mascot-blink" style="opacity:0">
-            <ellipse cx="37" cy="42" rx="14" ry="8" fill="#2d7d5a"/>
-            <ellipse cx="63" cy="42" rx="14" ry="8" fill="#2d7d5a"/>
-          </g>
-
-          <!-- Petites joues rondes -->
-          <ellipse cx="24" cy="52" rx="7" ry="5" fill="#c8ead9" opacity=".5"/>
-          <ellipse cx="76" cy="52" rx="7" ry="5" fill="#c8ead9" opacity=".5"/>
-
-          <!-- Bec petit et mignon -->
-          <path d="M45 54 Q50 60 55 54 Q53 50 50 51 Q47 50 45 54Z" fill="#f0a830"/>
-
-          <!-- Petites pattes -->
-          <path d="M38 103 Q34 108 30 106" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M38 103 Q36 109 32 110" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M38 103 Q38 110 36 112" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M62 103 Q66 108 70 106" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M62 103 Q64 109 68 110" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M62 103 Q62 110 64 112" stroke="#f0a830" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-
-        </svg>
+        <lottie-player class="mascot"
+          src="owl.json"
+          background="transparent"
+          speed="1"
+          autoplay
+          aria-hidden="true">
+        </lottie-player>
       </div>
 
       <div class="intro-badge" data-i18n="badge">✦ Outil d'aide à la décision</div>
@@ -3407,6 +3338,16 @@ function restart(){
   renderStepProgress(1);
   nav('page-intro');
 }
+</script>
+<script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.8/dist/lottie-player.js"></script>
+<script>
+(function(){
+  var player = document.querySelector('lottie-player.mascot');
+  if (!player) return;
+  player.addEventListener('complete', function() {
+    setTimeout(function(){ player.play(); }, 3000);
+  });
+})();
 </script>
 </body>
 </html>
