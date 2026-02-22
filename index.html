@@ -1377,6 +1377,140 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 }
 .scenario-summary strong{ color:var(--teal); }
 
+/* ══════════════════════════════════════════
+   MODIF SWING — Pondération par Swing Weighting
+   ══════════════════════════════════════════ */
+
+/* Toggle méthode de pondération */
+.method-toggle-bar{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  background:var(--bg);
+}
+.method-lbl{
+  font-size:.75rem;font-weight:700;color:var(--ink2);
+  margin-right:2px;white-space:nowrap;
+}
+.method-btn{
+  padding:6px 14px;border-radius:20px;
+  border:1.5px solid var(--border);
+  background:var(--white);color:var(--muted);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.78rem;font-weight:600;cursor:pointer;
+  transition:all .18s;
+}
+.method-btn:hover{border-color:var(--border2);color:var(--ink2);}
+.method-btn.active{
+  border-color:var(--teal);background:var(--teal-bg);color:var(--teal);
+}
+
+/* Encadré info swing */
+.swing-info{
+  margin:8px 8px 4px;padding:12px 15px;
+  background:var(--teal-bg);border:1px solid var(--teal-bd);
+  border-radius:var(--r-sm);
+  font-size:.8rem;color:var(--ink2);line-height:1.6;
+}
+.swing-info strong{color:var(--teal);}
+
+/* Item dans la liste swing */
+.swing-item{
+  display:flex;align-items:flex-start;gap:8px;
+  padding:12px 12px;margin:4px 6px;
+  border-radius:var(--r-sm);border:1.5px solid var(--border);
+  background:var(--white);transition:border-color .15s;
+}
+.swing-item.swing-first{
+  border-color:var(--teal);background:var(--teal-bg);
+}
+.swing-rank-num{
+  width:24px;height:24px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  background:var(--teal);color:#fff;
+  font-size:.72rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.swing-first .swing-rank-num{background:var(--ink);}
+.swing-move-btns{
+  display:flex;flex-direction:column;gap:3px;flex-shrink:0;padding-top:1px;
+}
+.swing-move-btn{
+  width:22px;height:18px;border-radius:4px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--muted);cursor:pointer;font-size:.6rem;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Plus Jakarta Sans',sans-serif;transition:all .1s;
+  padding:0;
+}
+.swing-move-btn:hover:not(:disabled){background:var(--bg2);border-color:var(--border2);color:var(--ink2);}
+.swing-move-btn:disabled{opacity:.3;cursor:default;}
+
+/* Contenu principal swing item */
+.swing-item-main{flex:1;min-width:0;}
+.swing-item-header{
+  display:flex;align-items:center;gap:6px;margin-bottom:8px;
+}
+.swing-item-name{font-size:.82rem;font-weight:700;color:var(--ink);flex:1;min-width:0;}
+
+/* Champs worst/best/points */
+.swing-fields{
+  display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;
+}
+.swing-field-group{
+  display:flex;flex-direction:column;gap:3px;flex:1;min-width:80px;
+}
+.swing-field-lbl{
+  font-size:.62rem;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.05em;
+}
+.swing-field-inp{
+  padding:6px 10px;border-radius:6px;
+  border:1.5px solid var(--border);
+  background:var(--white);color:var(--ink);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;
+  width:100%;outline:none;
+  transition:border-color .15s,box-shadow .15s;
+}
+.swing-field-inp:focus{
+  border-color:var(--teal2);
+  box-shadow:0 0 0 3px rgba(45,125,90,.12);
+}
+
+/* Zone points + badge % */
+.swing-points-wrap{
+  display:flex;flex-direction:column;gap:3px;flex-shrink:0;
+}
+.swing-points-inp{
+  width:60px;padding:6px 8px;border-radius:6px;
+  border:1.5px solid var(--border);text-align:center;
+  background:var(--white);color:var(--ink);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.88rem;font-weight:700;outline:none;
+  transition:border-color .15s,box-shadow .15s;
+}
+.swing-points-inp:focus:not([readonly]){
+  border-color:var(--teal2);
+  box-shadow:0 0 0 3px rgba(45,125,90,.12);
+}
+.swing-points-inp[readonly]{
+  background:var(--teal-bg);border-color:var(--teal-bd);
+  color:var(--teal);cursor:default;
+}
+.swing-weight-tag{
+  font-size:.62rem;background:var(--teal-bg);
+  color:var(--teal);padding:2px 6px;border-radius:4px;
+  border:1px solid var(--teal-bd);font-weight:700;
+  text-align:center;
+}
+
+/* Badge poids swing dans step 3 */
+.swing-wtag{
+  font-size:.62rem;background:var(--teal-bg);
+  color:var(--teal);padding:2px 6px;border-radius:4px;
+  border:1px solid var(--teal-bd);font-weight:700;flex-shrink:0;
+}
+
+/* FIN MODIF SWING */
+
 /* ── RESPONSIVE ──────────────────────────── */
 @media(max-width:640px){
   .app-header{padding:12px 16px;}
@@ -1810,6 +1944,19 @@ const T = {
     opt_count:   (n) => `${n} option${n>1?'s':''}`,
     /* eval */
     eval_title:  (dec) => `Notez vos options pour : "${dec}"`,
+    /* MODIF SWING */
+    swing_method_simple: 'Méthode simple',
+    swing_method_swing:  '⚖️ Swing Weighting',
+    swing_info: '<strong>Swing Weighting</strong> (SMARTS) est une méthode scientifique qui réduit les biais cognitifs en ancrant les poids sur les <em>plages réelles de variation</em> de chaque critère. Classez du critère dont le "swing" (pire → meilleur) est le plus décisif au moins décisif, puis attribuez des points relatifs (le premier vaut 100).',
+    swing_rank_lbl:   'Rang',
+    swing_worst_lbl:  'Pire niveau',
+    swing_best_lbl:   'Meilleur niveau',
+    swing_points_lbl: 'Points',
+    swing_worst_ph:   'Ex : 8 000 €/an',
+    swing_best_ph:    'Ex : 60 000 €/an',
+    swing_points_err: 'Les points doivent être entre 1 et 100 (le premier critère est fixé à 100). Vérifiez vos valeurs.',
+    swing_weight_lbl: 'Poids',
+    /* FIN MODIF SWING */
   },
   en: {
     /* Intro */
@@ -1942,6 +2089,19 @@ const T = {
     opt_count:   (n) => `${n} option${n>1?'s':''}`,
     /* eval */
     eval_title:  (dec) => `Rate your options for: "${dec}"`,
+    /* MODIF SWING */
+    swing_method_simple: 'Simple method',
+    swing_method_swing:  '⚖️ Swing Weighting',
+    swing_info: '<strong>Swing Weighting</strong> (SMARTS) is a scientifically recognised method that reduces cognitive bias by anchoring weights to the <em>actual ranges of variation</em> for each criterion. Rank criteria from the one whose "swing" (worst → best) is most decisive down to the least, then assign relative points (the first is fixed at 100).',
+    swing_rank_lbl:   'Rank',
+    swing_worst_lbl:  'Worst level',
+    swing_best_lbl:   'Best level',
+    swing_points_lbl: 'Points',
+    swing_worst_ph:   'e.g. €8,000/yr',
+    swing_best_ph:    'e.g. €60,000/yr',
+    swing_points_err: 'Points must be between 1 and 100 (the first criterion is fixed at 100). Please check your values.',
+    swing_weight_lbl: 'Weight',
+    /* FIN MODIF SWING */
   }
 };
 
@@ -2128,6 +2288,7 @@ let S = {
   scores:{},
   notes:[],
   currentCat:'Tous',
+  weightingMethod:'simple', // MODIF SWING: 'simple' | 'swing'
 };
 
 /* ─── NAV ───────────────────────────────── */
@@ -2243,8 +2404,22 @@ function filterGrid(cat){
 
 function toggleCrit(id){
   const idx=S.criteria.findIndex(c=>c.id===id);
-  if(idx!==-1) S.criteria.splice(idx,1);
-  else { const c=LIB.find(c=>c.id===id); S.criteria.push({...c,weight:c.dw}); }
+  if(idx!==-1){
+    S.criteria.splice(idx,1);
+    // MODIF SWING — renormalise les rangs après suppression
+    _swingRenorm();
+    // FIN MODIF SWING
+  } else {
+    const c=LIB.find(c=>c.id===id);
+    S.criteria.push({
+      ...c, weight:c.dw,
+      // MODIF SWING
+      swingRank:S.criteria.length,
+      swingPoints:S.criteria.length===0?100:70,
+      swingWorst:'', swingBest:''
+      // FIN MODIF SWING
+    });
+  }
   filterGrid(S.currentCat); renderSelList();
 }
 
@@ -2253,7 +2428,16 @@ function addCustom(){
   if(!name){shake('cust-name');return;}
   const icon=document.getElementById('cust-icon').value.trim()||'🔹';
   const cat=document.getElementById('cust-cat').value;
-  S.criteria.push({id:'cust_'+Date.now(),cat,icon,name,hint:'Critère personnalisé',invert:false,weight:1,custom:true});
+  S.criteria.push({
+    id:'cust_'+Date.now(),cat,icon,name,
+    hint:LANG==='fr'?'Critère personnalisé':'Custom criterion',
+    invert:false,weight:1,custom:true,
+    // MODIF SWING
+    swingRank:S.criteria.length,
+    swingPoints:S.criteria.length===0?100:70,
+    swingWorst:'',swingBest:''
+    // FIN MODIF SWING
+  });
   document.getElementById('cust-name').value='';
   document.getElementById('cust-icon').value='';
   renderSelList();
@@ -2262,14 +2446,30 @@ function addCustom(){
 function renderSelList(){
   const list=document.getElementById('activeList');
   document.getElementById('crit-badge').textContent=S.criteria.length;
+
   if(!S.criteria.length){
     list.innerHTML=`<div class="empty-hint">${tr('sel_empty')}</div>`;
     return;
   }
-  list.innerHTML='';
-  S.criteria.forEach(c=>{
-    const item=document.createElement('div'); item.className='sel-item';
-    item.innerHTML=`
+
+  // MODIF SWING — Toggle méthode de pondération
+  const swingActive = S.weightingMethod==='swing';
+  const methodBar=`
+    <div class="method-toggle-bar">
+      <span class="method-lbl">${LANG==='fr'?'Pondération :':'Weighting:'}</span>
+      <button class="method-btn${!swingActive?' active':''}" onclick="toggleWeightingMethod('simple')">${tr('swing_method_simple')}</button>
+      <button class="method-btn${swingActive?' active':''}" onclick="toggleWeightingMethod('swing')">${tr('swing_method_swing')}</button>
+    </div>`;
+
+  if(swingActive){
+    list.innerHTML = methodBar + buildSwingHTML();
+    return;
+  }
+  // FIN MODIF SWING
+
+  // Mode simple (original)
+  const simpleItems = S.criteria.map(c=>`
+    <div class="sel-item">
       <div class="sel-icon">${c.icon}</div>
       <div class="sel-name">${c.name}${c.invert?` <span class="inv-tag" title="${tr('inv_tip_on')}">${tr('inv_tag')}</span>`:''}</div>
       <div class="weight-wrap">
@@ -2288,15 +2488,169 @@ function renderSelList(){
           ${c.invert?tr('inv_on'):tr('inv_off')}
         </button>
       </div>
-      <button class="rm-btn" onclick="rmCrit('${c.id}')" title="Retirer ce critère">✕</button>`;
-    list.appendChild(item);
-  });
+      <button class="rm-btn" onclick="rmCrit('${c.id}')" title="${LANG==='fr'?'Retirer':'Remove'}">✕</button>
+    </div>`).join('');
+
+  list.innerHTML = methodBar + simpleItems;
 }
 
 function setCW(id,v){ const c=S.criteria.find(x=>x.id===id); if(c) c.weight=parseInt(v); }
 function toggleInv(id){ const c=S.criteria.find(x=>x.id===id); if(c){c.invert=!c.invert;renderSelList();} }
+
+/* ════════════════════════════════════════════
+   MODIF SWING — Swing Weighting (SMARTS)
+   ════════════════════════════════════════════ */
+
+/** Renormalise les swingRank après ajout/suppression d'un critère.
+ *  Garantit que le critère de rang 0 a toujours 100 pts. */
+function _swingRenorm(){
+  const sorted=[...S.criteria].sort((a,b)=>(a.swingRank??0)-(b.swingRank??0));
+  sorted.forEach((c,i)=>{ c.swingRank=i; });
+  if(sorted.length>0) sorted[0].swingPoints=100;
+}
+
+/** Active ou désactive le mode Swing. */
+function toggleWeightingMethod(method){
+  S.weightingMethod=method;
+  if(method==='swing'){
+    // Initialise les champs swing manquants
+    S.criteria.forEach((c,i)=>{
+      if(c.swingRank===undefined) c.swingRank=i;
+      if(c.swingPoints===undefined) c.swingPoints=i===0?100:70;
+      if(c.swingWorst===undefined) c.swingWorst='';
+      if(c.swingBest===undefined)  c.swingBest='';
+    });
+    _swingRenorm();
+  }
+  renderSelList();
+  // Rafraîchit les scores live si on est à l'étape 3
+  if(document.getElementById('page-step3').classList.contains('active')){
+    S.options.forEach((_,i)=>refreshLive(i));
+  }
+}
+
+/** Calcule les poids normalisés pour le mode swing (somme = 1). */
+function getSwingWeights(){
+  const total=S.criteria.reduce((sum,c)=>sum+(c.swingPoints??100),0);
+  return S.criteria.map(c=>({
+    id:c.id,
+    weight:total>0?(c.swingPoints??100)/total:1/S.criteria.length
+  }));
+}
+
+/** Construit le HTML de la liste swing (items classables + champs). */
+function buildSwingHTML(){
+  const sorted=[...S.criteria].sort((a,b)=>(a.swingRank??0)-(b.swingRank??0));
+  const total=sorted.reduce((sum,c)=>sum+(c.swingPoints??100),0);
+
+  const infoBox=`
+    <div class="swing-info">
+      ℹ️ ${tr('swing_info')}
+    </div>`;
+
+  const items=sorted.map((c,i)=>{
+    const isFirst=i===0;
+    const pct=total>0?Math.round((c.swingPoints??100)/total*100):0;
+    return `
+      <div class="swing-item${isFirst?' swing-first':''}" id="swing-item-${c.id}">
+        <div class="swing-rank-num">${i+1}</div>
+        <div class="swing-move-btns">
+          <button class="swing-move-btn" onclick="swingMove('${c.id}',-1)"
+            ${i===0?'disabled':''} title="${LANG==='fr'?'Monter':'Move up'}">▲</button>
+          <button class="swing-move-btn" onclick="swingMove('${c.id}',+1)"
+            ${i===sorted.length-1?'disabled':''} title="${LANG==='fr'?'Descendre':'Move down'}">▼</button>
+        </div>
+        <div class="swing-item-main">
+          <div class="swing-item-header">
+            <span style="font-size:.9rem">${c.icon}</span>
+            <span class="swing-item-name">${c.name}</span>
+            <button class="inv-btn${c.invert?' on':''}" onclick="toggleInv('${c.id}')"
+              style="font-size:.6rem;padding:3px 7px"
+              title="${c.invert?tr('inv_tip_on'):tr('inv_tip_off')}">
+              ${c.invert?tr('inv_on'):tr('inv_off')}
+            </button>
+            <button class="rm-btn" onclick="rmCrit('${c.id}')" title="${LANG==='fr'?'Retirer':'Remove'}">✕</button>
+          </div>
+          <div class="swing-fields">
+            <div class="swing-field-group">
+              <label class="swing-field-lbl">⬇ ${tr('swing_worst_lbl')}</label>
+              <input class="swing-field-inp" type="text"
+                value="${esc(c.swingWorst||'')}"
+                placeholder="${tr('swing_worst_ph')}"
+                oninput="setSwingField('${c.id}','swingWorst',this.value)">
+            </div>
+            <div class="swing-field-group">
+              <label class="swing-field-lbl">⬆ ${tr('swing_best_lbl')}</label>
+              <input class="swing-field-inp" type="text"
+                value="${esc(c.swingBest||'')}"
+                placeholder="${tr('swing_best_ph')}"
+                oninput="setSwingField('${c.id}','swingBest',this.value)">
+            </div>
+            <div class="swing-points-wrap">
+              <label class="swing-field-lbl">${tr('swing_points_lbl')}</label>
+              <input class="swing-points-inp" type="number"
+                id="swing-pts-${c.id}"
+                min="1" max="100" value="${c.swingPoints??100}"
+                ${isFirst?'readonly':''}
+                oninput="setSwingPoints('${c.id}',this.value)">
+              <div class="swing-weight-tag" id="swing-pct-${c.id}">${pct}%</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  return infoBox+items;
+}
+
+/** Met à jour les points d'un critère swing et rafraîchit les % affichés. */
+function setSwingPoints(id,val){
+  const c=S.criteria.find(x=>x.id===id);
+  if(!c) return;
+  const v=Math.min(100,Math.max(1,parseInt(val)||1));
+  c.swingPoints=v;
+  // Recalcule les % sans re-rendre toute la liste (préserve le focus)
+  const total=S.criteria.reduce((sum,cr)=>sum+(cr.swingPoints??100),0);
+  S.criteria.forEach(cr=>{
+    const pct=total>0?Math.round((cr.swingPoints??100)/total*100):0;
+    const tag=document.getElementById('swing-pct-'+cr.id);
+    if(tag) tag.textContent=pct+'%';
+  });
+  // Scores live step 3
+  if(document.getElementById('page-step3').classList.contains('active')){
+    S.options.forEach((_,i)=>refreshLive(i));
+  }
+}
+
+/** Mémorise un champ texte swing (worst ou best). */
+function setSwingField(id,field,val){
+  const c=S.criteria.find(x=>x.id===id);
+  if(c) c[field]=val;
+}
+
+/** Déplace un critère dans le classement swing (dir = -1 ou +1). */
+function swingMove(id,dir){
+  const c=S.criteria.find(x=>x.id===id);
+  if(!c) return;
+  const sorted=[...S.criteria].sort((a,b)=>(a.swingRank??0)-(b.swingRank??0));
+  const idx=sorted.findIndex(x=>x.id===id);
+  const newIdx=idx+dir;
+  if(newIdx<0||newIdx>=sorted.length) return;
+  // Échange des rangs
+  const other=sorted[newIdx];
+  const tmp=c.swingRank; c.swingRank=other.swingRank; other.swingRank=tmp;
+  // Le critère en rang 0 est toujours à 100
+  const newFirst=S.criteria.find(x=>x.swingRank===0);
+  if(newFirst) newFirst.swingPoints=100;
+  renderSelList();
+}
+
+/* FIN MODIF SWING */
 function rmCrit(id){
   S.criteria=S.criteria.filter(x=>x.id!==id);
+  // MODIF SWING — renormalise les rangs après suppression
+  _swingRenorm();
+  // FIN MODIF SWING
   const pill=document.getElementById('pill-'+id);
   if(pill){pill.classList.remove('on');pill.querySelector('.crit-check').textContent='';}
   renderSelList();
@@ -2304,6 +2658,12 @@ function rmCrit(id){
 
 function validateStep2(){
   if(S.criteria.length<2){alert(tr('err_crit'));return;}
+  // MODIF SWING — validation des points swing
+  if(S.weightingMethod==='swing'){
+    const invalid=S.criteria.some(c=>!c.swingPoints||c.swingPoints<1||c.swingPoints>100);
+    if(invalid){alert(tr('swing_points_err'));return;}
+  }
+  // FIN MODIF SWING
   S.criteria.forEach(c=>{
     if(!S.scores[c.id]||S.scores[c.id].length!==S.options.length)
       S.scores[c.id]=S.options.map(()=>5);
@@ -2331,7 +2691,16 @@ function buildEvalPage(){
     const items=S.criteria.map(cr=>{
       const v=S.scores[cr.id]?.[oi]??5;
       const inv=cr.invert?`<span class="inv-tag" title="Score élevé = mauvais pour ce critère">↓</span>`:'';
-      const wt=cr.weight>1?`<span class="sl-wtag">×${cr.weight}</span>`:'';
+      // MODIF SWING — badge poids adapté au mode
+      let wt='';
+      if(S.weightingMethod==='swing'){
+        const total=S.criteria.reduce((sum,c)=>sum+(c.swingPoints??100),0);
+        const pct=total>0?Math.round((cr.swingPoints??100)/total*100):0;
+        wt=`<span class="swing-wtag">⚖️ ${pct}%</span>`;
+      } else if(cr.weight>1){
+        wt=`<span class="sl-wtag">×${cr.weight}</span>`;
+      }
+      // FIN MODIF SWING
       const pips=Array.from({length:10},(_,pi)=>
         `<div class="pip" id="pip-${oi}-${cr.id}-${pi+1}" onclick="setVal(${oi},'${cr.id}',${pi+1})" title="${pi+1}/10"></div>`).join('');
       return `
@@ -2429,6 +2798,19 @@ function setVal(oi,cid,val){
 }
 
 function calcScore(oi){
+  // MODIF SWING — branche Swing Weighting
+  if(S.weightingMethod==='swing'){
+    const weights=getSwingWeights();
+    let tot=0;
+    S.criteria.forEach(c=>{
+      let v=S.scores[c.id]?.[oi]??5;
+      if(c.invert) v=11-v;
+      const w=weights.find(x=>x.id===c.id)?.weight??0;
+      tot+=v*w;
+    });
+    return Math.round((tot/10)*100);
+  }
+  // FIN MODIF SWING
   let tot=0,max=0;
   S.criteria.forEach(c=>{
     let v=S.scores[c.id]?.[oi]??5;
@@ -2538,7 +2920,16 @@ function buildResults(){
     return `<div class="bk-row">
       <div class="bk-cell crit-col">
         ${cr.icon} ${cr.name}
-        ${cr.weight>1?`<span style="font-size:.62rem;background:var(--amber-bg);color:var(--amber);padding:2px 5px;border-radius:3px;border:1px solid #f0d080;font-weight:700">×${cr.weight}</span>`:''}
+        ${(()=>{
+          // MODIF SWING — badge poids dans breakdown
+          if(S.weightingMethod==='swing'){
+            const total=S.criteria.reduce((sum,c)=>sum+(c.swingPoints??100),0);
+            const pct=total>0?Math.round((cr.swingPoints??100)/total*100):0;
+            return `<span style="font-size:.62rem;background:var(--teal-bg);color:var(--teal);padding:2px 5px;border-radius:3px;border:1px solid var(--teal-bd);font-weight:700">⚖️ ${pct}%</span>`;
+          }
+          return cr.weight>1?`<span style="font-size:.62rem;background:var(--amber-bg);color:var(--amber);padding:2px 5px;border-radius:3px;border:1px solid #f0d080;font-weight:700">×${cr.weight}</span>`:'';
+          // FIN MODIF SWING
+        })()}
         ${cr.invert?`<span class="inv-tag">↓</span>`:''}
       </div>
       ${vals.map((v,i)=>{const c=COLORS[i];return `<div class="bk-cell opt-col"><div class="opt-cell-in">
@@ -2836,6 +3227,21 @@ function switchScTab(tab, el){
 }
 
 function calcScoreScenario(oi){
+  // MODIF SWING
+  if(S.weightingMethod==='swing'){
+    const activeCrits=S.criteria.filter(c=>S_active.has(c.id));
+    if(!activeCrits.length) return 0;
+    const total=activeCrits.reduce((sum,c)=>sum+(c.swingPoints??100),0);
+    let tot=0;
+    activeCrits.forEach(c=>{
+      let v=S.scores[c.id]?.[oi]??5;
+      if(c.invert) v=11-v;
+      const w=total>0?(c.swingPoints??100)/total:1/activeCrits.length;
+      tot+=v*w;
+    });
+    return Math.round((tot/10)*100);
+  }
+  // FIN MODIF SWING
   let tot=0, max=0;
   S.criteria.forEach(c=>{
     if(!S_active.has(c.id)) return;
@@ -2848,6 +3254,21 @@ function calcScoreScenario(oi){
 }
 
 function calcScoreFiltered(oi, excludeIds){
+  // MODIF SWING
+  if(S.weightingMethod==='swing'){
+    const activeCrits=S.criteria.filter(c=>!excludeIds.has(c.id));
+    if(!activeCrits.length) return null;
+    const total=activeCrits.reduce((sum,c)=>sum+(c.swingPoints??100),0);
+    let tot=0;
+    activeCrits.forEach(c=>{
+      let v=S.scores[c.id]?.[oi]??5;
+      if(c.invert) v=11-v;
+      const w=total>0?(c.swingPoints??100)/total:1/activeCrits.length;
+      tot+=v*w;
+    });
+    return Math.round((tot/10)*100);
+  }
+  // FIN MODIF SWING
   let tot=0, max=0;
   S.criteria.forEach(c=>{
     if(excludeIds.has(c.id)) return;
@@ -2881,7 +3302,16 @@ function renderScenarioBody(){
       <div class="sc-crit-row${on?'':' off'}">
         <div class="sc-crit-icon">${c.icon}</div>
         <div class="sc-crit-name">${c.name}</div>
-        ${c.weight>1?`<span class="sc-crit-weight">×${c.weight}</span>`:''}
+        ${(()=>{
+          // MODIF SWING — badge poids dans panneau scénario
+          if(S.weightingMethod==='swing'){
+            const total=S.criteria.reduce((sum,cr)=>sum+(cr.swingPoints??100),0);
+            const pct=total>0?Math.round((c.swingPoints??100)/total*100):0;
+            return `<span class="sc-crit-weight" style="background:var(--teal-bg);color:var(--teal);border-color:var(--teal-bd)">⚖️ ${pct}%</span>`;
+          }
+          return c.weight>1?`<span class="sc-crit-weight">×${c.weight}</span>`:'';
+          // FIN MODIF SWING
+        })()}
         ${c.invert?`<span class="sc-crit-inv">${tr('sc_inv')}</span>`:''}
         <label class="mini-toggle" title="${on?tr('sc_toggle_on'):tr('sc_toggle_off')}">
           <input type="checkbox" ${on?'checked':''} onchange="toggleScenarioCrit('${c.id}')">
@@ -3387,7 +3817,11 @@ function shake(id){
   setTimeout(()=>el.style.borderColor='',1800);
 }
 function restart(){
-  S={decision:'',options:[{name:'',desc:''},{name:'',desc:''}],criteria:[],scores:{},notes:[],currentCat:'Tous'};
+  S={
+    decision:'',options:[{name:'',desc:''},{name:'',desc:''}],
+    criteria:[],scores:{},notes:[],currentCat:'Tous',
+    weightingMethod:'simple' // MODIF SWING — reset méthode
+  };
   document.getElementById('inp-dec').value='';
   renderOptBuilder();
   renderStepProgress(1);
