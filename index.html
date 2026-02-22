@@ -593,6 +593,11 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   font-size:1.5rem;font-weight:700;line-height:1;
   transition:color .18s;min-width:28px;text-align:center;
 }
+.stepper-emoji{
+  font-size:1.15rem;line-height:1;text-align:center;
+  transition:opacity .15s;
+  user-select:none;
+}
 
 /* ── NOTES ───────────────────────────────── */
 .notes-row{display:grid;gap:14px;margin-top:20px;}
@@ -2921,6 +2926,14 @@ function validateStep2(){
 }
 
 /* ─── STEP 3 ────────────────────────────── */
+
+/* Échelle d'emojis pour le score effectif 1→10 (prend en compte l'inversion) */
+const SCORE_EMOJIS = ['😭','😞','😟','😕','😐','🙂','😊','😄','😁','🤩'];
+function scoreEmoji(val, invert){
+  const eff = invert ? (11 - val) : val;
+  return SCORE_EMOJIS[Math.min(10, Math.max(1, eff)) - 1];
+}
+
 function buildEvalPage(){
   document.getElementById('eval-title').textContent=
     tr('eval_title', S.decision.substring(0,50)+(S.decision.length>50?'…':''));
@@ -2959,6 +2972,7 @@ function buildEvalPage(){
             <div class="stepper-track">
               <div class="pip-row">${pips}</div>
               <div class="stepper-val" id="sv-${oi}-${cr.id}">${v}</div>
+              <div class="stepper-emoji" id="se-${oi}-${cr.id}">${scoreEmoji(v,cr.invert??false)}</div>
             </div>
             <button class="stepper-btn" onclick="stepVal(${oi},'${cr.id}',+1)" aria-label="Augmenter">+</button>
           </div>
@@ -3010,6 +3024,8 @@ function renderStepper(oi,cid,val,invert){
   const color=stepColor(val,invert);
   const vd=document.getElementById(`sv-${oi}-${cid}`);
   if(vd){vd.textContent=val;vd.style.color=color;}
+  const ed=document.getElementById(`se-${oi}-${cid}`);
+  if(ed) ed.textContent=scoreEmoji(val,invert);
   for(let pi=1;pi<=10;pi++){
     const pip=document.getElementById(`pip-${oi}-${cid}-${pi}`);
     if(!pip) continue;
