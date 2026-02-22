@@ -199,32 +199,9 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   justify-content:center;
 }
 .mascot{
-  width:100px;
-  height:auto;
-  max-height:18dvh;
-  animation:mascot-float 3.2s ease-in-out infinite;
-  overflow:visible;
-}
-.mascot-shadow{
-  animation:mascot-shadow 3.2s ease-in-out infinite;
-}
-
-.mascot-blink{
-  animation:blink-anim 5s ease-in-out infinite;
-}
-
-@keyframes mascot-float{
-  0%,100%{ transform:translateY(0); }
-  50%     { transform:translateY(-7px); }
-}
-@keyframes mascot-shadow{
-  0%,100%{ transform:scaleX(1);   opacity:.7; }
-  50%     { transform:scaleX(.75); opacity:.35; }
-}
-
-@keyframes blink-anim{
-  0%,88%,94%,100%{ opacity:0; }
-  90%,92%        { opacity:1; }
+  width:240px;
+  aspect-ratio:10/9;
+  max-height:28dvh;
 }
 
 /* ── INTRO PAGE ──────────────────────────── */
@@ -256,7 +233,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 }
 
 @media(max-height:700px){
-  .mascot{ width:72px !important; }
+  .mascot{ width:140px !important; }
   .mascot-wrap{ margin-bottom:10px; }
   .intro-wrap{ align-items:flex-start; }
 }
@@ -1457,86 +1434,14 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
       <!-- Hibou cartoon animé -->
       <div class="mascot-wrap">
-        <svg class="mascot" viewBox="0 0 100 128" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-
-          <!-- Ombre -->
-          <ellipse cx="50" cy="125" rx="26" ry="3.5" fill="rgba(0,0,0,0.08)" class="mascot-shadow"/>
-
-          <!-- Ailes visibles sur les côtés -->
-          <ellipse cx="21" cy="76" rx="11" ry="16" fill="#1a4d38" transform="rotate(-18 21 76)"/>
-          <ellipse cx="21" cy="76" rx="7.5" ry="12" fill="#2d7d5a" transform="rotate(-18 21 76)"/>
-          <ellipse cx="79" cy="76" rx="11" ry="16" fill="#1a4d38" transform="rotate(18 79 76)"/>
-          <ellipse cx="79" cy="76" rx="7.5" ry="12" fill="#2d7d5a" transform="rotate(18 79 76)"/>
-
-          <!-- Corps dodu -->
-          <ellipse cx="50" cy="78" rx="28" ry="30" fill="#2d7d5a"/>
-
-          <!-- Ventre doux -->
-          <ellipse cx="50" cy="85" rx="19" ry="20" fill="#c8ead9"/>
-          <ellipse cx="50" cy="89" rx="12" ry="13" fill="#eef7f2"/>
-
-          <!-- Tête ronde -->
-          <ellipse cx="50" cy="44" rx="26" ry="25" fill="#2d7d5a"/>
-
-          <!-- Aigrettes -->
-          <path d="M33 26 Q27 9 35 6 Q39 17 37 25Z" fill="#1a4d38"/>
-          <path d="M67 26 Q73 9 65 6 Q61 17 63 25Z" fill="#1a4d38"/>
-          <path d="M34 25 Q29 12 35 9 Q38 17 37 24Z" fill="#2d7d5a"/>
-          <path d="M66 25 Q71 12 65 9 Q62 17 63 24Z" fill="#2d7d5a"/>
-
-          <!-- Masque oculaire -->
-          <circle cx="36" cy="44" r="14.5" fill="#1a4d38"/>
-          <circle cx="64" cy="44" r="14.5" fill="#1a4d38"/>
-
-          <!-- Sclérotiques -->
-          <circle cx="36" cy="44" r="13" fill="white"/>
-          <circle cx="64" cy="44" r="13" fill="white"/>
-
-          <!-- Œil gauche -->
-          <circle cx="36" cy="44" r="8.5" fill="#389e71"/>
-          <circle cx="36" cy="44" r="5" fill="#111" class="pupil-l"/>
-          <circle cx="38.5" cy="41.5" r="2" fill="white"/>
-          <circle cx="33.5" cy="46" r=".8" fill="white" opacity=".6"/>
-
-          <!-- Œil droit -->
-          <circle cx="64" cy="44" r="8.5" fill="#389e71"/>
-          <circle cx="64" cy="44" r="5" fill="#111" class="pupil-r"/>
-          <circle cx="66.5" cy="41.5" r="2" fill="white"/>
-          <circle cx="61.5" cy="46" r=".8" fill="white" opacity=".6"/>
-
-          <!-- Joues rosées -->
-          <ellipse cx="21" cy="55" rx="6" ry="4" fill="#c8ead9" opacity=".55"/>
-          <ellipse cx="79" cy="55" rx="6" ry="4" fill="#c8ead9" opacity=".55"/>
-
-          <!-- Bec mignon -->
-          <path d="M44 56 Q50 63 56 56 Q53 51 50 52 Q47 51 44 56Z" fill="#f0a830"/>
-
-          <!-- ═══ PATTES PERCHÉES ═══
-               Orteils dessinés AVANT la branche → apparaissent derrière.
-               La branche recouvre leur moitié haute → effet de grip.
-          -->
-
-          <!-- Orteils gauche (3 segments arrondis) -->
-          <rect x="23" y="108" width="8" height="12" rx="4" fill="#f0a830"/>
-          <rect x="32" y="108" width="8" height="12" rx="4" fill="#f0a830"/>
-          <rect x="41" y="108" width="8" height="12" rx="4" fill="#f0a830"/>
-
-          <!-- Orteils droite (3 segments arrondis) -->
-          <rect x="51" y="108" width="8" height="12" rx="4" fill="#f0a830"/>
-          <rect x="60" y="108" width="8" height="12" rx="4" fill="#f0a830"/>
-          <rect x="69" y="108" width="8" height="12" rx="4" fill="#f0a830"/>
-
-          <!-- Branche (recouvre la moitié haute des orteils) -->
-          <rect x="13" y="106" width="74" height="8" rx="4" fill="#7a4a28"/>
-          <rect x="15" y="107" width="70" height="2.5" rx="1.5" fill="#a06235" opacity=".6"/>
-
-          <!-- Clignement -->
-          <g class="mascot-blink" style="opacity:0">
-            <ellipse cx="36" cy="44" rx="13" ry="7" fill="#2d7d5a"/>
-            <ellipse cx="64" cy="44" rx="13" ry="7" fill="#2d7d5a"/>
-          </g>
-
-        </svg>
+        <lottie-player class="mascot"
+          src="owl.json"
+          background="transparent"
+          speed="1"
+          autoplay
+          loop
+          aria-hidden="true">
+        </lottie-player>
       </div>
 
       <div class="intro-badge" data-i18n="badge">✦ Outil d'aide à la décision</div>
@@ -3435,6 +3340,7 @@ function restart(){
   nav('page-intro');
 }
 </script>
+<script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.8/dist/lottie-player.js"></script>
 </body>
 </html>
 
