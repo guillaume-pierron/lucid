@@ -1408,14 +1408,10 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 /* Item dans la liste swing */
 .swing-item{
   display:flex;align-items:flex-start;gap:8px;
-  padding:12px 36px 12px 12px;margin:4px 6px;
+  padding:12px;margin:4px 6px;
   border-radius:var(--r-sm);border:1.5px solid var(--border);
   background:var(--white);transition:border-color .15s;
   position:relative;
-}
-/* Croix de suppression fixe en haut à droite de chaque carte */
-.swing-item>.swing-rm-btn{
-  position:absolute;top:8px;right:8px;
 }
 .swing-item.swing-first{
   border-color:var(--teal);background:var(--teal-bg);
@@ -2512,7 +2508,6 @@ function buildSwingHTML(){
       <div class="swing-item${isFirst?' swing-first':''}" id="swing-item-${c.id}" data-id="${c.id}">
         <div class="swing-rank-num">${i+1}</div>
         <div class="swing-drag-handle" title="${LANG==='fr'?'Glisser pour réordonner':'Drag to reorder'}">⠿</div>
-        <button class="rm-btn swing-rm-btn" onclick="rmCrit('${c.id}')" title="${LANG==='fr'?'Retirer':'Remove'}">✕</button>
         <div class="swing-item-main">
           <div class="swing-item-header">
             <span style="font-size:.9rem;flex-shrink:0">${c.icon}</span>
@@ -2535,6 +2530,8 @@ function buildSwingHTML(){
             </div>
           </div>
         </div>
+        <button class="rm-btn" onclick="rmCrit('${c.id}')" title="${LANG==='fr'?'Retirer':'Remove'}"
+          style="flex-shrink:0;align-self:flex-start">✕</button>
       </div>`;
   }).join('');
 
