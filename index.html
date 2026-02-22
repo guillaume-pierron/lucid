@@ -1428,10 +1428,17 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   touch-action:none;
 }
 .swing-drag-handle:active{cursor:grabbing;}
-.swing-item{transition:opacity .15s,box-shadow .1s;}
+.swing-item{transition:opacity .15s,box-shadow .1s,transform .12s;}
 .swing-item.dragging{opacity:.35;}
 .swing-item.drag-over-above{box-shadow:0 -2px 0 0 var(--teal);border-top-color:var(--teal);}
 .swing-item.drag-over-below{box-shadow:0 2px 0 0 var(--teal);border-bottom-color:var(--teal);}
+/* Feedback visuel pendant le long press (avant que le drag démarre) */
+.swing-item.press-holding{
+  transform:scale(0.97);
+  box-shadow:0 4px 18px rgba(0,0,0,.13);
+  border-color:var(--teal-bd);
+  position:relative;z-index:10;
+}
 .swing-ghost{
   position:fixed;z-index:9999;pointer-events:none;
   opacity:.88;border-radius:var(--r-sm);
@@ -2718,6 +2725,9 @@ let _touchGhost   = null;      // fantôme affiché sous le doigt
 let _touchTargetId= null;      // id de la cible de drop courante
 let _touchBefore  = true;      // insérer avant (true) ou après (false) la cible
 let _swingTouchListened = false;// flag anti-duplication des listeners document
+let _longPressTimer = null;    // timer du long press tactile
+let _touchStartX = 0;          // coordonnée X initiale (pour détecter le scroll)
+let _touchStartY = 0;          // coordonnée Y initiale
 
 /** Réordonne en déplaçant fromId avant/après toId dans les swingRank. */
 function _swingReorder(fromId, toId, before){
@@ -2783,22 +2793,36 @@ function _attachSwingDnD(){
     });
   });
 
-  /* ─── Drag tactile ─── */
-  document.querySelectorAll('#activeList .swing-drag-handle').forEach(handle=>{
-    handle.addEventListener('touchstart',e=>{
-      e.preventDefault();
-      const item=handle.closest('.swing-item');
-      _touchDragId=item.dataset.id;
-      // Créer le fantôme (clone léger de l'item)
-      _touchGhost=item.cloneNode(true);
-      _touchGhost.classList.add('swing-ghost');
-      _touchGhost.style.width=item.offsetWidth+'px';
-      document.body.appendChild(_touchGhost);
-      item.classList.add('dragging');
+  /* ─── Drag tactile : long press (350 ms) n'importe où sur la carte ─── */
+  document.querySelectorAll('#activeList .swing-item').forEach(item=>{
+    item.addEventListener('touchstart',e=>{
       const t=e.touches[0];
-      _touchGhost.style.left=(t.clientX-20)+'px';
-      _touchGhost.style.top =(t.clientY-item.offsetHeight/2)+'px';
-    },{passive:false});
+      _touchStartX=t.clientX;
+      _touchStartY=t.clientY;
+      // Capture des coords pour la closure (e.touches peut être recyclé)
+      const sx=t.clientX, sy=t.clientY;
+      _longPressTimer=setTimeout(()=>{
+        item.classList.remove('press-holding');
+        _startTouchDrag(item,{clientX:sx,clientY:sy});
+      },350);
+      item.classList.add('press-holding');
+    },{passive:true});
+
+    // Annuler si l'utilisateur relâche avant 350 ms (simple tap)
+    item.addEventListener('touchend',()=>{
+      if(_longPressTimer){ clearTimeout(_longPressTimer); _longPressTimer=null; }
+      item.classList.remove('press-holding');
+    },{passive:true});
+
+    // Annuler si l'utilisateur commence à scroller (mouvement > 8px)
+    item.addEventListener('touchmove',e=>{
+      if(_touchDragId) return; // déjà en drag → géré par le listener document
+      const t=e.touches[0];
+      if(Math.abs(t.clientX-_touchStartX)>8||Math.abs(t.clientY-_touchStartY)>8){
+        if(_longPressTimer){ clearTimeout(_longPressTimer); _longPressTimer=null; }
+        item.classList.remove('press-holding');
+      }
+    },{passive:true});
   });
 
   // Listeners document ajoutés une seule fois pour toute la session
@@ -2808,6 +2832,19 @@ function _attachSwingDnD(){
     document.addEventListener('touchend',   _swingTouchEnd,   {passive:false});
     document.addEventListener('touchcancel',_swingTouchEnd,   {passive:false});
   }
+}
+
+/** Démarre le drag tactile : crée le fantôme et marque l'item comme dragging. */
+function _startTouchDrag(item,touch){
+  _touchDragId=item.dataset.id;
+  if(navigator.vibrate) navigator.vibrate(30); // retour haptique si dispo
+  _touchGhost=item.cloneNode(true);
+  _touchGhost.classList.add('swing-ghost');
+  _touchGhost.style.width=item.offsetWidth+'px';
+  document.body.appendChild(_touchGhost);
+  item.classList.add('dragging');
+  _touchGhost.style.left=(touch.clientX-20)+'px';
+  _touchGhost.style.top =(touch.clientY-item.offsetHeight/2)+'px';
 }
 
 function _swingTouchMove(e){
@@ -2834,6 +2871,10 @@ function _swingTouchMove(e){
 }
 
 function _swingTouchEnd(){
+  // Toujours annuler le long press si encore en attente
+  if(_longPressTimer){ clearTimeout(_longPressTimer); _longPressTimer=null; }
+  document.querySelectorAll('#activeList .swing-item')
+    .forEach(el=>el.classList.remove('press-holding'));
   if(!_touchDragId) return;
   if(_touchGhost){ _touchGhost.remove(); _touchGhost=null; }
   document.querySelectorAll('#activeList .swing-item')
