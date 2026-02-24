@@ -441,10 +441,49 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
 .custom-form{
   background:var(--white);border:1.5px dashed var(--border2);
-  border-radius:var(--r);margin-bottom:22px;
   border-radius:var(--r);margin-bottom:32px;
   overflow:hidden;transition:all .2s;
 }
+
+/* ─── HISTORY & INSIGHTS ────────────────── */
+.hist-btn-home{
+  position:absolute;top:20px;left:20px;
+  background:var(--white);border:1px solid var(--border);
+  padding:6px 12px;border-radius:20px;font-size:.8rem;font-weight:600;
+  color:var(--ink2);cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;gap:6px;z-index:60;
+}
+.hist-btn-home:hover{border-color:var(--teal);color:var(--teal);}
+
+.hist-list{display:flex;flex-direction:column;gap:16px;}
+.hist-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px;box-shadow:var(--shadow);
+  cursor:pointer;transition:transform .15s;
+}
+.hist-card:hover{transform:translateY(-2px);border-color:var(--teal-bd);}
+.hist-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.hist-date{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.hist-title{font-family:'Lora',serif;font-weight:700;font-size:1rem;color:var(--ink);margin-bottom:4px;}
+.hist-meta{font-size:.8rem;color:var(--ink2);display:flex;gap:10px;align-items:center;}
+.hist-badge{font-size:.65rem;padding:2px 8px;border-radius:10px;font-weight:700;text-transform:uppercase;}
+.hb-pending{background:var(--bg2);color:var(--muted);}
+.hb-done{background:var(--teal-bg);color:var(--teal);}
+
+.insight-box{
+  background:linear-gradient(135deg, var(--teal-bg) 0%, #fff 100%);
+  border:1px solid var(--teal-bd);border-radius:var(--r);
+  padding:18px;margin-bottom:24px;
+}
+.insight-row{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start;}
+.insight-icon{font-size:1.2rem;background:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 5px rgba(0,0,0,.05);flex-shrink:0;}
+.insight-txt{font-size:.9rem;color:var(--ink2);line-height:1.5;}
+.insight-txt strong{color:var(--teal);}
+
+.update-form{background:var(--bg);padding:16px;border-radius:var(--r);margin-top:16px;border:1px solid var(--border);}
+.delta-tag{font-weight:700;font-size:.75rem;}
+.delta-up{color:var(--teal);} .delta-down{color:var(--red);}
+
 .custom-form-head{
   display:flex;align-items:center;justify-content:space-between;
   padding:14px 18px;cursor:pointer;user-select:none;
@@ -1608,6 +1647,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 <!-- ══════════════════════════ INTRO ══════════════════════════ -->
 <div class="page active" id="page-intro">
   <!-- Sélecteur de langue -->
+  <button class="hist-btn-home" onclick="nav('page-history');renderHistory()">📜 <span data-i18n="hist_btn">Historique</span></button>
   <div class="lang-switcher">
     <button class="lang-btn active" id="btn-fr" onclick="setLang('fr')">FR</button>
     <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
@@ -1721,6 +1761,16 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
     <div class="cat-tabs" id="catTabs"></div>
     <div class="crit-grid" id="critGrid"></div>
 
+    <div class="selected-box">
+      <div class="selected-box-head">
+        <h3 data-i18n="sel_title">✅ Critères sélectionnés</h3>
+        <div class="sel-count" id="crit-badge">0</div>
+      </div>
+      <div class="sel-list" id="activeList">
+        <div class="empty-hint" data-i18n="sel_empty">👆 Sélectionnez au moins 2 critères ci-dessus pour continuer</div>
+      </div>
+    </div>
+
     <div class="custom-form" id="customCritBox">
       <div class="custom-form-head" onclick="document.getElementById('customCritBox').classList.toggle('open')">
         <div class="custom-form-title" data-i18n="custom_title">✦ Ajouter un critère personnalisé</div>
@@ -1786,6 +1836,32 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   </div><!-- /page-scroll -->
 </div>
 
+<!-- ══════════════════════════ HISTORY ══════════════════════════ -->
+<div class="page" id="page-history">
+  <div class="app-header">
+    <div class="logo"><div class="logo-dot"></div>Lucid</div>
+    <div class="lang-switcher">
+      <button class="lang-btn active" id="btn-fr6" onclick="setLang('fr')">FR</button>
+      <button class="lang-btn" id="btn-en6" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+  <div class="page-scroll">
+    <div class="main">
+      <div class="page-eyebrow" data-i18n="hist_eyebrow">Vos décisions</div>
+      <div class="page-title" data-i18n="hist_title">Historique & Insights</div>
+      
+      <div id="insightsArea"></div>
+
+      <div class="res-divider"><span class="res-divider-label" data-i18n="hist_list_title">Décisions archivées</span></div>
+      <div class="hist-list" id="histList"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="nav('page-intro')" data-i18n="back_intro">← Retour à l'accueil</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════════════════ RESULTS ══════════════════════════ -->
 <div class="page" id="page-results">
   <div class="app-header">
@@ -1820,6 +1896,7 @@ const T = {
     how3_desc:   'Lucid calcule les scores et vous présente un résultat clair.',
     start_btn:   'Commencer →',
     footer_note: 'Gratuit · Aucun compte requis · 100% privé',
+    hist_btn:    'Historique',
     /* Step 1 */
     s1_eyebrow:  'Étape 1 sur 3',
     s1_title:    'Quelle décision devez-vous prendre ?',
@@ -1870,6 +1947,8 @@ const T = {
     notes_lbl:   (ltr, name) => `📝 Notes libres — Option ${ltr} (${name})`,
     /* Results */
     res_eyebrow: '✦ Votre analyse',
+    save_track:  '💾 Enregistrer & Suivre',
+    save_done:   '✅ Décision archivée !',
     export_pdf:  '🖨️ Exporter en PDF',
     new_decision:'↺ Nouvelle décision',
     back_notes:  '← Modifier mes notes',
@@ -1900,6 +1979,24 @@ const T = {
     sc_inv:        '↓ inversé',
     sc_toggle_on:  'Désactiver ce critère',
     sc_toggle_off: 'Activer ce critère',
+    /* History */
+    hist_eyebrow: 'Vos décisions',
+    hist_title:   'Historique & Insights',
+    hist_list_title: 'Décisions archivées',
+    hist_empty:   'Aucune décision archivée pour le moment.',
+    hist_pending: 'À suivre',
+    hist_reviewed:'Revue',
+    hist_update_btn: 'Mettre à jour le résultat',
+    hist_upd_title: 'Mise à jour du résultat',
+    hist_upd_desc:  'Avec le recul, comment évaluez-vous l\'option choisie ?',
+    hist_global_score: 'Note globale actuelle (1-10)',
+    hist_comment:   'Commentaire (Qu\'est-ce qui s\'est passé ?)',
+    hist_save_upd:  'Enregistrer le suivi',
+    ins_title:      'Insights personnels',
+    ins_optimism:   (delta) => `Vous avez tendance à être <strong>${delta>0?'pessimiste':'optimiste'}</strong> : vos résultats réels sont en moyenne ${Math.abs(delta)} pts ${delta>0?'supérieurs':'inférieurs'} à vos prévisions.`,
+    ins_blindspot:  (crit) => `Attention au critère <strong>"${crit}"</strong> : c'est souvent là que la réalité déçoit par rapport à l'attente.`,
+    ins_winner:     (pct) => `Dans <strong>${pct}%</strong> des cas, vous confirmez que l'option gagnante était bien la bonne.`,
+    ins_nodata:     'Archivez et mettez à jour au moins 2 décisions pour débloquer vos insights personnels.',
     /* Scenario insights */
     sc_all_active: `✅ Tous les critères sont actifs — c'est votre analyse complète, sans filtre.`,
     sc_switched:   (dis,newN,gainSign,oldN,s,p1,p2) => `🔄 Sans ${dis}, le classement <strong>s'inverse</strong> : <strong>"${newN}"</strong> passe en tête (${gainSign} pts), devant <strong>"${oldN}"</strong>. Ce${s} critère${s} ${p1} donc un rôle décisif en faveur de l'option initiale.`,
@@ -1958,6 +2055,7 @@ const T = {
     how3_desc:   'Lucid calculates scores and presents a clear result.',
     start_btn:   'Get started →',
     footer_note: 'Free · No account required · 100% private',
+    hist_btn:    'History',
     /* Step 1 */
     s1_eyebrow:  'Step 1 of 3',
     s1_title:    'What decision are you facing?',
@@ -2008,6 +2106,8 @@ const T = {
     notes_lbl:   (ltr, name) => `📝 Free notes — Option ${ltr} (${name})`,
     /* Results */
     res_eyebrow: '✦ Your analysis',
+    save_track:  '💾 Save & Track',
+    save_done:   '✅ Decision archived!',
     export_pdf:  '🖨️ Export as PDF',
     new_decision:'↺ New decision',
     back_notes:  '← Edit my scores',
@@ -2038,6 +2138,24 @@ const T = {
     sc_inv:        '↓ inverted',
     sc_toggle_on:  'Disable this criterion',
     sc_toggle_off: 'Enable this criterion',
+    /* History */
+    hist_eyebrow: 'Your decisions',
+    hist_title:   'History & Insights',
+    hist_list_title: 'Archived decisions',
+    hist_empty:   'No archived decisions yet.',
+    hist_pending: 'Pending',
+    hist_reviewed:'Reviewed',
+    hist_update_btn: 'Update outcome',
+    hist_upd_title: 'Update outcome',
+    hist_upd_desc:  'In hindsight, how do you rate the chosen option?',
+    hist_global_score: 'Current global score (1-10)',
+    hist_comment:   'Comment (What happened?)',
+    hist_save_upd:  'Save follow-up',
+    ins_title:      'Personal Insights',
+    ins_optimism:   (delta) => `You tend to be <strong>${delta>0?'pessimistic':'optimistic'}</strong>: actual results are on average ${Math.abs(delta)} pts ${delta>0?'higher':'lower'} than predicted.`,
+    ins_blindspot:  (crit) => `Watch out for <strong>"${crit}"</strong>: reality often disappoints expectations on this criterion.`,
+    ins_winner:     (pct) => `In <strong>${pct}%</strong> of cases, you confirm that the winning option was indeed the right choice.`,
+    ins_nodata:     'Archive and update at least 2 decisions to unlock your personal insights.',
     /* Scenario insights */
     sc_all_active: '✅ All criteria are active — this is your complete, unfiltered analysis.',
     sc_switched:   (dis,newN,gainSign,oldN,s,p1,p2) => `🔄 Without ${dis}, the ranking <strong>flips</strong>: <strong>"${newN}"</strong> takes the lead (${gainSign} pts), ahead of <strong>"${oldN}"</strong>. ${s} ${p1} therefore played a decisive role in favour of the original option.`,
@@ -2130,10 +2248,10 @@ function tr(key,...args){
 function setLang(lang){
   LANG = lang;
   /* Toggle active button — all headers */
-  ['btn-fr','btn-fr2','btn-fr3','btn-fr4','btn-fr5'].forEach(id=>{
+  ['btn-fr','btn-fr2','btn-fr3','btn-fr4','btn-fr5','btn-fr6'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.classList.toggle('active',lang==='fr');
   });
-  ['btn-en','btn-en2','btn-en3','btn-en4','btn-en5'].forEach(id=>{
+  ['btn-en','btn-en2','btn-en3','btn-en4','btn-en5','btn-en6'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.classList.toggle('active',lang==='en');
   });
 
@@ -2200,6 +2318,9 @@ function setLang(lang){
   }
   if(document.getElementById('page-step3').classList.contains('active')){
     buildEvalPage();
+  }
+  if(document.getElementById('page-history').classList.contains('active')){
+    renderHistory();
   }
 }
 
@@ -3157,6 +3278,7 @@ function buildResults(){
       <!-- ⑦ Actions -->
       <div class="res-actions">
         <button class="btn btn-secondary" onclick="nav('page-step3')">${tr('back_notes')}</button>
+        <button class="btn btn-secondary" id="btnSaveTrack" onclick="saveAndTrack()">${tr('save_track')}</button>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn btn-secondary" onclick="window.print()">${tr('export_pdf')}</button>
           <button class="btn btn-primary" onclick="restart()">${tr('new_decision')}</button>
@@ -3925,6 +4047,179 @@ function drawRadarScenario(overrideScores){
   });
 }
 
+/* ══════════════════════════════════════════
+   HISTORY & INSIGHTS
+   ══════════════════════════════════════════ */
+
+function getDecisions(){
+  try { return JSON.parse(localStorage.getItem('lucid_decisions') || '[]'); }
+  catch(e){ return []; }
+}
+
+function saveAndTrack(){
+  const scores = S.options.map((_,i)=>calcScore(i));
+  const ranked = [...S.options.map((_,i)=>i)].sort((a,b)=>scores[b]-scores[a]);
+  const winnerIdx = ranked[0];
+
+  const decision = {
+    id: Date.now().toString(36) + Math.random().toString(36).substr(2),
+    date: new Date().toISOString(),
+    title: S.decision,
+    options: S.options,
+    criteria: S.criteria,
+    scores: S.scores, // raw scores matrix
+    finalScores: scores,
+    winnerIdx: winnerIdx,
+    notes: S.notes,
+    weightingMethod: S.weightingMethod,
+    status: 'pending', // pending | reviewed
+    followUp: null
+  };
+
+  const history = getDecisions();
+  history.unshift(decision);
+  localStorage.setItem('lucid_decisions', JSON.stringify(history));
+
+  const btn = document.getElementById('btnSaveTrack');
+  const originalText = btn.textContent;
+  btn.textContent = tr('save_done');
+  btn.classList.add('btn-primary');
+  btn.disabled = true;
+  setTimeout(()=>{
+    btn.textContent = originalText;
+    btn.classList.remove('btn-primary');
+    btn.disabled = false;
+  }, 2000);
+}
+
+function renderHistory(){
+  const list = document.getElementById('histList');
+  const history = getDecisions();
+  
+  renderInsights(history);
+
+  if(history.length === 0){
+    list.innerHTML = `<div class="empty-hint">${tr('hist_empty')}</div>`;
+    return;
+  }
+
+  list.innerHTML = history.map(d => {
+    const date = new Date(d.date).toLocaleDateString(LANG==='fr'?'fr-FR':'en-US');
+    const winnerName = d.options[d.winnerIdx].name;
+    const initialScore = d.finalScores[d.winnerIdx];
+    const isReviewed = d.status === 'reviewed';
+    
+    let metaHTML = `<span class="hist-badge ${isReviewed?'hb-done':'hb-pending'}">${isReviewed?tr('hist_reviewed'):tr('hist_pending')}</span>`;
+    
+    if(isReviewed && d.followUp){
+      const actual = d.followUp.globalScore * 10; // convert 1-10 to 100 base
+      const delta = actual - initialScore;
+      const sign = delta > 0 ? '+' : '';
+      const cls = delta >= 0 ? 'delta-up' : 'delta-down';
+      metaHTML += `<span>Initial: <strong>${initialScore}</strong> → Actuel: <strong class="${cls}">${actual}</strong> (${sign}${delta})</span>`;
+    } else {
+      metaHTML += `<span>Winner: <strong>${esc(winnerName)}</strong> (${initialScore}/100)</span>`;
+    }
+
+    return `
+      <div class="hist-card" id="hist-${d.id}">
+        <div class="hist-head">
+          <div>
+            <div class="hist-date">${date}</div>
+            <div class="hist-title">${esc(d.title)}</div>
+          </div>
+        </div>
+        <div class="hist-meta">${metaHTML}</div>
+        
+        <div id="upd-form-${d.id}" style="display:none" class="update-form">
+          <div style="font-weight:700;margin-bottom:8px">${tr('hist_upd_title')}</div>
+          <div style="font-size:.8rem;color:var(--muted);margin-bottom:12px">${tr('hist_upd_desc')}</div>
+          
+          <div class="field">
+            <label>${tr('hist_global_score')}</label>
+            <div class="stepper" style="justify-content:flex-start">
+              <button class="stepper-btn" onclick="this.nextElementSibling.value=Math.max(1,this.nextElementSibling.value-1);this.nextElementSibling.oninput()">−</button>
+              <input type="number" id="upd-score-${d.id}" value="${d.followUp?.globalScore || Math.round(initialScore/10)}" min="1" max="10" style="width:50px;text-align:center;font-size:1.2rem;border:none;background:transparent" oninput="document.getElementById('upd-emoji-${d.id}').textContent=['😭','😞','😟','😕','😐','🙂','😊','😄','😁','🤩'][this.value-1]||'😐'">
+              <button class="stepper-btn" onclick="this.previousElementSibling.value=Math.min(10,parseInt(this.previousElementSibling.value)+1);this.previousElementSibling.oninput()">+</button>
+              <div style="font-size:1.5rem;margin-left:10px" id="upd-emoji-${d.id}">😐</div>
+            </div>
+          </div>
+          
+          <div class="field">
+            <label>${tr('hist_comment')}</label>
+            <textarea id="upd-comment-${d.id}" rows="2">${esc(d.followUp?.comment || '')}</textarea>
+          </div>
+          
+          <button class="btn btn-primary" onclick="saveUpdate('${d.id}')">${tr('hist_save_upd')}</button>
+        </div>
+        
+        <button class="btn btn-secondary" style="margin-top:12px;font-size:.75rem;padding:6px 12px" onclick="toggleUpdate('${d.id}')">
+          ${isReviewed ? '✏️ Modifier' : tr('hist_update_btn')}
+        </button>
+      </div>`;
+  }).join('');
+}
+
+function toggleUpdate(id){
+  const form = document.getElementById(`upd-form-${id}`);
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveUpdate(id){
+  const history = getDecisions();
+  const idx = history.findIndex(d => d.id === id);
+  if(idx === -1) return;
+  
+  const score = parseInt(document.getElementById(`upd-score-${id}`).value);
+  const comment = document.getElementById(`upd-comment-${id}`).value;
+  
+  history[idx].status = 'reviewed';
+  history[idx].followUp = {
+    date: new Date().toISOString(),
+    globalScore: score,
+    comment: comment
+  };
+  
+  localStorage.setItem('lucid_decisions', JSON.stringify(history));
+  renderHistory();
+}
+
+function renderInsights(history){
+  const reviewed = history.filter(d => d.status === 'reviewed');
+  const box = document.getElementById('insightsArea');
+  
+  if(reviewed.length < 2){
+    box.innerHTML = `<div class="insight-box"><div class="insight-row"><div class="insight-icon">🔒</div><div class="insight-txt">${tr('ins_nodata')}</div></div></div>`;
+    return;
+  }
+
+  // Metric 1: Optimism bias (Predicted vs Actual)
+  let totalDelta = 0;
+  reviewed.forEach(d => {
+    const predicted = d.finalScores[d.winnerIdx]; // /100
+    const actual = d.followUp.globalScore * 10;   // /100
+    totalDelta += (actual - predicted);
+  });
+  const avgDelta = Math.round(totalDelta / reviewed.length);
+  
+  // Metric 2: Winner confirmation
+  // If actual score >= 70 (7/10), we consider it a "good choice" confirmation
+  const goodChoices = reviewed.filter(d => d.followUp.globalScore >= 7).length;
+  const goodPct = Math.round((goodChoices / reviewed.length) * 100);
+
+  box.innerHTML = `
+    <div class="insight-box">
+      <div style="font-weight:700;color:var(--teal);margin-bottom:14px;text-transform:uppercase;letter-spacing:.05em;font-size:.75rem">✨ ${tr('ins_title')}</div>
+      <div class="insight-row">
+        <div class="insight-icon">${avgDelta >= 0 ? '😎' : '🧐'}</div>
+        <div class="insight-txt">${tr('ins_optimism', avgDelta)}</div>
+      </div>
+      <div class="insight-row">
+        <div class="insight-icon">🏆</div>
+        <div class="insight-txt">${tr('ins_winner', goodPct)}</div>
+      </div>
+    </div>`;
+}
 
 /* ─── UTILS ─────────────────────────────── */
 function esc(s){
