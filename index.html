@@ -525,7 +525,6 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
 /* ── STEP 3 — EVALUATION ─────────────────── */
 .eval-grid{display:grid;gap:16px;}
-.eval-col{}
 .eval-col-head{
   display:flex;align-items:center;justify-content:space-between;
   padding:13px 18px;border-radius:12px 12px 0 0;
@@ -1461,7 +1460,11 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   display:flex;align-items:center;gap:6px;margin-bottom:8px;
   padding-right:4px;
 }
-.swing-item-name{font-size:.82rem;font-weight:700;color:var(--ink);flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.swing-name-group{
+  display:flex;flex-direction:column;
+  flex:1;min-width:0;
+}
+.swing-item-name{font-size:.82rem;font-weight:500;color:var(--ink);}
 
 /* Champs worst/best/points */
 .swing-fields{
@@ -1563,11 +1566,23 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
     padding-left:36px;
     padding-right:12px;
   }
-  .rm-btn{
+  .sel-item .rm-btn{
     position:absolute;
     top:50%;left:10px;
     transform:translateY(-50%);
   }
+
+  /* MODIF SWING — Cacher la poignée de drag sur mobile pour plus d'espace */
+  .swing-drag-handle{display:none;}
+
+  /* MODIF SWING — Aligner les boutons de méthode sur mobile */
+  .method-lbl {
+    flex-basis: 100%;
+    text-align: center;
+    margin-right: 0;
+    margin-bottom: 6px;
+  }
+  .method-toggle-bar .method-btn { flex-grow: 1; }
 }
 
 @media print{
@@ -2440,7 +2455,7 @@ function renderSelList(){
       <button class="rm-btn" onclick="rmCrit('${c.id}')" title="${LANG==='fr'?'Retirer':'Remove'}">✕</button>
     </div>`).join('');
 
-  list.innerHTML = methodBar + simpleItems;
+  list.innerHTML = methodBar + `<div class="simple-items-list">${simpleItems}</div>`;
 }
 
 function setCW(id,v){ const c=S.criteria.find(x=>x.id===id); if(c) c.weight=parseInt(v); }
@@ -2482,7 +2497,7 @@ function getSwingWeights(){
 
   // Pre-calculate sums of 1/k to avoid re-computing (ROC formula)
   const one_over_k = Array.from({ length: N + 1 }, (_, i) => i > 0 ? 1 / i : 0);
-  const suffix_sums = Array(N + 1).fill(0);
+  const suffix_sums = Array(N + 2).fill(0);
   for (let i = N; i >= 1; i--) {
     suffix_sums[i] = suffix_sums[i + 1] + one_over_k[i];
   }
@@ -2521,13 +2536,14 @@ function buildSwingHTML(){
             <span style="font-size:.9rem;flex-shrink:0">${c.icon}</span>
             <span class="swing-item-name">${c.name}</span>
             <button class="inv-btn${c.invert?' on':''}" onclick="toggleInv('${c.id}')"
-              style="font-size:.6rem;padding:3px 7px;margin-left:auto;flex-shrink:0"
+              style="font-size:.6rem;padding:3px 7px;margin-left:auto;flex-shrink:0;"
               title="${c.invert?tr('inv_tip_on'):tr('inv_tip_off')}">
               ${c.invert?tr('inv_on'):tr('inv_off')}
             </button>
           </div>
         </div>
         <div class="swing-weight-tag" style="margin: 0 8px; align-self: center; font-size: .8rem; padding: 4px 8px;">${pct}%</div>
+        <button class="rm-btn" onclick="rmCrit('${c.id}')" title="${LANG==='fr'?'Retirer':'Remove'}" style="align-self:center;margin-left:0">✕</button>
       </div>`;
   }).join('');
 
@@ -2631,8 +2647,10 @@ function _attachSwingDnD(){
       e.preventDefault();
       if(!_dragId||item.dataset.id===_dragId) return;
       const before=e.clientY < item.getBoundingClientRect().top+item.offsetHeight/2;
-      _swingReorder(_dragId,item.dataset.id,before);
+      const movedId = _dragId;
+      _swingReorder(movedId,item.dataset.id,before);
       renderSelList();
+      _animateSwingDrop(movedId);
     });
   });
 
@@ -2690,6 +2708,17 @@ function _startTouchDrag(item,touch){
   _touchGhost.style.top =(touch.clientY-item.offsetHeight/2)+'px';
 }
 
+/** Applique une animation à l'élément qui vient d'être déposé. */
+function _animateSwingDrop(movedId) {
+  const movedEl = document.getElementById(`swing-item-${movedId}`);
+  if (movedEl) {
+    movedEl.classList.add('animate-drop');
+    movedEl.addEventListener('animationend', () => {
+      movedEl.classList.remove('animate-drop');
+    }, { once: true });
+  }
+}
+
 function _swingTouchMove(e){
   if(!_touchDragId) return;
   e.preventDefault();
@@ -2722,9 +2751,11 @@ function _swingTouchEnd(){
   if(_touchGhost){ _touchGhost.remove(); _touchGhost=null; }
   document.querySelectorAll('#activeList .swing-item')
     .forEach(el=>el.classList.remove('dragging','drag-over-above','drag-over-below'));
+  const movedId = _touchDragId;
   if(_touchTargetId){
-    _swingReorder(_touchDragId,_touchTargetId,_touchBefore);
+    _swingReorder(movedId,_touchTargetId,_touchBefore);
     renderSelList();
+    _animateSwingDrop(movedId);
   }
   _touchDragId=null; _touchTargetId=null;
 }
@@ -2787,8 +2818,8 @@ function buildEvalPage(){
       // MODIF SWING — badge poids adapté au mode
       let wt='';
       if(S.weightingMethod==='swing'){
-        const total=S.criteria.reduce((sum,c)=>sum+(c.swingPoints??100),0);
-        const pct=total>0?Math.round((cr.swingPoints??100)/total*100):0;
+        const weights=getSwingWeights();
+        const pct=Math.round((weights.find(w=>w.id===cr.id)?.weight??0)*100);
         wt=`<span class="swing-wtag">⚖️ ${pct}%</span>`;
       } else if(cr.weight>1){
         wt=`<span class="sl-wtag">×${cr.weight}</span>`;
@@ -3022,8 +3053,8 @@ function buildResults(){
         ${(()=>{
           // MODIF SWING — badge poids dans breakdown
           if(S.weightingMethod==='swing'){
-            const total=S.criteria.reduce((sum,c)=>sum+(c.swingPoints??100),0);
-            const pct=total>0?Math.round((cr.swingPoints??100)/total*100):0;
+            const weights=getSwingWeights();
+            const pct=Math.round((weights.find(w=>w.id===cr.id)?.weight??0)*100);
             return `<span style="font-size:.62rem;background:var(--teal-bg);color:var(--teal);padding:2px 5px;border-radius:3px;border:1px solid var(--teal-bd);font-weight:700">⚖️ ${pct}%</span>`;
           }
           return cr.weight>1?`<span style="font-size:.62rem;background:var(--amber-bg);color:var(--amber);padding:2px 5px;border-radius:3px;border:1px solid #f0d080;font-weight:700">×${cr.weight}</span>`:'';
@@ -3330,15 +3361,18 @@ function switchScTab(tab, el){
 function calcScoreScenario(oi){
   // MODIF SWING
   if(S.weightingMethod==='swing'){
-    const activeCrits=S.criteria.filter(c=>S_active.has(c.id));
-    if(!activeCrits.length) return 0;
-    const total=activeCrits.reduce((sum,c)=>sum+(c.swingPoints??100),0);
+    const weights=getSwingWeights();
+    const activeWeights=weights.filter(w=>S_active.has(w.id));
+    if(!activeWeights.length) return 0;
+    const totalW=activeWeights.reduce((sum,w)=>sum+w.weight,0);
     let tot=0;
-    activeCrits.forEach(c=>{
+    activeWeights.forEach(w=>{
+      const c=S.criteria.find(x=>x.id===w.id);
+      if(!c) return;
       let v=S.scores[c.id]?.[oi]??5;
       if(c.invert) v=11-v;
-      const w=total>0?(c.swingPoints??100)/total:1/activeCrits.length;
-      tot+=v*w;
+      const normW=totalW>0?w.weight/totalW:0;
+      tot+=v*normW;
     });
     return Math.round((tot/10)*100);
   }
@@ -3357,15 +3391,18 @@ function calcScoreScenario(oi){
 function calcScoreFiltered(oi, excludeIds){
   // MODIF SWING
   if(S.weightingMethod==='swing'){
-    const activeCrits=S.criteria.filter(c=>!excludeIds.has(c.id));
-    if(!activeCrits.length) return null;
-    const total=activeCrits.reduce((sum,c)=>sum+(c.swingPoints??100),0);
+    const weights=getSwingWeights();
+    const activeWeights=weights.filter(w=>!excludeIds.has(w.id));
+    if(!activeWeights.length) return null;
+    const totalW=activeWeights.reduce((sum,w)=>sum+w.weight,0);
     let tot=0;
-    activeCrits.forEach(c=>{
+    activeWeights.forEach(w=>{
+      const c=S.criteria.find(x=>x.id===w.id);
+      if(!c) return;
       let v=S.scores[c.id]?.[oi]??5;
       if(c.invert) v=11-v;
-      const w=total>0?(c.swingPoints??100)/total:1/activeCrits.length;
-      tot+=v*w;
+      const normW=totalW>0?w.weight/totalW:0;
+      tot+=v*normW;
     });
     return Math.round((tot/10)*100);
   }
@@ -3406,8 +3443,8 @@ function renderScenarioBody(){
         ${(()=>{
           // MODIF SWING — badge poids dans panneau scénario
           if(S.weightingMethod==='swing'){
-            const total=S.criteria.reduce((sum,cr)=>sum+(cr.swingPoints??100),0);
-            const pct=total>0?Math.round((c.swingPoints??100)/total*100):0;
+            const weights=getSwingWeights();
+            const pct=Math.round((weights.find(w=>w.id===c.id)?.weight??0)*100);
             return `<span class="sc-crit-weight" style="background:var(--teal-bg);color:var(--teal);border-color:var(--teal-bd)">⚖️ ${pct}%</span>`;
           }
           return c.weight>1?`<span class="sc-crit-weight">×${c.weight}</span>`:'';
@@ -3940,4 +3977,7 @@ function restart(){
 })();
 </script>
 </body>
+</html>
+</html>
+</html>
 </html>
