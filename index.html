@@ -1412,6 +1412,10 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   border-radius:var(--r-sm);border:1.5px solid var(--border);
   background:var(--white);transition:border-color .15s;
   position:relative;
+  /* MODIF: Empêcher la sélection de texte et le menu contextuel sur mobile pendant le drag */
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
 }
 .swing-item.swing-first{
   border-color:var(--teal);background:var(--teal-bg);
@@ -2642,6 +2646,9 @@ function _attachSwingDnD(){
 
   /* ─── Drag tactile : long press (350 ms) n'importe où sur la carte ─── */
   document.querySelectorAll('#activeList .swing-item').forEach(item=>{
+    // Empêche le menu contextuel (copier/coller) sur appui long sur mobile
+    item.addEventListener('contextmenu', e => e.preventDefault());
+
     item.addEventListener('touchstart',e=>{
       const t=e.touches[0];
       _touchStartX=t.clientX;
@@ -3945,4 +3952,3 @@ function restart(){
 </script>
 </body>
 </html>
-
