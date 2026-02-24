@@ -1750,6 +1750,16 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
       </div>
     </div>
 
+    <div class="selected-box">
+      <div class="selected-box-head">
+        <h3 data-i18n="sel_title">✅ Critères sélectionnés</h3>
+        <div class="sel-count" id="crit-badge">0</div>
+      </div>
+      <div class="sel-list" id="activeList">
+        <div class="empty-hint" data-i18n="sel_empty">👆 Sélectionnez au moins 2 critères ci-dessus pour continuer</div>
+      </div>
+    </div>
+
     <div class="btn-row">
       <button class="btn btn-secondary" onclick="nav('page-step1')" data-i18n="back">← Retour</button>
       <button class="btn btn-primary" onclick="validateStep2()" data-i18n="s2_next">Évaluer mes options →</button>
