@@ -1406,11 +1406,14 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
 /* Item dans la liste swing */
 .swing-item{
-  display:flex;align-items:flex-start;gap:8px;
-  padding:12px;margin:4px 6px;
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;margin:4px 6px;
   border-radius:var(--r-sm);border:1.5px solid var(--border);
   background:var(--white);transition:border-color .15s;
   position:relative;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
 }
 .swing-item.swing-first{
   border-color:var(--teal);background:var(--teal-bg);
@@ -1423,16 +1426,6 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 }
 .swing-first .swing-rank-num{background:var(--ink);}
 
-/* MODIF DRAG AND DROP — Poignée de glissement */
-.swing-drag-handle{
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;width:20px;padding:0 2px;
-  cursor:grab;color:var(--muted2);
-  font-size:.95rem;letter-spacing:-.1em;
-  user-select:none;-webkit-user-select:none;
-  touch-action:none;
-}
-.swing-drag-handle:active{cursor:grabbing;}
 .swing-item{transition:opacity .15s,box-shadow .1s,transform .12s;}
 .swing-item.dragging{opacity:.35;}
 .swing-item.drag-over-above{box-shadow:0 -2px 0 0 var(--teal);border-top-color:var(--teal);}
@@ -1451,6 +1444,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   background:var(--white);padding:10px 12px;
   border:1.5px solid var(--teal);
   overflow:hidden;
+  display:flex;align-items:center;gap:10px;
 }
 /* FIN MODIF DRAG AND DROP */
 
@@ -2528,9 +2522,8 @@ function buildSwingHTML(){
     const weight = swingWeights.find(w => w.id === c.id)?.weight ?? 0;
     const pct = Math.round(weight * 100);
     return `
-      <div class="swing-item${isFirst?' swing-first':''}" id="swing-item-${c.id}" data-id="${c.id}">
+      <div class="swing-item" id="swing-item-${c.id}" data-id="${c.id}">
         <div class="swing-rank-num">${i+1}</div>
-        <div class="swing-drag-handle" title="${LANG==='fr'?'Glisser pour réordonner':'Drag to reorder'}">⠿</div>
         <div class="swing-item-main">
           <div class="swing-item-header">
             <span style="font-size:.9rem;flex-shrink:0">${c.icon}</span>
@@ -2548,25 +2541,6 @@ function buildSwingHTML(){
   }).join('');
 
   return infoBox+items;
-}
-
-/** Met à jour les points d'un critère swing et rafraîchit les % affichés. */
-function setSwingPoints(id,val){
-  const c=S.criteria.find(x=>x.id===id);
-  if(!c) return;
-  const v=Math.min(100,Math.max(1,parseInt(val)||1));
-  c.swingPoints=v;
-  // Recalcule les % sans re-rendre toute la liste (préserve le focus)
-  const total=S.criteria.reduce((sum,cr)=>sum+(cr.swingPoints??100),0);
-  S.criteria.forEach(cr=>{
-    const pct=total>0?Math.round((cr.swingPoints??100)/total*100):0;
-    const tag=document.getElementById('swing-pct-'+cr.id);
-    if(tag) tag.textContent=pct+'%';
-  });
-  // Scores live step 3
-  if(document.getElementById('page-step3').classList.contains('active')){
-    S.options.forEach((_,i)=>refreshLive(i));
-  }
 }
 
 /* ══════════════════════════════════════════
@@ -2596,25 +2570,16 @@ function _swingReorder(fromId, toId, before){
   if(insertAt<0) return;
   sorted.splice(insertAt,0,moved);
   sorted.forEach((c,i)=>{ c.swingRank=i; });
-  if(sorted.length>0){
-    sorted[0].swingPoints=100;
-    // Si l'ancien critère #1 (100 pts) a été déplacé, on réinitialise ses points à 70
-    // pour éviter qu'un critère de rang 4 ait autant de poids que le rang 1
-    sorted.slice(1).forEach(c=>{ if((c.swingPoints??100)>=100) c.swingPoints=70; });
-  }
 }
 
 /** Attache les événements drag souris (HTML5) + tactile après chaque rendu swing. */
 function _attachSwingDnD(){
-  /* ─── Drag souris ─── */
-  document.querySelectorAll('#activeList .swing-drag-handle').forEach(handle=>{
-    // Rend l'item draggable seulement si le drag part du handle (ne bloque pas les inputs)
-    handle.addEventListener('mousedown',()=>{
-      handle.closest('.swing-item').setAttribute('draggable','true');
-    });
-  });
-
   document.querySelectorAll('#activeList .swing-item').forEach(item=>{
+    // Drag souris direct sur l'item
+    item.addEventListener('mousedown',()=>{
+      item.setAttribute('draggable','true');
+    });
+
     item.addEventListener('dragstart',e=>{
       _dragId=item.dataset.id;
       item.classList.add('dragging');
@@ -2656,6 +2621,9 @@ function _attachSwingDnD(){
 
   /* ─── Drag tactile : long press (350 ms) n'importe où sur la carte ─── */
   document.querySelectorAll('#activeList .swing-item').forEach(item=>{
+    // Empêche le menu contextuel (copier/coller) sur appui long sur mobile
+    item.addEventListener('contextmenu', e => e.preventDefault());
+
     item.addEventListener('touchstart',e=>{
       const t=e.touches[0];
       _touchStartX=t.clientX;
@@ -2775,12 +2743,6 @@ function rmCrit(id){
 
 function validateStep2(){
   if(S.criteria.length<2){alert(tr('err_crit'));return;}
-  // MODIF SWING — validation des points swing
-  if(S.weightingMethod==='swing'){
-    const invalid=S.criteria.some(c=>!c.swingPoints||c.swingPoints<1||c.swingPoints>100);
-    if(invalid){alert(tr('swing_points_err'));return;}
-  }
-  // FIN MODIF SWING
   S.criteria.forEach(c=>{
     if(!S.scores[c.id]||S.scores[c.id].length!==S.options.length)
       S.scores[c.id]=S.options.map(()=>5);
