@@ -1912,11 +1912,9 @@ const T = {
     eval_title:  (dec) => `Notez vos options pour : "${dec}"`,
     /* MODIF SWING */
     swing_method_simple: 'Méthode simple',
-    swing_method_swing:  '⚖️ Swing Weighting',
-    swing_info: '<strong>Swing Weighting</strong> — Classez vos critères du plus au moins important, puis attribuez des points relatifs (le premier vaut toujours 100). Les poids sont calculés et normalisés automatiquement.',
-    swing_points_lbl: 'Points',
-    swing_points_err: 'Les points doivent être entre 1 et 100 (le premier critère est fixé à 100). Vérifiez vos valeurs.',
-    swing_weight_lbl: 'Poids',
+    swing_method_swing:  '⚖️ Méthode ROC',
+    swing_info: 'ℹ️ Classez vos critères du plus (n°1) au moins important. Les poids sont calculés automatiquement via une méthode scientifique (ROC) pour une décroissance naturelle.',
+    swing_weight_lbl: 'Poids calculé',
     /* FIN MODIF SWING */
   },
   en: {
@@ -2052,11 +2050,9 @@ const T = {
     eval_title:  (dec) => `Rate your options for: "${dec}"`,
     /* MODIF SWING */
     swing_method_simple: 'Simple method',
-    swing_method_swing:  '⚖️ Swing Weighting',
-    swing_info: '<strong>Swing Weighting</strong> — Rank your criteria from most to least important, then assign relative points (the first is always 100). Weights are calculated and normalised automatically.',
-    swing_points_lbl: 'Points',
-    swing_points_err: 'Points must be between 1 and 100 (the first criterion is fixed at 100). Please check your values.',
-    swing_weight_lbl: 'Weight',
+    swing_method_swing:  '⚖️ ROC Weighting',
+    swing_info: 'ℹ️ Rank your criteria from most (#1) to least important. Weights are automatically calculated using a scientific method (ROC) for a natural decay.',
+    swing_weight_lbl: 'Calculated Weight',
     /* FIN MODIF SWING */
   }
 };
@@ -2370,8 +2366,7 @@ function toggleCrit(id){
     S.criteria.push({
       ...c, weight:c.dw,
       // MODIF SWING
-      swingRank:S.criteria.length,
-      swingPoints:S.criteria.length===0?100:70
+      swingRank:S.criteria.length
       // FIN MODIF SWING
     });
   }
@@ -2388,8 +2383,7 @@ function addCustom(){
     hint:LANG==='fr'?'Critère personnalisé':'Custom criterion',
     invert:false,weight:1,custom:true,
     // MODIF SWING
-    swingRank:S.criteria.length,
-    swingPoints:S.criteria.length===0?100:70
+    swingRank:S.criteria.length
     // FIN MODIF SWING
   });
   document.getElementById('cust-name').value='';
@@ -2461,7 +2455,6 @@ function toggleInv(id){ const c=S.criteria.find(x=>x.id===id); if(c){c.invert=!c
 function _swingRenorm(){
   const sorted=[...S.criteria].sort((a,b)=>(a.swingRank??0)-(b.swingRank??0));
   sorted.forEach((c,i)=>{ c.swingRank=i; });
-  if(sorted.length>0) sorted[0].swingPoints=100;
 }
 
 /** Active ou désactive le mode Swing. */
@@ -2471,7 +2464,6 @@ function toggleWeightingMethod(method){
     // Initialise les champs swing manquants
     S.criteria.forEach((c,i)=>{
       if(c.swingRank===undefined) c.swingRank=i;
-      if(c.swingPoints===undefined) c.swingPoints=i===0?100:70;
     });
     _swingRenorm();
   }
@@ -2484,26 +2476,42 @@ function toggleWeightingMethod(method){
 
 /** Calcule les poids normalisés pour le mode swing (somme = 1). */
 function getSwingWeights(){
-  const total=S.criteria.reduce((sum,c)=>sum+(c.swingPoints??100),0);
-  return S.criteria.map(c=>({
-    id:c.id,
-    weight:total>0?(c.swingPoints??100)/total:1/S.criteria.length
-  }));
+  const sorted = [...S.criteria].sort((a, b) => (a.swingRank ?? 0) - (b.swingRank ?? 0));
+  const N = sorted.length;
+  if (N === 0) return [];
+
+  // Pre-calculate sums of 1/k to avoid re-computing (ROC formula)
+  const one_over_k = Array.from({ length: N + 1 }, (_, i) => i > 0 ? 1 / i : 0);
+  const suffix_sums = Array(N + 1).fill(0);
+  for (let i = N; i >= 1; i--) {
+    suffix_sums[i] = suffix_sums[i + 1] + one_over_k[i];
+  }
+
+  const weights = [];
+  sorted.forEach((c, index) => {
+    const rank = index + 1; // 1-based rank
+    weights.push({
+      id: c.id,
+      weight: (1 / N) * suffix_sums[rank]
+    });
+  });
+  return weights;
 }
 
 /** Construit le HTML de la liste swing (items classables + champs). */
 function buildSwingHTML(){
-  const sorted=[...S.criteria].sort((a,b)=>(a.swingRank??0)-(b.swingRank??0));
-  const total=sorted.reduce((sum,c)=>sum+(c.swingPoints??100),0);
+  const sorted = [...S.criteria].sort((a,b)=>(a.swingRank??0)-(b.swingRank??0));
+  const swingWeights = getSwingWeights();
 
   const infoBox=`
     <div class="swing-info">
-      ℹ️ ${tr('swing_info')}
+      ${tr('swing_info')}
     </div>`;
 
   const items=sorted.map((c,i)=>{
     const isFirst=i===0;
-    const pct=total>0?Math.round((c.swingPoints??100)/total*100):0;
+    const weight = swingWeights.find(w => w.id === c.id)?.weight ?? 0;
+    const pct = Math.round(weight * 100);
     return `
       <div class="swing-item${isFirst?' swing-first':''}" id="swing-item-${c.id}" data-id="${c.id}">
         <div class="swing-rank-num">${i+1}</div>
@@ -2518,20 +2526,8 @@ function buildSwingHTML(){
               ${c.invert?tr('inv_on'):tr('inv_off')}
             </button>
           </div>
-          <div class="swing-fields">
-            <div class="swing-points-wrap">
-              <label class="swing-field-lbl">${tr('swing_points_lbl')}</label>
-              <input class="swing-points-inp" type="number"
-                id="swing-pts-${c.id}"
-                min="1" max="100" value="${c.swingPoints??100}"
-                ${isFirst?'readonly':''}
-                oninput="setSwingPoints('${c.id}',this.value)">
-              <div class="swing-weight-tag" id="swing-pct-${c.id}">${pct}%</div>
-            </div>
-          </div>
         </div>
-        <button class="rm-btn" onclick="rmCrit('${c.id}')" title="${LANG==='fr'?'Retirer':'Remove'}"
-          style="flex-shrink:0;align-self:flex-start">✕</button>
+        <div class="swing-weight-tag" style="margin: 0 8px; align-self: center; font-size: .8rem; padding: 4px 8px;">${pct}%</div>
       </div>`;
   }).join('');
 
@@ -3945,4 +3941,3 @@ function restart(){
 </script>
 </body>
 </html>
-
