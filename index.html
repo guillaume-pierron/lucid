@@ -1407,15 +1407,14 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
 /* Item dans la liste swing */
 .swing-item{
-  display:flex;align-items:flex-start;gap:8px;
-  padding:12px;margin:4px 6px;
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;margin:4px 6px;
   border-radius:var(--r-sm);border:1.5px solid var(--border);
   background:var(--white);transition:border-color .15s;
   position:relative;
   -webkit-user-select: none;
   user-select: none;
   touch-action: manipulation;
-  display:flex;align-items:center;gap:10px;padding:10px 12px;
 }
 .swing-item.swing-first{
   border-color:var(--teal);background:var(--teal-bg);
@@ -1453,7 +1452,12 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 /* Contenu principal swing item */
 .swing-item-main{flex:1;min-width:0;display:flex;align-items:center;gap:8px;}
 .swing-item-name{font-size:.9rem;font-weight:600;color:var(--ink);flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
-.swing-pct{font-weight:700;color:var(--ink);font-size:.9rem;margin:0 8px;min-width:36px;text-align:right;}
+.swing-pct{
+  font-weight:700;color:var(--teal);font-size:.85rem;
+  background:var(--teal-bg);border:1px solid var(--teal-bd);
+  padding:3px 8px;border-radius:6px;
+  margin:0 4px;min-width:48px;text-align:center;flex-shrink:0;
+}
 
 /* Badge poids swing dans step 3 */
 .swing-wtag{
@@ -2455,16 +2459,15 @@ function buildSwingHTML(){
       <div class="swing-item" id="swing-item-${c.id}" data-id="${c.id}">
         <div class="swing-rank-num">${i+1}</div>
         <div class="swing-item-main">
-          <span style="font-size:1.1rem;line-height:1">${c.icon}</span>
+          <span style="font-size:1.1rem;line-height:1;flex-shrink:0">${c.icon}</span>
           <span class="swing-item-name">${c.name}</span>
           <button class="inv-btn${c.invert?' on':''}" onclick="toggleInv('${c.id}')"
             title="${c.invert?tr('inv_tip_on'):tr('inv_tip_off')}">
             ${c.invert?tr('inv_on'):tr('inv_off')}
           </button>
-          <span class="swing-pct">${pct}%</span>
         </div>
-        <button class="rm-btn" onclick="rmCrit('${c.id}')" title="${LANG==='fr'?'Retirer':'Remove'}"
-          style="flex-shrink:0;align-self:flex-start">✕</button>
+        <span class="swing-pct">${pct}%</span>
+        <button class="rm-btn" onclick="rmCrit('${c.id}')" title="${LANG==='fr'?'Retirer':'Remove'}">✕</button>
       </div>`;
   }).join('');
 
