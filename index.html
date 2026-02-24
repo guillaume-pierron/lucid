@@ -2455,7 +2455,7 @@ function renderSelList(){
       <button class="rm-btn" onclick="rmCrit('${c.id}')" title="${LANG==='fr'?'Retirer':'Remove'}">✕</button>
     </div>`).join('');
 
-  list.innerHTML = methodBar + `<div class="simple-items-list">${simpleItems}</div>`;
+  list.innerHTML = methodBar + simpleItems;
 }
 
 function setCW(id,v){ const c=S.criteria.find(x=>x.id===id); if(c) c.weight=parseInt(v); }
@@ -3977,7 +3977,6 @@ function restart(){
 })();
 </script>
 </body>
-</html>
 </html>
 </html>
 </html>
