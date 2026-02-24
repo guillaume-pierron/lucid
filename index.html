@@ -539,7 +539,6 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 
 /* ── STEP 3 — EVALUATION ─────────────────── */
 .eval-grid{display:grid;gap:16px;}
-.eval-col{}
 .eval-col-head{
   display:flex;align-items:center;justify-content:space-between;
   padding:13px 18px;border-radius:12px 12px 0 0;
@@ -1464,13 +1463,66 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 /* FIN MODIF DRAG AND DROP */
 
 /* Contenu principal swing item */
-.swing-item-main{flex:1;min-width:0;display:flex;align-items:center;gap:8px;}
-.swing-item-name{font-size:.9rem;font-weight:600;color:var(--ink);flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
-.swing-pct{
-  font-weight:700;color:var(--teal);font-size:.85rem;
-  background:var(--teal-bg);border:1px solid var(--teal-bd);
-  padding:3px 8px;border-radius:6px;
-  margin:0 4px;min-width:48px;text-align:center;flex-shrink:0;
+.swing-item-main{flex:1;min-width:0;}
+.swing-item-header{
+  display:flex;align-items:center;gap:6px;margin-bottom:8px;
+  padding-right:4px;
+}
+.swing-name-group{
+  display:flex;flex-direction:column;
+  flex:1;min-width:0;
+}
+.swing-item-name{font-size:.82rem;font-weight:500;color:var(--ink);}
+
+/* Champs worst/best/points */
+.swing-fields{
+  display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;
+}
+.swing-field-group{
+  display:flex;flex-direction:column;gap:3px;flex:1;min-width:80px;
+}
+.swing-field-lbl{
+  font-size:.62rem;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.05em;
+}
+.swing-field-inp{
+  padding:6px 10px;border-radius:6px;
+  border:1.5px solid var(--border);
+  background:var(--white);color:var(--ink);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;
+  width:100%;outline:none;
+  transition:border-color .15s,box-shadow .15s;
+}
+.swing-field-inp:focus{
+  border-color:var(--teal2);
+  box-shadow:0 0 0 3px rgba(45,125,90,.12);
+}
+
+/* Zone points + badge % */
+.swing-points-wrap{
+  display:flex;flex-direction:column;gap:3px;flex-shrink:0;
+}
+.swing-points-inp{
+  width:60px;padding:6px 8px;border-radius:6px;
+  border:1.5px solid var(--border);text-align:center;
+  background:var(--white);color:var(--ink);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.88rem;font-weight:700;outline:none;
+  transition:border-color .15s,box-shadow .15s;
+}
+.swing-points-inp:focus:not([readonly]){
+  border-color:var(--teal2);
+  box-shadow:0 0 0 3px rgba(45,125,90,.12);
+}
+.swing-points-inp[readonly]{
+  background:var(--teal-bg);border-color:var(--teal-bd);
+  color:var(--teal);cursor:default;
+}
+.swing-weight-tag{
+  font-size:.62rem;background:var(--teal-bg);
+  color:var(--teal);padding:2px 6px;border-radius:4px;
+  border:1px solid var(--teal-bd);font-weight:700;
+  text-align:center;
 }
 
 /* Badge poids swing dans step 3 */
@@ -1527,6 +1579,18 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
     top:50%;left:10px;
     transform:translateY(-50%);
   }
+
+  /* MODIF SWING — Cacher la poignée de drag sur mobile pour plus d'espace */
+  .swing-drag-handle{display:none;}
+
+  /* MODIF SWING — Aligner les boutons de méthode sur mobile */
+  .method-lbl {
+    flex-basis: 100%;
+    text-align: center;
+    margin-right: 0;
+    margin-bottom: 6px;
+  }
+  .method-toggle-bar .method-btn { flex-grow: 1; }
 }
 
 @media print{
@@ -1876,11 +1940,9 @@ const T = {
     eval_title:  (dec) => `Notez vos options pour : "${dec}"`,
     /* MODIF SWING */
     swing_method_simple: 'Méthode simple',
-    swing_method_swing:  'Méthode ROC',
-    swing_info: '<strong>Méthode ROC</strong> (Rank Order Centroid) — Classez simplement vos critères par ordre d\'importance. Les poids sont calculés mathématiquement selon une décroissance naturelle (ex: 1er=61%, 2e=28%, 3e=11%).',
-    swing_points_lbl: '',
-    swing_points_err: '',
-    swing_weight_lbl: 'Poids',
+    swing_method_swing:  '⚖️ Méthode ROC',
+    swing_info: 'ℹ️ Classez vos critères du plus (n°1) au moins important. Les poids sont calculés automatiquement via une méthode scientifique (ROC) pour une décroissance naturelle.',
+    swing_weight_lbl: 'Poids calculé',
     /* FIN MODIF SWING */
   },
   en: {
@@ -2016,11 +2078,9 @@ const T = {
     eval_title:  (dec) => `Rate your options for: "${dec}"`,
     /* MODIF SWING */
     swing_method_simple: 'Simple method',
-    swing_method_swing:  'ROC Method',
-    swing_info: '<strong>ROC Method</strong> (Rank Order Centroid) — Simply rank your criteria by importance. Weights are calculated mathematically with a natural decay (e.g. 1st=61%, 2nd=28%, 3rd=11%).',
-    swing_points_lbl: '',
-    swing_points_err: '',
-    swing_weight_lbl: 'Weight',
+    swing_method_swing:  '⚖️ ROC Weighting',
+    swing_info: 'ℹ️ Rank your criteria from most (#1) to least important. Weights are automatically calculated using a scientific method (ROC) for a natural decay.',
+    swing_weight_lbl: 'Calculated Weight',
     /* FIN MODIF SWING */
   }
 };
@@ -2334,7 +2394,7 @@ function toggleCrit(id){
     S.criteria.push({
       ...c, weight:c.dw,
       // MODIF SWING
-      swingRank:S.criteria.length,
+      swingRank:S.criteria.length
       // FIN MODIF SWING
     });
   }
@@ -2351,7 +2411,7 @@ function addCustom(){
     hint:LANG==='fr'?'Critère personnalisé':'Custom criterion',
     invert:false,weight:1,custom:true,
     // MODIF SWING
-    swingRank:S.criteria.length,
+    swingRank:S.criteria.length
     // FIN MODIF SWING
   });
   document.getElementById('cust-name').value='';
@@ -2444,49 +2504,58 @@ function toggleWeightingMethod(method){
 
 /** Calcule les poids normalisés pour le mode swing (somme = 1). */
 function getSwingWeights(){
-  const n=S.criteria.length;
-  const sorted=[...S.criteria].sort((a,b)=>(a.swingRank??0)-(b.swingRank??0));
-  const weights={};
-  for(let i=0;i<n;i++){
-    let sum=0; for(let j=i+1;j<=n;j++) sum+=1/j;
-    weights[sorted[i].id]=(1/n)*sum;
+  const sorted = [...S.criteria].sort((a, b) => (a.swingRank ?? 0) - (b.swingRank ?? 0));
+  const N = sorted.length;
+  if (N === 0) return [];
+
+  // Pre-calculate sums of 1/k to avoid re-computing (ROC formula)
+  const one_over_k = Array.from({ length: N + 1 }, (_, i) => i > 0 ? 1 / i : 0);
+  const suffix_sums = Array(N + 2).fill(0);
+  for (let i = N; i >= 1; i--) {
+    suffix_sums[i] = suffix_sums[i + 1] + one_over_k[i];
   }
-  return S.criteria.map(c=>({
-    id:c.id,
-    weight:weights[c.id]||0
-  }));
+
+  const weights = [];
+  sorted.forEach((c, index) => {
+    const rank = index + 1; // 1-based rank
+    weights.push({
+      id: c.id,
+      weight: (1 / N) * suffix_sums[rank]
+    });
+  });
+  return weights;
 }
 
 /** Construit le HTML de la liste swing (items classables + champs). */
 function buildSwingHTML(){
-  const sorted=[...S.criteria].sort((a,b)=>(a.swingRank??0)-(b.swingRank??0));
-  const n=sorted.length;
-  const rocs=[];
-  for(let i=0;i<n;i++){
-    let sum=0; for(let j=i+1;j<=n;j++) sum+=1/j;
-    rocs[i]=Math.round(((1/n)*sum)*100);
-  }
+  const sorted = [...S.criteria].sort((a,b)=>(a.swingRank??0)-(b.swingRank??0));
+  const swingWeights = getSwingWeights();
 
   const infoBox=`
     <div class="swing-info">
-      ℹ️ ${tr('swing_info')}
+      ${tr('swing_info')}
     </div>`;
 
   const items=sorted.map((c,i)=>{
-    const pct=rocs[i];
+    const isFirst=i===0;
+    const weight = swingWeights.find(w => w.id === c.id)?.weight ?? 0;
+    const pct = Math.round(weight * 100);
     return `
       <div class="swing-item" id="swing-item-${c.id}" data-id="${c.id}">
         <div class="swing-rank-num">${i+1}</div>
         <div class="swing-item-main">
-          <span style="font-size:1.1rem;line-height:1;flex-shrink:0">${c.icon}</span>
-          <span class="swing-item-name">${c.name}</span>
-          <button class="inv-btn${c.invert?' on':''}" onclick="toggleInv('${c.id}')"
-            title="${c.invert?tr('inv_tip_on'):tr('inv_tip_off')}">
-            ${c.invert?tr('inv_on'):tr('inv_off')}
-          </button>
+          <div class="swing-item-header">
+            <span style="font-size:.9rem;flex-shrink:0">${c.icon}</span>
+            <span class="swing-item-name">${c.name}</span>
+            <button class="inv-btn${c.invert?' on':''}" onclick="toggleInv('${c.id}')"
+              style="font-size:.6rem;padding:3px 7px;margin-left:auto;flex-shrink:0;"
+              title="${c.invert?tr('inv_tip_on'):tr('inv_tip_off')}">
+              ${c.invert?tr('inv_on'):tr('inv_off')}
+            </button>
+          </div>
         </div>
-        <span class="swing-pct">${pct}%</span>
-        <button class="rm-btn" onclick="rmCrit('${c.id}')" title="${LANG==='fr'?'Retirer':'Remove'}">✕</button>
+        <div class="swing-weight-tag" style="margin: 0 8px; align-self: center; font-size: .8rem; padding: 4px 8px;">${pct}%</div>
+        <button class="rm-btn" onclick="rmCrit('${c.id}')" title="${LANG==='fr'?'Retirer':'Remove'}" style="align-self:center;margin-left:0">✕</button>
       </div>`;
   }).join('');
 
@@ -2562,8 +2631,10 @@ function _attachSwingDnD(){
       e.preventDefault();
       if(!_dragId||item.dataset.id===_dragId) return;
       const before=e.clientY < item.getBoundingClientRect().top+item.offsetHeight/2;
-      _swingReorder(_dragId,item.dataset.id,before);
+      const movedId = _dragId;
+      _swingReorder(movedId,item.dataset.id,before);
       renderSelList();
+      _animateSwingDrop(movedId);
     });
   });
 
@@ -2624,6 +2695,17 @@ function _startTouchDrag(item,touch){
   _touchGhost.style.top =(touch.clientY-item.offsetHeight/2)+'px';
 }
 
+/** Applique une animation à l'élément qui vient d'être déposé. */
+function _animateSwingDrop(movedId) {
+  const movedEl = document.getElementById(`swing-item-${movedId}`);
+  if (movedEl) {
+    movedEl.classList.add('animate-drop');
+    movedEl.addEventListener('animationend', () => {
+      movedEl.classList.remove('animate-drop');
+    }, { once: true });
+  }
+}
+
 function _swingTouchMove(e){
   if(!_touchDragId) return;
   e.preventDefault();
@@ -2656,9 +2738,11 @@ function _swingTouchEnd(){
   if(_touchGhost){ _touchGhost.remove(); _touchGhost=null; }
   document.querySelectorAll('#activeList .swing-item')
     .forEach(el=>el.classList.remove('dragging','drag-over-above','drag-over-below'));
+  const movedId = _touchDragId;
   if(_touchTargetId){
-    _swingReorder(_touchDragId,_touchTargetId,_touchBefore);
+    _swingReorder(movedId,_touchTargetId,_touchBefore);
     renderSelList();
+    _animateSwingDrop(movedId);
   }
   _touchDragId=null; _touchTargetId=null;
 }
@@ -2716,7 +2800,7 @@ function buildEvalPage(){
       let wt='';
       if(S.weightingMethod==='swing'){
         const weights=getSwingWeights();
-        const pct=Math.round((weights.find(x=>x.id===cr.id)?.weight||0)*100);
+        const pct=Math.round((weights.find(w=>w.id===cr.id)?.weight??0)*100);
         wt=`<span class="swing-wtag">⚖️ ${pct}%</span>`;
       } else if(cr.weight>1){
         wt=`<span class="sl-wtag">×${cr.weight}</span>`;
@@ -2951,7 +3035,7 @@ function buildResults(){
           // MODIF SWING — badge poids dans breakdown
           if(S.weightingMethod==='swing'){
             const weights=getSwingWeights();
-            const pct=Math.round((weights.find(x=>x.id===cr.id)?.weight||0)*100);
+            const pct=Math.round((weights.find(w=>w.id===cr.id)?.weight??0)*100);
             return `<span style="font-size:.62rem;background:var(--teal-bg);color:var(--teal);padding:2px 5px;border-radius:3px;border:1px solid var(--teal-bd);font-weight:700">⚖️ ${pct}%</span>`;
           }
           return cr.weight>1?`<span style="font-size:.62rem;background:var(--amber-bg);color:var(--amber);padding:2px 5px;border-radius:3px;border:1px solid #f0d080;font-weight:700">×${cr.weight}</span>`:'';
@@ -3258,19 +3342,18 @@ function switchScTab(tab, el){
 function calcScoreScenario(oi){
   // MODIF SWING
   if(S.weightingMethod==='swing'){
-    const activeCrits=S.criteria.filter(c=>S_active.has(c.id));
-    if(!activeCrits.length) return 0;
-    const allWeights=getSwingWeights();
-    const activeWeights=activeCrits.map(c=>allWeights.find(x=>x.id===c.id)?.weight||0);
-    const totalW=activeWeights.reduce((a,b)=>a+b,0);
-    
+    const weights=getSwingWeights();
+    const activeWeights=weights.filter(w=>S_active.has(w.id));
+    if(!activeWeights.length) return 0;
+    const totalW=activeWeights.reduce((sum,w)=>sum+w.weight,0);
     let tot=0;
-    activeCrits.forEach(c=>{
+    activeWeights.forEach(w=>{
+      const c=S.criteria.find(x=>x.id===w.id);
+      if(!c) return;
       let v=S.scores[c.id]?.[oi]??5;
       if(c.invert) v=11-v;
-      const rawW=allWeights.find(x=>x.id===c.id)?.weight||0;
-      const w=totalW>0?rawW/totalW:0;
-      tot+=v*w;
+      const normW=totalW>0?w.weight/totalW:0;
+      tot+=v*normW;
     });
     return Math.round((tot/10)*100);
   }
@@ -3289,18 +3372,18 @@ function calcScoreScenario(oi){
 function calcScoreFiltered(oi, excludeIds){
   // MODIF SWING
   if(S.weightingMethod==='swing'){
-    const activeCrits=S.criteria.filter(c=>!excludeIds.has(c.id));
-    if(!activeCrits.length) return null;
-    const allWeights=getSwingWeights();
-    const activeWeights=activeCrits.map(c=>allWeights.find(x=>x.id===c.id)?.weight||0);
-    const totalW=activeWeights.reduce((a,b)=>a+b,0);
+    const weights=getSwingWeights();
+    const activeWeights=weights.filter(w=>!excludeIds.has(w.id));
+    if(!activeWeights.length) return null;
+    const totalW=activeWeights.reduce((sum,w)=>sum+w.weight,0);
     let tot=0;
-    activeCrits.forEach(c=>{
+    activeWeights.forEach(w=>{
+      const c=S.criteria.find(x=>x.id===w.id);
+      if(!c) return;
       let v=S.scores[c.id]?.[oi]??5;
       if(c.invert) v=11-v;
-      const rawW=allWeights.find(x=>x.id===c.id)?.weight||0;
-      const w=totalW>0?rawW/totalW:0;
-      tot+=v*w;
+      const normW=totalW>0?w.weight/totalW:0;
+      tot+=v*normW;
     });
     return Math.round((tot/10)*100);
   }
@@ -3342,7 +3425,7 @@ function renderScenarioBody(){
           // MODIF SWING — badge poids dans panneau scénario
           if(S.weightingMethod==='swing'){
             const weights=getSwingWeights();
-            const pct=Math.round((weights.find(x=>x.id===c.id)?.weight||0)*100);
+            const pct=Math.round((weights.find(w=>w.id===c.id)?.weight??0)*100);
             return `<span class="sc-crit-weight" style="background:var(--teal-bg);color:var(--teal);border-color:var(--teal-bd)">⚖️ ${pct}%</span>`;
           }
           return c.weight>1?`<span class="sc-crit-weight">×${c.weight}</span>`:'';
@@ -3875,4 +3958,6 @@ function restart(){
 })();
 </script>
 </body>
+</html>
+</html>
 </html>
