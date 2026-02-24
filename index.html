@@ -1412,10 +1412,10 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   border-radius:var(--r-sm);border:1.5px solid var(--border);
   background:var(--white);transition:border-color .15s;
   position:relative;
-  /* MODIF: Empêcher la sélection de texte et le menu contextuel sur mobile pendant le drag */
   -webkit-user-select: none;
   user-select: none;
   touch-action: manipulation;
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
 }
 .swing-item.swing-first{
   border-color:var(--teal);background:var(--teal-bg);
@@ -1428,16 +1428,6 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 }
 .swing-first .swing-rank-num{background:var(--ink);}
 
-/* MODIF DRAG AND DROP — Poignée de glissement */
-.swing-drag-handle{
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;width:20px;padding:0 2px;
-  cursor:grab;color:var(--muted2);
-  font-size:.95rem;letter-spacing:-.1em;
-  user-select:none;-webkit-user-select:none;
-  touch-action:none;
-}
-.swing-drag-handle:active{cursor:grabbing;}
 .swing-item{transition:opacity .15s,box-shadow .1s,transform .12s;}
 .swing-item.dragging{opacity:.35;}
 .swing-item.drag-over-above{box-shadow:0 -2px 0 0 var(--teal);border-top-color:var(--teal);}
@@ -1456,67 +1446,14 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   background:var(--white);padding:10px 12px;
   border:1.5px solid var(--teal);
   overflow:hidden;
+  display:flex;align-items:center;gap:10px;
 }
 /* FIN MODIF DRAG AND DROP */
 
 /* Contenu principal swing item */
-.swing-item-main{flex:1;min-width:0;}
-.swing-item-header{
-  display:flex;align-items:center;gap:6px;margin-bottom:8px;
-  padding-right:4px;
-}
-.swing-item-name{font-size:.82rem;font-weight:700;color:var(--ink);flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
-
-/* Champs worst/best/points */
-.swing-fields{
-  display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;
-}
-.swing-field-group{
-  display:flex;flex-direction:column;gap:3px;flex:1;min-width:80px;
-}
-.swing-field-lbl{
-  font-size:.62rem;font-weight:700;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.05em;
-}
-.swing-field-inp{
-  padding:6px 10px;border-radius:6px;
-  border:1.5px solid var(--border);
-  background:var(--white);color:var(--ink);
-  font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;
-  width:100%;outline:none;
-  transition:border-color .15s,box-shadow .15s;
-}
-.swing-field-inp:focus{
-  border-color:var(--teal2);
-  box-shadow:0 0 0 3px rgba(45,125,90,.12);
-}
-
-/* Zone points + badge % */
-.swing-points-wrap{
-  display:flex;flex-direction:column;gap:3px;flex-shrink:0;
-}
-.swing-points-inp{
-  width:60px;padding:6px 8px;border-radius:6px;
-  border:1.5px solid var(--border);text-align:center;
-  background:var(--white);color:var(--ink);
-  font-family:'Plus Jakarta Sans',sans-serif;
-  font-size:.88rem;font-weight:700;outline:none;
-  transition:border-color .15s,box-shadow .15s;
-}
-.swing-points-inp:focus:not([readonly]){
-  border-color:var(--teal2);
-  box-shadow:0 0 0 3px rgba(45,125,90,.12);
-}
-.swing-points-inp[readonly]{
-  background:var(--teal-bg);border-color:var(--teal-bd);
-  color:var(--teal);cursor:default;
-}
-.swing-weight-tag{
-  font-size:.62rem;background:var(--teal-bg);
-  color:var(--teal);padding:2px 6px;border-radius:4px;
-  border:1px solid var(--teal-bd);font-weight:700;
-  text-align:center;
-}
+.swing-item-main{flex:1;min-width:0;display:flex;align-items:center;gap:8px;}
+.swing-item-name{font-size:.9rem;font-weight:600;color:var(--ink);flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.swing-pct{font-weight:700;color:var(--ink);font-size:.9rem;margin:0 8px;min-width:36px;text-align:right;}
 
 /* Badge poids swing dans step 3 */
 .swing-wtag{
@@ -1916,10 +1853,10 @@ const T = {
     eval_title:  (dec) => `Notez vos options pour : "${dec}"`,
     /* MODIF SWING */
     swing_method_simple: 'Méthode simple',
-    swing_method_swing:  '⚖️ Swing Weighting',
-    swing_info: '<strong>Swing Weighting</strong> — Classez vos critères du plus au moins important, puis attribuez des points relatifs (le premier vaut toujours 100). Les poids sont calculés et normalisés automatiquement.',
-    swing_points_lbl: 'Points',
-    swing_points_err: 'Les points doivent être entre 1 et 100 (le premier critère est fixé à 100). Vérifiez vos valeurs.',
+    swing_method_swing:  'Méthode ROC',
+    swing_info: '<strong>Méthode ROC</strong> (Rank Order Centroid) — Classez simplement vos critères par ordre d\'importance. Les poids sont calculés mathématiquement selon une décroissance naturelle (ex: 1er=61%, 2e=28%, 3e=11%).',
+    swing_points_lbl: '',
+    swing_points_err: '',
     swing_weight_lbl: 'Poids',
     /* FIN MODIF SWING */
   },
@@ -2056,10 +1993,10 @@ const T = {
     eval_title:  (dec) => `Rate your options for: "${dec}"`,
     /* MODIF SWING */
     swing_method_simple: 'Simple method',
-    swing_method_swing:  '⚖️ Swing Weighting',
-    swing_info: '<strong>Swing Weighting</strong> — Rank your criteria from most to least important, then assign relative points (the first is always 100). Weights are calculated and normalised automatically.',
-    swing_points_lbl: 'Points',
-    swing_points_err: 'Points must be between 1 and 100 (the first criterion is fixed at 100). Please check your values.',
+    swing_method_swing:  'ROC Method',
+    swing_info: '<strong>ROC Method</strong> (Rank Order Centroid) — Simply rank your criteria by importance. Weights are calculated mathematically with a natural decay (e.g. 1st=61%, 2nd=28%, 3rd=11%).',
+    swing_points_lbl: '',
+    swing_points_err: '',
     swing_weight_lbl: 'Weight',
     /* FIN MODIF SWING */
   }
@@ -2375,7 +2312,6 @@ function toggleCrit(id){
       ...c, weight:c.dw,
       // MODIF SWING
       swingRank:S.criteria.length,
-      swingPoints:S.criteria.length===0?100:70
       // FIN MODIF SWING
     });
   }
@@ -2393,7 +2329,6 @@ function addCustom(){
     invert:false,weight:1,custom:true,
     // MODIF SWING
     swingRank:S.criteria.length,
-    swingPoints:S.criteria.length===0?100:70
     // FIN MODIF SWING
   });
   document.getElementById('cust-name').value='';
@@ -2465,7 +2400,6 @@ function toggleInv(id){ const c=S.criteria.find(x=>x.id===id); if(c){c.invert=!c
 function _swingRenorm(){
   const sorted=[...S.criteria].sort((a,b)=>(a.swingRank??0)-(b.swingRank??0));
   sorted.forEach((c,i)=>{ c.swingRank=i; });
-  if(sorted.length>0) sorted[0].swingPoints=100;
 }
 
 /** Active ou désactive le mode Swing. */
@@ -2475,7 +2409,6 @@ function toggleWeightingMethod(method){
     // Initialise les champs swing manquants
     S.criteria.forEach((c,i)=>{
       if(c.swingRank===undefined) c.swingRank=i;
-      if(c.swingPoints===undefined) c.swingPoints=i===0?100:70;
     });
     _swingRenorm();
   }
@@ -2488,17 +2421,28 @@ function toggleWeightingMethod(method){
 
 /** Calcule les poids normalisés pour le mode swing (somme = 1). */
 function getSwingWeights(){
-  const total=S.criteria.reduce((sum,c)=>sum+(c.swingPoints??100),0);
+  const n=S.criteria.length;
+  const sorted=[...S.criteria].sort((a,b)=>(a.swingRank??0)-(b.swingRank??0));
+  const weights={};
+  for(let i=0;i<n;i++){
+    let sum=0; for(let j=i+1;j<=n;j++) sum+=1/j;
+    weights[sorted[i].id]=(1/n)*sum;
+  }
   return S.criteria.map(c=>({
     id:c.id,
-    weight:total>0?(c.swingPoints??100)/total:1/S.criteria.length
+    weight:weights[c.id]||0
   }));
 }
 
 /** Construit le HTML de la liste swing (items classables + champs). */
 function buildSwingHTML(){
   const sorted=[...S.criteria].sort((a,b)=>(a.swingRank??0)-(b.swingRank??0));
-  const total=sorted.reduce((sum,c)=>sum+(c.swingPoints??100),0);
+  const n=sorted.length;
+  const rocs=[];
+  for(let i=0;i<n;i++){
+    let sum=0; for(let j=i+1;j<=n;j++) sum+=1/j;
+    rocs[i]=Math.round(((1/n)*sum)*100);
+  }
 
   const infoBox=`
     <div class="swing-info">
@@ -2506,33 +2450,18 @@ function buildSwingHTML(){
     </div>`;
 
   const items=sorted.map((c,i)=>{
-    const isFirst=i===0;
-    const pct=total>0?Math.round((c.swingPoints??100)/total*100):0;
+    const pct=rocs[i];
     return `
-      <div class="swing-item${isFirst?' swing-first':''}" id="swing-item-${c.id}" data-id="${c.id}">
+      <div class="swing-item" id="swing-item-${c.id}" data-id="${c.id}">
         <div class="swing-rank-num">${i+1}</div>
-        <div class="swing-drag-handle" title="${LANG==='fr'?'Glisser pour réordonner':'Drag to reorder'}">⠿</div>
         <div class="swing-item-main">
-          <div class="swing-item-header">
-            <span style="font-size:.9rem;flex-shrink:0">${c.icon}</span>
-            <span class="swing-item-name">${c.name}</span>
-            <button class="inv-btn${c.invert?' on':''}" onclick="toggleInv('${c.id}')"
-              style="font-size:.6rem;padding:3px 7px;margin-left:auto;flex-shrink:0"
-              title="${c.invert?tr('inv_tip_on'):tr('inv_tip_off')}">
-              ${c.invert?tr('inv_on'):tr('inv_off')}
-            </button>
-          </div>
-          <div class="swing-fields">
-            <div class="swing-points-wrap">
-              <label class="swing-field-lbl">${tr('swing_points_lbl')}</label>
-              <input class="swing-points-inp" type="number"
-                id="swing-pts-${c.id}"
-                min="1" max="100" value="${c.swingPoints??100}"
-                ${isFirst?'readonly':''}
-                oninput="setSwingPoints('${c.id}',this.value)">
-              <div class="swing-weight-tag" id="swing-pct-${c.id}">${pct}%</div>
-            </div>
-          </div>
+          <span style="font-size:1.1rem;line-height:1">${c.icon}</span>
+          <span class="swing-item-name">${c.name}</span>
+          <button class="inv-btn${c.invert?' on':''}" onclick="toggleInv('${c.id}')"
+            title="${c.invert?tr('inv_tip_on'):tr('inv_tip_off')}">
+            ${c.invert?tr('inv_on'):tr('inv_off')}
+          </button>
+          <span class="swing-pct">${pct}%</span>
         </div>
         <button class="rm-btn" onclick="rmCrit('${c.id}')" title="${LANG==='fr'?'Retirer':'Remove'}"
           style="flex-shrink:0;align-self:flex-start">✕</button>
@@ -2540,25 +2469,6 @@ function buildSwingHTML(){
   }).join('');
 
   return infoBox+items;
-}
-
-/** Met à jour les points d'un critère swing et rafraîchit les % affichés. */
-function setSwingPoints(id,val){
-  const c=S.criteria.find(x=>x.id===id);
-  if(!c) return;
-  const v=Math.min(100,Math.max(1,parseInt(val)||1));
-  c.swingPoints=v;
-  // Recalcule les % sans re-rendre toute la liste (préserve le focus)
-  const total=S.criteria.reduce((sum,cr)=>sum+(cr.swingPoints??100),0);
-  S.criteria.forEach(cr=>{
-    const pct=total>0?Math.round((cr.swingPoints??100)/total*100):0;
-    const tag=document.getElementById('swing-pct-'+cr.id);
-    if(tag) tag.textContent=pct+'%';
-  });
-  // Scores live step 3
-  if(document.getElementById('page-step3').classList.contains('active')){
-    S.options.forEach((_,i)=>refreshLive(i));
-  }
 }
 
 /* ══════════════════════════════════════════
@@ -2588,25 +2498,16 @@ function _swingReorder(fromId, toId, before){
   if(insertAt<0) return;
   sorted.splice(insertAt,0,moved);
   sorted.forEach((c,i)=>{ c.swingRank=i; });
-  if(sorted.length>0){
-    sorted[0].swingPoints=100;
-    // Si l'ancien critère #1 (100 pts) a été déplacé, on réinitialise ses points à 70
-    // pour éviter qu'un critère de rang 4 ait autant de poids que le rang 1
-    sorted.slice(1).forEach(c=>{ if((c.swingPoints??100)>=100) c.swingPoints=70; });
-  }
 }
 
 /** Attache les événements drag souris (HTML5) + tactile après chaque rendu swing. */
 function _attachSwingDnD(){
-  /* ─── Drag souris ─── */
-  document.querySelectorAll('#activeList .swing-drag-handle').forEach(handle=>{
-    // Rend l'item draggable seulement si le drag part du handle (ne bloque pas les inputs)
-    handle.addEventListener('mousedown',()=>{
-      handle.closest('.swing-item').setAttribute('draggable','true');
-    });
-  });
-
   document.querySelectorAll('#activeList .swing-item').forEach(item=>{
+    // Drag souris direct sur l'item
+    item.addEventListener('mousedown',()=>{
+      item.setAttribute('draggable','true');
+    });
+
     item.addEventListener('dragstart',e=>{
       _dragId=item.dataset.id;
       item.classList.add('dragging');
@@ -2755,12 +2656,6 @@ function rmCrit(id){
 
 function validateStep2(){
   if(S.criteria.length<2){alert(tr('err_crit'));return;}
-  // MODIF SWING — validation des points swing
-  if(S.weightingMethod==='swing'){
-    const invalid=S.criteria.some(c=>!c.swingPoints||c.swingPoints<1||c.swingPoints>100);
-    if(invalid){alert(tr('swing_points_err'));return;}
-  }
-  // FIN MODIF SWING
   S.criteria.forEach(c=>{
     if(!S.scores[c.id]||S.scores[c.id].length!==S.options.length)
       S.scores[c.id]=S.options.map(()=>5);
@@ -2798,8 +2693,8 @@ function buildEvalPage(){
       // MODIF SWING — badge poids adapté au mode
       let wt='';
       if(S.weightingMethod==='swing'){
-        const total=S.criteria.reduce((sum,c)=>sum+(c.swingPoints??100),0);
-        const pct=total>0?Math.round((cr.swingPoints??100)/total*100):0;
+        const weights=getSwingWeights();
+        const pct=Math.round((weights.find(x=>x.id===cr.id)?.weight||0)*100);
         wt=`<span class="swing-wtag">⚖️ ${pct}%</span>`;
       } else if(cr.weight>1){
         wt=`<span class="sl-wtag">×${cr.weight}</span>`;
@@ -3033,8 +2928,8 @@ function buildResults(){
         ${(()=>{
           // MODIF SWING — badge poids dans breakdown
           if(S.weightingMethod==='swing'){
-            const total=S.criteria.reduce((sum,c)=>sum+(c.swingPoints??100),0);
-            const pct=total>0?Math.round((cr.swingPoints??100)/total*100):0;
+            const weights=getSwingWeights();
+            const pct=Math.round((weights.find(x=>x.id===cr.id)?.weight||0)*100);
             return `<span style="font-size:.62rem;background:var(--teal-bg);color:var(--teal);padding:2px 5px;border-radius:3px;border:1px solid var(--teal-bd);font-weight:700">⚖️ ${pct}%</span>`;
           }
           return cr.weight>1?`<span style="font-size:.62rem;background:var(--amber-bg);color:var(--amber);padding:2px 5px;border-radius:3px;border:1px solid #f0d080;font-weight:700">×${cr.weight}</span>`:'';
@@ -3343,12 +3238,16 @@ function calcScoreScenario(oi){
   if(S.weightingMethod==='swing'){
     const activeCrits=S.criteria.filter(c=>S_active.has(c.id));
     if(!activeCrits.length) return 0;
-    const total=activeCrits.reduce((sum,c)=>sum+(c.swingPoints??100),0);
+    const allWeights=getSwingWeights();
+    const activeWeights=activeCrits.map(c=>allWeights.find(x=>x.id===c.id)?.weight||0);
+    const totalW=activeWeights.reduce((a,b)=>a+b,0);
+    
     let tot=0;
     activeCrits.forEach(c=>{
       let v=S.scores[c.id]?.[oi]??5;
       if(c.invert) v=11-v;
-      const w=total>0?(c.swingPoints??100)/total:1/activeCrits.length;
+      const rawW=allWeights.find(x=>x.id===c.id)?.weight||0;
+      const w=totalW>0?rawW/totalW:0;
       tot+=v*w;
     });
     return Math.round((tot/10)*100);
@@ -3370,12 +3269,15 @@ function calcScoreFiltered(oi, excludeIds){
   if(S.weightingMethod==='swing'){
     const activeCrits=S.criteria.filter(c=>!excludeIds.has(c.id));
     if(!activeCrits.length) return null;
-    const total=activeCrits.reduce((sum,c)=>sum+(c.swingPoints??100),0);
+    const allWeights=getSwingWeights();
+    const activeWeights=activeCrits.map(c=>allWeights.find(x=>x.id===c.id)?.weight||0);
+    const totalW=activeWeights.reduce((a,b)=>a+b,0);
     let tot=0;
     activeCrits.forEach(c=>{
       let v=S.scores[c.id]?.[oi]??5;
       if(c.invert) v=11-v;
-      const w=total>0?(c.swingPoints??100)/total:1/activeCrits.length;
+      const rawW=allWeights.find(x=>x.id===c.id)?.weight||0;
+      const w=totalW>0?rawW/totalW:0;
       tot+=v*w;
     });
     return Math.round((tot/10)*100);
@@ -3417,8 +3319,8 @@ function renderScenarioBody(){
         ${(()=>{
           // MODIF SWING — badge poids dans panneau scénario
           if(S.weightingMethod==='swing'){
-            const total=S.criteria.reduce((sum,cr)=>sum+(cr.swingPoints??100),0);
-            const pct=total>0?Math.round((c.swingPoints??100)/total*100):0;
+            const weights=getSwingWeights();
+            const pct=Math.round((weights.find(x=>x.id===c.id)?.weight||0)*100);
             return `<span class="sc-crit-weight" style="background:var(--teal-bg);color:var(--teal);border-color:var(--teal-bd)">⚖️ ${pct}%</span>`;
           }
           return c.weight>1?`<span class="sc-crit-weight">×${c.weight}</span>`:'';
