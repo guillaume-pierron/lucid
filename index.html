@@ -2629,7 +2629,7 @@ function renderOptBuilder(){
       <div class="opt-card-head" onclick="toggleOpt(${i})">
         <div class="opt-dot" style="background:${COLORS[0].hex}"></div>
         <div class="opt-letter" style="color:${COLORS[0].hex}">${tr('opt_label',ltr)}</div>
-        <div class="opt-name-preview" id="opt-prev-${i}">${esc(opt.name)||'—'}</div>
+        <div class="opt-name-preview" id="opt-prev-${i}">−</div>
         ${i>=2?`<button class="opt-rm" onclick="event.stopPropagation();removeOpt(${i})" title="Supprimer">✕</button>`:''}
         <div class="opt-chevron">▾</div>
       </div>
@@ -2638,7 +2638,7 @@ function renderOptBuilder(){
           <label>${tr('opt_name_lbl')}</label>
           <input type="text" id="opt-name-${i}" value="${esc(opt.name)}"
             placeholder="${tr('opt_name_ph')}"
-            oninput="S.options[${i}].name=this.value;document.getElementById('opt-prev-${i}').textContent=this.value||'—'">
+            oninput="S.options[${i}].name=this.value">
         </div>
         <div class="field" style="margin-bottom:0">
           <label>${tr('opt_desc_lbl')} <span style="font-weight:400;color:var(--muted)">${tr('opt_desc_opt')}</span></label>
