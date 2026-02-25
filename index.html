@@ -1116,6 +1116,12 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
   margin-top:28px;padding:20px 0 0;
   border-top:1px solid var(--border);flex-wrap:wrap;gap:10px;
 }
+@media(max-width:640px){
+  .res-actions{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  }
+  .res-actions .btn{width:100%;justify-content:center;padding:12px 8px;}
+}
 
 /* ── DIVIDER SECTION ─────────────────────── */
 .res-divider{
@@ -3269,10 +3275,8 @@ function buildResults(){
       <div class="res-actions">
         <button class="btn btn-secondary" onclick="nav('page-step3')">${tr('back_notes')}</button>
         <button class="btn btn-secondary" id="btnSaveTrack" onclick="saveAndTrack()">${tr('save_track')}</button>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn btn-secondary" onclick="window.print()">${tr('export_pdf')}</button>
-          <button class="btn btn-primary" onclick="restart()">${tr('new_decision')}</button>
-        </div>
+        <button class="btn btn-secondary" onclick="window.print()">${tr('export_pdf')}</button>
+        <button class="btn btn-primary" onclick="restart()">${tr('new_decision')}</button>
       </div>
     </div>`;
 }
