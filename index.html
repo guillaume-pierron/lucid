@@ -1241,7 +1241,7 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 .fear-delta.up{
   background:rgba(45,125,90,.08);color:var(--teal);
 }
-.fear-delta.down{
+ .fear-delta.down{
   background:rgba(192,57,43,.06);color:var(--red);
 }
 .fear-delta.same{
@@ -1260,6 +1260,208 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 .fear-none{
   font-size:.82rem;color:var(--muted);
   font-style:italic;padding:8px 0;
+}
+
+/* ── Scenario impact cards (glassmorphism) ───────────────── */
+
+.scenario-impact-wrapper{
+  margin-top:8px;
+}
+
+.scenario-impact-grid{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+@media (min-width:720px){
+  .scenario-impact-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px;
+  }
+}
+
+.scenario-impact-card{
+  position:relative;
+  padding:14px 16px 12px;
+  border-radius:18px;
+  background:radial-gradient(circle at top left,rgba(255,255,255,0.30),rgba(255,255,255,0.06));
+  border:1px solid rgba(255,255,255,0.70);
+  box-shadow:0 16px 40px rgba(0,0,0,0.16);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  animation:scenarioCardIn .35s ease-out;
+}
+
+.scenario-impact-card::before{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background:radial-gradient(circle at 0 0,rgba(255,255,255,0.48),transparent 55%);
+  opacity:.34;
+  pointer-events:none;
+}
+
+.scenario-impact-card>*{
+  position:relative;
+  z-index:1;
+}
+
+.scenario-impact-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.scenario-impact-label{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:.82rem;
+  font-weight:600;
+  color:var(--ink2);
+  letter-spacing:.01em;
+}
+
+.scenario-impact-dot{
+  width:10px;
+  height:10px;
+  border-radius:999px;
+  box-shadow:0 0 0 3px rgba(255,255,255,0.7);
+}
+
+.scenario-impact-name{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.scenario-impact-scores{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.scenario-score{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.scenario-score-caption{
+  font-size:.7rem;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:var(--muted);
+}
+
+.scenario-score-value-main{
+  font-size:2.2rem;
+  font-weight:800;
+  letter-spacing:-.04em;
+  line-height:1;
+  color:var(--teal);
+}
+
+.scenario-score-value-base{
+  font-size:1rem;
+  font-weight:600;
+  color:var(--muted2);
+}
+
+.scenario-delta-badge{
+  flex-shrink:0;
+  width:40px;
+  height:40px;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:.9rem;
+  font-weight:700;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  box-shadow:0 10px 26px rgba(0,0,0,0.18);
+  border:1px solid transparent;
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+
+.scenario-delta-up{
+  background:rgba(34,197,94,0.12);
+  border-color:rgba(34,197,94,0.55);
+  color:#15803d;
+}
+
+.scenario-delta-down{
+  background:rgba(239,68,68,0.12);
+  border-color:rgba(239,68,68,0.55);
+  color:#b91c1c;
+}
+
+.scenario-delta-same{
+  background:rgba(148,163,184,0.14);
+  border-color:rgba(148,163,184,0.45);
+  color:#475569;
+}
+
+.scenario-impact-card:hover .scenario-delta-badge{
+  transform:translateY(-1px);
+  box-shadow:0 14px 32px rgba(0,0,0,0.24);
+}
+
+.scenario-impact-global{
+  margin-top:14px;
+  display:flex;
+  justify-content:center;
+  text-align:center;
+}
+
+.scenario-impact-global-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:.78rem;
+  color:var(--muted);
+  background:rgba(24,23,20,0.04);
+  border:1px solid rgba(255,255,255,0.7);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+
+.scenario-impact-footer{
+  margin-top:4px;
+}
+
+.scenario-impact-pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:3px 10px;
+  border-radius:999px;
+  font-size:.7rem;
+  font-weight:500;
+  color:var(--muted);
+  background:rgba(24,23,20,0.06);
+}
+
+@keyframes scenarioCardIn{
+  from{
+    opacity:0;
+    transform:translateY(8px) scale(.98);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
 }
 
 /* ── SCENARIO PANEL ──────────────────────── */
@@ -3459,7 +3661,7 @@ function renderScenarioBody(){
       </div>`;
   }).join('');
 
-  // Bloc comparaison de scores — identique au comportement émotions
+  // Bloc comparaison de scores — version cards glassmorphism
   const allActive = S_active.size === S.criteria.length;
   const baseScores = S.options.map((_,i)=>calcScore(i));
   const scenScores = S.options.map((_,i)=>calcScoreScenario(i));
@@ -3469,53 +3671,100 @@ function renderScenarioBody(){
 
   let comparisonBlock = '';
   if(allActive){
-    comparisonBlock = `<div class="emotion-none">${LANG==='fr'
-      ? 'Aucun critère désélectionné — tous les critères sont inclus.'
-      : 'No criteria deselected — all criteria are included.'}</div>`;
+    comparisonBlock = `<div class="scenario-impact-wrapper">
+      <div class="scenario-impact-global">
+        <span class="scenario-impact-global-pill">
+          <span>💡</span>
+          <span>${LANG==='fr'
+            ? 'Aucun critère désélectionné — tous les critères sont inclus dans le score.'
+            : 'No criteria deselected — all criteria are included in the score.'}</span>
+        </span>
+      </div>
+    </div>`;
   } else {
     const scoreRows = ranked.map(oi=>{
       const c  = resultColors[oi] || COLORS[oi];
       const bs = baseScores[oi];
       const ss = scenScores[oi];
       const d  = ss - bs;
-      const cls= d>2?'up':d<-2?'down':'same';
       const sign=d>0?'+':'';
-      return `<div class="fear-opt-row">
-        <div class="fear-opt-name" style="color:${c.hex}">${LETTERS[oi]}. ${esc(S.options[oi].name)}</div>
-        <div class="fear-scores">
-          <div class="fear-score-block">
-            <div class="fear-score-val" style="color:${c.hex}">${bs}</div>
-            <div class="fear-score-lbl">${tr('fear_score_real')}</div>
+      const dir=d>2?'up':d<-2?'down':'same';
+
+      const impactLabel = LANG==='fr'
+        ? (Math.abs(d)<=2?'Peu d’impact':Math.abs(d)<=5?'Impact modéré':'Impact fort')
+        : (Math.abs(d)<=2?'Low impact':Math.abs(d)<=5?'Moderate impact':'Strong impact');
+
+      return `<article class="scenario-impact-card scenario-impact-card-${dir}">
+        <header class="scenario-impact-header">
+          <div class="scenario-impact-label">
+            <span class="scenario-impact-dot" style="background:${c.hex}"></span>
+            <span class="scenario-impact-name">${LETTERS[oi]}. ${esc(S.options[oi].name)}</span>
           </div>
-          <div class="fear-arrow">→</div>
-          <div class="fear-score-block">
-            <div class="fear-score-val" style="color:var(--teal)">${ss}</div>
-            <div class="fear-score-lbl">${LANG==='fr'?'Scénario':'Scenario'}</div>
+          <div class="scenario-delta-badge scenario-delta-${dir}">
+            <span class="scenario-delta-sign">${sign}${d}</span>
           </div>
-          <span class="fear-delta ${cls}">${sign}${d}</span>
+        </header>
+
+        <div class="scenario-impact-scores">
+          <div class="scenario-score scenario-score-base">
+            <span class="scenario-score-caption">${tr('fear_score_real')}</span>
+            <span class="scenario-score-value-base">${bs}</span>
+          </div>
+          <div class="scenario-score scenario-score-scen">
+            <span class="scenario-score-caption">${LANG==='fr'?'Scénario':'Scenario'}</span>
+            <span class="scenario-score-value-main">${ss}</span>
+          </div>
         </div>
-      </div>`;
+
+        <footer class="scenario-impact-footer">
+          <span class="scenario-impact-pill">${impactLabel}</span>
+        </footer>
+      </article>`;
     }).join('');
 
     let insight='';
     if(switchedWinner){
       const nN=esc(S.options[scenRanked[0]].name), oN=esc(S.options[ranked[0]].name);
-      insight=`<div class="emotion-insight">💡 ${LANG==='fr'
-        ?`Sans ces critères, <strong>"${nN}"</strong> passerait en tête au lieu de <strong>"${oN}"</strong>.`
-        :`Without these criteria, <strong>"${nN}"</strong> would take the lead over <strong>"${oN}"</strong>.`}</div>`;
+      insight=`<div class="scenario-impact-global">
+        <span class="scenario-impact-global-pill">
+          <span>💡</span>
+          <span>${LANG==='fr'
+            ?`Sans ces critères, <strong>"${nN}"</strong> passerait en tête au lieu de <strong>"${oN}"</strong>.`
+            :`Without these criteria, <strong>"${nN}"</strong> would take the lead over <strong>"${oN}"</strong>.`}</span>
+        </span>
+      </div>`;
     } else {
-      const maxD = ranked.reduce((b,oi)=>{const d=scenScores[oi]-baseScores[oi];return Math.abs(d)>Math.abs(b.d)?{oi,d}:b},{oi:ranked[0],d:0});
+      const maxD = ranked.reduce((b,oi)=>{
+        const d=scenScores[oi]-baseScores[oi];
+        return Math.abs(d)>Math.abs(b.d)?{oi,d}:b;
+      },{oi:ranked[0],d:0});
       if(Math.abs(maxD.d)>4){
-        insight=`<div class="emotion-insight">💡 ${LANG==='fr'
-          ?`Le classement reste identique, mais <strong>"${esc(S.options[maxD.oi].name)}"</strong> ${maxD.d>0?'gagne':'perd'} <strong>${Math.abs(maxD.d)} pts</strong> dans ce scénario.`
-          :`The ranking stays the same, but <strong>"${esc(S.options[maxD.oi].name)}"</strong> ${maxD.d>0?'gains':'loses'} <strong>${Math.abs(maxD.d)} pts</strong> in this scenario.`}</div>`;
+        insight=`<div class="scenario-impact-global">
+          <span class="scenario-impact-global-pill">
+            <span>💡</span>
+            <span>${LANG==='fr'
+              ?`Le classement reste identique, mais <strong>"${esc(S.options[maxD.oi].name)}"</strong> ${maxD.d>0?'gagne':'perd'} <strong>${Math.abs(maxD.d)} pts</strong> dans ce scénario.`
+              :`The ranking stays the same, but <strong>"${esc(S.options[maxD.oi].name)}"</strong> ${maxD.d>0?'gains':'loses'} <strong>${Math.abs(maxD.d)} pts</strong> in this scenario.`}</span>
+          </span>
+        </div>`;
       } else {
-        insight=`<div class="emotion-insight">💡 ${LANG==='fr'
-          ?'Le classement reste identique — ces critères ont peu d\'impact sur votre décision.'
-          :'The ranking stays the same — these criteria have little impact on your decision.'}</div>`;
+        insight=`<div class="scenario-impact-global">
+          <span class="scenario-impact-global-pill">
+            <span>💡</span>
+            <span>${LANG==='fr'
+              ?'Le classement reste identique — ces critères ont peu d’impact sur votre décision.'
+              :'The ranking stays the same — these criteria have little impact on your decision.'}</span>
+          </span>
+        </div>`;
       }
     }
-    comparisonBlock = `<div class="fear-comparison">${scoreRows}</div>${insight}`;
+
+    comparisonBlock = `<div class="scenario-impact-wrapper">
+      <div class="scenario-impact-grid">
+        ${scoreRows}
+      </div>
+      ${insight}
+    </div>`;
   }
 
   body.innerHTML=`
