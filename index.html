@@ -3269,10 +3269,8 @@ function buildResults(){
       <div class="res-actions">
         <button class="btn btn-secondary" onclick="nav('page-step3')">${tr('back_notes')}</button>
         <button class="btn btn-secondary" id="btnSaveTrack" onclick="saveAndTrack()">${tr('save_track')}</button>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn btn-secondary" onclick="window.print()">${tr('export_pdf')}</button>
-          <button class="btn btn-primary" onclick="restart()">${tr('new_decision')}</button>
-        </div>
+        <button class="btn btn-secondary" onclick="window.print()">${tr('export_pdf')}</button>
+        <button class="btn btn-primary" onclick="restart()">${tr('new_decision')}</button>
       </div>
     </div>`;
 }
