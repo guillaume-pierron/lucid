@@ -3842,55 +3842,97 @@ function renderEmotionResult(){
   const filtRanked     = [...S.options.map((_,i)=>i)].sort((a,b)=>(filteredScores[b]??0)-(filteredScores[a]??0));
   const switchedWinner = filtRanked[0] !== ranked[0];
 
-  const rows = ranked.map(oi=>{
+  const cards = ranked.map(oi=>{
     const c  = resultColors[oi] || COLORS[oi];
     const ns = normalScores[oi];
     const fs = filteredScores[oi];
     const d  = fs!==null ? fs-ns : 0;
-    const cls= d>2?'up':d<-2?'down':'same';
     const sign=d>0?'+':'';
-    return `<div class="fear-opt-row">
-      <div class="fear-opt-name" style="color:${c.hex}">${LETTERS[oi]}. ${esc(S.options[oi].name)}</div>
-      <div class="fear-scores">
-        <div class="fear-score-block">
-          <div class="fear-score-val" style="color:${c.hex}">${ns}</div>
-          <div class="fear-score-lbl">${tr('fear_score_real')}</div>
+    const dir = fs===null ? 'same' : (d>2?'up':d<-2?'down':'same');
+
+    const impactLabel = LANG==='fr'
+      ? (fs===null
+          ? 'Impact non mesurable'
+          : Math.abs(d)<=2?'Peu d’impact émotionnel':Math.abs(d)<=5?'Impact émotionnel modéré':'Impact émotionnel fort')
+      : (fs===null
+          ? 'Impact not measurable'
+          : Math.abs(d)<=2?'Low emotional impact':Math.abs(d)<=5?'Moderate emotional impact':'Strong emotional impact');
+
+    const scenValue = fs!==null ? fs : '—';
+
+    return `<article class="scenario-impact-card scenario-impact-card-${dir}">
+      <header class="scenario-impact-header">
+        <div class="scenario-impact-label">
+          <span class="scenario-impact-dot" style="background:${c.hex}"></span>
+          <span class="scenario-impact-name">${LETTERS[oi]}. ${esc(S.options[oi].name)}</span>
         </div>
-        ${fs!==null?`
-        <div class="fear-arrow">→</div>
-        <div class="fear-score-block">
-          <div class="fear-score-val" style="color:#7c3aed">${fs}</div>
-          <div class="fear-score-lbl">${LANG==='fr'?'Sans émotion':'Emotion-free'}</div>
+        <div class="scenario-delta-badge scenario-delta-${dir}">
+          <span class="scenario-delta-sign">${fs!==null?`${sign}${d}`:'?'}</span>
         </div>
-        <span class="fear-delta ${cls}">${sign}${d}</span>`:''}
+      </header>
+
+      <div class="scenario-impact-scores">
+        <div class="scenario-score scenario-score-base">
+          <span class="scenario-score-caption">${tr('fear_score_real')}</span>
+          <span class="scenario-score-value-base">${ns}</span>
+        </div>
+        <div class="scenario-score scenario-score-scen">
+          <span class="scenario-score-caption">${LANG==='fr'?'Sans émotion':'Emotion-free'}</span>
+          <span class="scenario-score-value-main">${scenValue}</span>
+        </div>
       </div>
-    </div>`;
+
+      <footer class="scenario-impact-footer">
+        <span class="scenario-impact-pill">${impactLabel}</span>
+      </footer>
+    </article>`;
   }).join('');
 
-  // Insight narratif
+  // Insight narratif sous forme de pill globale
   let insight='';
   if(switchedWinner){
     const nN=esc(S.options[filtRanked[0]].name), oN=esc(S.options[ranked[0]].name);
-    insight=`<div class="emotion-insight">💡 ${LANG==='fr'
-      ?`Sans ces critères, <strong>"${nN}"</strong> passerait en tête — c'est probablement cette émotion qui oriente votre décision vers <strong>"${oN}"</strong>.`
-      :`Without these criteria, <strong>"${nN}"</strong> would take the lead — this emotion may be steering your decision toward <strong>"${oN}"</strong>.`}</div>`;
+    insight=`<div class="scenario-impact-global">
+      <span class="scenario-impact-global-pill">
+        <span>💡</span>
+        <span>${LANG==='fr'
+          ?`Sans ces critères, <strong>"${nN}"</strong> passerait en tête — c'est probablement cette émotion qui oriente votre décision vers <strong>"${oN}"</strong>.`
+          :`Without these criteria, <strong>"${nN}"</strong> would take the lead — this emotion may be steering your decision toward <strong>"${oN}"</strong>.`}</span>
+      </span>
+    </div>`;
   } else {
     const maxD = ranked.reduce((b,oi)=>{const d=(filteredScores[oi]??0)-normalScores[oi];return Math.abs(d)>Math.abs(b.d)?{oi,d}:b},{oi:ranked[0],d:0});
     if(Math.abs(maxD.d)>4){
-      insight=`<div class="emotion-insight">💡 ${LANG==='fr'
-        ?`Le classement reste identique, mais <strong>"${esc(S.options[maxD.oi].name)}"</strong> ${maxD.d>0?'gagne':'perd'} <strong>${Math.abs(maxD.d)} pts</strong> sans ces critères.`
-        :`The ranking stays the same, but <strong>"${esc(S.options[maxD.oi].name)}"</strong> ${maxD.d>0?'gains':'loses'} <strong>${Math.abs(maxD.d)} pts</strong> without these criteria.`}</div>`;
+      insight=`<div class="scenario-impact-global">
+        <span class="scenario-impact-global-pill">
+          <span>💡</span>
+          <span>${LANG==='fr'
+            ?`Le classement reste identique, mais <strong>"${esc(S.options[maxD.oi].name)}"</strong> ${maxD.d>0?'gagne':'perd'} <strong>${Math.abs(maxD.d)} pts</strong> sans ces critères.`
+            :`The ranking stays the same, but <strong>"${esc(S.options[maxD.oi].name)}"</strong> ${maxD.d>0?'gains':'loses'} <strong>${Math.abs(maxD.d)} pts</strong> without these criteria.`}</span>
+        </span>
+      </div>`;
     } else {
-      insight=`<div class="emotion-insight">💡 ${LANG==='fr'
-        ?'Le classement reste identique — votre décision n\'est pas fortement influencée par cette émotion.'
-        :'The ranking stays the same — your decision is not strongly influenced by this emotion.'}</div>`;
+      insight=`<div class="scenario-impact-global">
+        <span class="scenario-impact-global-pill">
+          <span>💡</span>
+          <span>${LANG==='fr'
+            ?'Le classement reste identique — votre décision n\'est pas fortement influencée par cette émotion.'
+            :'The ranking stays the same — your decision is not strongly influenced by this emotion.'}</span>
+        </span>
+      </div>`;
     }
   }
 
+  const comparisonBlock = `<div class="scenario-impact-wrapper">
+    <div class="scenario-impact-grid">
+      ${cards}
+    </div>
+    ${insight}
+  </div>`;
+
   el.innerHTML=`
     <div class="emotion-crit-tags">${tags}</div>
-    <div class="fear-comparison">${rows}</div>
-    ${insight}`;
+    ${comparisonBlock}`;
 }
 
 
