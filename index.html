@@ -3780,7 +3780,7 @@ function renderScenarioBody(){
       </div>
     </div>`;
   } else {
-    const scoreRows = ranked.map(oi=>{
+    const scoreRows = scenRanked.map(oi=>{
       const c  = resultColors[oi] || COLORS[oi];
       const bs = baseScores[oi];
       const ss = scenScores[oi];
