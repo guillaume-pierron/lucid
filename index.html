@@ -470,6 +470,32 @@ input[type=text]::placeholder,textarea::placeholder{color:var(--muted2);}
 .hb-pending{background:var(--bg2);color:var(--muted);}
 .hb-done{background:var(--teal-bg);color:var(--teal);}
 
+.hist-actions{
+  margin-top:12px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+}
+.hist-link-btn{
+  border:none;
+  background:transparent;
+  color:var(--muted);
+  font-size:.75rem;
+  font-weight:600;
+  padding:0;
+  cursor:pointer;
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+.hist-link-btn:hover{color:var(--ink2);}
+.hist-link-btn.danger{
+  color:var(--red);
+}
+.hist-link-btn.danger:hover{
+  color:#7f1d1d;
+}
+
 .insight-box{
   background:linear-gradient(135deg, var(--teal-bg) 0%, #fff 100%);
   border:1px solid var(--teal-bd);border-radius:var(--r);
@@ -2190,6 +2216,9 @@ const T = {
     hist_global_score: 'Note globale actuelle (1-10)',
     hist_comment:   'Commentaire (Qu\'est-ce qui s\'est passé ?)',
     hist_save_upd:  'Enregistrer le suivi',
+    hist_edit_decision: 'Reprendre cette décision',
+    hist_delete:   'Supprimer',
+    hist_delete_confirm: 'Supprimer définitivement cette décision de votre historique ?',
     ins_title:      'Insights personnels',
     ins_optimism:   (delta) => `Vous avez tendance à être <strong>${delta>0?'pessimiste':'optimiste'}</strong> : vos résultats réels sont en moyenne ${Math.abs(delta)} pts ${delta>0?'supérieurs':'inférieurs'} à vos prévisions.`,
     ins_blindspot:  (crit) => `Attention au critère <strong>"${crit}"</strong> : c'est souvent là que la réalité déçoit par rapport à l'attente.`,
@@ -2349,6 +2378,9 @@ const T = {
     hist_global_score: 'Current global score (1-10)',
     hist_comment:   'Comment (What happened?)',
     hist_save_upd:  'Save follow-up',
+    hist_edit_decision: 'Resume this decision',
+    hist_delete:   'Delete',
+    hist_delete_confirm: 'Permanently delete this decision from your history?',
     ins_title:      'Personal Insights',
     ins_optimism:   (delta) => `You tend to be <strong>${delta>0?'pessimistic':'optimistic'}</strong>: actual results are on average ${Math.abs(delta)} pts ${delta>0?'higher':'lower'} than predicted.`,
     ins_blindspot:  (crit) => `Watch out for <strong>"${crit}"</strong>: reality often disappoints expectations on this criterion.`,
@@ -4438,9 +4470,17 @@ function renderHistory(){
           <button class="btn btn-primary" onclick="saveUpdate('${d.id}')">${tr('hist_save_upd')}</button>
         </div>
         
-        <button class="btn btn-secondary" style="margin-top:12px;font-size:.75rem;padding:6px 12px" onclick="toggleUpdate('${d.id}')">
-          ${isReviewed ? '✏️ Modifier' : tr('hist_update_btn')}
-        </button>
+        <div class="hist-actions">
+          <button class="btn btn-secondary" style="font-size:.75rem;padding:6px 12px" onclick="toggleUpdate('${d.id}')">
+            ${isReviewed ? '✏️ Modifier le suivi' : tr('hist_update_btn')}
+          </button>
+          <button class="hist-link-btn" onclick="editDecision('${d.id}')">
+            ✏️ ${tr('hist_edit_decision')}
+          </button>
+          <button class="hist-link-btn danger" onclick="deleteDecision('${d.id}')">
+            🗑 ${tr('hist_delete')}
+          </button>
+        </div>
       </div>`;
   }).join('');
 }
@@ -4467,6 +4507,37 @@ function saveUpdate(id){
   
   localStorage.setItem('lucid_decisions', JSON.stringify(history));
   renderHistory();
+}
+
+function deleteDecision(id){
+  const history = getDecisions();
+  const idx = history.findIndex(d => d.id === id);
+  if(idx === -1) return;
+  if(!confirm(tr('hist_delete_confirm'))) return;
+  history.splice(idx,1);
+  localStorage.setItem('lucid_decisions', JSON.stringify(history));
+  renderHistory();
+}
+
+function editDecision(id){
+  const history = getDecisions();
+  const dec = history.find(d => d.id === id);
+  if(!dec) return;
+
+  S.decision = dec.title || '';
+  S.options = Array.isArray(dec.options) ? dec.options : [];
+  S.criteria = Array.isArray(dec.criteria) ? dec.criteria : [];
+  S.scores = dec.scores || {};
+  S.notes = Array.isArray(dec.notes) ? dec.notes : (S.options || []).map(()=>'');
+  S.weightingMethod = dec.weightingMethod || 'simple';
+
+  nav('page-step1');
+  renderStepProgress(1);
+
+  const decInput = document.getElementById('inp-dec');
+  if(decInput) decInput.value = S.decision;
+
+  renderOptBuilder();
 }
 
 function renderInsights(history){
