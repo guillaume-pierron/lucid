@@ -1729,64 +1729,32 @@
     /* ── SCORE CARDS — modern / minimal ─────── */
     .sc-cards-row {
       display: grid;
-      gap: 16px;
-      margin: 20px 0 28px;
+      gap: 14px;
+      margin: 18px 0 24px;
     }
 
     .sc-card {
-      background: var(--white);
       border: 2px solid var(--border);
       border-radius: 14px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
       transition: box-shadow .2s ease, transform .2s ease;
       overflow: hidden;
       position: relative;
     }
 
     .sc-card:hover {
-      transform: scale(1.02);
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.13);
+      transform: scale(1.015);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
     }
 
-    /* Winner & non-winner — même traitement visuel, bordure colorée */
-    .sc-card-winner {
-      /* identique, la bordure inline-style suffit */
-    }
-
-    .sc-card-winner::before {
-      display: none;
-    }
-
-    /* Accent bar — hidden */
+    .sc-card-winner::before,
     .sc-card-accent {
       display: none;
     }
 
-    /* ── En-tête coloré ── */
-    .sc-card-header {
-      padding: 10px 18px;
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .sc-card-rank {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: .63rem;
-      font-weight: 800;
-      letter-spacing: .07em;
-      text-transform: uppercase;
-      color: #fff;
-      white-space: nowrap;
-    }
-
-    /* ── Corps de carte ── */
+    /* ── Corps unique (pas de header band séparé) ── */
     .sc-card-body {
-      padding: 18px 22px 20px;
+      padding: 14px 16px 14px;
       display: flex;
       flex-direction: column;
       gap: 0;
@@ -1797,73 +1765,88 @@
       min-width: 0;
     }
 
-    .sc-card-name {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--ink);
-      line-height: 1.35;
-      margin-bottom: 18px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
+    /* Ligne 1 : badge rang + nom */
+    .sc-card-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      min-width: 0;
     }
 
-    /* ── Score centré ── */
-    .sc-card-score {
-      display: flex;
-      flex-direction: column;
+    .sc-card-rank {
+      display: inline-flex;
       align-items: center;
-      margin-bottom: 18px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: .6rem;
+      font-weight: 800;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: #fff;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .sc-card-name {
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+
+    /* Ligne 2 : score gauche */
+    .sc-card-score {
+      margin-bottom: 12px;
     }
 
     .sc-score-display {
       display: flex;
       align-items: baseline;
-      gap: 5px;
-      margin-bottom: 12px;
+      gap: 3px;
+      margin-bottom: 8px;
     }
 
     .sc-card-num {
-      font-size: 4rem;
+      font-size: 2.6rem;
       font-weight: 800;
       line-height: 1;
       letter-spacing: -0.04em;
-      color: var(--ink);
       transition: transform .2s ease;
     }
 
     .sc-card:hover .sc-card-num {
-      transform: scale(1.04);
+      transform: scale(1.03);
     }
 
     .sc-card-den {
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: var(--muted);
-      opacity: .7;
+      font-size: .95rem;
+      font-weight: 600;
+      opacity: .65;
     }
 
-    /* Barre de progression — 7 px */
+    /* Barre fine — 5 px */
     .sc-score-bar {
       width: 100%;
-      height: 7px;
+      height: 5px;
       background: var(--bg2);
-      border-radius: 6px;
+      border-radius: 4px;
       overflow: hidden;
     }
 
     .sc-score-bar-fill {
       height: 100%;
-      border-radius: 6px;
+      border-radius: 4px;
       transition: width .9s cubic-bezier(.4, 0, .2, 1);
     }
 
-    /* ── Accordéon critères ── */
+    /* Ligne 3 : accordéon critères */
     .sc-card-crits-wrap {
       border-top: 1px solid var(--border);
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     .sc-card-crits-toggle {
@@ -1871,13 +1854,12 @@
       background: none;
       border: none;
       cursor: pointer;
-      padding: 9px 0 6px;
+      padding: 8px 0 5px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 6px;
       color: var(--muted);
-      font-size: .66rem;
+      font-size: .64rem;
       font-weight: 700;
       letter-spacing: .06em;
       text-transform: uppercase;
@@ -1890,7 +1872,7 @@
     }
 
     .sc-card-crits-toggle-icon {
-      font-size: .7rem;
+      font-size: .68rem;
       transition: transform .25s ease;
       flex-shrink: 0;
     }
@@ -1903,7 +1885,7 @@
       display: none;
       flex-direction: column;
       gap: 7px;
-      padding-bottom: 4px;
+      padding-bottom: 2px;
     }
 
     .sc-card-crits-wrap.open .sc-card-crits {
@@ -1954,33 +1936,21 @@
       font-weight: 700;
       padding: 2px 6px;
       border-radius: 5px;
-      margin-top: 4px;
+      margin-bottom: 6px;
       display: inline-block;
     }
 
-    .sc-card-delta.up {
-      background: rgba(45, 125, 90, .1);
-      color: var(--teal);
-    }
-
-    .sc-card-delta.down {
-      background: rgba(192, 57, 43, .07);
-      color: var(--red);
-    }
-
-    .sc-card-delta.same {
-      display: none;
-    }
+    .sc-card-delta.up   { background: rgba(45,125,90,.1); color: var(--teal); }
+    .sc-card-delta.down { background: rgba(192,57,43,.07); color: var(--red); }
+    .sc-card-delta.same { display: none; }
 
     /* Dark mode */
     @media (prefers-color-scheme: dark) {
       .sc-card {
-        background: var(--bg2);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.28);
       }
-
       .sc-card:hover {
-        box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
       }
     }
 
@@ -5853,18 +5823,17 @@
         }).join('');
         const critLabel = LANG === 'fr' ? 'Critères' : 'Criteria';
         return `
-      <div class="sc-card${rank === 0 ? ' sc-card-winner' : ''}" style="border-color:${c.hex}">
-        <div class="sc-card-accent"></div>
-        <div class="sc-card-header" style="background:${c.bg};border-bottom-color:${c.border}">
-          <div class="sc-card-rank" style="background:${c.hex}">${rankLbl}</div>
-        </div>
+      <div class="sc-card${rank === 0 ? ' sc-card-winner' : ''}" style="border-color:${c.hex};background:linear-gradient(145deg,var(--white) 55%,${c.bg})">
         <div class="sc-card-body">
           <div class="sc-card-left">
-            <div class="sc-card-name">${esc(S.options[oi].name)}</div>
+            <div class="sc-card-top">
+              <div class="sc-card-rank" style="background:${c.hex}">${rankLbl}</div>
+              <div class="sc-card-name">${esc(S.options[oi].name)}</div>
+            </div>
             <div class="sc-card-score">
               <div class="sc-score-display">
-                <div class="sc-card-num">${sc}</div>
-                <div class="sc-card-den">/100</div>
+                <div class="sc-card-num" style="color:${c.hex}">${sc}</div>
+                <div class="sc-card-den" style="color:${c.hex}">/100</div>
               </div>
               <div class="sc-score-bar">
                 <div class="sc-score-bar-fill" style="width:${sc}%;background:${c.hex}"></div>
@@ -6703,18 +6672,17 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         }).join('');
         const critLabel = LANG === 'fr' ? 'Critères' : 'Criteria';
         return `
-      <div class="sc-card${rank === 0 ? ' sc-card-winner' : ''}" style="border-color:${c.hex}">
-        <div class="sc-card-accent"></div>
-        <div class="sc-card-header" style="background:${c.bg};border-bottom-color:${c.border}">
-          <div class="sc-card-rank" style="background:${c.hex}">${rankLbl}</div>
-        </div>
+      <div class="sc-card${rank === 0 ? ' sc-card-winner' : ''}" style="border-color:${c.hex};background:linear-gradient(145deg,var(--white) 55%,${c.bg})">
         <div class="sc-card-body">
           <div class="sc-card-left">
-            <div class="sc-card-name">${esc(S.options[oi].name)}</div>
+            <div class="sc-card-top">
+              <div class="sc-card-rank" style="background:${c.hex}">${rankLbl}</div>
+              <div class="sc-card-name">${esc(S.options[oi].name)}</div>
+            </div>
             <div class="sc-card-score">
               <div class="sc-score-display">
-                <div class="sc-card-num">${sc}</div>
-                <div class="sc-card-den">/100</div>
+                <div class="sc-card-num" style="color:${c.hex}">${sc}</div>
+                <div class="sc-card-den" style="color:${c.hex}">/100</div>
               </div>
               ${deltaTag}
               <div class="sc-score-bar">
