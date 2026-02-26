@@ -1726,177 +1726,39 @@
     }
 
     /* ── SCORE CARDS RECTANGULAIRES ─────────── */
+    /* ── SCORE CARDS — modern / minimal ─────── */
     .sc-cards-row {
       display: grid;
-      gap: 12px;
-      margin: 20px 0 24px;
+      gap: 14px;
+      margin: 18px 0 24px;
+      align-items: start;
     }
 
     .sc-card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border);
-      border-radius: 16px;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+      transition: box-shadow .2s ease, transform .2s ease;
       overflow: hidden;
-      box-shadow: var(--shadow);
-      display: flex;
-      transition: box-shadow .3s cubic-bezier(0.16, 1, 0.3, 1), transform .3s cubic-bezier(0.16, 1, 0.3, 1), border-color .3s ease;
       position: relative;
     }
 
     .sc-card:hover {
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-2px);
+      transform: scale(1.015);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
     }
 
-    .sc-card-winner {
-      border-width: 2px;
-      box-shadow: 0 16px 48px rgba(5, 150, 105, 0.18);
-    }
-
-    .sc-card-winner:hover {
-      box-shadow: 0 24px 64px rgba(5, 150, 105, 0.28);
-      transform: translateY(-4px);
-    }
-
-    /* Accent top bar for winner card to indicate it's the top choice */
-    .sc-card-winner::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--teal), var(--teal2));
-      border-radius: 16px 16px 0 0;
-    }
-
-    /* Barre colorée à gauche — supprimée */
+    .sc-card-winner::before,
     .sc-card-accent {
       display: none;
     }
 
-    /* Second-ranked card gets subtle visual enhancement */
-    .sc-cards-row > .sc-card:nth-child(2) {
-      border-width: 1.5px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-    }
-
-    .sc-cards-row > .sc-card:nth-child(2):hover {
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
-      transform: translateY(-2px);
-    }
-
+    /* ── Corps unique (pas de header band séparé) ── */
     .sc-card-body {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 18px;
-      gap: 14px;
-      min-width: 0;
-      position: relative;
-      z-index: 1;
-    }
-
-    .sc-card-top {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .sc-card-rank {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: .65rem;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 8px;
-      border: 1.5px solid;
-      letter-spacing: .06em;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-      transition: all .2s ease;
-    }
-
-    .sc-card:hover .sc-card-rank {
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.10);
-      transform: scale(1.05);
-    }
-
-    .sc-card-name {
-      font-family: 'Lora', serif;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--ink);
-      line-height: 1.3;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      transition: color .2s ease;
-    }
-
-    .sc-card-winner .sc-card-name {
-      font-weight: 800;
-      letter-spacing: -0.01em;
-    }
-
-    /* Jauge circulaire à droite */
-    .sc-card-gauge {
-      position: relative;
-      flex-shrink: 0;
-      width: 56px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .sc-card-gauge svg {
-      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08));
-      transition: filter .2s ease;
-    }
-
-    .sc-card:hover .sc-card-gauge svg {
-      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.12));
-    }
-
-    .sc-card-gauge-label {
-      position: absolute;
-      inset: 0;
+      padding: 14px 16px 14px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .sc-card-num {
-      font-family: 'Lora', serif;
-      font-size: 1.3rem;
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -0.02em;
-      transition: transform .2s ease;
-    }
-
-    .sc-card:hover .sc-card-num {
-      transform: scale(1.08);
-    }
-
-    .sc-card-den {
-      font-size: .52rem;
-      color: currentColor;
-      opacity: 0.75;
-      font-weight: 700;
-      letter-spacing: .04em;
-      margin-top: 2px;
-      transition: opacity .2s ease;
-    }
-
-    .sc-card:hover .sc-card-den {
-      opacity: 0.95;
+      gap: 0;
     }
 
     .sc-card-left {
@@ -1904,29 +1766,139 @@
       min-width: 0;
     }
 
+    /* Ligne 1 : badge rang + nom */
     .sc-card-top {
-      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      min-width: 0;
     }
 
-    /* Mini critères dans les cards */
-    .sc-card-crits {
+    .sc-card-rank {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: .6rem;
+      font-weight: 800;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: #fff;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .sc-card-name {
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+
+    /* Ligne 2 : score gauche */
+    .sc-card-score {
+      margin-bottom: 12px;
+    }
+
+    .sc-score-display {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
+      align-items: baseline;
+      gap: 3px;
+      margin-bottom: 8px;
+    }
+
+    .sc-card-num {
+      font-size: 2.6rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      transition: transform .2s ease;
+    }
+
+    .sc-card:hover .sc-card-num {
+      transform: scale(1.03);
+    }
+
+    .sc-card-den {
+      font-size: .95rem;
+      font-weight: 600;
+      opacity: .65;
+    }
+
+    /* Barre fine — 5 px */
+    .sc-score-bar {
+      width: 100%;
+      height: 5px;
+      background: var(--bg2);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .sc-score-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width .9s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    /* Ligne 3 : accordéon critères */
+    .sc-card-crits-wrap {
+      border-top: 1px solid var(--border);
       margin-top: 2px;
+    }
+
+    .sc-card-crits-toggle {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 0 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: .64rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-family: inherit;
+      transition: color .2s ease;
+    }
+
+    .sc-card-crits-toggle:hover {
+      color: var(--ink2);
+    }
+
+    .sc-card-crits-toggle-icon {
+      font-size: .68rem;
+      transition: transform .25s ease;
+      flex-shrink: 0;
+    }
+
+    .sc-card-crits-wrap.open .sc-card-crits-toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    .sc-card-crits {
+      display: none;
+      flex-direction: column;
+      gap: 7px;
+      padding-bottom: 2px;
+    }
+
+    .sc-card-crits-wrap.open .sc-card-crits {
+      display: flex;
     }
 
     .sc-mini-crit {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       font-size: .72rem;
       font-weight: 500;
-      transition: opacity .2s ease;
-    }
-
-    .sc-card:hover .sc-mini-crit {
-      opacity: 0.9;
     }
 
     .sc-mini-crit-name {
@@ -1959,28 +1931,62 @@
       font-size: .65rem;
     }
 
-    /* Delta scénario sur les cards */
+    /* ── Insights points forts / faibles ── */
+    .sc-insights {
+      border-top: 1px solid var(--border);
+      margin-top: 10px;
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .sc-insight {
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+      font-size: .74rem;
+      line-height: 1.45;
+      color: var(--ink2);
+    }
+
+    .sc-insight-dot {
+      font-size: .65rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .sc-insight-pro .sc-insight-dot { color: var(--teal); }
+    .sc-insight-con .sc-insight-dot { color: var(--muted); }
+
+    .sc-insight strong {
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* Delta scénario */
     .sc-card-delta {
       font-size: .65rem;
       font-weight: 700;
       padding: 2px 6px;
       border-radius: 5px;
-      margin-top: 4px;
+      margin-bottom: 6px;
       display: inline-block;
     }
 
-    .sc-card-delta.up {
-      background: rgba(45, 125, 90, .1);
-      color: var(--teal);
-    }
+    .sc-card-delta.up   { background: rgba(45,125,90,.1); color: var(--teal); }
+    .sc-card-delta.down { background: rgba(192,57,43,.07); color: var(--red); }
+    .sc-card-delta.same { display: none; }
 
-    .sc-card-delta.down {
-      background: rgba(192, 57, 43, .07);
-      color: var(--red);
-    }
-
-    .sc-card-delta.same {
-      display: none;
+    /* Dark mode */
+    @media (prefers-color-scheme: dark) {
+      .sc-card {
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.28);
+      }
+      .sc-card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
+      }
     }
 
     /* ── VERDICT ENCADRÉ ─────────────────────── */
@@ -5829,52 +5835,56 @@
         vsub = tr('res_win_sub', diff);
       }
 
-      // Score cards rectangulaires — une par option, classées
+      // Score cards — design moderne / minimaliste
       const ncols = Math.min(S.options.length, 4);
       const scoreCards = ranked.map((oi, rank) => {
         const c = resultColors[oi]; const sc = scores[oi];
         const rankLabels = tr('rank_labels');
         const rankLbl = rank < 3 ? rankLabels[rank] : `#${rank + 1}`;
-        const r = 22, circ = (2 * Math.PI * r).toFixed(2);
-        const off = (circ - (sc / 100) * circ).toFixed(2);
-        // Mini critères — top 4 par score effectif
-        const sortedCrits = [...S.criteria].sort((a, b) => {
+        // Calcul points forts / faibles par score pondéré effectif
+        const allSorted = [...S.criteria].sort((a, b) => {
           const va = S.scores[a.id]?.[oi] ?? 5; const vb = S.scores[b.id]?.[oi] ?? 5;
           const ea = a.invert ? 11 - va : va; const eb = b.invert ? 11 - vb : vb;
           return (eb * b.weight) - (ea * a.weight);
-        }).slice(0, 4);
-        const miniCrits = sortedCrits.map(cr => {
+        });
+        const topCrits = allSorted.slice(0, 2).filter(cr => {
           const v = S.scores[cr.id]?.[oi] ?? 5;
-          const eff = cr.invert ? 11 - v : v;
-          return `<div class="sc-mini-crit">
-        <span class="sc-mini-crit-name">${cr.icon} ${cr.name}</span>
-        <div class="sc-mini-bar"><div class="sc-mini-bar-fill" style="width:${eff * 10}%;background:${c.hex}"></div></div>
-        <span class="sc-mini-crit-val" style="color:${c.hex}">${v}</span>
-      </div>`;
-        }).join('');
+          return (cr.invert ? 11 - v : v) >= 6;
+        });
+        const worstCrit = [...allSorted].reverse().find(cr => {
+          const v = S.scores[cr.id]?.[oi] ?? 5;
+          return (cr.invert ? 11 - v : v) <= 5;
+        });
+        const prosLbl = LANG === 'fr' ? 'Points forts' : 'Strengths';
+        const conLbl  = LANG === 'fr' ? 'À surveiller' : 'Watch out';
+        const insightHTML = (topCrits.length || worstCrit) ? `<div class="sc-insights">
+            ${topCrits.length ? `<div class="sc-insight sc-insight-pro">
+              <span class="sc-insight-dot">↑</span>
+              <span><strong>${prosLbl} :</strong> ${topCrits.map(cr => cr.name).join(', ')}</span>
+            </div>` : ''}
+            ${worstCrit ? `<div class="sc-insight sc-insight-con">
+              <span class="sc-insight-dot">↓</span>
+              <span><strong>${conLbl} :</strong> ${worstCrit.name}</span>
+            </div>` : ''}
+          </div>` : '';
         return `
-      <div class="sc-card${rank === 0 ? ' sc-card-winner' : ''}" style="border-color:${rank === 0 ? c.hex : c.border}">
-        <div class="sc-card-accent" style="background:${c.hex}"></div>
+      <div class="sc-card${rank === 0 ? ' sc-card-winner' : ''}" style="border-color:${c.hex};background:linear-gradient(145deg,var(--white) 55%,${c.bg})">
         <div class="sc-card-body">
           <div class="sc-card-left">
             <div class="sc-card-top">
-              <div class="sc-card-rank" style="background:${c.bg};color:${c.hex};border-color:${c.border}">${rankLbl}</div>
+              <div class="sc-card-rank" style="background:${c.hex}">${rankLbl}</div>
               <div class="sc-card-name">${esc(S.options[oi].name)}</div>
             </div>
-            <div class="sc-card-crits">${miniCrits}</div>
-          </div>
-          <div class="sc-card-gauge">
-            <svg viewBox="0 0 52 52" width="52" height="52" style="transform:rotate(-90deg)">
-              <circle fill="none" stroke="var(--bg2)" stroke-width="5" cx="26" cy="26" r="${r}"/>
-              <circle fill="none" stroke="${c.hex}" stroke-width="5" stroke-linecap="round"
-                cx="26" cy="26" r="${r}"
-                stroke-dasharray="${circ}" stroke-dashoffset="${off}"
-                style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1)"/>
-            </svg>
-            <div class="sc-card-gauge-label">
-              <div class="sc-card-num" style="color:${c.hex}">${sc}</div>
-              <div class="sc-card-den">/100</div>
+            <div class="sc-card-score">
+              <div class="sc-score-display">
+                <div class="sc-card-num" style="color:${c.hex}">${sc}</div>
+                <div class="sc-card-den" style="color:${c.hex}">/100</div>
+              </div>
+              <div class="sc-score-bar">
+                <div class="sc-score-bar-fill" style="width:${sc}%;background:${c.hex}"></div>
+              </div>
             </div>
+            ${insightHTML}
           </div>
         </div>
       </div>`;
@@ -6699,30 +6709,32 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         <span class="sc-mini-crit-val" style="color:${c.hex}">${v}</span>
       </div>`;
         }).join('');
+        const critLabel = LANG === 'fr' ? 'Critères' : 'Criteria';
         return `
-      <div class="sc-card${rank === 0 ? ' sc-card-winner' : ''}" style="border-color:${rank === 0 ? c.hex : c.border}">
-        <div class="sc-card-accent" style="background:${c.hex}"></div>
+      <div class="sc-card${rank === 0 ? ' sc-card-winner' : ''}" style="border-color:${c.hex};background:linear-gradient(145deg,var(--white) 55%,${c.bg})">
         <div class="sc-card-body">
           <div class="sc-card-left">
             <div class="sc-card-top">
-              <div class="sc-card-rank" style="background:${c.bg};color:${c.hex};border-color:${c.border}">${rankLbl}</div>
+              <div class="sc-card-rank" style="background:${c.hex}">${rankLbl}</div>
               <div class="sc-card-name">${esc(S.options[oi].name)}</div>
+            </div>
+            <div class="sc-card-score">
+              <div class="sc-score-display">
+                <div class="sc-card-num" style="color:${c.hex}">${sc}</div>
+                <div class="sc-card-den" style="color:${c.hex}">/100</div>
+              </div>
               ${deltaTag}
+              <div class="sc-score-bar">
+                <div class="sc-score-bar-fill" style="width:${sc}%;background:${c.hex}"></div>
+              </div>
             </div>
-            <div class="sc-card-crits">${miniCrits}</div>
-          </div>
-          <div class="sc-card-gauge">
-            <svg viewBox="0 0 52 52" width="52" height="52" style="transform:rotate(-90deg)">
-              <circle fill="none" stroke="var(--bg2)" stroke-width="5" cx="26" cy="26" r="${r}"/>
-              <circle fill="none" stroke="${c.hex}" stroke-width="5" stroke-linecap="round"
-                cx="26" cy="26" r="${r}"
-                stroke-dasharray="${circ}" stroke-dashoffset="${off}"
-                style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1)"/>
-            </svg>
-            <div class="sc-card-gauge-label">
-              <div class="sc-card-num" style="color:${c.hex}">${sc}</div>
-              <div class="sc-card-den">/100</div>
-            </div>
+            ${miniCrits ? `<div class="sc-card-crits-wrap">
+              <button class="sc-card-crits-toggle" onclick="this.closest('.sc-card-crits-wrap').classList.toggle('open')">
+                <span>${critLabel}</span>
+                <span class="sc-card-crits-toggle-icon">▾</span>
+              </button>
+              <div class="sc-card-crits">${miniCrits}</div>
+            </div>` : ''}
           </div>
         </div>
       </div>`;
