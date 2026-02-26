@@ -1735,7 +1735,7 @@
     }
 
     .sc-card {
-      border: 2px solid var(--border);
+      border: 1px solid var(--border);
       border-radius: 14px;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
       transition: box-shadow .2s ease, transform .2s ease;
@@ -1781,12 +1781,12 @@
       padding: 3px 10px;
       border-radius: 20px;
       font-size: .6rem;
-      font-weight: 800;
+      font-weight: 600;
       letter-spacing: .07em;
       text-transform: uppercase;
-      color: #fff;
       white-space: nowrap;
       flex-shrink: 0;
+      opacity: 0.8;
     }
 
     .sc-card-name {
@@ -1813,10 +1813,11 @@
 
     .sc-card-num {
       font-size: 2.6rem;
-      font-weight: 800;
+      font-weight: 700;
       line-height: 1;
       letter-spacing: -0.04em;
       transition: transform .2s ease;
+      opacity: 0.85;
     }
 
     .sc-card:hover .sc-card-num {
@@ -1836,6 +1837,7 @@
       background: var(--bg2);
       border-radius: 4px;
       overflow: hidden;
+      opacity: 0.7;
     }
 
     .sc-score-bar-fill {
@@ -5872,7 +5874,7 @@
         <div class="sc-card-body">
           <div class="sc-card-left">
             <div class="sc-card-top">
-              <div class="sc-card-rank" style="background:${c.hex}">${rankLbl}</div>
+              <div class="sc-card-rank" style="background:${c.bg};color:${c.hex}">${rankLbl}</div>
               <div class="sc-card-name">${esc(S.options[oi].name)}</div>
             </div>
             <div class="sc-card-score">
@@ -6715,7 +6717,7 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         <div class="sc-card-body">
           <div class="sc-card-left">
             <div class="sc-card-top">
-              <div class="sc-card-rank" style="background:${c.hex}">${rankLbl}</div>
+              <div class="sc-card-rank" style="background:${c.bg};color:${c.hex}">${rankLbl}</div>
               <div class="sc-card-name">${esc(S.options[oi].name)}</div>
             </div>
             <div class="sc-card-score">
