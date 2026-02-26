@@ -1931,6 +1931,40 @@
       font-size: .65rem;
     }
 
+    /* ── Insights points forts / faibles ── */
+    .sc-insights {
+      border-top: 1px solid var(--border);
+      margin-top: 10px;
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .sc-insight {
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+      font-size: .74rem;
+      line-height: 1.45;
+      color: var(--ink2);
+    }
+
+    .sc-insight-dot {
+      font-size: .65rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .sc-insight-pro .sc-insight-dot { color: var(--teal); }
+    .sc-insight-con .sc-insight-dot { color: var(--muted); }
+
+    .sc-insight strong {
+      font-weight: 700;
+      color: var(--ink);
+    }
+
     /* Delta scénario */
     .sc-card-delta {
       font-size: .65rem;
@@ -5807,22 +5841,32 @@
         const c = resultColors[oi]; const sc = scores[oi];
         const rankLabels = tr('rank_labels');
         const rankLbl = rank < 3 ? rankLabels[rank] : `#${rank + 1}`;
-        // Mini critères — top 4 par score effectif
-        const sortedCrits = [...S.criteria].sort((a, b) => {
+        // Calcul points forts / faibles par score pondéré effectif
+        const allSorted = [...S.criteria].sort((a, b) => {
           const va = S.scores[a.id]?.[oi] ?? 5; const vb = S.scores[b.id]?.[oi] ?? 5;
           const ea = a.invert ? 11 - va : va; const eb = b.invert ? 11 - vb : vb;
           return (eb * b.weight) - (ea * a.weight);
-        }).slice(0, 4);
-        const miniCrits = sortedCrits.map(cr => {
+        });
+        const topCrits = allSorted.slice(0, 2).filter(cr => {
           const v = S.scores[cr.id]?.[oi] ?? 5;
-          const eff = cr.invert ? 11 - v : v;
-          return `<div class="sc-mini-crit">
-        <span class="sc-mini-crit-name">${cr.icon} ${cr.name}</span>
-        <div class="sc-mini-bar"><div class="sc-mini-bar-fill" style="width:${eff * 10}%;background:${c.hex}"></div></div>
-        <span class="sc-mini-crit-val" style="color:${c.hex}">${v}</span>
-      </div>`;
-        }).join('');
-        const critLabel = LANG === 'fr' ? 'Critères' : 'Criteria';
+          return (cr.invert ? 11 - v : v) >= 6;
+        });
+        const worstCrit = [...allSorted].reverse().find(cr => {
+          const v = S.scores[cr.id]?.[oi] ?? 5;
+          return (cr.invert ? 11 - v : v) <= 5;
+        });
+        const prosLbl = LANG === 'fr' ? 'Points forts' : 'Strengths';
+        const conLbl  = LANG === 'fr' ? 'À surveiller' : 'Watch out';
+        const insightHTML = (topCrits.length || worstCrit) ? `<div class="sc-insights">
+            ${topCrits.length ? `<div class="sc-insight sc-insight-pro">
+              <span class="sc-insight-dot">↑</span>
+              <span><strong>${prosLbl} :</strong> ${topCrits.map(cr => cr.name).join(', ')}</span>
+            </div>` : ''}
+            ${worstCrit ? `<div class="sc-insight sc-insight-con">
+              <span class="sc-insight-dot">↓</span>
+              <span><strong>${conLbl} :</strong> ${worstCrit.name}</span>
+            </div>` : ''}
+          </div>` : '';
         return `
       <div class="sc-card${rank === 0 ? ' sc-card-winner' : ''}" style="border-color:${c.hex};background:linear-gradient(145deg,var(--white) 55%,${c.bg})">
         <div class="sc-card-body">
@@ -5840,13 +5884,7 @@
                 <div class="sc-score-bar-fill" style="width:${sc}%;background:${c.hex}"></div>
               </div>
             </div>
-            ${miniCrits ? `<div class="sc-card-crits-wrap">
-              <button class="sc-card-crits-toggle" onclick="this.closest('.sc-card-crits-wrap').classList.toggle('open')">
-                <span>${critLabel}</span>
-                <span class="sc-card-crits-toggle-icon">▾</span>
-              </button>
-              <div class="sc-card-crits">${miniCrits}</div>
-            </div>` : ''}
+            ${insightHTML}
           </div>
         </div>
       </div>`;
