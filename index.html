@@ -3011,15 +3011,13 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px;
-        position: sticky;
-        bottom: 0;
+        /* keep normal flow so actions sit at page bottom, not fixed on scroll */
         padding: 16px;
         margin: 20px -16px 0;
         background: var(--glass-bg);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border-top: 1px solid var(--border);
-        z-index: 40;
       }
 
       .res-actions .btn {
