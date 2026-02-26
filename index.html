@@ -5318,14 +5318,14 @@
     /* ─── STEPPER COLOR ─────────────────────── */
     function stepColor(raw, invert) {
       const eff = invert ? (11 - raw) : raw;
-      const t = (eff - 1) / 9;
-      if (t < 0.5) {
-        const f = t / 0.5;
-        return `rgb(${Math.round(192 + (90 - 192) * f)},${Math.round(57 + (87 - 57) * f)},${Math.round(43 + (80 - 43) * f)})`;
-      } else {
-        const f = (t - 0.5) / 0.5;
-        return `rgb(${Math.round(90 + (45 - 90) * f)},${Math.round(87 + (138 - 87) * f)},${Math.round(80 + (78 - 80) * f)})`;
-      }
+      const t = (eff - 1) / 9; // normalized 0..1
+      // Map 0..1 to hue 0 (red) -> 120 (green)
+      const hue = Math.round(t * 120);
+      const sat = 78; // high saturation for vivid colors
+      // Use a slightly lighter lightness in dark mode so colors pop on dark backgrounds
+      const darkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const light = darkMode ? 55 : 45;
+      return `hsl(${hue} ${sat}% ${light}%)`;
     }
 
     function renderStepper(oi, cid, val, invert) {
