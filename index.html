@@ -3766,6 +3766,7 @@
       gap: 8px;
       margin-bottom: 6px;
       padding-right: 4px;
+      flex-wrap: wrap; /* allow name to break onto multiple lines on narrow screens */
     }
 
     .swing-name-group {
@@ -3867,6 +3868,18 @@
       font-weight: 700;
       min-width: 52px;
       text-align: center;
+    }
+
+    /* Column grouping invert button + percentage to save horizontal space */
+    .swing-weight-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .swing-weight-col .inv-btn {
+      /* keep compact styling, inherited from global .inv-btn */
     }
 
     /* Badge poids swing dans step 3 */
@@ -5078,14 +5091,16 @@
           <div class="swing-item-header">
             <span style="font-size:.9rem;flex-shrink:0">${c.icon}</span>
             <span class="swing-item-name">${c.name}</span>
-            <button class="inv-btn${c.invert ? ' on' : ''}" onclick="toggleInv('${c.id}')"
-              style="font-size:.6rem;padding:3px 7px;margin-left:auto;flex-shrink:0;"
-              title="${c.invert ? tr('inv_tip_on') : tr('inv_tip_off')}">
-              ${c.invert ? tr('inv_on') : tr('inv_off')}
-            </button>
           </div>
         </div>
-        <div class="swing-weight-tag" style="margin: 0 8px; align-self: center; font-size: .8rem; padding: 4px 8px;">${pct}%</div>
+        <div class="swing-weight-col">
+          <button class="inv-btn${c.invert ? ' on' : ''}" onclick="toggleInv('${c.id}')"
+            style="font-size:.6rem;padding:3px 7px;flex-shrink:0;"
+            title="${c.invert ? tr('inv_tip_on') : tr('inv_tip_off')}">
+            ${c.invert ? tr('inv_on') : tr('inv_off')}
+          </button>
+          <div class="swing-weight-tag" style="font-size: .8rem; padding: 4px 8px;">${pct}%</div>
+        </div>
         <button class="rm-btn" onclick="rmCrit('${c.id}')" title="${LANG === 'fr' ? 'Retirer' : 'Remove'}" style="align-self:center;margin-left:0">✕</button>
       </div>`;
       }).join('');
