@@ -35,6 +35,12 @@
       --r-sm: 12px;
       --shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
       --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+      --sel-box-bg: rgba(255, 255, 255, 0.4);
+      --sel-box-border: rgba(255, 255, 255, 0.6);
+      --sel-head-border: rgba(255, 255, 255, 0.4);
+      --sel-head-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5));
+      --sel-item-bg: radial-gradient(circle at top left, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
+      --sel-item-border: rgba(255, 255, 255, 0.5);
     }
 
     @media (prefers-color-scheme: dark) {
@@ -55,6 +61,12 @@
         --amber-bg: rgba(217, 119, 6, 0.15);
         --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.4);
+        --sel-box-bg: rgba(30, 41, 59, 0.4);
+        --sel-box-border: rgba(255, 255, 255, 0.1);
+        --sel-head-border: rgba(255, 255, 255, 0.1);
+        --sel-head-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.5));
+        --sel-item-bg: radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+        --sel-item-border: rgba(255, 255, 255, 0.12);
       }
     }
 
@@ -1210,8 +1222,8 @@
 
     /* Selected criteria box */
     .selected-box {
-      background: rgba(255, 255, 255, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      background: var(--sel-box-bg);
+      border: 1px solid var(--sel-box-border);
       border-radius: 20px;
       overflow: hidden;
       box-shadow: var(--shadow-lg);
@@ -1224,8 +1236,8 @@
       align-items: center;
       justify-content: space-between;
       padding: 14px 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5));
+      border-bottom: 1px solid var(--sel-head-border);
+      background: var(--sel-head-bg);
     }
 
     .selected-box-head h3 {
@@ -1256,8 +1268,8 @@
       gap: 14px;
       padding: 14px 16px;
       border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
+      border: 1px solid var(--sel-item-border);
+      background: var(--sel-item-bg);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
