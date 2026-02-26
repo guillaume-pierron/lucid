@@ -1167,6 +1167,16 @@
       color: var(--teal);
     }
 
+    @media (prefers-color-scheme: dark) {
+      .insight-box {
+        background: linear-gradient(135deg, var(--teal-bg) 0%, var(--bg2) 100%);
+      }
+
+      .insight-txt {
+        color: var(--ink);
+      }
+    }
+
     .update-form {
       background: var(--bg);
       padding: 16px;
@@ -5625,7 +5635,7 @@
       const t = (eff - 1) / 9; // normalized 0..1
       // Map 0..1 to hue 0 (red) -> 120 (green)
       const hue = Math.round(t * 120);
-      const sat = 78; // high saturation for vivid colors
+      const sat = 50; // softened saturation for less flashy colors
       // Use a slightly lighter lightness in dark mode so colors pop on dark backgrounds
       const darkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       const light = darkMode ? 55 : 45;
