@@ -3873,13 +3873,32 @@
     /* Column grouping invert button + percentage to save horizontal space */
     .swing-weight-col {
       display: flex;
-      flex-direction: column;
+      flex-direction: row; /* default horizontal on desktop */
       align-items: center;
       gap: 4px;
       flex-shrink: 0;
     }
     .swing-weight-col .inv-btn {
       /* keep compact styling, inherited from global .inv-btn */
+    }
+    /* mobile adaptation: stack vertical and put percentage above button */
+    @media (max-width: 600px) {
+      .swing-weight-col {
+        flex-direction: column;
+      }
+      .swing-weight-tag {
+        order: -1; /* show percent first */
+      }
+      .swing-item-name {
+        font-size: .86rem; /* match simple method exactly */
+      }
+    }
+    /* dark mode: make percentage badge more visible */
+    @media (prefers-color-scheme: dark) {
+      .swing-weight-tag {
+        background: rgba(56, 189, 248, 0.28);
+        color: #cffafe; /* lighter text for contrast */
+      }
     }
 
     /* Badge poids swing dans step 3 */
