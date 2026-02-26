@@ -1327,8 +1327,8 @@
     .sel-item-controls {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       margin-top: 10px;
+      gap: 12px;
     }
 
     .weight-group {
@@ -1452,18 +1452,19 @@
       flex-shrink: 0;
       align-self: flex-end;
       position: relative;
+      margin-left: auto; /* push away from weight buttons */
     }
 
-    /* arrow indicator before text */
+    /* arrow indicator before text: up/down state */
     .inv-btn::before {
-      content: '⮟';
+      content: '↑';
       font-size: .75rem;
       display: inline-block;
       margin-right: 4px;
       transition: transform .2s;
     }
     .inv-btn.on::before {
-      transform: rotate(180deg);
+      content: '↓';
     }
 
     .inv-btn:hover {
