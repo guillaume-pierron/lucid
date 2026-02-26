@@ -3728,6 +3728,30 @@
       gap: 10px;
     }
 
+    /* Small animation applied to an item when it's dropped into place */
+    @keyframes swingDrop {
+      0% { transform: translateY(-10px) scale(.98); opacity: .9; box-shadow: 0 6px 18px rgba(15,23,42,.12); }
+      50% { transform: translateY(4px) scale(1.03); opacity: 1; box-shadow: 0 18px 48px rgba(15,23,42,.22); border-color: var(--teal); }
+      100% { transform: none; opacity: 1; box-shadow: 0 10px 30px rgba(15,23,42,.18); }
+    }
+
+    .animate-drop {
+      animation: swingDrop 360ms cubic-bezier(.2,.9,.3,1) both;
+      will-change: transform, box-shadow;
+    }
+
+    /* Give the rank number a short bounce to draw attention */
+    @keyframes rankBounce {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.18); }
+      100% { transform: scale(1); }
+    }
+
+    .animate-drop .swing-rank-num {
+      animation: rankBounce 360ms cubic-bezier(.2,.9,.3,1) both;
+      will-change: transform;
+    }
+
     /* FIN MODIF DRAG AND DROP */
 
     /* Contenu principal swing item */
@@ -5206,10 +5230,15 @@
     function _animateSwingDrop(movedId) {
       const movedEl = document.getElementById(`swing-item-${movedId}`);
       if (movedEl) {
-        movedEl.classList.add('animate-drop');
-        movedEl.addEventListener('animationend', () => {
-          movedEl.classList.remove('animate-drop');
-        }, { once: true });
+        // Ensure the element is in the DOM and paint has happened
+        requestAnimationFrame(() => {
+          movedEl.classList.add('animate-drop');
+          // short haptic feedback on capable devices
+          try { if (navigator.vibrate) navigator.vibrate(20); } catch (e) { }
+          movedEl.addEventListener('animationend', () => {
+            movedEl.classList.remove('animate-drop');
+          }, { once: true });
+        });
       }
     }
 
