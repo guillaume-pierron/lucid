@@ -2711,6 +2711,20 @@
       border: 1px solid var(--border2);
     }
 
+    /* ── MOBILE ADAPTATION FOR BREAKDOWN TABLE ── */
+    @media(max-width:640px) {
+      .bk-cell.crit-col {
+        width: auto;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .bk-cell.crit-col > span {
+        flex-basis: 100%;
+      }
+    }
+
     /* ── NOTES ───────────────────────────────── */
     .notes-res {
       background: var(--white);
