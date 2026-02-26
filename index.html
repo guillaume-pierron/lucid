@@ -41,6 +41,14 @@
       --sel-head-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5));
       --sel-item-bg: radial-gradient(circle at top left, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
       --sel-item-border: rgba(255, 255, 255, 0.5);
+      /* Verdict card (results) - default (light)
+        Use CSS variables so dark mode can override for better contrast */
+      --verdict-bg: #fffbea;
+      --verdict-border: #f0d080;
+      /* Scenario impact cards - default (light) */
+      --scenario-card-bg: radial-gradient(circle at top left, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+      --scenario-card-border: rgba(255, 255, 255, 0.9);
+      --scenario-dot-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7);
     }
 
     @media (prefers-color-scheme: dark) {
@@ -52,6 +60,8 @@
         --border2: rgba(255, 255, 255, 0.2);
         --ink: #f8fafc;
         --ink2: #cbd5e1;
+        --muted: #94a3b8;
+        --muted2: #cbd5e1;
         --white: #1e293b;
         /* Using white var as a solid card bg fallback */
         --teal-bg: rgba(5, 150, 105, 0.15);
@@ -67,6 +77,13 @@
         --sel-head-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.5));
         --sel-item-bg: radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
         --sel-item-border: rgba(255, 255, 255, 0.12);
+        /* Verdict card adjustments for dark mode */
+        --verdict-bg: rgba(250,240,190,0.06);
+        --verdict-border: rgba(240,208,128,0.12);
+        /* Scenario impact cards - dark mode adjustments */
+        --scenario-card-bg: radial-gradient(circle at top left, rgba(30,41,59,0.9), rgba(30,41,59,0.5));
+        --scenario-card-border: rgba(71,84,103,0.6);
+        --scenario-dot-shadow: 0 0 0 3px rgba(71,84,103,0.8);
       }
     }
 
@@ -1804,6 +1821,10 @@
       padding: 14px 18px;
       border-radius: 12px;
       margin-bottom: 6px;
+      background: var(--verdict-bg);
+      border: 1.5px solid var(--verdict-border);
+      box-shadow: 0 10px 30px rgba(2,6,23,0.06);
+      backdrop-filter: blur(6px);
     }
 
     .verdict-inline-emoji {
@@ -3100,8 +3121,8 @@
       position: relative;
       padding: 18px 20px;
       border-radius: 18px;
-      background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
-      border: 1px solid rgba(255, 255, 255, 0.9);
+      background: var(--scenario-card-bg);
+      border: 1px solid var(--scenario-card-border);
       box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
@@ -3153,7 +3174,7 @@
       width: 10px;
       height: 10px;
       border-radius: 999px;
-      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7);
+      box-shadow: var(--scenario-dot-shadow);
     }
 
     .scenario-impact-name {
@@ -3219,16 +3240,40 @@
       color: #15803d;
     }
 
+    @media (prefers-color-scheme: dark) {
+      .scenario-delta-up {
+        background: rgba(34, 197, 94, 0.25);
+        border-color: rgba(34, 197, 94, 0.75);
+        color: #4ade80;
+      }
+    }
+
     .scenario-delta-down {
       background: rgba(239, 68, 68, 0.12);
       border-color: rgba(239, 68, 68, 0.55);
       color: #b91c1c;
     }
 
+    @media (prefers-color-scheme: dark) {
+      .scenario-delta-down {
+        background: rgba(239, 68, 68, 0.25);
+        border-color: rgba(239, 68, 68, 0.75);
+        color: #fca5a5;
+      }
+    }
+
     .scenario-delta-same {
       background: rgba(148, 163, 184, 0.14);
       border-color: rgba(148, 163, 184, 0.45);
       color: #475569;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .scenario-delta-same {
+        background: rgba(148, 163, 184, 0.25);
+        border-color: rgba(148, 163, 184, 0.65);
+        color: #cbd5e1;
+      }
     }
 
     .scenario-impact-card:hover .scenario-delta-badge {
@@ -5318,14 +5363,14 @@
     /* ─── STEPPER COLOR ─────────────────────── */
     function stepColor(raw, invert) {
       const eff = invert ? (11 - raw) : raw;
-      const t = (eff - 1) / 9;
-      if (t < 0.5) {
-        const f = t / 0.5;
-        return `rgb(${Math.round(192 + (90 - 192) * f)},${Math.round(57 + (87 - 57) * f)},${Math.round(43 + (80 - 43) * f)})`;
-      } else {
-        const f = (t - 0.5) / 0.5;
-        return `rgb(${Math.round(90 + (45 - 90) * f)},${Math.round(87 + (138 - 87) * f)},${Math.round(80 + (78 - 80) * f)})`;
-      }
+      const t = (eff - 1) / 9; // normalized 0..1
+      // Map 0..1 to hue 0 (red) -> 120 (green)
+      const hue = Math.round(t * 120);
+      const sat = 78; // high saturation for vivid colors
+      // Use a slightly lighter lightness in dark mode so colors pop on dark backgrounds
+      const darkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const light = darkMode ? 55 : 45;
+      return `hsl(${hue} ${sat}% ${light}%)`;
     }
 
     function renderStepper(oi, cid, val, invert) {
@@ -5420,12 +5465,12 @@
       // Verdict
       let vstyle, vemoji, vtitle, vsub;
       if (tie) {
-        vstyle = `background:#fffbea;border-color:#f0d080`;
+        vstyle = `background:var(--verdict-bg);border:1.5px solid var(--verdict-border);color:var(--ink)`;
         vemoji = '⚖️';
         vtitle = `<span style="color:var(--amber)">${tr('res_tie_title')}</span>`;
         vsub = tr('res_tie_sub', diff);
       } else {
-        vstyle = `background:${cW.bg};border-color:${cW.border}`;
+        vstyle = `background:${cW.bg};border:1.5px solid ${cW.border};color:var(--ink)`;
         vemoji = '🎯';
         vtitle = `<span style="color:#92700a">"${esc(S.options[winner].name)}" ${LANG === 'fr' ? 'ressort en tête' : 'comes out on top'}</span>`;
         vsub = tr('res_win_sub', diff);
@@ -5534,7 +5579,7 @@
     <div class="main">
       <div class="page-eyebrow anim">${tr('res_eyebrow')}</div>
       <div class="page-title anim d1">${esc(S.decision)}</div>
-      <div class="verdict-inline anim d2" style="background:#fffbea;border:1.5px solid #f0d080">
+      <div class="verdict-inline anim d2" style="${vstyle}">
         <span class="verdict-inline-emoji">${vemoji}</span>
         <div class="verdict-inline-text">
           <div class="verdict-inline-title">${vtitle}</div>
