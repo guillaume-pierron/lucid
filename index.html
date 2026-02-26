@@ -3728,6 +3728,17 @@
       gap: 10px;
     }
 
+    /* Small animation applied to an item when it's dropped into place */
+    @keyframes swingDrop {
+      0% { transform: translateY(-8px) scale(.98); opacity: .92; }
+      60% { transform: translateY(3px) scale(1.02); opacity: 1; }
+      100% { transform: none; opacity: 1; }
+    }
+
+    .animate-drop {
+      animation: swingDrop 360ms cubic-bezier(.2,.9,.3,1) both;
+    }
+
     /* FIN MODIF DRAG AND DROP */
 
     /* Contenu principal swing item */
