@@ -1453,6 +1453,19 @@
       transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease;
       flex-shrink: 0;
       align-self: flex-end;
+      position: relative;
+    }
+
+    /* arrow indicator before text */
+    .inv-btn::before {
+      content: '⮟';
+      font-size: .75rem;
+      display: inline-block;
+      margin-right: 4px;
+      transition: transform .2s;
+    }
+    .inv-btn.on::before {
+      transform: rotate(180deg);
     }
 
     .inv-btn:hover {
@@ -4430,11 +4443,11 @@
         err_crit: 'Veuillez sélectionner au moins 2 critères.',
         lbl_importance: 'Importance',
         lbl_sens: 'Sens',
-        inv_off: '↑ Normal',
-        inv_on: '↓ Inversé',
+        inv_off: 'Normal',
+        inv_on: 'Inversé',
         inv_tip_off: 'Actuellement : score élevé = bon',
         inv_tip_on: 'Actuellement : score élevé = mauvais',
-        inv_tag: '↓ inversé',
+        inv_tag: 'inversé',
         /* Step 3 */
         s3_eyebrow: 'Étape 3 sur 3',
         s3_title: 'Notez chaque option',
@@ -4592,11 +4605,11 @@
         err_crit: 'Please select at least 2 criteria.',
         lbl_importance: 'Importance',
         lbl_sens: 'Direction',
-        inv_off: '↑ Normal',
-        inv_on: '↓ Inverted',
+        inv_off: 'Normal',
+        inv_on: 'Inverted',
         inv_tip_off: 'Currently: high score = good',
         inv_tip_on: 'Currently: high score = bad',
-        inv_tag: '↓ inverted',
+        inv_tag: 'inverted',
         /* Step 3 */
         s3_eyebrow: 'Step 3 of 3',
         s3_title: 'Rate each option',
@@ -5182,7 +5195,6 @@
         </div>
         <div class="swing-weight-col">
           <button class="inv-btn${c.invert ? ' on' : ''}" onclick="toggleInv('${c.id}')"
-            style="font-size:.6rem;padding:3px 7px;flex-shrink:0;"
             title="${c.invert ? tr('inv_tip_on') : tr('inv_tip_off')}">
             ${c.invert ? tr('inv_on') : tr('inv_off')}
           </button>
