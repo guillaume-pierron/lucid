@@ -1741,7 +1741,8 @@
       overflow: hidden;
       box-shadow: var(--shadow);
       display: flex;
-      transition: box-shadow .2s, transform .2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: box-shadow .3s cubic-bezier(0.16, 1, 0.3, 1), transform .3s cubic-bezier(0.16, 1, 0.3, 1), border-color .3s ease;
+      position: relative;
     }
 
     .sc-card:hover {
@@ -1750,7 +1751,25 @@
     }
 
     .sc-card-winner {
-      border-width: 1px;
+      border-width: 2px;
+      box-shadow: 0 16px 48px rgba(5, 150, 105, 0.18);
+    }
+
+    .sc-card-winner:hover {
+      box-shadow: 0 24px 64px rgba(5, 150, 105, 0.28);
+      transform: translateY(-4px);
+    }
+
+    /* Accent top bar for winner card to indicate it's the top choice */
+    .sc-card-winner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--teal), var(--teal2));
+      border-radius: 16px 16px 0 0;
     }
 
     /* Barre colorée à gauche — supprimée */
@@ -1758,14 +1777,27 @@
       display: none;
     }
 
+    /* Second-ranked card gets subtle visual enhancement */
+    .sc-cards-row > .sc-card:nth-child(2) {
+      border-width: 1.5px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    }
+
+    .sc-cards-row > .sc-card:nth-child(2):hover {
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+      transform: translateY(-2px);
+    }
+
     .sc-card-body {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 16px;
-      gap: 12px;
+      padding: 16px 18px;
+      gap: 14px;
       min-width: 0;
+      position: relative;
+      z-index: 1;
     }
 
     .sc-card-top {
@@ -1776,32 +1808,59 @@
     .sc-card-rank {
       display: inline-flex;
       align-items: center;
-      font-size: .58rem;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 20px;
-      border: 1px solid;
-      letter-spacing: .05em;
-      margin-bottom: 6px;
+      justify-content: center;
+      font-size: .65rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1.5px solid;
+      letter-spacing: .06em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+      transition: all .2s ease;
+    }
+
+    .sc-card:hover .sc-card-rank {
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.10);
+      transform: scale(1.05);
     }
 
     .sc-card-name {
       font-family: 'Lora', serif;
-      font-size: .95rem;
+      font-size: 1rem;
       font-weight: 700;
       color: var(--ink);
-      line-height: 1.25;
+      line-height: 1.3;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      transition: color .2s ease;
+    }
+
+    .sc-card-winner .sc-card-name {
+      font-weight: 800;
+      letter-spacing: -0.01em;
     }
 
     /* Jauge circulaire à droite */
     .sc-card-gauge {
       position: relative;
       flex-shrink: 0;
-      width: 52px;
-      height: 52px;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sc-card-gauge svg {
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08));
+      transition: filter .2s ease;
+    }
+
+    .sc-card:hover .sc-card-gauge svg {
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.12));
     }
 
     .sc-card-gauge-label {
@@ -1815,17 +1874,29 @@
 
     .sc-card-num {
       font-family: 'Lora', serif;
-      font-size: 1.1rem;
-      font-weight: 700;
+      font-size: 1.3rem;
+      font-weight: 800;
       line-height: 1;
+      letter-spacing: -0.02em;
+      transition: transform .2s ease;
+    }
+
+    .sc-card:hover .sc-card-num {
+      transform: scale(1.08);
     }
 
     .sc-card-den {
-      font-size: .48rem;
-      color: var(--muted);
-      font-weight: 600;
+      font-size: .52rem;
+      color: currentColor;
+      opacity: 0.75;
+      font-weight: 700;
       letter-spacing: .04em;
-      margin-top: 1px;
+      margin-top: 2px;
+      transition: opacity .2s ease;
+    }
+
+    .sc-card:hover .sc-card-den {
+      opacity: 0.95;
     }
 
     .sc-card-left {
@@ -1841,14 +1912,21 @@
     .sc-card-crits {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
+      margin-top: 2px;
     }
 
     .sc-mini-crit {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: .68rem;
+      font-size: .72rem;
+      font-weight: 500;
+      transition: opacity .2s ease;
+    }
+
+    .sc-card:hover .sc-mini-crit {
+      opacity: 0.9;
     }
 
     .sc-mini-crit-name {
