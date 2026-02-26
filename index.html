@@ -372,6 +372,14 @@
       color: var(--muted2);
     }
 
+    /* Dark mode should use a slightly darker placeholder so examples aren’t too bright */
+    @media (prefers-color-scheme: dark) {
+      input[type=text]::placeholder,
+      textarea::placeholder {
+        color: var(--muted); /* darker than --muted2 in dark themes */
+      }
+    }
+
     /* ── BUTTONS ─────────────────────────────── */
     .btn {
       font-family: 'Inter', 'Manrope', system-ui, sans-serif;
