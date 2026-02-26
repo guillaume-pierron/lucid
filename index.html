@@ -1726,82 +1726,76 @@
     }
 
     /* ── SCORE CARDS RECTANGULAIRES ─────────── */
+    /* ── SCORE CARDS — modern / minimal ─────── */
     .sc-cards-row {
       display: grid;
-      gap: 12px;
+      gap: 14px;
       margin: 20px 0 24px;
     }
 
     .sc-card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: var(--white);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      transition: box-shadow .25s ease, transform .25s cubic-bezier(0.16, 1, 0.3, 1), border-color .2s ease;
       overflow: hidden;
-      box-shadow: var(--shadow);
-      display: flex;
-      transition: box-shadow .3s cubic-bezier(0.16, 1, 0.3, 1), transform .3s cubic-bezier(0.16, 1, 0.3, 1), border-color .3s ease;
       position: relative;
     }
 
     .sc-card:hover {
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
       transform: translateY(-2px);
     }
 
+    /* Winner highlight */
     .sc-card-winner {
       border-width: 2px;
-      box-shadow: 0 16px 48px rgba(5, 150, 105, 0.18);
     }
 
     .sc-card-winner:hover {
-      box-shadow: 0 24px 64px rgba(5, 150, 105, 0.28);
-      transform: translateY(-4px);
+      transform: translateY(-3px);
     }
 
-    /* Accent top bar for winner card to indicate it's the top choice */
+    /* Colored top stripe for winner */
     .sc-card-winner::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--teal), var(--teal2));
-      border-radius: 16px 16px 0 0;
+      height: 3px;
+      background: var(--card-accent-color, var(--teal));
+      border-radius: 12px 12px 0 0;
     }
 
-    /* Barre colorée à gauche — supprimée */
+    /* Accent bar — hidden */
     .sc-card-accent {
       display: none;
     }
 
-    /* Second-ranked card gets subtle visual enhancement */
-    .sc-cards-row > .sc-card:nth-child(2) {
-      border-width: 1.5px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-    }
-
-    .sc-cards-row > .sc-card:nth-child(2):hover {
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
-      transform: translateY(-2px);
-    }
-
+    /* Card body — vertical flex */
     .sc-card-body {
-      flex: 1;
+      padding: 18px 20px 16px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 18px;
-      gap: 14px;
-      min-width: 0;
+      flex-direction: column;
+      gap: 0;
       position: relative;
       z-index: 1;
+      min-width: 0;
+    }
+
+    /* Header row: rank badge + name */
+    .sc-card-left {
+      flex: 1;
+      min-width: 0;
     }
 
     .sc-card-top {
-      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
       min-width: 0;
     }
 
@@ -1809,124 +1803,136 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: .65rem;
+      font-size: .62rem;
       font-weight: 800;
-      padding: 4px 10px;
+      padding: 3px 9px;
       border-radius: 8px;
       border: 1.5px solid;
       letter-spacing: .06em;
-      margin-bottom: 8px;
       text-transform: uppercase;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-      transition: all .2s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: transform .2s ease;
     }
 
     .sc-card:hover .sc-card-rank {
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.10);
-      transform: scale(1.05);
+      transform: scale(1.04);
     }
 
     .sc-card-name {
-      font-family: 'Lora', serif;
-      font-size: 1rem;
+      font-size: .95rem;
       font-weight: 700;
       color: var(--ink);
       line-height: 1.3;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      transition: color .2s ease;
-    }
-
-    .sc-card-winner .sc-card-name {
-      font-weight: 800;
-      letter-spacing: -0.01em;
-    }
-
-    /* Jauge circulaire à droite */
-    .sc-card-gauge {
-      position: relative;
-      flex-shrink: 0;
-      width: 56px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .sc-card-gauge svg {
-      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08));
-      transition: filter .2s ease;
-    }
-
-    .sc-card:hover .sc-card-gauge svg {
-      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.12));
-    }
-
-    .sc-card-gauge-label {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .sc-card-num {
-      font-family: 'Lora', serif;
-      font-size: 1.3rem;
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -0.02em;
-      transition: transform .2s ease;
-    }
-
-    .sc-card:hover .sc-card-num {
-      transform: scale(1.08);
-    }
-
-    .sc-card-den {
-      font-size: .52rem;
-      color: currentColor;
-      opacity: 0.75;
-      font-weight: 700;
-      letter-spacing: .04em;
-      margin-top: 2px;
-      transition: opacity .2s ease;
-    }
-
-    .sc-card:hover .sc-card-den {
-      opacity: 0.95;
-    }
-
-    .sc-card-left {
       flex: 1;
       min-width: 0;
     }
 
-    .sc-card-top {
-      margin-bottom: 10px;
+    /* ── Score block ── */
+    .sc-card-score {
+      margin-bottom: 14px;
     }
 
-    /* Mini critères dans les cards */
-    .sc-card-crits {
+    .sc-score-display {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
+      align-items: baseline;
+      gap: 3px;
+      margin-bottom: 8px;
+    }
+
+    .sc-card-num {
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      transition: transform .2s ease;
+    }
+
+    .sc-card:hover .sc-card-num {
+      transform: scale(1.04);
+    }
+
+    .sc-card-den {
+      font-size: .85rem;
+      color: var(--muted);
+      font-weight: 500;
+      opacity: 0.7;
+      margin-bottom: 2px;
+    }
+
+    /* Thin progress bar */
+    .sc-score-bar {
+      height: 4px;
+      background: var(--bg2);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .sc-score-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width .9s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    /* ── Collapsible criteria ── */
+    .sc-card-crits-wrap {
+      border-top: 1px solid var(--border);
       margin-top: 2px;
+    }
+
+    .sc-card-crits-toggle {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      color: var(--muted);
+      font-size: .67rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      font-family: inherit;
+      transition: color .2s ease;
+    }
+
+    .sc-card-crits-toggle:hover {
+      color: var(--ink2);
+    }
+
+    .sc-card-crits-toggle-icon {
+      font-size: .7rem;
+      transition: transform .25s ease;
+      flex-shrink: 0;
+    }
+
+    .sc-card-crits-wrap.open .sc-card-crits-toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    .sc-card-crits {
+      display: none;
+      flex-direction: column;
+      gap: 7px;
+      padding-top: 10px;
+    }
+
+    .sc-card-crits-wrap.open .sc-card-crits {
+      display: flex;
     }
 
     .sc-mini-crit {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       font-size: .72rem;
       font-weight: 500;
-      transition: opacity .2s ease;
-    }
-
-    .sc-card:hover .sc-mini-crit {
-      opacity: 0.9;
     }
 
     .sc-mini-crit-name {
@@ -1981,6 +1987,18 @@
 
     .sc-card-delta.same {
       display: none;
+    }
+
+    /* Dark mode — sc-card solid bg */
+    @media (prefers-color-scheme: dark) {
+      .sc-card {
+        background: var(--bg2);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+      }
+
+      .sc-card:hover {
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+      }
     }
 
     /* ── VERDICT ENCADRÉ ─────────────────────── */
@@ -5829,14 +5847,12 @@
         vsub = tr('res_win_sub', diff);
       }
 
-      // Score cards rectangulaires — une par option, classées
+      // Score cards — design moderne / minimaliste
       const ncols = Math.min(S.options.length, 4);
       const scoreCards = ranked.map((oi, rank) => {
         const c = resultColors[oi]; const sc = scores[oi];
         const rankLabels = tr('rank_labels');
         const rankLbl = rank < 3 ? rankLabels[rank] : `#${rank + 1}`;
-        const r = 22, circ = (2 * Math.PI * r).toFixed(2);
-        const off = (circ - (sc / 100) * circ).toFixed(2);
         // Mini critères — top 4 par score effectif
         const sortedCrits = [...S.criteria].sort((a, b) => {
           const va = S.scores[a.id]?.[oi] ?? 5; const vb = S.scores[b.id]?.[oi] ?? 5;
@@ -5852,29 +5868,32 @@
         <span class="sc-mini-crit-val" style="color:${c.hex}">${v}</span>
       </div>`;
         }).join('');
+        const critLabel = LANG === 'fr' ? 'Critères' : 'Criteria';
         return `
-      <div class="sc-card${rank === 0 ? ' sc-card-winner' : ''}" style="border-color:${rank === 0 ? c.hex : c.border}">
-        <div class="sc-card-accent" style="background:${c.hex}"></div>
+      <div class="sc-card${rank === 0 ? ' sc-card-winner' : ''}" style="--card-accent-color:${c.hex};border-color:${rank === 0 ? c.hex : c.border}${rank === 0 ? ';box-shadow:0 4px 20px ' + c.border : ''}">
+        <div class="sc-card-accent"></div>
         <div class="sc-card-body">
           <div class="sc-card-left">
             <div class="sc-card-top">
               <div class="sc-card-rank" style="background:${c.bg};color:${c.hex};border-color:${c.border}">${rankLbl}</div>
               <div class="sc-card-name">${esc(S.options[oi].name)}</div>
             </div>
-            <div class="sc-card-crits">${miniCrits}</div>
-          </div>
-          <div class="sc-card-gauge">
-            <svg viewBox="0 0 52 52" width="52" height="52" style="transform:rotate(-90deg)">
-              <circle fill="none" stroke="var(--bg2)" stroke-width="5" cx="26" cy="26" r="${r}"/>
-              <circle fill="none" stroke="${c.hex}" stroke-width="5" stroke-linecap="round"
-                cx="26" cy="26" r="${r}"
-                stroke-dasharray="${circ}" stroke-dashoffset="${off}"
-                style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1)"/>
-            </svg>
-            <div class="sc-card-gauge-label">
-              <div class="sc-card-num" style="color:${c.hex}">${sc}</div>
-              <div class="sc-card-den">/100</div>
+            <div class="sc-card-score">
+              <div class="sc-score-display">
+                <div class="sc-card-num" style="color:${c.hex}">${sc}</div>
+                <div class="sc-card-den">/100</div>
+              </div>
+              <div class="sc-score-bar">
+                <div class="sc-score-bar-fill" style="width:${sc}%;background:${c.hex}"></div>
+              </div>
             </div>
+            ${miniCrits ? `<div class="sc-card-crits-wrap">
+              <button class="sc-card-crits-toggle" onclick="this.closest('.sc-card-crits-wrap').classList.toggle('open')">
+                <span>${critLabel}</span>
+                <span class="sc-card-crits-toggle-icon">▾</span>
+              </button>
+              <div class="sc-card-crits">${miniCrits}</div>
+            </div>` : ''}
           </div>
         </div>
       </div>`;
