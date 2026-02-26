@@ -1433,30 +1433,41 @@
 
         }
 
+    /* inversion toggle styled as a modern pill button */
     .inv-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 70px;
       font-size: .72rem;
-      padding: 4px 10px;
+      padding: 6px 14px;
       border-radius: 999px;
-      background: rgba(148, 163, 184, 0.10);
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      color: var(--muted);
+      background: var(--glass-bg);
+      border: 1px solid var(--border2);
+      color: var(--muted2);
       cursor: pointer;
       font-family: 'Plus Jakarta Sans', sans-serif;
       white-space: nowrap;
       font-weight: 600;
-      transition: background .16s ease, border-color .16s ease, color .16s ease, transform .16s ease;
+      transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease;
       flex-shrink: 0;
       align-self: flex-end;
     }
 
     .inv-btn:hover {
-      background: rgba(148, 163, 184, 0.18);
+      transform: translateY(-1px);
+      background: var(--bg2);
     }
 
     .inv-btn.on {
       border-color: var(--amber);
       background: var(--amber-bg);
       color: var(--amber);
+    }
+
+    .inv-btn.on:hover {
+      background: var(--amber-bd);
     }
 
     .rm-btn {
