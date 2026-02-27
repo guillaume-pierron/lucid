@@ -7135,7 +7135,7 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
             <label>${tr('hist_global_score')}</label>
             <div class="stepper" style="justify-content:flex-start">
               <button class="stepper-btn" onclick="this.nextElementSibling.value=Math.max(1,this.nextElementSibling.value-1);this.nextElementSibling.oninput()">−</button>
-              <input type="number" id="upd-score-${d.id}" value="${d.followUp?.globalScore || Math.round(initialScore / 10)}" min="1" max="10" style="width:50px;text-align:center;font-size:1.2rem;border:none;background:transparent" oninput="document.getElementById('upd-emoji-${d.id}').textContent=['😭','😞','😟','😕','😐','🙂','😊','😄','😁','🤩'][this.value-1]||'😐'">
+              <input type="number" id="upd-score-${d.id}" value="${d.followUp?.globalScore || Math.round(initialScore / 10)}" min="1" max="10" style="width:50px;text-align:center;font-size:1.2rem;border:none;background:transparent;color:var(--ink)" oninput="document.getElementById('upd-emoji-${d.id}').textContent=['😭','😞','😟','😕','😐','🙂','😊','😄','😁','🤩'][this.value-1]||'😐'">
               <button class="stepper-btn" onclick="this.previousElementSibling.value=Math.min(10,parseInt(this.previousElementSibling.value)+1);this.previousElementSibling.oninput()">+</button>
               <div style="font-size:1.5rem;margin-left:10px" id="upd-emoji-${d.id}">😐</div>
             </div>
