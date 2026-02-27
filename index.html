@@ -1340,9 +1340,31 @@
 
     .hist-score-row {
       display: flex;
-      align-items: center;
-      gap: 7px;
+      align-items: flex-end;
+      gap: 8px;
       flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .hist-score-block {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .hist-score-label {
+      font-size: .6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--muted);
+      padding-left: 2px;
+    }
+
+    .hist-score-arrow {
+      color: var(--muted);
+      font-size: .85rem;
+      margin-bottom: 5px;
     }
 
     .hist-score-pill {
@@ -1363,8 +1385,17 @@
 
     .hist-score-pill.initial {
       background: var(--bg2);
+      border: 1.5px solid var(--border);
+      color: var(--ink);
+      font-size: 1.15rem;
+      padding: 4px 13px;
+    }
+
+    .hist-winner-name {
+      font-size: .8rem;
       color: var(--ink2);
-      font-size: .85rem;
+      margin-bottom: 7px;
+      font-weight: 500;
     }
 
     .hist-score-pill.actual-up {
@@ -7280,6 +7311,9 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
 
         let metaHTML = `<span class="hist-badge ${isReviewed ? 'hb-done' : 'hb-pending'}">${isReviewed ? tr('hist_reviewed') : tr('hist_pending')}</span>`;
 
+        const labelPred = LANG === 'fr' ? 'Prédiction' : 'Prediction';
+        const labelReal = LANG === 'fr' ? 'Réel' : 'Actual';
+
         if (isReviewed && d.followUp) {
           const actual = d.followUp.globalScore * 10;
           const delta = actual - initialScore;
@@ -7288,13 +7322,26 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
           const arrow = delta >= 0 ? '↑' : '↓';
           metaHTML += `
             <div class="hist-score-row">
-              <span class="hist-score-pill initial">${initialScore}<span class="pill-denom">/100</span></span>
-              <span style="color:var(--muted);font-size:.8rem">→</span>
-              <span class="hist-score-pill actual-${dir}">${actual}<span class="pill-denom">/100</span></span>
+              <div class="hist-score-block">
+                <span class="hist-score-label">${labelPred}</span>
+                <span class="hist-score-pill initial">${initialScore}<span class="pill-denom">/100</span></span>
+              </div>
+              <span class="hist-score-arrow">→</span>
+              <div class="hist-score-block">
+                <span class="hist-score-label">${labelReal}</span>
+                <span class="hist-score-pill actual-${dir}">${actual}<span class="pill-denom">/100</span></span>
+              </div>
               <span class="hist-delta-badge ${dir}">${sign}${delta} ${arrow}</span>
             </div>`;
         } else {
-          metaHTML += `<span>Winner: <strong>${esc(winnerName)}</strong> (${initialScore}/100)</span>`;
+          metaHTML += `
+            <div class="hist-score-row">
+              <div class="hist-score-block">
+                <span class="hist-score-label">${labelPred}</span>
+                <span class="hist-score-pill initial">${initialScore}<span class="pill-denom">/100</span></span>
+              </div>
+              <span class="hist-winner-name">↳ ${esc(winnerName)}</span>
+            </div>`;
         }
 
         return `
