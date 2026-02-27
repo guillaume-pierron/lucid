@@ -1965,6 +1965,38 @@
       color: var(--ink);
     }
 
+    /* ── Écart / Proximité (diff-info) ── */
+    .sc-diff-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      align-items: center;
+      margin-top: 7px;
+    }
+
+    .sc-diff-gap {
+      font-size: .75rem;
+      font-weight: 700;
+      color: #e53935;
+      background: rgba(229, 57, 53, .08);
+      padding: 2px 7px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    .sc-diff-prox {
+      font-size: .75rem;
+      font-weight: 500;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .sc-trophy {
+      font-size: .85rem;
+      flex-shrink: 0;
+      margin-left: 2px;
+    }
+
     /* Delta scénario */
     .sc-card-delta {
       font-size: .65rem;
@@ -5841,6 +5873,18 @@
         const c = resultColors[oi]; const sc = scores[oi];
         const rankLabels = tr('rank_labels');
         const rankLbl = rank < 3 ? rankLabels[rank] : `#${rank + 1}`;
+        // Badge trophée pour le 1er
+        const trophyBadge = rank === 0 ? '<span class="sc-trophy">🏆</span>' : '';
+        // Écart / proximité vs le 1er
+        const maxScore = scores[ranked[0]];
+        const gap = sc - maxScore; // 0 pour le gagnant, négatif sinon
+        const proximity = maxScore > 0 ? Math.round((sc / maxScore) * 100) : 100;
+        const gapLbl  = LANG === 'fr' ? 'Écart avec le 1er' : 'Gap vs #1';
+        const proxLbl2 = LANG === 'fr' ? 'Proximité' : 'Proximity';
+        const diffHTML = `<div class="sc-diff-info">
+            ${rank > 0 ? `<span class="sc-diff-gap">${gapLbl} : ${gap} pts</span>` : ''}
+            <span class="sc-diff-prox">${proxLbl2} : ${proximity}&thinsp;%</span>
+          </div>`;
         // Calcul points forts / faibles par score pondéré effectif
         const allSorted = [...S.criteria].sort((a, b) => {
           const va = S.scores[a.id]?.[oi] ?? 5; const vb = S.scores[b.id]?.[oi] ?? 5;
@@ -5874,6 +5918,7 @@
             <div class="sc-card-top">
               <div class="sc-card-rank" style="background:${c.hex}">${rankLbl}</div>
               <div class="sc-card-name">${esc(S.options[oi].name)}</div>
+              ${trophyBadge}
             </div>
             <div class="sc-card-score">
               <div class="sc-score-display">
@@ -5884,6 +5929,7 @@
                 <div class="sc-score-bar-fill" style="width:${sc}%;background:${c.hex}"></div>
               </div>
             </div>
+            ${diffHTML}
             ${insightHTML}
           </div>
         </div>
