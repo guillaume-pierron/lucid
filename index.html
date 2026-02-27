@@ -4265,6 +4265,14 @@
       flex-shrink: 0;
     }
 
+    @media (prefers-color-scheme: dark) {
+      .swing-wtag {
+        color: #14b8a6;
+        background: rgba(20,184,166,0.15);
+        border-color: rgba(20,184,166,0.35);
+      }
+    }
+
     /* FIN MODIF SWING */
 
     /* ── RESPONSIVE ──────────────────────────── */
@@ -5768,14 +5776,14 @@
         }).join('');
 
         col.innerHTML = `
-      <div class="eval-col-head" style="background:${COLORS[0].bg};border-color:${COLORS[0].border}">
-        <div class="eval-col-name" style="color:${COLORS[0].hex}">Option ${LETTERS[oi]} — ${esc(opt.name)}</div>
+      <div class="eval-col-head" style="background:${activeColors()[0].bg};border-color:${activeColors()[0].border}">
+        <div class="eval-col-name" style="color:${activeColors()[0].hex}">Option ${LETTERS[oi]} — ${esc(opt.name)}</div>
         <div class="eval-live-score">
-          <div class="eval-live-num" id="live-${oi}" style="color:${COLORS[0].hex}">—</div>
+          <div class="eval-live-num" id="live-${oi}" style="color:${activeColors()[0].hex}">—</div>
           <div class="eval-live-label">/ 100</div>
         </div>
       </div>
-      <div class="eval-col-body" style="border-color:${COLORS[0].border}">${items}</div>`;
+      <div class="eval-col-body" style="border-color:${activeColors()[0].border}">${items}</div>`;
 
         grid.appendChild(col);
         S.criteria.forEach(cr => renderStepper(oi, cr.id, S.scores[cr.id]?.[oi] ?? 5, cr.invert ?? false));
@@ -5786,7 +5794,7 @@
       notesRow.style.gridTemplateColumns = `repeat(${Math.min(nOpts, 3)},1fr)`;
       notesRow.innerHTML = S.options.map((opt, oi) => `
     <div>
-      <span class="notes-lbl" style="color:${COLORS[0].hex}">
+      <span class="notes-lbl" style="color:${activeColors()[0].hex}">
         ${tr('notes_lbl', LETTERS[oi], esc(opt.name))}
       </span>
       <textarea id="note-${oi}" rows="3"
