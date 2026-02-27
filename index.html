@@ -1313,6 +1313,72 @@
       color: var(--red);
     }
 
+    .hist-score-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .hist-score-pill {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 1px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .hist-score-pill .pill-denom {
+      font-size: .65rem;
+      font-weight: 400;
+      opacity: .7;
+    }
+
+    .hist-score-pill.initial {
+      background: var(--bg2);
+      color: var(--ink2);
+      font-size: .85rem;
+    }
+
+    .hist-score-pill.actual-up {
+      background: var(--teal-bg);
+      color: var(--teal);
+      font-size: .9rem;
+    }
+
+    .hist-score-pill.actual-down {
+      background: rgba(220,38,38,.09);
+      color: var(--red);
+      font-size: .9rem;
+    }
+
+    .hist-delta-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: .7rem;
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+
+    .hist-delta-badge.up {
+      background: rgba(20,184,166,.14);
+      color: var(--teal);
+    }
+
+    .hist-delta-badge.down {
+      background: rgba(220,38,38,.1);
+      color: var(--red);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .hist-delta-badge.up   { background: rgba(20,184,166,.22); }
+      .hist-delta-badge.down { background: rgba(220,38,38,.18); }
+    }
+
     .custom-form-head {
       display: flex;
       align-items: center;
@@ -7190,11 +7256,18 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         let metaHTML = `<span class="hist-badge ${isReviewed ? 'hb-done' : 'hb-pending'}">${isReviewed ? tr('hist_reviewed') : tr('hist_pending')}</span>`;
 
         if (isReviewed && d.followUp) {
-          const actual = d.followUp.globalScore * 10; // convert 1-10 to 100 base
+          const actual = d.followUp.globalScore * 10;
           const delta = actual - initialScore;
           const sign = delta > 0 ? '+' : '';
-          const cls = delta >= 0 ? 'delta-up' : 'delta-down';
-          metaHTML += `<span>Initial: <strong>${initialScore}</strong> → Actuel: <strong class="${cls}">${actual}</strong> (${sign}${delta})</span>`;
+          const dir = delta >= 0 ? 'up' : 'down';
+          const arrow = delta >= 0 ? '↑' : '↓';
+          metaHTML += `
+            <div class="hist-score-row">
+              <span class="hist-score-pill initial">${initialScore}<span class="pill-denom">/100</span></span>
+              <span style="color:var(--muted);font-size:.8rem">→</span>
+              <span class="hist-score-pill actual-${dir}">${actual}<span class="pill-denom">/100</span></span>
+              <span class="hist-delta-badge ${dir}">${sign}${delta} ${arrow}</span>
+            </div>`;
         } else {
           metaHTML += `<span>Winner: <strong>${esc(winnerName)}</strong> (${initialScore}/100)</span>`;
         }
