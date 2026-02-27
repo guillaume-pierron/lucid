@@ -2076,6 +2076,11 @@
       .verdict-title-amber { color: #fbbf24; }
     }
 
+    .verdict-title-green { color: var(--teal); }
+    @media (prefers-color-scheme: dark) {
+      .verdict-title-green { color: #14b8a6; }
+    }
+
     .verdict-inline-sub {
       font-size: .8rem;
       color: var(--ink2);
@@ -5919,7 +5924,7 @@
       } else {
         vstyle = `background:${cW.bg};border:1.5px solid ${cW.border};color:var(--ink)`;
         vemoji = '🎯';
-        vtitle = `<span class="verdict-title-amber">"${esc(S.options[winner].name)}" ${LANG === 'fr' ? 'ressort en tête' : 'comes out on top'}</span>`;
+        vtitle = `<span class="verdict-title-green">"${esc(S.options[winner].name)}" ${LANG === 'fr' ? 'ressort en tête' : 'comes out on top'}</span>`;
         vsub = tr('res_win_sub', diff);
       }
 
