@@ -1050,6 +1050,31 @@
       padding: 18px 20px;
       box-shadow: 0 1px 4px rgba(0,0,0,.05);
       transition: box-shadow .2s, transform .2s, border-left-color .2s;
+      position: relative;
+    }
+
+    .hist-card-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: .85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s, color .15s;
+      line-height: 1;
+    }
+
+    .hist-card-close:hover {
+      background: rgba(220,38,38,.1);
+      color: var(--red);
     }
 
     .hist-card:hover {
@@ -7274,8 +7299,9 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
 
         return `
       <div class="hist-card${isReviewed ? ' hc-done' : ''}" id="hist-${d.id}">
+        <button class="hist-card-close" onclick="event.stopPropagation();deleteDecision('${d.id}')" title="${tr('hist_delete')}">✕</button>
         <div class="hist-head">
-          <div>
+          <div style="padding-right:28px">
             <div class="hist-date">${date}</div>
             <div class="hist-title">${esc(d.title)}</div>
           </div>
@@ -7316,9 +7342,6 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
           </button>
           <button class="hist-action-btn resume" onclick="editDecision('${d.id}')">
             ↩ ${tr('hist_edit_decision')}
-          </button>
-          <button class="hist-action-btn delete" onclick="deleteDecision('${d.id}')">
-            🗑 ${tr('hist_delete')}
           </button>
         </div>
       </div>`;
