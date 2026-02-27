@@ -6873,6 +6873,15 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
       ctx.clearRect(0, 0, W, H);
       const angle = i => (i / N) * Math.PI * 2 - Math.PI / 2;
 
+      /* Couleurs adaptées au mode sombre */
+      const isDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+      const gridOuter      = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.13)';
+      const gridInner      = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+      const axisColor      = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)';
+      const levelLblColor  = isDark ? 'rgba(255,255,255,0.40)' : 'rgba(0,0,0,0.25)';
+      const critNameColor  = isDark ? '#e2e8f0'               : '#555';
+      const weightBadgeCol = isDark ? '#fbbf24'               : '#b47d0a';
+
       // Grille de fond
       [2, 4, 6, 8, 10].forEach(lvl => {
         ctx.beginPath();
@@ -6882,14 +6891,14 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
             : ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
         });
         ctx.closePath();
-        ctx.strokeStyle = lvl === 10 ? 'rgba(0,0,0,0.13)' : 'rgba(0,0,0,0.06)';
+        ctx.strokeStyle = lvl === 10 ? gridOuter : gridInner;
         ctx.lineWidth = lvl === 10 ? 1.5 : 1;
         ctx.stroke();
         // Label de niveau sur l'axe du haut
         const labelR = (lvl / 10) * R;
         ctx.font = '9px Plus Jakarta Sans,sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillStyle = 'rgba(0,0,0,0.25)';
+        ctx.fillStyle = levelLblColor;
         if (lvl % 4 === 0) ctx.fillText(lvl, cx + 4, cy - labelR + 10);
       });
 
@@ -6898,7 +6907,7 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         ctx.beginPath();
         ctx.moveTo(cx, cy);
         ctx.lineTo(cx + R * Math.cos(angle(i)), cy + R * Math.sin(angle(i)));
-        ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+        ctx.strokeStyle = axisColor;
         ctx.lineWidth = 1;
         ctx.stroke();
       });
@@ -6922,14 +6931,14 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
 
         // Nom
         ctx.font = '10px Plus Jakarta Sans,sans-serif';
-        ctx.fillStyle = '#555';
+        ctx.fillStyle = critNameColor;
         ctx.fillText(short, x, y + 6);
 
         // Badge poids
         if (c.weight > 1) {
           const bx = x + ctx.measureText(short).width / 2 + 8;
           ctx.font = 'bold 9px Plus Jakarta Sans,sans-serif';
-          ctx.fillStyle = '#b47d0a';
+          ctx.fillStyle = weightBadgeCol;
           ctx.fillText(`×${c.weight}`, bx, y + 6);
         }
       });
