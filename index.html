@@ -2032,6 +2032,10 @@
       .sc-card:hover {
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
       }
+      /* Lisibilité insights & diff-info en mode sombre */
+      .sc-insight-pro .sc-insight-dot { color: #2dd4bf; }
+      .sc-insight-con .sc-insight-dot { color: #94a3b8; }
+      .sc-diff-gap { color: #f87171; background: rgba(248, 113, 113, 0.12); }
     }
 
     /* ── VERDICT ENCADRÉ ─────────────────────── */
@@ -5117,6 +5121,18 @@
       { hex: '#0e7490', bg: 'rgba(14,116,144,0.08)', border: 'rgba(14,116,144,0.26)' },
       { hex: '#9f1239', bg: 'rgba(159,18,57,0.08)', border: 'rgba(159,18,57,0.26)' },
     ];
+    /* Palette mode sombre : teintes -500 (plus claires = lisibles sur fond #1e293b) */
+    const COLORS_DARK = [
+      { hex: '#14b8a6', bg: 'rgba(20,184,166,0.15)',  border: 'rgba(20,184,166,0.35)'  }, // teal-500
+      { hex: '#f59e0b', bg: 'rgba(245,158,11,0.15)',  border: 'rgba(245,158,11,0.35)'  }, // amber-500
+      { hex: '#8b5cf6', bg: 'rgba(139,92,246,0.15)',  border: 'rgba(139,92,246,0.35)'  }, // violet-500
+      { hex: '#f97316', bg: 'rgba(249,115,22,0.15)',  border: 'rgba(249,115,22,0.35)'  }, // orange-500
+      { hex: '#06b6d4', bg: 'rgba(6,182,212,0.15)',   border: 'rgba(6,182,212,0.35)'   }, // cyan-500
+      { hex: '#f43f5e', bg: 'rgba(244,63,94,0.15)',   border: 'rgba(244,63,94,0.35)'   }, // rose-500
+    ];
+    function activeColors() {
+      return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? COLORS_DARK : COLORS;
+    }
     const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
     /* ─── CRITERIA LIBRARY ──────────────────── */
@@ -5863,7 +5879,7 @@
       const tie = diff <= 4;
       // Couleurs basées sur le rang : gagnant = vert, 2ème = orange, etc.
       resultColors = {};
-      ranked.forEach((oi, rank) => { resultColors[oi] = COLORS[rank]; });
+      ranked.forEach((oi, rank) => { resultColors[oi] = activeColors()[rank]; });
       const cW = resultColors[winner];
 
       // Verdict
@@ -6403,7 +6419,7 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
     </div>`;
       } else {
         const scoreRows = scenRanked.map(oi => {
-          const c = resultColors[oi] || COLORS[oi];
+          const c = resultColors[oi] || activeColors()[oi];
           const bs = baseScores[oi];
           const ss = scenScores[oi];
           const d = ss - bs;
@@ -6563,7 +6579,7 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
       const switchedWinner = filtRanked[0] !== ranked[0];
 
       const cards = ranked.map(oi => {
-        const c = resultColors[oi] || COLORS[oi];
+        const c = resultColors[oi] || activeColors()[oi];
         const ns = normalScores[oi];
         const fs = filteredScores[oi];
         const d = fs !== null ? fs - ns : 0;
@@ -6746,7 +6762,7 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
 
       const rankLabels = tr('rank_labels');
       row.innerHTML = scenRanked.map((oi, rank) => {
-        const c = resultColors[oi] || COLORS[oi];
+        const c = resultColors[oi] || activeColors()[oi];
         const sc = scenScores[oi];
         const base = baseScores[oi];
         const delta = sc - base;
@@ -6920,7 +6936,7 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
 
       // Polygones par option
       S.options.forEach((_, oi) => {
-        const col = resultColors[oi] || COLORS[oi];
+        const col = resultColors[oi] || activeColors()[oi];
         const hex = col.hex.replace('#', '');
         const r = parseInt(hex.substring(0, 2), 16);
         const g = parseInt(hex.substring(2, 4), 16);
