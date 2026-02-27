@@ -1045,38 +1045,45 @@
     .hist-card {
       background: var(--white);
       border: 1px solid var(--border);
+      border-left: 3px solid var(--border);
       border-radius: var(--r);
-      padding: 16px;
-      box-shadow: var(--shadow);
-      cursor: pointer;
-      transition: transform .15s;
+      padding: 18px 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+      transition: box-shadow .2s, transform .2s, border-left-color .2s;
     }
 
     .hist-card:hover {
       transform: translateY(-2px);
-      border-color: var(--teal-bd);
+      box-shadow: 0 6px 20px rgba(0,0,0,.09);
+      border-left-color: var(--teal);
+    }
+
+    .hist-card.hc-done {
+      border-left-color: var(--teal);
     }
 
     .hist-head {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .hist-date {
-      font-size: .7rem;
+      font-size: .68rem;
       color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: .05em;
+      letter-spacing: .06em;
+      margin-bottom: 4px;
     }
 
     .hist-title {
       font-family: 'Lora', serif;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 1.05rem;
       color: var(--ink);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      line-height: 1.35;
     }
 
     .hist-meta {
@@ -1085,6 +1092,7 @@
       display: flex;
       gap: 10px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .hist-badge {
@@ -1106,35 +1114,57 @@
     }
 
     .hist-actions {
-      margin-top: 12px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       align-items: center;
     }
 
-    .hist-link-btn {
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      font-size: .75rem;
+    .hist-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 13px;
+      border-radius: 20px;
+      font-size: .73rem;
       font-weight: 600;
-      padding: 0;
       cursor: pointer;
-      text-decoration: underline;
-      text-underline-offset: 2px;
+      transition: background .15s, color .15s, border-color .15s;
+      border: 1.5px solid transparent;
+      line-height: 1;
     }
 
-    .hist-link-btn:hover {
-      color: var(--ink2);
+    .hist-action-btn.resume {
+      color: var(--teal);
+      border-color: var(--teal-bd);
+      background: var(--teal-bg);
     }
 
-    .hist-link-btn.danger {
+    .hist-action-btn.resume:hover {
+      background: var(--teal);
+      color: #fff;
+      border-color: var(--teal);
+    }
+
+    .hist-action-btn.delete {
       color: var(--red);
+      border-color: rgba(220,38,38,.2);
+      background: rgba(220,38,38,.05);
+      margin-left: auto;
     }
 
-    .hist-link-btn.danger:hover {
-      color: #7f1d1d;
+    .hist-action-btn.delete:hover {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red);
+    }
+
+    @media (max-width: 480px) {
+      .hist-card { padding: 14px 16px; }
+      .hist-action-btn.delete { margin-left: 0; }
     }
 
     .insight-box {
@@ -7088,7 +7118,7 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         }
 
         return `
-      <div class="hist-card" id="hist-${d.id}">
+      <div class="hist-card${isReviewed ? ' hc-done' : ''}" id="hist-${d.id}">
         <div class="hist-head">
           <div>
             <div class="hist-date">${date}</div>
@@ -7096,11 +7126,11 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
           </div>
         </div>
         <div class="hist-meta">${metaHTML}</div>
-        
+
         <div id="upd-form-${d.id}" style="display:none" class="update-form">
           <div style="font-weight:700;margin-bottom:8px">${tr('hist_upd_title')}</div>
           <div style="font-size:.8rem;color:var(--muted);margin-bottom:12px">${tr('hist_upd_desc')}</div>
-          
+
           <div class="field">
             <label>${tr('hist_global_score')}</label>
             <div class="stepper" style="justify-content:flex-start">
@@ -7110,23 +7140,23 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
               <div style="font-size:1.5rem;margin-left:10px" id="upd-emoji-${d.id}">😐</div>
             </div>
           </div>
-          
+
           <div class="field">
             <label>${tr('hist_comment')}</label>
             <textarea id="upd-comment-${d.id}" rows="2">${esc(d.followUp?.comment || '')}</textarea>
           </div>
-          
+
           <button class="btn btn-primary" onclick="saveUpdate('${d.id}')">${tr('hist_save_upd')}</button>
         </div>
-        
+
         <div class="hist-actions">
-          <button class="btn btn-secondary" style="font-size:.75rem;padding:6px 12px" onclick="toggleUpdate('${d.id}')">
+          <button class="btn btn-secondary" style="font-size:.73rem;padding:6px 13px;border-radius:20px" onclick="toggleUpdate('${d.id}')">
             ${isReviewed ? '✏️ Modifier le suivi' : tr('hist_update_btn')}
           </button>
-          <button class="hist-link-btn" onclick="editDecision('${d.id}')">
-            ✏️ ${tr('hist_edit_decision')}
+          <button class="hist-action-btn resume" onclick="editDecision('${d.id}')">
+            ↩ ${tr('hist_edit_decision')}
           </button>
-          <button class="hist-link-btn danger" onclick="deleteDecision('${d.id}')">
+          <button class="hist-action-btn delete" onclick="deleteDecision('${d.id}')">
             🗑 ${tr('hist_delete')}
           </button>
         </div>
