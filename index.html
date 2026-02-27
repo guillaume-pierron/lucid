@@ -2071,6 +2071,16 @@
       margin-bottom: 3px;
     }
 
+    .verdict-title-amber { color: #92700a; }
+    @media (prefers-color-scheme: dark) {
+      .verdict-title-amber { color: #fbbf24; }
+    }
+
+    .verdict-title-green { color: var(--teal); }
+    @media (prefers-color-scheme: dark) {
+      .verdict-title-green { color: #14b8a6; }
+    }
+
     .verdict-inline-sub {
       font-size: .8rem;
       color: var(--ink2);
@@ -5909,12 +5919,12 @@
       if (tie) {
         vstyle = `background:var(--verdict-bg);border:1.5px solid var(--verdict-border);color:var(--ink)`;
         vemoji = '⚖️';
-        vtitle = `<span style="color:var(--amber)">${tr('res_tie_title')}</span>`;
+        vtitle = `<span class="verdict-title-amber">${tr('res_tie_title')}</span>`;
         vsub = tr('res_tie_sub', diff);
       } else {
         vstyle = `background:${cW.bg};border:1.5px solid ${cW.border};color:var(--ink)`;
         vemoji = '🎯';
-        vtitle = `<span style="color:#92700a">"${esc(S.options[winner].name)}" ${LANG === 'fr' ? 'ressort en tête' : 'comes out on top'}</span>`;
+        vtitle = `<span class="verdict-title-green">"${esc(S.options[winner].name)}" ${LANG === 'fr' ? 'ressort en tête' : 'comes out on top'}</span>`;
         vsub = tr('res_win_sub', diff);
       }
 
