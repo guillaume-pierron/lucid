@@ -1216,11 +1216,88 @@
     }
 
     .update-form {
-      background: var(--bg);
-      padding: 16px;
-      border-radius: var(--r);
-      margin-top: 16px;
+      background: var(--bg2);
+      padding: 18px;
+      border-radius: 12px;
+      margin-top: 14px;
       border: 1px solid var(--border);
+    }
+
+    .upd-form-title {
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+
+    .upd-form-desc {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .upd-score-widget {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 16px 16px;
+      margin-bottom: 14px;
+    }
+
+    .upd-score-emoji {
+      font-size: 2.8rem;
+      line-height: 1;
+      user-select: none;
+      transition: transform .1s;
+    }
+
+    .upd-score-emoji.bump {
+      transform: scale(1.3);
+    }
+
+    .upd-score-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .upd-score-display {
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
+    }
+
+    .upd-score-val {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--ink);
+      min-width: 38px;
+      text-align: center;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .upd-score-denom {
+      font-size: .85rem;
+      color: var(--muted);
+    }
+
+    .upd-gauge {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .upd-gauge-bar {
+      height: 100%;
+      border-radius: 10px;
+      transition: width .35s cubic-bezier(.4,0,.2,1), background-color .35s;
     }
 
     .delta-tag {
@@ -7104,6 +7181,11 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         const winnerName = d.options[d.winnerIdx].name;
         const initialScore = d.finalScores[d.winnerIdx];
         const isReviewed = d.status === 'reviewed';
+        const UPD_EMOJIS = ['😭','😞','😟','😕','😐','🙂','😊','😄','😁','🤩'];
+        const UPD_COLORS = ['#ef4444','#ef4444','#f97316','#f97316','#eab308','#eab308','#14b8a6','#14b8a6','#22c55e','#22c55e'];
+        const initVal = d.followUp?.globalScore || Math.round(initialScore / 10);
+        const initEmoji = UPD_EMOJIS[initVal - 1] || '😐';
+        const initColor = UPD_COLORS[initVal - 1] || '#eab308';
 
         let metaHTML = `<span class="hist-badge ${isReviewed ? 'hb-done' : 'hb-pending'}">${isReviewed ? tr('hist_reviewed') : tr('hist_pending')}</span>`;
 
@@ -7128,16 +7210,22 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         <div class="hist-meta">${metaHTML}</div>
 
         <div id="upd-form-${d.id}" style="display:none" class="update-form">
-          <div style="font-weight:700;margin-bottom:8px">${tr('hist_upd_title')}</div>
-          <div style="font-size:.8rem;color:var(--muted);margin-bottom:12px">${tr('hist_upd_desc')}</div>
+          <div class="upd-form-title">${tr('hist_upd_title')}</div>
+          <div class="upd-form-desc">${tr('hist_upd_desc')}</div>
 
-          <div class="field">
-            <label>${tr('hist_global_score')}</label>
-            <div class="stepper" style="justify-content:flex-start">
-              <button class="stepper-btn" onclick="this.nextElementSibling.value=Math.max(1,this.nextElementSibling.value-1);this.nextElementSibling.oninput()">−</button>
-              <input type="number" id="upd-score-${d.id}" value="${d.followUp?.globalScore || Math.round(initialScore / 10)}" min="1" max="10" style="width:50px;text-align:center;font-size:1.2rem;border:none;background:transparent;color:var(--ink)" oninput="document.getElementById('upd-emoji-${d.id}').textContent=['😭','😞','😟','😕','😐','🙂','😊','😄','😁','🤩'][this.value-1]||'😐'">
-              <button class="stepper-btn" onclick="this.previousElementSibling.value=Math.min(10,parseInt(this.previousElementSibling.value)+1);this.previousElementSibling.oninput()">+</button>
-              <div style="font-size:1.5rem;margin-left:10px" id="upd-emoji-${d.id}">😐</div>
+          <div class="upd-score-widget">
+            <div id="upd-emoji-${d.id}" class="upd-score-emoji">${initEmoji}</div>
+            <div class="upd-score-row">
+              <button class="stepper-btn" onclick="updScore('${d.id}', parseInt(document.getElementById('upd-score-${d.id}').value)-1)">−</button>
+              <div class="upd-score-display">
+                <span id="upd-score-val-${d.id}" class="upd-score-val">${initVal}</span>
+                <span class="upd-score-denom">/10</span>
+              </div>
+              <button class="stepper-btn" onclick="updScore('${d.id}', parseInt(document.getElementById('upd-score-${d.id}').value)+1)">+</button>
+            </div>
+            <input type="hidden" id="upd-score-${d.id}" value="${initVal}">
+            <div class="upd-gauge">
+              <div class="upd-gauge-bar" id="upd-gauge-bar-${d.id}" style="width:${initVal * 10}%;background-color:${initColor}"></div>
             </div>
           </div>
 
@@ -7162,6 +7250,23 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         </div>
       </div>`;
       }).join('');
+    }
+
+    function updScore(id, raw) {
+      const v = Math.max(1, Math.min(10, parseInt(raw) || 1));
+      document.getElementById('upd-score-' + id).value = v;
+      document.getElementById('upd-score-val-' + id).textContent = v;
+      const emojis = ['😭','😞','😟','😕','😐','🙂','😊','😄','😁','🤩'];
+      const colors = ['#ef4444','#ef4444','#f97316','#f97316','#eab308','#eab308','#14b8a6','#14b8a6','#22c55e','#22c55e'];
+      const emojiEl = document.getElementById('upd-emoji-' + id);
+      emojiEl.textContent = emojis[v - 1];
+      emojiEl.classList.remove('bump');
+      void emojiEl.offsetWidth;
+      emojiEl.classList.add('bump');
+      setTimeout(() => emojiEl.classList.remove('bump'), 120);
+      const bar = document.getElementById('upd-gauge-bar-' + id);
+      bar.style.width = (v * 10) + '%';
+      bar.style.backgroundColor = colors[v - 1];
     }
 
     function toggleUpdate(id) {
