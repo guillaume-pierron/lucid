@@ -1045,38 +1045,45 @@
     .hist-card {
       background: var(--white);
       border: 1px solid var(--border);
+      border-left: 3px solid var(--border);
       border-radius: var(--r);
-      padding: 16px;
-      box-shadow: var(--shadow);
-      cursor: pointer;
-      transition: transform .15s;
+      padding: 18px 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+      transition: box-shadow .2s, transform .2s, border-left-color .2s;
     }
 
     .hist-card:hover {
       transform: translateY(-2px);
-      border-color: var(--teal-bd);
+      box-shadow: 0 6px 20px rgba(0,0,0,.09);
+      border-left-color: var(--teal);
+    }
+
+    .hist-card.hc-done {
+      border-left-color: var(--teal);
     }
 
     .hist-head {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .hist-date {
-      font-size: .7rem;
+      font-size: .68rem;
       color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: .05em;
+      letter-spacing: .06em;
+      margin-bottom: 4px;
     }
 
     .hist-title {
       font-family: 'Lora', serif;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 1.05rem;
       color: var(--ink);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      line-height: 1.35;
     }
 
     .hist-meta {
@@ -1085,6 +1092,7 @@
       display: flex;
       gap: 10px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .hist-badge {
@@ -1106,35 +1114,57 @@
     }
 
     .hist-actions {
-      margin-top: 12px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       align-items: center;
     }
 
-    .hist-link-btn {
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      font-size: .75rem;
+    .hist-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 13px;
+      border-radius: 20px;
+      font-size: .73rem;
       font-weight: 600;
-      padding: 0;
       cursor: pointer;
-      text-decoration: underline;
-      text-underline-offset: 2px;
+      transition: background .15s, color .15s, border-color .15s;
+      border: 1.5px solid transparent;
+      line-height: 1;
     }
 
-    .hist-link-btn:hover {
-      color: var(--ink2);
+    .hist-action-btn.resume {
+      color: var(--teal);
+      border-color: var(--teal-bd);
+      background: var(--teal-bg);
     }
 
-    .hist-link-btn.danger {
+    .hist-action-btn.resume:hover {
+      background: var(--teal);
+      color: #fff;
+      border-color: var(--teal);
+    }
+
+    .hist-action-btn.delete {
       color: var(--red);
+      border-color: rgba(220,38,38,.2);
+      background: rgba(220,38,38,.05);
+      margin-left: auto;
     }
 
-    .hist-link-btn.danger:hover {
-      color: #7f1d1d;
+    .hist-action-btn.delete:hover {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red);
+    }
+
+    @media (max-width: 480px) {
+      .hist-card { padding: 14px 16px; }
+      .hist-action-btn.delete { margin-left: 0; }
     }
 
     .insight-box {
@@ -1186,11 +1216,88 @@
     }
 
     .update-form {
-      background: var(--bg);
-      padding: 16px;
-      border-radius: var(--r);
-      margin-top: 16px;
+      background: var(--bg2);
+      padding: 18px;
+      border-radius: 12px;
+      margin-top: 14px;
       border: 1px solid var(--border);
+    }
+
+    .upd-form-title {
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+
+    .upd-form-desc {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .upd-score-widget {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 16px 16px;
+      margin-bottom: 14px;
+    }
+
+    .upd-score-emoji {
+      font-size: 2.8rem;
+      line-height: 1;
+      user-select: none;
+      transition: transform .1s;
+    }
+
+    .upd-score-emoji.bump {
+      transform: scale(1.3);
+    }
+
+    .upd-score-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .upd-score-display {
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
+    }
+
+    .upd-score-val {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--ink);
+      min-width: 38px;
+      text-align: center;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .upd-score-denom {
+      font-size: .85rem;
+      color: var(--muted);
+    }
+
+    .upd-gauge {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .upd-gauge-bar {
+      height: 100%;
+      border-radius: 10px;
+      transition: width .35s cubic-bezier(.4,0,.2,1), background-color .35s;
     }
 
     .delta-tag {
@@ -1204,6 +1311,72 @@
 
     .delta-down {
       color: var(--red);
+    }
+
+    .hist-score-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .hist-score-pill {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 1px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .hist-score-pill .pill-denom {
+      font-size: .65rem;
+      font-weight: 400;
+      opacity: .7;
+    }
+
+    .hist-score-pill.initial {
+      background: var(--bg2);
+      color: var(--ink2);
+      font-size: .85rem;
+    }
+
+    .hist-score-pill.actual-up {
+      background: var(--teal-bg);
+      color: var(--teal);
+      font-size: .9rem;
+    }
+
+    .hist-score-pill.actual-down {
+      background: rgba(220,38,38,.09);
+      color: var(--red);
+      font-size: .9rem;
+    }
+
+    .hist-delta-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: .7rem;
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+
+    .hist-delta-badge.up {
+      background: rgba(20,184,166,.14);
+      color: var(--teal);
+    }
+
+    .hist-delta-badge.down {
+      background: rgba(220,38,38,.1);
+      color: var(--red);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .hist-delta-badge.up   { background: rgba(20,184,166,.22); }
+      .hist-delta-badge.down { background: rgba(220,38,38,.18); }
     }
 
     .custom-form-head {
@@ -7074,21 +7247,33 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         const winnerName = d.options[d.winnerIdx].name;
         const initialScore = d.finalScores[d.winnerIdx];
         const isReviewed = d.status === 'reviewed';
+        const UPD_EMOJIS = ['😭','😞','😟','😕','😐','🙂','😊','😄','😁','🤩'];
+        const UPD_COLORS = ['#ef4444','#ef4444','#f97316','#f97316','#eab308','#eab308','#14b8a6','#14b8a6','#22c55e','#22c55e'];
+        const initVal = d.followUp?.globalScore || Math.round(initialScore / 10);
+        const initEmoji = UPD_EMOJIS[initVal - 1] || '😐';
+        const initColor = UPD_COLORS[initVal - 1] || '#eab308';
 
         let metaHTML = `<span class="hist-badge ${isReviewed ? 'hb-done' : 'hb-pending'}">${isReviewed ? tr('hist_reviewed') : tr('hist_pending')}</span>`;
 
         if (isReviewed && d.followUp) {
-          const actual = d.followUp.globalScore * 10; // convert 1-10 to 100 base
+          const actual = d.followUp.globalScore * 10;
           const delta = actual - initialScore;
           const sign = delta > 0 ? '+' : '';
-          const cls = delta >= 0 ? 'delta-up' : 'delta-down';
-          metaHTML += `<span>Initial: <strong>${initialScore}</strong> → Actuel: <strong class="${cls}">${actual}</strong> (${sign}${delta})</span>`;
+          const dir = delta >= 0 ? 'up' : 'down';
+          const arrow = delta >= 0 ? '↑' : '↓';
+          metaHTML += `
+            <div class="hist-score-row">
+              <span class="hist-score-pill initial">${initialScore}<span class="pill-denom">/100</span></span>
+              <span style="color:var(--muted);font-size:.8rem">→</span>
+              <span class="hist-score-pill actual-${dir}">${actual}<span class="pill-denom">/100</span></span>
+              <span class="hist-delta-badge ${dir}">${sign}${delta} ${arrow}</span>
+            </div>`;
         } else {
           metaHTML += `<span>Winner: <strong>${esc(winnerName)}</strong> (${initialScore}/100)</span>`;
         }
 
         return `
-      <div class="hist-card" id="hist-${d.id}">
+      <div class="hist-card${isReviewed ? ' hc-done' : ''}" id="hist-${d.id}">
         <div class="hist-head">
           <div>
             <div class="hist-date">${date}</div>
@@ -7096,42 +7281,65 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
           </div>
         </div>
         <div class="hist-meta">${metaHTML}</div>
-        
+
         <div id="upd-form-${d.id}" style="display:none" class="update-form">
-          <div style="font-weight:700;margin-bottom:8px">${tr('hist_upd_title')}</div>
-          <div style="font-size:.8rem;color:var(--muted);margin-bottom:12px">${tr('hist_upd_desc')}</div>
-          
-          <div class="field">
-            <label>${tr('hist_global_score')}</label>
-            <div class="stepper" style="justify-content:flex-start">
-              <button class="stepper-btn" onclick="this.nextElementSibling.value=Math.max(1,this.nextElementSibling.value-1);this.nextElementSibling.oninput()">−</button>
-              <input type="number" id="upd-score-${d.id}" value="${d.followUp?.globalScore || Math.round(initialScore / 10)}" min="1" max="10" style="width:50px;text-align:center;font-size:1.2rem;border:none;background:transparent" oninput="document.getElementById('upd-emoji-${d.id}').textContent=['😭','😞','😟','😕','😐','🙂','😊','😄','😁','🤩'][this.value-1]||'😐'">
-              <button class="stepper-btn" onclick="this.previousElementSibling.value=Math.min(10,parseInt(this.previousElementSibling.value)+1);this.previousElementSibling.oninput()">+</button>
-              <div style="font-size:1.5rem;margin-left:10px" id="upd-emoji-${d.id}">😐</div>
+          <div class="upd-form-title">${tr('hist_upd_title')}</div>
+          <div class="upd-form-desc">${tr('hist_upd_desc')}</div>
+
+          <div class="upd-score-widget">
+            <div id="upd-emoji-${d.id}" class="upd-score-emoji">${initEmoji}</div>
+            <div class="upd-score-row">
+              <button class="stepper-btn" onclick="updScore('${d.id}', parseInt(document.getElementById('upd-score-${d.id}').value)-1)">−</button>
+              <div class="upd-score-display">
+                <span id="upd-score-val-${d.id}" class="upd-score-val">${initVal}</span>
+                <span class="upd-score-denom">/10</span>
+              </div>
+              <button class="stepper-btn" onclick="updScore('${d.id}', parseInt(document.getElementById('upd-score-${d.id}').value)+1)">+</button>
+            </div>
+            <input type="hidden" id="upd-score-${d.id}" value="${initVal}">
+            <div class="upd-gauge">
+              <div class="upd-gauge-bar" id="upd-gauge-bar-${d.id}" style="width:${initVal * 10}%;background-color:${initColor}"></div>
             </div>
           </div>
-          
+
           <div class="field">
             <label>${tr('hist_comment')}</label>
             <textarea id="upd-comment-${d.id}" rows="2">${esc(d.followUp?.comment || '')}</textarea>
           </div>
-          
+
           <button class="btn btn-primary" onclick="saveUpdate('${d.id}')">${tr('hist_save_upd')}</button>
         </div>
-        
+
         <div class="hist-actions">
-          <button class="btn btn-secondary" style="font-size:.75rem;padding:6px 12px" onclick="toggleUpdate('${d.id}')">
+          <button class="btn btn-secondary" style="font-size:.73rem;padding:6px 13px;border-radius:20px" onclick="toggleUpdate('${d.id}')">
             ${isReviewed ? '✏️ Modifier le suivi' : tr('hist_update_btn')}
           </button>
-          <button class="hist-link-btn" onclick="editDecision('${d.id}')">
-            ✏️ ${tr('hist_edit_decision')}
+          <button class="hist-action-btn resume" onclick="editDecision('${d.id}')">
+            ↩ ${tr('hist_edit_decision')}
           </button>
-          <button class="hist-link-btn danger" onclick="deleteDecision('${d.id}')">
+          <button class="hist-action-btn delete" onclick="deleteDecision('${d.id}')">
             🗑 ${tr('hist_delete')}
           </button>
         </div>
       </div>`;
       }).join('');
+    }
+
+    function updScore(id, raw) {
+      const v = Math.max(1, Math.min(10, parseInt(raw) || 1));
+      document.getElementById('upd-score-' + id).value = v;
+      document.getElementById('upd-score-val-' + id).textContent = v;
+      const emojis = ['😭','😞','😟','😕','😐','🙂','😊','😄','😁','🤩'];
+      const colors = ['#ef4444','#ef4444','#f97316','#f97316','#eab308','#eab308','#14b8a6','#14b8a6','#22c55e','#22c55e'];
+      const emojiEl = document.getElementById('upd-emoji-' + id);
+      emojiEl.textContent = emojis[v - 1];
+      emojiEl.classList.remove('bump');
+      void emojiEl.offsetWidth;
+      emojiEl.classList.add('bump');
+      setTimeout(() => emojiEl.classList.remove('bump'), 120);
+      const bar = document.getElementById('upd-gauge-bar-' + id);
+      bar.style.width = (v * 10) + '%';
+      bar.style.backgroundColor = colors[v - 1];
     }
 
     function toggleUpdate(id) {
