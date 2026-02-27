@@ -4125,6 +4125,14 @@
       color: var(--ink2);
     }
 
+    .swing-item-sub {
+      font-size: .72rem;
+      color: var(--muted);
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     /* Champs worst/best/points */
     .swing-fields {
       display: flex;
@@ -5475,7 +5483,10 @@
         <div class="swing-item-main">
           <div class="swing-item-header">
             <span style="font-size:.9rem;flex-shrink:0">${c.icon}</span>
-            <span class="swing-item-name">${c.name}</span>
+            <div class="swing-name-group">
+              <span class="swing-item-name">${c.name}</span>
+              ${c.hint ? `<span class="swing-item-sub">${esc(c.hint)}</span>` : ''}
+            </div>
           </div>
         </div>
         <div class="swing-weight-col">
