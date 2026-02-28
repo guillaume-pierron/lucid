@@ -1954,42 +1954,39 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
-    .pip-row {
+    .fluid-track {
       display: flex;
-      gap: 5px;
-      align-items: flex-end;
       width: 100%;
-      height: 24px;
+      height: 28px;
+      align-items: center;
+      gap: 12px;
+      padding: 0 4px;
     }
 
-    .pip {
+    .fluid-bar {
       flex: 1;
-      border-radius: 6px;
+      height: 10px;
+      border-radius: 999px;
       background: var(--border);
-      border: 1px solid transparent;
-      transition: background .2s, height .2s cubic-bezier(0.16, 1, 0.3, 1), border-color .2s, transform .2s cubic-bezier(0.16, 1, 0.3, 1);
-      min-height: 6px;
-      cursor: pointer;
-      opacity: 0.6;
+      overflow: hidden;
+      position: relative;
     }
 
-    .pip[style*="background"] {
-      opacity: 1;
-    }
-
-    .pip:hover {
-      transform: scaleY(1.3);
-      background: var(--border2);
-      border-color: var(--muted);
-      opacity: 0.8;
+    .fluid-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      width: 50%;
+      /* JS will control */
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease, box-shadow 0.4s ease;
+      background: var(--teal);
     }
 
     .stepper-val {
       font-family: 'Lora', serif;
-      font-size: 1.65rem;
+      font-size: 1.8rem;
       font-weight: 700;
       line-height: 1;
       transition: color .2s;
@@ -1999,15 +1996,41 @@
     }
 
     .stepper-emoji {
-      font-size: 1.25rem;
-      line-height: 1;
-      text-align: center;
-      transition: opacity .15s, transform .2s cubic-bezier(0.16, 1, 0.3, 1);
+      font-size: 1.45rem;
+      flex-shrink: 0;
+      transition: opacity .15s, transform .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       user-select: none;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
     }
 
     .stepper-emoji:hover {
-      transform: scale(1.1);
+      transform: scale(1.15) !important;
+    }
+
+    .sl-wtag-modern .sl-wtag {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .65rem;
+      background: var(--amber-bg);
+      color: var(--amber);
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(217, 119, 6, 0.3);
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      box-shadow: 0 2px 6px rgba(217, 119, 6, 0.1);
+    }
+
+    .sl-wtag-modern .swing-wtag {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .65rem;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--teal);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.1);
     }
 
     /* ── NOTES ───────────────────────────────── */
@@ -6154,20 +6177,24 @@
           } else if (cr.weight > 1) {
             wt = `<span class="sl-wtag">×${cr.weight}</span>`;
           }
-          // FIN MODIF SWING
-          const pips = Array.from({ length: 10 }, (_, pi) =>
-            `<div class="pip" id="pip-${oi}-${cr.id}-${pi + 1}" onclick="setVal(${oi},'${cr.id}',${pi + 1})" title="${pi + 1}/10"></div>`).join('');
+          const pips = `
+            <div class="fluid-bar">
+              <div class="fluid-bar-fill" id="pip-${oi}-${cr.id}-fill"></div>
+            </div>`;
           return `
         <div class="sl-item">
           <div class="sl-head">
-            <div class="sl-label">${cr.icon} ${cr.name} ${inv}</div>${wt}
+            <div class="sl-label">${cr.icon} ${cr.name} ${inv}</div>
+            <div class="sl-wtag-modern">${wt}</div>
           </div>
           <div class="stepper">
             <button class="stepper-btn" onclick="stepVal(${oi},'${cr.id}',-1)" aria-label="Diminuer">−</button>
             <div class="stepper-track">
-              <div class="pip-row">${pips}</div>
+              <div class="fluid-track">
+                ${pips}
+                <div class="stepper-emoji" id="se-${oi}-${cr.id}">${scoreEmoji(v, cr.invert ?? false)}</div>
+              </div>
               <div class="stepper-val" id="sv-${oi}-${cr.id}">${v}</div>
-              <div class="stepper-emoji" id="se-${oi}-${cr.id}">${scoreEmoji(v, cr.invert ?? false)}</div>
             </div>
             <button class="stepper-btn" onclick="stepVal(${oi},'${cr.id}',+1)" aria-label="Augmenter">+</button>
           </div>
@@ -6177,9 +6204,9 @@
         col.innerHTML = `
       <div class="eval-col-head" style="background:${activeColors()[0].bg};border-color:${activeColors()[0].border}">
         <div class="eval-col-name" style="color:${activeColors()[0].hex}">Option ${LETTERS[oi]} — ${esc(opt.name)}</div>
-        <div class="eval-live-score">
+        <div class="eval-live-score" style="border: 1px solid ${activeColors()[0].border}">
           <div class="eval-live-num" id="live-${oi}" style="color:${activeColors()[0].hex}">—</div>
-          <div class="eval-live-label">/ 100</div>
+          <div class="eval-live-label" style="color:${activeColors()[0].hex}">/ 100</div>
         </div>
       </div>
       <div class="eval-col-body" style="border-color:${activeColors()[0].border}">${items}</div>`;
@@ -6220,20 +6247,20 @@
       const vd = document.getElementById(`sv-${oi}-${cid}`);
       if (vd) { vd.textContent = val; vd.style.color = color; }
       const ed = document.getElementById(`se-${oi}-${cid}`);
-      if (ed) ed.textContent = scoreEmoji(val, invert);
-      for (let pi = 1; pi <= 10; pi++) {
-        const pip = document.getElementById(`pip-${oi}-${cid}-${pi}`);
-        if (!pip) continue;
-        if (pi <= val) {
-          // Height grows with value for a bar-chart feel
-          pip.style.height = (8 + pi * 1.2) + 'px';
-          pip.style.background = color;
-          pip.style.borderColor = color;
-        } else {
-          pip.style.height = '8px';
-          pip.style.background = '';
-          pip.style.borderColor = '';
-        }
+      if (ed) {
+        ed.textContent = scoreEmoji(val, invert);
+        // Add subtle animation map to high scores via scale
+        const eff = invert ? (11 - val) : val;
+        ed.style.transform = eff >= 8 ? 'scale(1.15)' : 'scale(1)';
+      }
+
+      const pipFill = document.getElementById(`pip-${oi}-${cid}-fill`);
+      if (pipFill) {
+        // Fluid mapping: 1 -> 10%, 10 -> 100%
+        pipFill.style.width = (val * 10) + '%';
+        pipFill.style.background = color;
+        // Optionally map box shadow base color for glow
+        pipFill.style.boxShadow = `0 0 10px ${color.replace(')', ', 0.4)').replace('hsl', 'hsla')}`;
       }
     }
 
