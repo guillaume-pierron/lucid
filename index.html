@@ -1889,7 +1889,6 @@
     .collapse-btn-s3 {
       background: transparent;
       border: none;
-      font-size: 0.9rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1897,12 +1896,21 @@
       padding: 6px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.2);
-      transition: transform 0.2s, background 0.2s;
+      transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
+    .collapse-btn-s3 svg {
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .collapse-btn-s3.collapsed svg {
+      transform: rotate(180deg);
     }
 
     .collapse-btn-s3:hover {
-      transform: scale(1.1);
+      transform: scale(1.05);
       background: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     /* Stepper */
@@ -6268,14 +6276,8 @@
     function toggleStep3Col(oi) {
       const body = document.getElementById(`eval-col-body-${oi}`);
       const btn = document.getElementById(`collapse-btn-${oi}`);
-      if (body) {
-        body.classList.toggle('collapsed');
-        if (body.classList.contains('collapsed')) {
-          if (btn) btn.innerHTML = '▼';
-        } else {
-          if (btn) btn.innerHTML = '▲';
-        }
-      }
+      if (body) body.classList.toggle('collapsed');
+      if (btn) btn.classList.toggle('collapsed');
     }
 
     /* ─── JS POUR GÉRER LE SWIPE DE LA BARRE ─── */
@@ -6366,7 +6368,11 @@
             <div class="eval-live-num" id="live-${oi}" style="color:${activeColors()[0].hex}">—</div>
             <div class="eval-live-label" style="color:${activeColors()[0].hex}">/ 100</div>
           </div>
-          <button class="collapse-btn-s3" id="collapse-btn-${oi}" onclick="toggleStep3Col(${oi})" style="color:${activeColors()[0].hex}" aria-label="Toggle">▲</button>
+          <button class="collapse-btn-s3" id="collapse-btn-${oi}" onclick="toggleStep3Col(${oi})" aria-label="Toggle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${activeColors()[0].hex}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+          </button>
         </div>
       </div>
       <div class="eval-col-body" id="eval-col-body-${oi}" style="border-color:${activeColors()[0].border}">${items}</div>`;
