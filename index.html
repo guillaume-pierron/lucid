@@ -1872,11 +1872,37 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-      transition: box-shadow 0.3s ease;
+      transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.4s ease;
+      max-height: 2000px;
+    }
+
+    .eval-col-body.collapsed {
+      max-height: 0;
+      border-color: transparent;
+      box-shadow: none;
     }
 
     .eval-col-body:hover {
       box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+    }
+
+    .collapse-btn-s3 {
+      background: transparent;
+      border: none;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .collapse-btn-s3:hover {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.4);
     }
 
     /* Stepper */
@@ -6238,6 +6264,20 @@
       return SCORE_EMOJIS[Math.min(10, Math.max(1, eff)) - 1];
     }
 
+    /* ─── JS POUR GÉRER L'OUVERTURE/FERMETURE DES COLONNES (STEP 3) ─── */
+    function toggleStep3Col(oi) {
+      const body = document.getElementById(`eval-col-body-${oi}`);
+      const btn = document.getElementById(`collapse-btn-${oi}`);
+      if (body) {
+        body.classList.toggle('collapsed');
+        if (body.classList.contains('collapsed')) {
+          if (btn) btn.innerHTML = '▼';
+        } else {
+          if (btn) btn.innerHTML = '▲';
+        }
+      }
+    }
+
     /* ─── JS POUR GÉRER LE SWIPE DE LA BARRE ─── */
     let _fluidDrag = null;
     function startFluidDrag(e, oi, cid) {
@@ -6321,12 +6361,15 @@
         col.innerHTML = `
       <div class="eval-col-head" style="background:${activeColors()[0].bg};border-color:${activeColors()[0].border}">
         <div class="eval-col-name" style="color:${activeColors()[0].hex}"><span class="opt-badge">Option ${LETTERS[oi]}</span> ${esc(opt.name)}</div>
-        <div class="eval-live-score" style="border: 1px solid ${activeColors()[0].border}">
-          <div class="eval-live-num" id="live-${oi}" style="color:${activeColors()[0].hex}">—</div>
-          <div class="eval-live-label" style="color:${activeColors()[0].hex}">/ 100</div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="eval-live-score" style="border: 1px solid ${activeColors()[0].border}">
+            <div class="eval-live-num" id="live-${oi}" style="color:${activeColors()[0].hex}">—</div>
+            <div class="eval-live-label" style="color:${activeColors()[0].hex}">/ 100</div>
+          </div>
+          <button class="collapse-btn-s3" id="collapse-btn-${oi}" onclick="toggleStep3Col(${oi})" style="color:${activeColors()[0].hex}" aria-label="Toggle">▲</button>
         </div>
       </div>
-      <div class="eval-col-body" style="border-color:${activeColors()[0].border}">${items}</div>`;
+      <div class="eval-col-body" id="eval-col-body-${oi}" style="border-color:${activeColors()[0].border}">${items}</div>`;
 
         grid.appendChild(col);
         S.criteria.forEach(cr => renderStepper(oi, cr.id, S.scores[cr.id]?.[oi] ?? 5, cr.invert ?? false));
