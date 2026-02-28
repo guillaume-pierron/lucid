@@ -3682,6 +3682,10 @@
 
     .scenario-impact-wrapper {
       margin-top: 8px;
+      /* Mobile-first: l'insight (2e élément) apparaît en premier */
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 14px;
     }
 
     .scenario-impact-grid {
@@ -3691,6 +3695,11 @@
     }
 
     @media (min-width:720px) {
+      /* Desktop: on rétablit l'ordre HTML (scores en premier) */
+      .scenario-impact-wrapper {
+        flex-direction: column;
+      }
+
       .scenario-impact-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3863,7 +3872,7 @@
     }
 
     .scenario-impact-global {
-      margin-top: 14px;
+      /* margin-top: 14px; /* Remplacé par `gap` sur le wrapper */
       display: flex;
       justify-content: center;
       text-align: center;
