@@ -3682,9 +3682,8 @@
 
     .scenario-impact-wrapper {
       margin-top: 8px;
-      /* Mobile-first: l'insight (2e élément) apparaît en premier */
       display: flex;
-      flex-direction: column-reverse;
+      flex-direction: column;
       gap: 14px;
     }
 
@@ -3695,9 +3694,8 @@
     }
 
     @media (min-width:720px) {
-      /* Desktop: on rétablit l'ordre HTML (scores en premier) */
       .scenario-impact-wrapper {
-        flex-direction: column;
+        flex-direction: column-reverse;
       }
 
       .scenario-impact-grid {
@@ -6766,10 +6764,10 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         }
 
         comparisonBlock = `<div class="scenario-impact-wrapper">
-      ${insight}
-      <div class="scenario-impact-grid" style="margin-top:14px">
+      <div class="scenario-impact-grid">
         ${scoreRows}
       </div>
+      ${insight}
     </div>`;
       }
 
