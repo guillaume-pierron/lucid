@@ -2040,6 +2040,9 @@
       background: var(--border);
       overflow: hidden;
       position: relative;
+      cursor: pointer;
+      touch-action: none;
+      /* Allows pointer events on touch without scrolling */
     }
 
     .fluid-bar-fill {
@@ -6235,6 +6238,35 @@
       return SCORE_EMOJIS[Math.min(10, Math.max(1, eff)) - 1];
     }
 
+    /* ─── JS POUR GÉRER LE SWIPE DE LA BARRE ─── */
+    let _fluidDrag = null;
+    function startFluidDrag(e, oi, cid) {
+      // Prevent browser default scroll/pan behaviors
+      if (e.cancelable) e.preventDefault();
+      _fluidDrag = { oi, cid, el: e.currentTarget };
+      updateFluidDrag(e);
+      document.addEventListener('pointermove', updateFluidDrag);
+      document.addEventListener('pointerup', stopFluidDrag);
+      document.addEventListener('pointercancel', stopFluidDrag);
+    }
+    function updateFluidDrag(e) {
+      if (!_fluidDrag) return;
+      const rect = _fluidDrag.el.getBoundingClientRect();
+      let x = e.clientX - rect.left;
+      let pct = Math.max(0, Math.min(1, x / rect.width));
+      let val = Math.round(pct * 9) + 1; // map 0-1 to 1-10
+      // Evite des petits sauts inutiles si la valeur est déjà la même
+      if (S.scores[_fluidDrag.cid][_fluidDrag.oi] !== val) {
+        setVal(_fluidDrag.oi, _fluidDrag.cid, val);
+      }
+    }
+    function stopFluidDrag() {
+      _fluidDrag = null;
+      document.removeEventListener('pointermove', updateFluidDrag);
+      document.removeEventListener('pointerup', stopFluidDrag);
+      document.removeEventListener('pointercancel', stopFluidDrag);
+    }
+
     function buildEvalPage() {
       document.getElementById('eval-title').textContent =
         tr('eval_title', S.decision.substring(0, 50) + (S.decision.length > 50 ? '…' : ''));
@@ -6261,7 +6293,7 @@
             wt = `<span class="sl-wtag">×${cr.weight}</span>`;
           }
           const pips = `
-            <div class="fluid-bar">
+            <div class="fluid-bar" onpointerdown="startFluidDrag(event, ${oi}, '${cr.id}')">
               <div class="fluid-bar-fill" id="pip-${oi}-${cr.id}-fill"></div>
             </div>`;
           return `
