@@ -1805,6 +1805,14 @@
       background: var(--glass-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .eval-col-head:hover {
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
     }
 
     .eval-col-name {
@@ -1872,12 +1880,43 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-      transition: box-shadow 0.3s ease;
+      transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.4s ease;
+      max-height: 2000px;
+    }
+
+    .eval-col-body.collapsed {
+      max-height: 0;
+      border-color: transparent;
+      box-shadow: none;
     }
 
     .eval-col-body:hover {
       box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
     }
+
+    .collapse-btn-s3 {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: transform 0.2s;
+    }
+
+    .collapse-btn-s3 svg {
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .collapse-btn-s3.collapsed svg {
+      transform: rotate(180deg);
+    }
+
+    .eval-col-head:hover .collapse-btn-s3 {
+      transform: scale(1.1);
+    }
+
 
     /* Stepper */
     .sl-item {
@@ -1946,12 +1985,12 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 12px;
+      padding: 5px 10px;
       background: rgba(255, 255, 255, 0.4);
       border: 1px solid var(--border);
       border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
+      font-size: 0.8rem;
+      font-weight: 500;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
       color: var(--fg);
     }
@@ -2040,6 +2079,9 @@
       background: var(--border);
       overflow: hidden;
       position: relative;
+      cursor: pointer;
+      touch-action: none;
+      /* Allows pointer events on touch without scrolling */
     }
 
     .fluid-bar-fill {
@@ -6235,6 +6277,43 @@
       return SCORE_EMOJIS[Math.min(10, Math.max(1, eff)) - 1];
     }
 
+    /* ─── JS POUR GÉRER L'OUVERTURE/FERMETURE DES COLONNES (STEP 3) ─── */
+    function toggleStep3Col(oi) {
+      const body = document.getElementById(`eval-col-body-${oi}`);
+      const btn = document.getElementById(`collapse-btn-${oi}`);
+      if (body) body.classList.toggle('collapsed');
+      if (btn) btn.classList.toggle('collapsed');
+    }
+
+    /* ─── JS POUR GÉRER LE SWIPE DE LA BARRE ─── */
+    let _fluidDrag = null;
+    function startFluidDrag(e, oi, cid) {
+      // Prevent browser default scroll/pan behaviors
+      if (e.cancelable) e.preventDefault();
+      _fluidDrag = { oi, cid, el: e.currentTarget };
+      updateFluidDrag(e);
+      document.addEventListener('pointermove', updateFluidDrag);
+      document.addEventListener('pointerup', stopFluidDrag);
+      document.addEventListener('pointercancel', stopFluidDrag);
+    }
+    function updateFluidDrag(e) {
+      if (!_fluidDrag) return;
+      const rect = _fluidDrag.el.getBoundingClientRect();
+      let x = e.clientX - rect.left;
+      let pct = Math.max(0, Math.min(1, x / rect.width));
+      let val = Math.round(pct * 9) + 1; // map 0-1 to 1-10
+      // Evite des petits sauts inutiles si la valeur est déjà la même
+      if (S.scores[_fluidDrag.cid][_fluidDrag.oi] !== val) {
+        setVal(_fluidDrag.oi, _fluidDrag.cid, val);
+      }
+    }
+    function stopFluidDrag() {
+      _fluidDrag = null;
+      document.removeEventListener('pointermove', updateFluidDrag);
+      document.removeEventListener('pointerup', stopFluidDrag);
+      document.removeEventListener('pointercancel', stopFluidDrag);
+    }
+
     function buildEvalPage() {
       document.getElementById('eval-title').textContent =
         tr('eval_title', S.decision.substring(0, 50) + (S.decision.length > 50 ? '…' : ''));
@@ -6261,7 +6340,7 @@
             wt = `<span class="sl-wtag">×${cr.weight}</span>`;
           }
           const pips = `
-            <div class="fluid-bar">
+            <div class="fluid-bar" onpointerdown="startFluidDrag(event, ${oi}, '${cr.id}')">
               <div class="fluid-bar-fill" id="pip-${oi}-${cr.id}-fill"></div>
             </div>`;
           return `
@@ -6287,14 +6366,21 @@
         }).join('');
 
         col.innerHTML = `
-      <div class="eval-col-head" style="background:${activeColors()[0].bg};border-color:${activeColors()[0].border}">
+      <div class="eval-col-head" onclick="toggleStep3Col(${oi})" style="background:${activeColors()[0].bg};border-color:${activeColors()[0].border}">
         <div class="eval-col-name" style="color:${activeColors()[0].hex}"><span class="opt-badge">Option ${LETTERS[oi]}</span> ${esc(opt.name)}</div>
-        <div class="eval-live-score" style="border: 1px solid ${activeColors()[0].border}">
-          <div class="eval-live-num" id="live-${oi}" style="color:${activeColors()[0].hex}">—</div>
-          <div class="eval-live-label" style="color:${activeColors()[0].hex}">/ 100</div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="eval-live-score" style="border: 1px solid ${activeColors()[0].border}">
+            <div class="eval-live-num" id="live-${oi}" style="color:${activeColors()[0].hex}">—</div>
+            <div class="eval-live-label" style="color:${activeColors()[0].hex}">/ 100</div>
+          </div>
+          <button class="collapse-btn-s3" id="collapse-btn-${oi}" aria-label="Toggle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${activeColors()[0].hex}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+          </button>
         </div>
       </div>
-      <div class="eval-col-body" style="border-color:${activeColors()[0].border}">${items}</div>`;
+      <div class="eval-col-body" id="eval-col-body-${oi}" style="border-color:${activeColors()[0].border}">${items}</div>`;
 
         grid.appendChild(col);
         S.criteria.forEach(cr => renderStepper(oi, cr.id, S.scores[cr.id]?.[oi] ?? 5, cr.invert ?? false));
