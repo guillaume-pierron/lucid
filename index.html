@@ -1942,6 +1942,26 @@
       flex: 1;
     }
 
+    .crit-name-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      color: var(--fg);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .crit-name-badge {
+        background: rgba(255, 255, 255, 0.05);
+      }
+    }
+
     .sl-wtag {
       font-size: .62rem;
       background: var(--amber-bg);
@@ -6247,7 +6267,7 @@
           return `
         <div class="sl-item">
           <div class="sl-head">
-            <div class="sl-label">${cr.icon} ${cr.name}</div>
+            <div class="sl-label"><span class="crit-name-badge">${cr.icon} ${cr.name}</span></div>
             ${inv}
             <div class="sl-wtag-modern">${wt}</div>
             <button class="rm-crit-btn-s3" onclick="askRmCritStep3('${cr.id}')" title="${LANG === 'fr' ? 'Supprimer' : 'Remove'}" aria-label="Remove">✕</button>
