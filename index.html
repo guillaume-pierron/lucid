@@ -1911,6 +1911,30 @@
       margin-bottom: 16px;
     }
 
+    .rm-crit-btn-s3 {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: .7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all .2s;
+      margin-left: auto;
+    }
+
+    .rm-crit-btn-s3:hover {
+      background: rgba(248, 113, 113, 0.15);
+      border-color: var(--red);
+      color: var(--red);
+      transform: scale(1.05);
+    }
+
     .sl-label {
       font-size: .85rem;
       font-weight: 600;
@@ -6155,6 +6179,22 @@
       renderSelList();
     }
 
+    function askRmCritStep3(id) {
+      if (S.criteria.length <= 2) {
+        alert(LANG === 'fr' ? 'Vous devez garder au moins 2 critères.' : 'You must keep at least 2 criteria.');
+        return;
+      }
+      const c = S.criteria.find(x => x.id === id);
+      if (!c) return;
+      const msg = LANG === 'fr'
+        ? `Êtes-vous sûr de vouloir supprimer le critère "${c.name}" ?`
+        : `Are you sure you want to delete the criterion "${c.name}"?`;
+      if (confirm(msg)) {
+        rmCrit(id);
+        buildEvalPage();
+      }
+    }
+
     function validateStep2() {
       if (S.criteria.length < 2) { alert(tr('err_crit')); return; }
       S.criteria.forEach(c => {
@@ -6210,6 +6250,7 @@
             <div class="sl-label">${cr.icon} ${cr.name}</div>
             ${inv}
             <div class="sl-wtag-modern">${wt}</div>
+            <button class="rm-crit-btn-s3" onclick="askRmCritStep3('${cr.id}')" title="${LANG === 'fr' ? 'Supprimer' : 'Remove'}" aria-label="Remove">✕</button>
           </div>
           <div class="stepper">
             <button class="stepper-btn" onclick="stepVal(${oi},'${cr.id}',-1)" aria-label="Diminuer">−</button>
