@@ -1807,7 +1807,13 @@
       -webkit-backdrop-filter: blur(16px);
       cursor: pointer;
       user-select: none;
-      transition: background 0.2s ease, box-shadow 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.2s ease, box-shadow 0.2s ease, border-radius 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-bottom-color 0.4s ease;
+    }
+
+    .eval-col-head.collapsed {
+      border-radius: 20px;
+      border-bottom: 1px solid var(--border);
     }
 
     .eval-col-head:hover {
@@ -1886,7 +1892,7 @@
 
     .eval-col-body.collapsed {
       max-height: 0;
-      border-color: transparent;
+      border-color: transparent !important;
       box-shadow: none;
     }
 
@@ -6281,8 +6287,10 @@
     function toggleStep3Col(oi) {
       const body = document.getElementById(`eval-col-body-${oi}`);
       const btn = document.getElementById(`collapse-btn-${oi}`);
+      const head = body ? body.previousElementSibling : null;
       if (body) body.classList.toggle('collapsed');
       if (btn) btn.classList.toggle('collapsed');
+      if (head) head.classList.toggle('collapsed');
     }
 
     /* ─── JS POUR GÉRER LE SWIPE DE LA BARRE ─── */
