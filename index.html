@@ -5,22 +5,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lucid — Aide à la décision</title>
+  <!-- Inter variable (axe wght + opsz) — police principale 2026 -->
+  <!-- Plus Jakarta Sans conservé pour compatibilité des classes existantes -->
   <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:wght@600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:wght@600;700&display=swap"
     rel="stylesheet">
   <style>
     /* ── TOKENS ─────────────────────────────── */
     :root {
+      /* ── Police principale 2026 : Inter variable ── */
+      --font-sans: 'Inter', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+
+      /* ── Palette oklch 2026 (vivacité perceptuelle uniforme) ── */
+      /* --primary est le bleu-sarcelle principal, --accent est l'ambre "dopamine" */
+      --primary:     oklch(65% 0.15 240);   /* Bleu-sarcelle moderne */
+      --accent:      oklch(70% 0.2  80);    /* Ambre vif énergisant   */
+      --score-low:   oklch(55% 0.18 25);    /* Rouge score faible      */
+      --score-mid:   oklch(70% 0.18 80);    /* Ambre score moyen       */
+      --score-high:  oklch(65% 0.17 145);   /* Vert score élevé        */
+
+      /* ── Backgrounds & surfaces ── */
       --bg: #f7f8f8;
       --bg2: #eef0f2;
       --white: #ffffff;
       --glass-bg: rgba(255, 255, 255, 0.65);
+
+      /* ── Borders & ombres ── */
       --border: rgba(0, 0, 0, 0.08);
       --border2: rgba(0, 0, 0, 0.15);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+
+      /* ── Textes ── */
       --ink: #0f172a;
       --ink2: #334155;
       --muted: #64748b;
       --muted2: #94a3b8;
+
+      /* ── Couleurs sémantiques (conservées pour compat) ── */
       --teal: #059669;
       --teal2: #10b981;
       --teal-bg: #ecfdf5;
@@ -31,28 +53,34 @@
       --red-bg: #fee2e2;
       --amber: #d97706;
       --amber-bg: #fef3c7;
+
+      /* ── Rayons ── */
       --r: 20px;
       --r-sm: 12px;
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+
+      /* ── Composants spéciaux ── */
       --sel-box-bg: rgba(255, 255, 255, 0.4);
       --sel-box-border: rgba(255, 255, 255, 0.6);
       --sel-head-border: rgba(255, 255, 255, 0.4);
       --sel-head-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5));
       --sel-item-bg: radial-gradient(circle at top left, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
       --sel-item-border: rgba(255, 255, 255, 0.5);
-      /* Verdict card (results) - default (light)
-        Use CSS variables so dark mode can override for better contrast */
+      /* Verdict card (results) */
       --verdict-bg: #fffbea;
       --verdict-border: #f0d080;
-      /* Scenario impact cards - default (light) */
+      /* Scenario impact cards */
       --scenario-card-bg: radial-gradient(circle at top left, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
       --scenario-card-border: rgba(255, 255, 255, 0.9);
       --scenario-dot-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7);
+
+      /* ── Hint pour les contrôles navigateur (scrollbars, inputs) ── */
+      color-scheme: light;
     }
 
+    /* ─── Variables dark auto (système) ───────── */
     @media (prefers-color-scheme: dark) {
-      :root {
+      :root:not([data-theme="light"]) {
+        color-scheme: dark;
         --bg: #0f172a;
         --bg2: #1e293b;
         --glass-bg: rgba(30, 41, 59, 0.7);
@@ -63,7 +91,6 @@
         --muted: #94a3b8;
         --muted2: #cbd5e1;
         --white: #1e293b;
-        /* Using white var as a solid card bg fallback */
         --teal-bg: rgba(5, 150, 105, 0.15);
         --teal-bd: rgba(5, 150, 105, 0.3);
         --green-bg: rgba(22, 163, 74, 0.15);
@@ -77,14 +104,79 @@
         --sel-head-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.5));
         --sel-item-bg: radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
         --sel-item-border: rgba(255, 255, 255, 0.12);
-        /* Verdict card adjustments for dark mode */
         --verdict-bg: rgba(250, 240, 190, 0.06);
         --verdict-border: rgba(240, 208, 128, 0.12);
-        /* Scenario impact cards - dark mode adjustments */
         --scenario-card-bg: radial-gradient(circle at top left, rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.5));
         --scenario-card-border: rgba(71, 84, 103, 0.6);
         --scenario-dot-shadow: 0 0 0 3px rgba(71, 84, 103, 0.8);
       }
+    }
+
+    /* ─── Variables dark forcé (toggle manuel) ── */
+    /* Spécificité (0,1,1) > (0,1,0) de :root → override media query */
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0f172a;
+      --bg2: #1e293b;
+      --glass-bg: rgba(30, 41, 59, 0.7);
+      --border: rgba(255, 255, 255, 0.1);
+      --border2: rgba(255, 255, 255, 0.2);
+      --ink: #f8fafc;
+      --ink2: #cbd5e1;
+      --muted: #94a3b8;
+      --muted2: #cbd5e1;
+      --white: #1e293b;
+      --teal-bg: rgba(5, 150, 105, 0.15);
+      --teal-bd: rgba(5, 150, 105, 0.3);
+      --green-bg: rgba(22, 163, 74, 0.15);
+      --red-bg: rgba(220, 38, 38, 0.15);
+      --amber-bg: rgba(217, 119, 6, 0.15);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.4);
+      --sel-box-bg: rgba(30, 41, 59, 0.4);
+      --sel-box-border: rgba(255, 255, 255, 0.1);
+      --sel-head-border: rgba(255, 255, 255, 0.1);
+      --sel-head-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.5));
+      --sel-item-bg: radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+      --sel-item-border: rgba(255, 255, 255, 0.12);
+      --verdict-bg: rgba(250, 240, 190, 0.06);
+      --verdict-border: rgba(240, 208, 128, 0.12);
+      --scenario-card-bg: radial-gradient(circle at top left, rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.5));
+      --scenario-card-border: rgba(71, 84, 103, 0.6);
+      --scenario-dot-shadow: 0 0 0 3px rgba(71, 84, 103, 0.8);
+    }
+
+    /* ─── Variables light forcé (override dark système) ─ */
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f7f8f8;
+      --bg2: #eef0f2;
+      --glass-bg: rgba(255, 255, 255, 0.65);
+      --border: rgba(0, 0, 0, 0.08);
+      --border2: rgba(0, 0, 0, 0.15);
+      --ink: #0f172a;
+      --ink2: #334155;
+      --muted: #64748b;
+      --muted2: #94a3b8;
+      --white: #ffffff;
+      --teal-bg: #ecfdf5;
+      --teal-bd: #a7f3d0;
+      --green-bg: #dcfce7;
+      --red-bg: #fee2e2;
+      --amber-bg: #fef3c7;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+      --sel-box-bg: rgba(255, 255, 255, 0.4);
+      --sel-box-border: rgba(255, 255, 255, 0.6);
+      --sel-head-border: rgba(255, 255, 255, 0.4);
+      --sel-head-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5));
+      --sel-item-bg: radial-gradient(circle at top left, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
+      --sel-item-border: rgba(255, 255, 255, 0.5);
+      --verdict-bg: #fffbea;
+      --verdict-border: #f0d080;
+      --scenario-card-bg: radial-gradient(circle at top left, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+      --scenario-card-border: rgba(255, 255, 255, 0.9);
+      --scenario-dot-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7);
     }
 
     /* ── RESET ───────────────────────────────── */
@@ -107,9 +199,13 @@
       background: var(--bg);
       background-image: radial-gradient(circle at top left, var(--bg2), transparent 50%), radial-gradient(circle at bottom right, var(--teal-bg), transparent 50%);
       color: var(--ink);
-      font-family: 'Inter', 'Manrope', system-ui, -apple-system, sans-serif;
+      /* Inter variable = meilleure lisibilité + optimisation optique (opsz) */
+      font-family: var(--font-sans);
       font-size: 15px;
       line-height: 1.6;
+      /* Lissage sub-pixel pour Inter */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* ── PAGES ───────────────────────────────── */
@@ -4949,6 +5045,198 @@
         display: flex !important;
       }
     }
+
+    /* ══════════════════════════════════════════
+       PARTIE 1 — DARK MODE TOGGLE
+       Bouton discret lune/soleil dans les headers
+       ══════════════════════════════════════════ */
+
+    /* Bouton toggle discret — icône lune/soleil */
+    .dark-toggle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      /* Transition douce sur tous les états */
+      transition: background 0.2s ease, border-color 0.2s ease,
+                  transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .dark-toggle:hover {
+      background: var(--bg2);
+      border-color: var(--border2);
+      /* Légère rotation indique l'interactivité */
+      transform: rotate(15deg) scale(1.1);
+    }
+
+    .dark-toggle:active {
+      transform: rotate(30deg) scale(0.95);
+    }
+
+    /* ══════════════════════════════════════════
+       PARTIE 3A — ANIMATIONS MICRO-INTERACTIONS
+       ══════════════════════════════════════════ */
+
+    /* Pulse sur le score live quand la valeur change */
+    @keyframes scorePulse {
+      0%   { transform: scale(1); }
+      35%  { transform: scale(1.22);
+             text-shadow: 0 0 12px currentColor; }
+      65%  { transform: scale(0.96); }
+      100% { transform: scale(1); }
+    }
+
+    .score-pulse {
+      animation: scorePulse 0.38s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+
+    /* Glow flash sur la barre de score live */
+    @keyframes barGlow {
+      0%   { box-shadow: none; }
+      50%  { box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3); }
+      100% { box-shadow: none; }
+    }
+
+    .bar-glow {
+      animation: barGlow 0.4s ease both;
+    }
+
+    /* Fade-in slide-up pour l'ajout d'options / critères */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* Shake d'erreur amélioré */
+    @keyframes shakeEnhanced {
+      0%, 100% { transform: translateX(0); }
+      15%       { transform: translateX(-6px); }
+      30%       { transform: translateX(5px); }
+      45%       { transform: translateX(-4px); }
+      60%       { transform: translateX(3px); }
+      75%       { transform: translateX(-2px); }
+    }
+
+    /* ══════════════════════════════════════════
+       PARTIE 3B — BARRE FLUIDE AMÉLIORÉE
+       Thumb indicator pour rendre le slider visible
+       ══════════════════════════════════════════ */
+
+    /* Conteneur barre fluid — on déborde pour le thumb */
+    .fluid-bar {
+      position: relative;
+      overflow: visible !important;   /* override le overflow:hidden existant */
+    }
+
+    /* Fond de la barre (clip interne) */
+    .fluid-bar-track {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: var(--border);
+      overflow: hidden;
+    }
+
+    /* Thumb = indicateur de position draggable */
+    .fluid-thumb {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid currentColor;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      pointer-events: none;         /* les événements passent au conteneur */
+      transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                  width 0.2s ease, height 0.2s ease,
+                  box-shadow 0.2s ease;
+      /* La couleur du bord est celle de la fill (propagée via color) */
+      color: var(--teal);
+      z-index: 2;
+    }
+
+    /* Au survol/drag, le thumb grossit légèrement */
+    .fluid-bar:hover .fluid-thumb,
+    .fluid-bar:active .fluid-thumb {
+      width: 22px;
+      height: 22px;
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2), 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* ══════════════════════════════════════════
+       PARTIE 3C — BARRE DE SCORE RÉSULTATS
+       Gradient dynamique rouge → jaune → vert
+       ══════════════════════════════════════════ */
+
+    /* La couleur de la barre de score dans les cartes résultat
+       est maintenant gérée via une variable CSS inline --sc-hue
+       injectée par JS pour chaque option */
+    .sc-score-bar-fill[style*="--sc-hue"] {
+      /* Le gradient se base sur la teinte pour simuler rouge → vert */
+      background: hsl(var(--sc-hue, 120), 60%, 48%) !important;
+      transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1),
+                  background 0.5s ease !important;
+    }
+
+    /* ══════════════════════════════════════════
+       PARTIE 2 — AMÉLIORATIONS BUTTONS & FOCUS
+       Glow hover sur .btn-primary
+       ══════════════════════════════════════════ */
+
+    /* Glow dynamique sur les boutons primaires — plus fort qu'avant */
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 28px rgba(5, 150, 105, 0.42),
+                  0 0 0 3px rgba(5, 150, 105, 0.15) !important;
+    }
+
+    /* Focus visible accessible (outline) sur tous les boutons */
+    .btn:focus-visible,
+    .stepper-btn:focus-visible,
+    .dark-toggle:focus-visible {
+      outline: 2.5px solid var(--teal);
+      outline-offset: 3px;
+    }
+
+    /* Transition plus fluide sur les stepper-btn */
+    .stepper-btn {
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    /* Score bar animée au chargement des résultats */
+    @keyframes barExpand {
+      from { width: 0 !important; opacity: 0.6; }
+      to   { opacity: 1; }
+    }
+
+    .sc-score-bar-fill {
+      animation: barExpand 0.9s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    /* ══════════════════════════════════════════
+       PARTIE 2 — SCORE LIVE COULEUR ÉVOLUTIVE
+       Le score affiché dans l'en-tête d'option
+       passe du rouge au vert selon la valeur
+       ══════════════════════════════════════════ */
+
+    /* La couleur est injectée via style="color:..." par JS */
+    .eval-live-num {
+      transition: color 0.35s ease, transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
   </style>
 </head>
 
@@ -4964,6 +5252,8 @@
         <button class="lang-btn active" id="btn-fr" onclick="setLang('fr')">FR</button>
         <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
       </div>
+      <!-- Toggle thème discret — lune/soleil -->
+      <button class="dark-toggle" onclick="cycleTheme()" id="darkToggle0" aria-label="Thème" title="Thème clair/sombre" style="position:absolute;top:20px;right:20px">🌙</button>
       <div class="intro-wrap">
         <div class="intro-inner">
 
@@ -5016,6 +5306,7 @@
           <button class="lang-btn active" id="btn-fr2" onclick="setLang('fr')">FR</button>
           <button class="lang-btn" id="btn-en2" onclick="setLang('en')">EN</button>
         </div>
+        <button class="dark-toggle" onclick="cycleTheme()" aria-label="Thème" title="Thème clair/sombre" style="margin-left:8px">🌙</button>
       </div>
       <div class="page-scroll">
         <div class="main">
@@ -5068,6 +5359,7 @@
           <button class="lang-btn active" id="btn-fr3" onclick="setLang('fr')">FR</button>
           <button class="lang-btn" id="btn-en3" onclick="setLang('en')">EN</button>
         </div>
+        <button class="dark-toggle" onclick="cycleTheme()" aria-label="Thème" title="Thème clair/sombre" style="margin-left:8px">🌙</button>
       </div>
       <div class="page-scroll">
         <div class="main">
@@ -5143,6 +5435,7 @@
           <button class="lang-btn active" id="btn-fr4" onclick="setLang('fr')">FR</button>
           <button class="lang-btn" id="btn-en4" onclick="setLang('en')">EN</button>
         </div>
+        <button class="dark-toggle" onclick="cycleTheme()" aria-label="Thème" title="Thème clair/sombre" style="margin-left:8px">🌙</button>
       </div>
       <div class="page-scroll">
         <div class="main">
@@ -5168,10 +5461,11 @@
         <div class="logo">
           <div class="logo-dot"></div>Lucid
         </div>
-        <div class="lang-switcher">
+        <div class="lang-switcher" style="margin-left:auto">
           <button class="lang-btn active" id="btn-fr6" onclick="setLang('fr')">FR</button>
           <button class="lang-btn" id="btn-en6" onclick="setLang('en')">EN</button>
         </div>
+        <button class="dark-toggle" onclick="cycleTheme()" aria-label="Thème" title="Thème clair/sombre" style="margin-left:8px">🌙</button>
       </div>
       <div class="page-scroll">
         <div class="main">
@@ -5203,6 +5497,7 @@
           <button class="lang-btn active" id="btn-fr5" onclick="setLang('fr')">FR</button>
           <button class="lang-btn" id="btn-en5" onclick="setLang('en')">EN</button>
         </div>
+        <button class="dark-toggle" onclick="cycleTheme()" aria-label="Thème" title="Thème clair/sombre" style="margin-left:8px">🌙</button>
       </div>
       <div class="page-scroll" id="resScroll">
         <div id="resContent"></div>
@@ -5212,6 +5507,66 @@
   </div>
 
   <script>
+    /* ══════════════════════════════════════════
+       DARK MODE TOGGLE (manuel)
+       Cycle : auto → dark → light → auto
+       Persistance via localStorage
+       ══════════════════════════════════════════ */
+
+    /** Retourne l'icône emoji selon le thème actif */
+    function _themeIcon(t) {
+      return t === 'dark' ? '☀️' : t === 'light' ? '🌙' : '🌓';
+    }
+
+    /** Applique le thème sur <html> et met à jour tous les boutons toggle */
+    function applyTheme(t) {
+      const html = document.documentElement;
+      // 'auto' = pas d'attribut (le media-query prend le relais)
+      if (t === 'auto')       html.removeAttribute('data-theme');
+      else if (t === 'dark')  html.setAttribute('data-theme', 'dark');
+      else                    html.setAttribute('data-theme', 'light');
+
+      // Mise à jour de l'icône sur tous les boutons toggle de la page
+      document.querySelectorAll('.dark-toggle').forEach(btn => {
+        btn.textContent = _themeIcon(t);
+        btn.title = t === 'dark'  ? 'Mode sombre (cliquer pour clair)'
+                  : t === 'light' ? 'Mode clair (cliquer pour auto)'
+                  : 'Mode auto (cliquer pour sombre)';
+      });
+    }
+
+    /** Cycle : auto → dark → light → auto */
+    function cycleTheme() {
+      const cur = localStorage.getItem('lucid-theme') || 'auto';
+      const next = cur === 'auto' ? 'dark' : cur === 'dark' ? 'light' : 'auto';
+      localStorage.setItem('lucid-theme', next);
+      applyTheme(next);
+    }
+
+    // Initialisation au chargement
+    (function initTheme() {
+      const saved = localStorage.getItem('lucid-theme') || 'auto';
+      applyTheme(saved);
+    })();
+
+    /* ══════════════════════════════════════════
+       SCORE COLOR HELPER
+       Retourne une couleur hsl selon un score 0-100
+       (rouge → jaune → vert) pour jauges et live scores
+       ══════════════════════════════════════════ */
+
+    /** t ∈ [0,1] → hue 0-120 → couleur hsl lisible sur fond clair et sombre */
+    function scoreColor(score100) {
+      const t = Math.max(0, Math.min(100, score100)) / 100;
+      const hue = Math.round(t * 120); // 0 = rouge, 60 = jaune, 120 = vert
+      // lightness adaptée au mode sombre
+      const dark = document.documentElement.getAttribute('data-theme') === 'dark'
+                || (!document.documentElement.hasAttribute('data-theme')
+                    && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      const l = dark ? 58 : 44;
+      return `hsl(${hue}, 62%, ${l}%)`;
+    }
+
     /* ─── I18N ───────────────────────────────── */
     let LANG = 'fr';
 
@@ -5806,7 +6161,14 @@
     }
 
     function toggleOpt(i) { document.getElementById(`opt-card-${i}`).classList.toggle('open'); }
-    function addOption() { if (S.options.length >= 6) return; S.options.push({ name: '', desc: '' }); renderOptBuilder(); }
+    function addOption() {
+      if (S.options.length >= 6) return;
+      S.options.push({ name: '', desc: '' });
+      renderOptBuilder();
+      // Animation fade-in sur la dernière option ajoutée
+      const newCard = document.getElementById(`opt-card-${S.options.length - 1}`);
+      if (newCard) { newCard.classList.add('fade-in-up'); newCard.addEventListener('animationend', () => newCard.classList.remove('fade-in-up'), { once: true }); }
+    }
     function removeOpt(i) { if (S.options.length <= 2) return; S.options.splice(i, 1); renderOptBuilder(); }
 
     function validateStep1() {
@@ -5871,6 +6233,11 @@
         });
       }
       filterGrid(S.currentCat); renderSelList();
+      // Animation fade-in sur le dernier critère ajouté dans la liste sélectionnée
+      if (S.criteria.length > 0) {
+        const lastItem = document.querySelector('#activeList .sel-item:last-child, #activeList .swing-item:last-child');
+        if (lastItem) { lastItem.classList.add('fade-in-up'); lastItem.addEventListener('animationend', () => lastItem.classList.remove('fade-in-up'), { once: true }); }
+      }
     }
 
     function addCustom() {
@@ -5889,6 +6256,9 @@
       document.getElementById('cust-name').value = '';
       document.getElementById('cust-icon').value = '';
       renderSelList();
+      // Animation fade-in sur le dernier critère ajouté
+      const lastItem = document.querySelector('#activeList .sel-item:last-child');
+      if (lastItem) { lastItem.classList.add('fade-in-up'); lastItem.addEventListener('animationend', () => lastItem.classList.remove('fade-in-up'), { once: true }); }
     }
 
     function renderSelList() {
@@ -6347,9 +6717,12 @@
           } else if (cr.weight > 1) {
             wt = `<span class="sl-wtag">×${cr.weight}</span>`;
           }
+          // Barre fluide avec thumb indicator pour une meilleure affordance de slider
           const pips = `
-            <div class="fluid-bar" onpointerdown="startFluidDrag(event, ${oi}, '${cr.id}')">
+            <div class="fluid-bar" onpointerdown="startFluidDrag(event, ${oi}, '${cr.id}')" role="slider"
+                 aria-valuemin="1" aria-valuemax="10" aria-valuenow="${v}" tabindex="0">
               <div class="fluid-bar-fill" id="pip-${oi}-${cr.id}-fill"></div>
+              <div class="fluid-thumb" id="pip-${oi}-${cr.id}-thumb" aria-hidden="true"></div>
             </div>`;
           return `
         <div class="sl-item">
@@ -6428,18 +6801,30 @@
       const ed = document.getElementById(`se-${oi}-${cid}`);
       if (ed) {
         ed.textContent = scoreEmoji(val, invert);
-        // Add subtle animation map to high scores via scale
         const eff = invert ? (11 - val) : val;
         ed.style.transform = eff >= 8 ? 'scale(1.15)' : 'scale(1)';
       }
 
       const pipFill = document.getElementById(`pip-${oi}-${cid}-fill`);
       if (pipFill) {
-        // Fluid mapping: 1 -> 10%, 10 -> 100%
-        pipFill.style.width = (val * 10) + '%';
+        // Fluid mapping: 1 → 10%, 10 → 100%
+        const pct = val * 10;
+        pipFill.style.width = pct + '%';
         pipFill.style.background = color;
-        // Optionally map box shadow base color for glow
         pipFill.style.boxShadow = `0 0 10px ${color.replace(')', ', 0.4)').replace('hsl', 'hsla')}`;
+      }
+
+      // Met à jour la position du thumb indicator (barre de progression)
+      const thumb = document.getElementById(`pip-${oi}-${cid}-thumb`);
+      if (thumb) {
+        // Position = pourcentage de la valeur dans la plage 1-10
+        const pct = ((val - 1) / 9) * 100;
+        thumb.style.left = pct + '%';
+        // La couleur du bord du thumb suit la couleur du score
+        thumb.style.borderColor = color;
+        // Mise à jour aria-valuenow sur la barre parente
+        const bar = thumb.parentElement;
+        if (bar) bar.setAttribute('aria-valuenow', val);
       }
     }
 
@@ -6485,7 +6870,24 @@
 
     function refreshLive(oi) {
       const el = document.getElementById(`live-${oi}`);
-      if (el) el.textContent = calcScore(oi);
+      if (!el) return;
+      const sc = calcScore(oi);
+      const prev = parseInt(el.textContent) || -1;
+
+      el.textContent = sc;
+
+      // Couleur dynamique : rouge (bas) → jaune (moyen) → vert (haut)
+      const col = scoreColor(sc);
+      el.style.color = col;
+
+      // Pulse animation seulement si la valeur a vraiment changé
+      if (prev !== sc) {
+        el.classList.remove('score-pulse');
+        // Forcer reflow pour relancer l'animation
+        void el.offsetWidth;
+        el.classList.add('score-pulse');
+        el.addEventListener('animationend', () => el.classList.remove('score-pulse'), { once: true });
+      }
     }
 
     /* ─── RESULTS ───────────────────────────── */
@@ -6583,7 +6985,7 @@
                 <div class="sc-card-den" style="color:${c.hex}">/100</div>
               </div>
               <div class="sc-score-bar">
-                <div class="sc-score-bar-fill" style="width:${sc}%;background:${c.hex}"></div>
+                <div class="sc-score-bar-fill" style="width:${sc}%;background:${scoreColor(sc)}"></div>
               </div>
             </div>
             ${diffHTML}
@@ -7428,7 +7830,7 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
               </div>
               ${deltaTag}
               <div class="sc-score-bar">
-                <div class="sc-score-bar-fill" style="width:${sc}%;background:${c.hex}"></div>
+                <div class="sc-score-bar-fill" style="width:${sc}%;background:${scoreColor(sc)}"></div>
               </div>
             </div>
             ${miniCrits ? `<div class="sc-card-crits-wrap">
