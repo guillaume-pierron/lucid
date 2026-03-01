@@ -4013,6 +4013,18 @@
       font-weight: 600;
       color: var(--ink2);
       letter-spacing: .01em;
+      background: rgba(24, 23, 20, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 10px 4px 8px;
+      max-width: calc(100% - 52px);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .scenario-impact-label {
+        background: rgba(255, 255, 255, 0.07);
+        border-color: rgba(255, 255, 255, 0.12);
+      }
     }
 
     .scenario-impact-dot {
@@ -4155,12 +4167,20 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 3px 10px;
-      border-radius: 999px;
-      font-size: .7rem;
-      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 7px;
+      font-size: .72rem;
+      font-weight: 600;
       color: var(--muted);
-      background: rgba(24, 23, 20, 0.06);
+      background: rgba(24, 23, 20, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .scenario-impact-pill {
+        background: rgba(255, 255, 255, 0.07);
+        border-color: rgba(255, 255, 255, 0.12);
+      }
     }
 
     @keyframes scenarioCardIn {
