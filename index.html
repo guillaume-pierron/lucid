@@ -79,7 +79,7 @@
 
     /* ─── Variables dark auto (système) ───────── */
     @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
+      :root {
         color-scheme: dark;
         --bg: #0f172a;
         --bg2: #1e293b;
@@ -110,73 +110,6 @@
         --scenario-card-border: rgba(71, 84, 103, 0.6);
         --scenario-dot-shadow: 0 0 0 3px rgba(71, 84, 103, 0.8);
       }
-    }
-
-    /* ─── Variables dark forcé (toggle manuel) ── */
-    /* Spécificité (0,1,1) > (0,1,0) de :root → override media query */
-    html[data-theme="dark"] {
-      color-scheme: dark;
-      --bg: #0f172a;
-      --bg2: #1e293b;
-      --glass-bg: rgba(30, 41, 59, 0.7);
-      --border: rgba(255, 255, 255, 0.1);
-      --border2: rgba(255, 255, 255, 0.2);
-      --ink: #f8fafc;
-      --ink2: #cbd5e1;
-      --muted: #94a3b8;
-      --muted2: #cbd5e1;
-      --white: #1e293b;
-      --teal-bg: rgba(5, 150, 105, 0.15);
-      --teal-bd: rgba(5, 150, 105, 0.3);
-      --green-bg: rgba(22, 163, 74, 0.15);
-      --red-bg: rgba(220, 38, 38, 0.15);
-      --amber-bg: rgba(217, 119, 6, 0.15);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.4);
-      --sel-box-bg: rgba(30, 41, 59, 0.4);
-      --sel-box-border: rgba(255, 255, 255, 0.1);
-      --sel-head-border: rgba(255, 255, 255, 0.1);
-      --sel-head-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.5));
-      --sel-item-bg: radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
-      --sel-item-border: rgba(255, 255, 255, 0.12);
-      --verdict-bg: rgba(250, 240, 190, 0.06);
-      --verdict-border: rgba(240, 208, 128, 0.12);
-      --scenario-card-bg: radial-gradient(circle at top left, rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.5));
-      --scenario-card-border: rgba(71, 84, 103, 0.6);
-      --scenario-dot-shadow: 0 0 0 3px rgba(71, 84, 103, 0.8);
-    }
-
-    /* ─── Variables light forcé (override dark système) ─ */
-    html[data-theme="light"] {
-      color-scheme: light;
-      --bg: #f7f8f8;
-      --bg2: #eef0f2;
-      --glass-bg: rgba(255, 255, 255, 0.65);
-      --border: rgba(0, 0, 0, 0.08);
-      --border2: rgba(0, 0, 0, 0.15);
-      --ink: #0f172a;
-      --ink2: #334155;
-      --muted: #64748b;
-      --muted2: #94a3b8;
-      --white: #ffffff;
-      --teal-bg: #ecfdf5;
-      --teal-bd: #a7f3d0;
-      --green-bg: #dcfce7;
-      --red-bg: #fee2e2;
-      --amber-bg: #fef3c7;
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
-      --sel-box-bg: rgba(255, 255, 255, 0.4);
-      --sel-box-border: rgba(255, 255, 255, 0.6);
-      --sel-head-border: rgba(255, 255, 255, 0.4);
-      --sel-head-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5));
-      --sel-item-bg: radial-gradient(circle at top left, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
-      --sel-item-border: rgba(255, 255, 255, 0.5);
-      --verdict-bg: #fffbea;
-      --verdict-border: #f0d080;
-      --scenario-card-bg: radial-gradient(circle at top left, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
-      --scenario-card-border: rgba(255, 255, 255, 0.9);
-      --scenario-dot-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7);
     }
 
     /* ── RESET ───────────────────────────────── */
@@ -5047,41 +4980,6 @@
     }
 
     /* ══════════════════════════════════════════
-       PARTIE 1 — DARK MODE TOGGLE
-       Bouton discret lune/soleil dans les headers
-       ══════════════════════════════════════════ */
-
-    /* Bouton toggle discret — icône lune/soleil */
-    .dark-toggle {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--glass-bg);
-      border: 1px solid var(--border);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      flex-shrink: 0;
-      /* Transition douce sur tous les états */
-      transition: background 0.2s ease, border-color 0.2s ease,
-                  transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .dark-toggle:hover {
-      background: var(--bg2);
-      border-color: var(--border2);
-      /* Légère rotation indique l'interactivité */
-      transform: rotate(15deg) scale(1.1);
-    }
-
-    .dark-toggle:active {
-      transform: rotate(30deg) scale(0.95);
-    }
-
-    /* ══════════════════════════════════════════
        PARTIE 3A — ANIMATIONS MICRO-INTERACTIONS
        ══════════════════════════════════════════ */
 
@@ -5206,8 +5104,7 @@
 
     /* Focus visible accessible (outline) sur tous les boutons */
     .btn:focus-visible,
-    .stepper-btn:focus-visible,
-    .dark-toggle:focus-visible {
+    .stepper-btn:focus-visible {
       outline: 2.5px solid var(--teal);
       outline-offset: 3px;
     }
@@ -5252,8 +5149,6 @@
         <button class="lang-btn active" id="btn-fr" onclick="setLang('fr')">FR</button>
         <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
       </div>
-      <!-- Toggle thème discret — lune/soleil -->
-      <button class="dark-toggle" onclick="cycleTheme()" id="darkToggle0" aria-label="Thème" title="Thème clair/sombre" style="position:absolute;top:20px;right:20px">🌙</button>
       <div class="intro-wrap">
         <div class="intro-inner">
 
@@ -5306,7 +5201,6 @@
           <button class="lang-btn active" id="btn-fr2" onclick="setLang('fr')">FR</button>
           <button class="lang-btn" id="btn-en2" onclick="setLang('en')">EN</button>
         </div>
-        <button class="dark-toggle" onclick="cycleTheme()" aria-label="Thème" title="Thème clair/sombre" style="margin-left:8px">🌙</button>
       </div>
       <div class="page-scroll">
         <div class="main">
@@ -5359,7 +5253,6 @@
           <button class="lang-btn active" id="btn-fr3" onclick="setLang('fr')">FR</button>
           <button class="lang-btn" id="btn-en3" onclick="setLang('en')">EN</button>
         </div>
-        <button class="dark-toggle" onclick="cycleTheme()" aria-label="Thème" title="Thème clair/sombre" style="margin-left:8px">🌙</button>
       </div>
       <div class="page-scroll">
         <div class="main">
@@ -5435,7 +5328,6 @@
           <button class="lang-btn active" id="btn-fr4" onclick="setLang('fr')">FR</button>
           <button class="lang-btn" id="btn-en4" onclick="setLang('en')">EN</button>
         </div>
-        <button class="dark-toggle" onclick="cycleTheme()" aria-label="Thème" title="Thème clair/sombre" style="margin-left:8px">🌙</button>
       </div>
       <div class="page-scroll">
         <div class="main">
@@ -5465,7 +5357,6 @@
           <button class="lang-btn active" id="btn-fr6" onclick="setLang('fr')">FR</button>
           <button class="lang-btn" id="btn-en6" onclick="setLang('en')">EN</button>
         </div>
-        <button class="dark-toggle" onclick="cycleTheme()" aria-label="Thème" title="Thème clair/sombre" style="margin-left:8px">🌙</button>
       </div>
       <div class="page-scroll">
         <div class="main">
@@ -5497,7 +5388,6 @@
           <button class="lang-btn active" id="btn-fr5" onclick="setLang('fr')">FR</button>
           <button class="lang-btn" id="btn-en5" onclick="setLang('en')">EN</button>
         </div>
-        <button class="dark-toggle" onclick="cycleTheme()" aria-label="Thème" title="Thème clair/sombre" style="margin-left:8px">🌙</button>
       </div>
       <div class="page-scroll" id="resScroll">
         <div id="resContent"></div>
@@ -5508,61 +5398,17 @@
 
   <script>
     /* ══════════════════════════════════════════
-       DARK MODE TOGGLE (manuel)
-       Cycle : auto → dark → light → auto
-       Persistance via localStorage
-       ══════════════════════════════════════════ */
-
-    /** Retourne l'icône emoji selon le thème actif */
-    function _themeIcon(t) {
-      return t === 'dark' ? '☀️' : t === 'light' ? '🌙' : '🌓';
-    }
-
-    /** Applique le thème sur <html> et met à jour tous les boutons toggle */
-    function applyTheme(t) {
-      const html = document.documentElement;
-      // 'auto' = pas d'attribut (le media-query prend le relais)
-      if (t === 'auto')       html.removeAttribute('data-theme');
-      else if (t === 'dark')  html.setAttribute('data-theme', 'dark');
-      else                    html.setAttribute('data-theme', 'light');
-
-      // Mise à jour de l'icône sur tous les boutons toggle de la page
-      document.querySelectorAll('.dark-toggle').forEach(btn => {
-        btn.textContent = _themeIcon(t);
-        btn.title = t === 'dark'  ? 'Mode sombre (cliquer pour clair)'
-                  : t === 'light' ? 'Mode clair (cliquer pour auto)'
-                  : 'Mode auto (cliquer pour sombre)';
-      });
-    }
-
-    /** Cycle : auto → dark → light → auto */
-    function cycleTheme() {
-      const cur = localStorage.getItem('lucid-theme') || 'auto';
-      const next = cur === 'auto' ? 'dark' : cur === 'dark' ? 'light' : 'auto';
-      localStorage.setItem('lucid-theme', next);
-      applyTheme(next);
-    }
-
-    // Initialisation au chargement
-    (function initTheme() {
-      const saved = localStorage.getItem('lucid-theme') || 'auto';
-      applyTheme(saved);
-    })();
-
-    /* ══════════════════════════════════════════
        SCORE COLOR HELPER
        Retourne une couleur hsl selon un score 0-100
        (rouge → jaune → vert) pour jauges et live scores
        ══════════════════════════════════════════ */
 
-    /** t ∈ [0,1] → hue 0-120 → couleur hsl lisible sur fond clair et sombre */
+    /** score100 ∈ [0,100] → hue 0-120 → couleur lisible en mode clair et sombre */
     function scoreColor(score100) {
       const t = Math.max(0, Math.min(100, score100)) / 100;
       const hue = Math.round(t * 120); // 0 = rouge, 60 = jaune, 120 = vert
-      // lightness adaptée au mode sombre
-      const dark = document.documentElement.getAttribute('data-theme') === 'dark'
-                || (!document.documentElement.hasAttribute('data-theme')
-                    && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      // Lightness adaptée selon la préférence système (auto uniquement)
+      const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const l = dark ? 58 : 44;
       return `hsl(${hue}, 62%, ${l}%)`;
     }
@@ -6817,9 +6663,8 @@
       // Met à jour la position du thumb indicator (barre de progression)
       const thumb = document.getElementById(`pip-${oi}-${cid}-thumb`);
       if (thumb) {
-        // Position = pourcentage de la valeur dans la plage 1-10
-        const pct = ((val - 1) / 9) * 100;
-        thumb.style.left = pct + '%';
+        // Même formule que pipFill.style.width (val * 10) → thumb toujours au bord droit du fill
+        thumb.style.left = (val * 10) + '%';
         // La couleur du bord du thumb suit la couleur du score
         thumb.style.borderColor = color;
         // Mise à jour aria-valuenow sur la barre parente
