@@ -6827,7 +6827,7 @@
         const proxLbl2 = LANG === 'fr' ? 'Proximité' : 'Proximity';
         const diffHTML = `<div class="sc-diff-info">
             ${rank > 0 ? `<span class="sc-diff-gap">${gapLbl} : ${gap} pts</span>` : ''}
-            <span class="sc-diff-prox">${proxLbl2} : ${proximity}&thinsp;%</span>
+            ${rank > 0 ? `<span class="sc-diff-prox">${proxLbl2} : ${proximity}&thinsp;%</span>` : ''}
           </div>`;
         // Calcul points forts / faibles par score pondéré effectif
         const allSorted = [...S.criteria].sort((a, b) => {
