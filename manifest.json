@@ -1,0 +1,27 @@
+{
+  "name": "Lucid – Aide à la décision",
+  "short_name": "Lucid",
+  "description": "Outil simple et puissant pour structurer tes décisions importantes (matrice pondérée, notes, classement final)",
+  "lang": "fr",
+  "start_url": "/lucid/",
+  "scope": "/lucid/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f7f8f8",
+  "theme_color": "#4f46e5",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/lucid/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/lucid/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

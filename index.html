@@ -5,6 +5,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lucid — Aide à la décision</title>
+
+  <!-- PWA – Manifest -->
+  <link rel="manifest" href="/lucid/manifest.json">
+
+  <!-- PWA – Meta tags iOS (Safari ne lit pas le manifest) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Lucid">
+  <link rel="apple-touch-icon" href="/lucid/icon-192.png">
+
+  <!-- PWA – Theme color (barre navigateur sur Android) -->
+  <meta name="theme-color" content="#4f46e5">
   <!-- Inter variable (axe wght + opsz) — police principale 2026 -->
   <!-- Plus Jakarta Sans conservé pour compatibilité des classes existantes -->
   <link
@@ -8170,6 +8182,70 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
       });
     })();
   </script>
+
+  <!-- ── PWA : Bannière d'installation ── -->
+  <div id="pwa-install-banner" style="
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    background: #fff;
+    border: 1px solid rgba(79,70,229,0.2);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 360px;
+    width: calc(100% - 2rem);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    font-family: 'Inter', system-ui, sans-serif;
+  " aria-hidden="true">
+    <span style="font-size:1.5rem">📲</span>
+    <div style="flex:1">
+      <p style="font-size:0.85rem;font-weight:600;color:#0f172a;margin:0 0 0.1rem">Installer Lucid</p>
+      <p style="font-size:0.75rem;color:#64748b;margin:0">Accès rapide depuis ton écran d'accueil</p>
+    </div>
+    <button id="pwa-install-btn" style="
+      background:#4f46e5;
+      color:#fff;
+      border:none;
+      border-radius:10px;
+      padding:0.45rem 0.85rem;
+      font-size:0.8rem;
+      font-weight:600;
+      cursor:pointer;
+      white-space:nowrap;
+    ">Installer</button>
+    <button id="pwa-install-dismiss" style="
+      background:none;
+      border:none;
+      cursor:pointer;
+      color:#94a3b8;
+      font-size:1.1rem;
+      padding:0.2rem;
+      line-height:1;
+    " aria-label="Fermer">✕</button>
+  </div>
+
+  <style>
+    /* Bannière visible quand la classe est ajoutée par pwa.js */
+    #pwa-install-banner.pwa-banner--visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    /* En mode standalone : masquer les éléments inutiles */
+    .pwa-standalone #pwa-install-banner {
+      display: none !important;
+    }
+  </style>
+
+  <!-- ── PWA : Service Worker + Install Prompt ── -->
+  <script src="/lucid/pwa.js"></script>
 </body>
 
 </html>
