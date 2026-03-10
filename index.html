@@ -2137,6 +2137,13 @@
       cursor: pointer;
       touch-action: pan-y;
       /* Allow vertical scroll to pass through; horizontal drag is handled by JS */
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* Restore visible focus ring only for keyboard navigation */
+    .fluid-bar:focus-visible {
+      outline: 2px solid var(--accent, #10b981);
+      outline-offset: 3px;
     }
 
     .fluid-bar-fill {
