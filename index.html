@@ -2135,8 +2135,8 @@
       overflow: hidden;
       position: relative;
       cursor: pointer;
-      touch-action: none;
-      /* Allows pointer events on touch without scrolling */
+      touch-action: pan-y;
+      /* Allow vertical scroll to pass through; horizontal drag is handled by JS */
     }
 
     .fluid-bar-fill {
@@ -6551,19 +6551,24 @@
 
     /* ─── JS POUR GÉRER LE SWIPE DE LA BARRE ─── */
     let _fluidDrag = null;
+    // Seuil en pixels avant de décider de l'intention (horizontal = slider, vertical = scroll)
+    const FLUID_INTENT_THRESHOLD = 8;
+
     function startFluidDrag(e, oi, cid) {
-      // Prevent browser default scroll/pan behaviors
-      if (e.cancelable) e.preventDefault();
-      _fluidDrag = { oi, cid, el: e.currentTarget };
-      updateFluidDrag(e);
+      // Ne pas mettre à jour immédiatement : on attend de confirmer l'intention
+      // (évite les changements accidentels lors d'un scroll mobile)
+      _fluidDrag = {
+        oi, cid, el: e.currentTarget,
+        startX: e.clientX, startY: e.clientY,
+        committed: false  // devient true une fois l'intention horizontale confirmée
+      };
       document.addEventListener('pointermove', updateFluidDrag);
       document.addEventListener('pointerup', stopFluidDrag);
       document.addEventListener('pointercancel', stopFluidDrag);
     }
-    function updateFluidDrag(e) {
-      if (!_fluidDrag) return;
+    function _applyFluidValue(clientX) {
       const rect = _fluidDrag.el.getBoundingClientRect();
-      let x = e.clientX - rect.left;
+      let x = clientX - rect.left;
       let pct = Math.max(0, Math.min(1, x / rect.width));
       let val = Math.round(pct * 9) + 1; // map 0-1 to 1-10
       // Evite des petits sauts inutiles si la valeur est déjà la même
@@ -6571,7 +6576,34 @@
         setVal(_fluidDrag.oi, _fluidDrag.cid, val);
       }
     }
-    function stopFluidDrag() {
+    function updateFluidDrag(e) {
+      if (!_fluidDrag) return;
+      const dx = Math.abs(e.clientX - _fluidDrag.startX);
+      const dy = Math.abs(e.clientY - _fluidDrag.startY);
+
+      if (!_fluidDrag.committed) {
+        // Attendre que le doigt bouge assez pour déterminer l'intention
+        if (dx < FLUID_INTENT_THRESHOLD && dy < FLUID_INTENT_THRESHOLD) return;
+        // Mouvement principalement vertical → c'est un scroll, on annule
+        if (dy > dx) { stopFluidDrag(); return; }
+        // Mouvement principalement horizontal → c'est un drag volontaire
+        _fluidDrag.committed = true;
+        if (e.cancelable) e.preventDefault();
+      }
+      _applyFluidValue(e.clientX);
+    }
+    function stopFluidDrag(e) {
+      if (!_fluidDrag) return;
+      // Si le doigt n'a pas bougé assez pour déterminer l'intention
+      // et que c'est un vrai tap (pointerup sans mouvement significatif),
+      // on applique la valeur à la position du tap
+      if (!_fluidDrag.committed && e && e.type === 'pointerup') {
+        const dx = Math.abs(e.clientX - _fluidDrag.startX);
+        const dy = Math.abs(e.clientY - _fluidDrag.startY);
+        if (dx < FLUID_INTENT_THRESHOLD && dy < FLUID_INTENT_THRESHOLD) {
+          _applyFluidValue(e.clientX);
+        }
+      }
       _fluidDrag = null;
       document.removeEventListener('pointermove', updateFluidDrag);
       document.removeEventListener('pointerup', stopFluidDrag);
