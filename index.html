@@ -7390,6 +7390,12 @@
       <div class="res-divider"><span class="res-divider-label">${tr('div_detail')}</span></div>
       <div class="bk-table">${bkHeader}${bkRows}</div>
 
+      <div style="display:flex;justify-content:center;margin:20px 0 8px;">
+        <button class="btn btn-secondary" onclick="(function(){const b=document.querySelector('.res-main-tab:nth-child(2)');if(b)switchResTab('Analyses',b);window.scrollTo({top:0,behavior:'smooth'});})()">
+          🔬 ${LANG === 'fr' ? 'Approfondir l\'analyse' : 'Deep analysis'} →
+        </button>
+      </div>
+
       <!-- ⑥ Notes -->
       ${hasNotes ? `<div class="res-divider"><span class="res-divider-label">${tr('div_notes')}</span></div>${notesHTML}` : ''}
 
