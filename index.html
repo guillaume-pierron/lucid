@@ -3401,7 +3401,6 @@
 
     .bk-row:not(.hdr):hover {
       background: var(--bg2);
-      transform: translateX(2px);
     }
 
     .bk-cell {
@@ -5479,15 +5478,6 @@
       font-size: .82rem; font-weight: 600; transition: all .18s; white-space: nowrap;
     }
 
-    /* ── EXPRESS MODE ─────────────────────── */
-    .express-btn {
-      display: inline-flex; align-items: center; gap: 7px;
-      padding: 10px 22px; border-radius: 10px;
-      border: 1.5px solid rgba(245,158,11,.4); background: rgba(245,158,11,.08);
-      color: var(--amber); font-size: .88rem; font-weight: 600;
-      cursor: pointer; transition: all .18s; font-family: 'Inter', sans-serif;
-    }
-    .express-btn:hover { background: rgba(245,158,11,.15); transform: translateY(-1px); }
 
     /* ── DECISION FATIGUE WARNING ─────────── */
     .fatigue-banner {
@@ -5563,7 +5553,6 @@
 
           <div class="intro-actions-row">
             <button class="intro-start-btn" onclick="nav('page-step1');checkFatigue()" data-i18n="start_btn">Commencer →</button>
-            <button class="express-btn" onclick="startExpress()" title="Décision en moins de 2 minutes avec 3 critères clés">⚡ Mode express <span class="express-badge" style="font-size:.6rem;padding:2px 6px;border-radius:8px;background:var(--amber);color:#fff;margin-left:4px">2 min</span></button>
           </div>
           <div class="fatigue-banner" id="fatigueBanner">
             <span>⚠️</span>
@@ -7401,6 +7390,12 @@
       <div class="res-divider"><span class="res-divider-label">${tr('div_detail')}</span></div>
       <div class="bk-table">${bkHeader}${bkRows}</div>
 
+      <div style="display:flex;justify-content:center;margin:20px 0 8px;">
+        <button class="btn btn-secondary" onclick="(function(){const b=document.querySelector('.res-main-tab:nth-child(2)');if(b)switchResTab('Analyses',b);window.scrollTo({top:0,behavior:'smooth'});})()">
+          🔬 ${LANG === 'fr' ? 'Approfondir l\'analyse' : 'Deep analysis'} →
+        </button>
+      </div>
+
       <!-- ⑥ Notes -->
       ${hasNotes ? `<div class="res-divider"><span class="res-divider-label">${tr('div_notes')}</span></div>${notesHTML}` : ''}
 
@@ -8581,20 +8576,28 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
     }
 
     function applyTemplate(idx) {
+      const decInp = document.getElementById('inp-dec');
+      // Toggle off if already selected
+      if (_activeTemplate === idx) {
+        _activeTemplate = null;
+        if (decInp) decInp.value = '';
+        S.options = [{ name: '', desc: '' }, { name: '', desc: '' }];
+        renderOptBuilder();
+        S.criteria = [];
+        renderTemplates();
+        return;
+      }
       const t = DECISION_TEMPLATES[idx];
       _activeTemplate = idx;
       // Fill decision textarea
-      const decInp = document.getElementById('inp-dec');
       if (decInp) decInp.value = t.question;
-      // Fill options if still defaults
-      if (S.options.length === 2 && !S.options[0].name && !S.options[1].name) {
-        S.options = t.suggestOptions.map(name => ({ name, desc: '' }));
-        renderOptBuilder();
-        S.options.forEach((opt, i) => {
-          const inp = document.getElementById(`opt-name-${i}`);
-          if (inp) inp.value = opt.name;
-        });
-      }
+      // Fill options with template suggestions
+      S.options = t.suggestOptions.map(name => ({ name, desc: '' }));
+      renderOptBuilder();
+      S.options.forEach((opt, i) => {
+        const inp = document.getElementById(`opt-name-${i}`);
+        if (inp) inp.value = opt.name;
+      });
       // Pre-select relevant criteria
       S.criteria = [];
       t.criteria.forEach(id => {
@@ -8795,36 +8798,6 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
       btn && btn.classList.add('recording');
     }
 
-    /* ─── MODE EXPRESS ───────────────────────── */
-    function startExpress() {
-      // Reset state
-      S = {
-        decision: '', options: [{ name: '', desc: '' }, { name: '', desc: '' }],
-        criteria: [], scores: {}, notes: [], currentCat: 'Tous',
-        weightingMethod: 'simple', _expressMode: true
-      };
-      document.getElementById('inp-dec').value = '';
-      renderOptBuilder();
-      renderStepProgress(1);
-      // Show special note
-      const sub = document.querySelector('#page-step1 .page-sub');
-      if (sub) sub.innerHTML = '<strong>⚡ Mode express :</strong> Saisissez votre question et 2 options. Lucid sélectionnera automatiquement les 3 critères clés.';
-      nav('page-step1');
-    }
-
-    // Override validateStep2 when in express mode to auto-select 3 criteria
-    const _origValidateStep2 = validateStep2;
-    window.validateStep2 = function() {
-      if (S._expressMode && S.criteria.length === 0) {
-        // Auto-select top 3 universal criteria
-        const autoCrits = ['wellb', 'lt', 'values'];
-        autoCrits.forEach(id => {
-          const c = LIB.find(l => l.id === id);
-          if (c) S.criteria.push({ ...c, weight: 2, swingRank: S.criteria.length });
-        });
-      }
-      _origValidateStep2();
-    };
 
     /* ─── PARTAGER UNE DÉCISION ──────────────── */
     function openShareModal() {
