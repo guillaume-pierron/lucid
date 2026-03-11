@@ -5300,11 +5300,13 @@
       transform: translateY(-1px);
       box-shadow: 0 3px 8px rgba(220,38,38,.12);
     }
-    .pm-chip.pm-chip-on {
+    .pm-chip.pm-chip-on,
+    .pm-chip.pm-chip-on:hover {
       border-color: var(--teal);
       background: var(--teal-bg);
       color: var(--teal);
       box-shadow: 0 2px 8px rgba(5,150,105,.15);
+      transform: none;
     }
     .pm-chip .pm-icon { font-size: .9rem; line-height: 1; }
     .premortem-insight {
@@ -8883,7 +8885,7 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         const c = resultColors[oi];
         const riskChips = PREMORTEM_RISKS.map(r => {
           const sel = _premortemRisks[oi]?.has(r.id);
-          return `<button class="pm-chip${sel ? ' pm-chip-on' : ''}" onclick="togglePmRisk(${oi},'${r.id}')" title="${r.desc}"><span class="pm-icon">${r.icon}</span>${r.label}</button>`;
+          return `<button class="pm-chip${sel ? ' pm-chip-on' : ''}" onclick="togglePmRisk(${oi},'${r.id}',this)" title="${r.desc}"><span class="pm-icon">${r.icon}</span>${r.label}</button>`;
         }).join('');
         return `
           <div class="premortem-opt">
@@ -8912,23 +8914,15 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         </div>`;
     }
 
-    function togglePmRisk(oi, riskId) {
+    function togglePmRisk(oi, riskId, btn) {
       if (!_premortemRisks[oi]) _premortemRisks[oi] = new Set();
-      if (_premortemRisks[oi].has(riskId)) _premortemRisks[oi].delete(riskId);
-      else _premortemRisks[oi].add(riskId);
-      // Update chip visual
-      const section = document.getElementById('premortemSection');
-      if (!section) return;
-      const allChips = section.querySelectorAll('.pm-chip');
-      // Re-render just the chips states
-      const scores = S.options.map((_, i) => calcScore(i));
-      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
-      ranked.forEach((optIdx, rowIdx) => {
-        const optChips = section.querySelectorAll(`.premortem-opt:nth-child(${rowIdx + 1}) .pm-chip`);
-        PREMORTEM_RISKS.forEach((r, ri) => {
-          if (optChips[ri]) optChips[ri].classList.toggle('pm-chip-on', _premortemRisks[optIdx]?.has(r.id));
-        });
-      });
+      if (_premortemRisks[oi].has(riskId)) {
+        _premortemRisks[oi].delete(riskId);
+        btn.classList.remove('pm-chip-on');
+      } else {
+        _premortemRisks[oi].add(riskId);
+        btn.classList.add('pm-chip-on');
+      }
       renderPremortemResult();
     }
 
