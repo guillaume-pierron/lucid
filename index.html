@@ -7391,7 +7391,7 @@
       <div class="bk-table">${bkHeader}${bkRows}</div>
 
       <div style="display:flex;justify-content:center;margin:20px 0 8px;">
-        <button class="btn btn-secondary" onclick="(function(){const b=document.querySelector('.res-main-tab:nth-child(2)');if(b)switchResTab('Analyses',b);setTimeout(function(){const el=document.getElementById('scenarioBox');if(el)el.scrollIntoView({behavior:'smooth'});},0);})()">
+        <button class="btn btn-secondary" onclick="(function(){const b=document.querySelector('.res-main-tab:nth-child(2)');if(b)switchResTab('Analyses',b);setTimeout(function(){const el=document.getElementById('scenarioDivider');if(el)el.scrollIntoView({behavior:'smooth'});},0);})()">
           🔬 ${LANG === 'fr' ? 'Approfondir l\'analyse' : 'Deep analysis'} →
         </button>
       </div>
@@ -9319,7 +9319,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
 
       const extraHTML = `
         <!-- Scénarios -->
-        <div class="res-divider"><span class="res-divider-label">🎛️ ${LANG === 'fr' ? 'Testez vos scénarios' : 'Test your scenarios'}</span></div>
+        <div class="res-divider" id="scenarioDivider"><span class="res-divider-label">🎛️ ${LANG === 'fr' ? 'Testez vos scénarios' : 'Test your scenarios'}</span></div>
         <div class="scenario-panel" id="scenarioBox">
           <div class="scenario-panel-head" onclick="toggleScenarioBox()">
             <span class="scenario-panel-icon">🎛️</span>
