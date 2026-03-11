@@ -5294,7 +5294,7 @@
       box-shadow: 0 1px 3px rgba(0,0,0,.06);
       line-height: 1;
     }
-    @media (hover: hover) {
+    @media (hover: hover) and (pointer: fine) {
       .pm-chip:hover {
         border-color: rgba(220,38,38,.5);
         background: rgba(220,38,38,.06);
@@ -8972,6 +8972,7 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         _premortemRisks[oi].add(riskId);
         btn.classList.add('pm-chip-on');
       }
+      btn.blur();
       renderPremortemResult();
     }
 
