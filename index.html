@@ -7357,28 +7357,6 @@
       <!-- ② SCORES -->
       <div class="sc-cards-row anim" id="scoresRow" style="grid-template-columns:repeat(${ncols},1fr)">${scoreCards}</div>
 
-      <!-- ③ SCÉNARIOS — juste sous les scores -->
-      <div class="scenario-panel" id="scenarioBox" style="margin-top:14px">
-        <div class="scenario-panel-head" onclick="toggleScenarioBox()">
-          <span class="scenario-panel-icon">🎛️</span>
-          <div class="scenario-panel-text">
-            <div class="scenario-panel-title">${tr('scenario_title')}</div>
-            <div class="scenario-panel-sub">${tr('scenario_sub')}</div>
-          </div>
-          <div class="scenario-panel-chevron">▾</div>
-        </div>
-        <div class="scenario-panel-body">
-          <div class="sc-tabs">
-            <button class="sc-tab active" onclick="switchScTab('crits',this)">${LANG === 'fr' ? '🎚️ Critères' : '🎚️ Criteria'}</button>
-            <button class="sc-tab" onclick="switchScTab('emotions',this)">${LANG === 'fr' ? '🫀 Émotions' : '🫀 Emotions'}</button>
-          </div>
-          <div class="sc-tab-content">
-            <div class="sc-tab-pane active" id="scPaneCrits"></div>
-            <div class="sc-tab-pane" id="scPaneEmotions"></div>
-          </div>
-        </div>
-      </div>
-
       <!-- ④ Profil visuel -->
       <div class="res-divider" style="margin-top:22px"><span class="res-divider-label">${tr('div_visual')}</span></div>
       <div class="res-section">
@@ -9382,6 +9360,28 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       if (!actionsEl) return;
 
       const extraHTML = `
+        <!-- Scénarios -->
+        <div class="scenario-panel" id="scenarioBox">
+          <div class="scenario-panel-head" onclick="toggleScenarioBox()">
+            <span class="scenario-panel-icon">🎛️</span>
+            <div class="scenario-panel-text">
+              <div class="scenario-panel-title">${tr('scenario_title')}</div>
+              <div class="scenario-panel-sub">${tr('scenario_sub')}</div>
+            </div>
+            <div class="scenario-panel-chevron">▾</div>
+          </div>
+          <div class="scenario-panel-body">
+            <div class="sc-tabs">
+              <button class="sc-tab active" onclick="switchScTab('crits',this)">${LANG === 'fr' ? '🎚️ Critères' : '🎚️ Criteria'}</button>
+              <button class="sc-tab" onclick="switchScTab('emotions',this)">${LANG === 'fr' ? '🫀 Émotions' : '🫀 Emotions'}</button>
+            </div>
+            <div class="sc-tab-content">
+              <div class="sc-tab-pane active" id="scPaneCrits"></div>
+              <div class="sc-tab-pane" id="scPaneEmotions"></div>
+            </div>
+          </div>
+        </div>
+
         <!-- Robustness -->
         <div class="res-divider"><span class="res-divider-label">📊 Robustesse</span></div>
         ${buildRobustnessSection(scores)}
