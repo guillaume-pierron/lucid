@@ -7407,6 +7407,10 @@
       <!-- ⑥ Notes -->
       ${hasNotes ? `<div class="res-divider"><span class="res-divider-label">${tr('div_notes')}</span></div>${notesHTML}` : ''}
 
+      <!-- ⑦ Solidité -->
+      <div class="res-divider"><span class="res-divider-label">📊 ${LANG === 'fr' ? 'Solidité de votre décision' : 'Decision robustness'}</span></div>
+      ${buildRobustnessSection(scores)}
+
       </div><!-- /resTabSynthese -->
 
       <!-- Pane 2 : Analyses -->
@@ -9361,6 +9365,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
 
       const extraHTML = `
         <!-- Scénarios -->
+        <div class="res-divider"><span class="res-divider-label">🎛️ ${LANG === 'fr' ? 'Testez vos scénarios' : 'Test your scenarios'}</span></div>
         <div class="scenario-panel" id="scenarioBox">
           <div class="scenario-panel-head" onclick="toggleScenarioBox()">
             <span class="scenario-panel-icon">🎛️</span>
@@ -9381,10 +9386,6 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
             </div>
           </div>
         </div>
-
-        <!-- Robustness -->
-        <div class="res-divider"><span class="res-divider-label">📊 Robustesse</span></div>
-        ${buildRobustnessSection(scores)}
 
         <!-- Pre-mortem -->
         <div class="res-divider"><span class="res-divider-label">🔮 Anticiper les risques</span></div>
