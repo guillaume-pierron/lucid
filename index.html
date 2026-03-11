@@ -9229,12 +9229,13 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
             </div>`;
         }).join('');
 
-      const winner = [...S.options.map((_, i) => i)].sort((a, b) => results[b].wins - results[a].wins)[0];
-      const winnerPct = results[winner].wins;
+      const actualWinner = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a])[0];
+      const actualWinnerPct = results[actualWinner].wins;
+      const mcWinner = [...S.options.map((_, i) => i)].sort((a, b) => results[b].wins - results[a].wins)[0];
       let verdict = '';
-      if (winnerPct >= 75) verdict = `<div class="robustness-verdict">✅ <strong>Décision robuste :</strong> "${esc(S.options[winner].name)}" gagne dans <strong>${winnerPct}%</strong> des 200 scénarios simulés — votre choix est stable quelle que soit la pondération exacte.</div>`;
-      else if (winnerPct >= 50) verdict = `<div class="robustness-verdict">⚖️ <strong>Résultat modérément stable :</strong> "${esc(S.options[winner].name)}" est en tête mais uniquement dans ${winnerPct}% des scénarios. La décision finale dépend beaucoup des poids exacts.</div>`;
-      else verdict = `<div class="robustness-verdict">⚠️ <strong>Décision fragile :</strong> Aucune option ne domine clairement sur l'ensemble des scénarios. Les résultats sont très sensibles aux poids — faites confiance à vos notes et à votre intuition.</div>`;
+      if (actualWinnerPct >= 75) verdict = `<div class="robustness-verdict">✅ <strong>Décision robuste :</strong> "${esc(S.options[actualWinner].name)}" gagne dans <strong>${actualWinnerPct}%</strong> des 200 scénarios simulés — votre choix est stable quelle que soit la pondération exacte.</div>`;
+      else if (actualWinnerPct >= 50) verdict = `<div class="robustness-verdict">⚖️ <strong>Résultat modérément stable :</strong> "${esc(S.options[actualWinner].name)}" est en tête dans ${actualWinnerPct}% des scénarios. La décision finale dépend beaucoup des poids exacts.</div>`;
+      else verdict = `<div class="robustness-verdict">⚠️ <strong>Décision fragile :</strong> "${esc(S.options[actualWinner].name)}" ne gagne que dans ${actualWinnerPct}% des simulations. Avec des pondérations différentes, "${esc(S.options[mcWinner].name)}" serait souvent privilégiée — faites confiance à vos priorités.</div>`;
 
       return `
         <div class="framework-section" id="robustnessSection">
