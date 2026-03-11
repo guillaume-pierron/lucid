@@ -4892,6 +4892,11 @@
     @media(max-width:640px) {
       .app-header {
         padding: 12px 16px;
+        position: relative;
+      }
+
+      #valuesProfileBtn {
+        display: none;
       }
 
       .main {
@@ -4902,8 +4907,8 @@
         grid-template-columns: 1fr;
       }
 
-      .sp-step span:not(.sp-num) {
-        display: none;
+      .sp-step span {
+        display: none !important;
       }
 
       .custom-row {
@@ -5181,6 +5186,332 @@
     .eval-live-num {
       transition: color 0.35s ease, transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
+
+    /* ══════════════════════════════════════════
+       NOUVELLES FONCTIONNALITÉS — AIDE À LA DÉCISION
+       ══════════════════════════════════════════ */
+
+    /* ── TEMPLATES DE DÉCISION ────────────── */
+    .templates-section { margin-bottom: 20px; }
+    .templates-label {
+      font-size: .75rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .08em;
+      margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+    }
+    .templates-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .template-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px; border-radius: 20px;
+      border: 1.5px solid var(--border); background: var(--glass-bg);
+      backdrop-filter: blur(8px); color: var(--ink2);
+      font-size: .78rem; font-weight: 600; cursor: pointer;
+      transition: all .18s; user-select: none;
+    }
+    .template-chip:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-bg); transform: translateY(-1px); }
+    .template-chip.active { border-color: var(--teal); background: var(--teal-bg); color: var(--teal); }
+
+    /* ── PROFIL DE VALEURS ────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.5);
+      backdrop-filter: blur(4px); z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px; opacity: 0; pointer-events: none; transition: opacity .25s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+    .modal-box {
+      background: var(--white); border-radius: var(--r); box-shadow: var(--shadow-lg);
+      max-width: 520px; width: 100%; max-height: 90dvh; overflow-y: auto; padding: 28px 24px;
+    }
+    .modal-title { font-family: 'Lora', serif; font-size: 1.25rem; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+    .modal-sub { font-size: .85rem; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+    .values-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+    .value-chip {
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      padding: 14px 10px; border-radius: var(--r-sm); border: 2px solid var(--border);
+      background: var(--bg); cursor: pointer; transition: all .18s; text-align: center; position: relative;
+    }
+    .value-chip:hover { border-color: var(--teal); background: var(--teal-bg); }
+    .value-chip.selected { border-color: var(--teal); background: var(--teal-bg); }
+    .value-chip-icon { font-size: 1.5rem; }
+    .value-chip-label { font-size: .8rem; font-weight: 700; color: var(--ink2); }
+    .value-chip.selected .value-chip-label { color: var(--teal); }
+    .value-rank {
+      position: absolute; top: 6px; right: 6px;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--teal); color: #fff; font-size: .62rem; font-weight: 700;
+    }
+    .values-alert {
+      display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+      background: var(--teal-bg); border: 1px solid var(--teal-bd);
+      border-radius: var(--r-sm); font-size: .82rem; color: var(--teal); margin-bottom: 14px;
+    }
+    .profile-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border);
+      background: var(--glass-bg); color: var(--ink2);
+      font-size: .78rem; font-weight: 600; cursor: pointer; transition: all .18s;
+      font-family: 'Inter', sans-serif;
+    }
+    .profile-btn:hover { border-color: var(--teal); color: var(--teal); }
+    .profile-btn.has-profile { border-color: var(--teal); background: var(--teal-bg); color: var(--teal); }
+
+
+
+    /* ── PRE-MORTEM ───────────────────────── */
+    .premortem-section {
+      background: var(--glass-bg); backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(220,38,38,.2); border-radius: var(--r);
+      overflow: hidden; margin-bottom: 24px; box-shadow: var(--shadow);
+    }
+    .premortem-head {
+      display: flex; align-items: center; gap: 10px; padding: 14px 18px;
+      background: rgba(220,38,38,.06); cursor: pointer; user-select: none;
+    }
+    .premortem-head:hover { background: rgba(220,38,38,.1); }
+    .premortem-body { display: none; border-top: 1px solid rgba(220,38,38,.12); padding: 16px 20px; }
+    .premortem-section.open .premortem-body { display: block; }
+    .premortem-opt { margin-bottom: 18px; }
+    .premortem-opt-label {
+      font-size: .78rem; font-weight: 700; color: var(--muted); text-transform: uppercase;
+      letter-spacing: .06em; margin-bottom: 10px;
+    }
+    .pm-chips {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .pm-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 12px; border-radius: 999px;
+      border: 1.5px solid var(--border2);
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      -webkit-tap-highlight-color: transparent;
+      color: var(--ink2); font-size: .78rem; font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer; transition: all .16s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+      line-height: 1;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .pm-chip:hover {
+        border-color: rgba(220,38,38,.5);
+        background: rgba(220,38,38,.06);
+        color: var(--red);
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(220,38,38,.12);
+      }
+    }
+    .pm-chip.pm-chip-on,
+    .pm-chip.pm-chip-on:hover {
+      border-color: var(--teal);
+      background: var(--teal-bg);
+      color: var(--teal);
+      box-shadow: 0 2px 8px rgba(5,150,105,.15);
+      transform: none;
+    }
+    .pm-chip .pm-icon { font-size: .9rem; line-height: 1; }
+    .premortem-insight {
+      margin-top: 12px; padding: 12px 14px;
+      background: rgba(220,38,38,.06); border: 1px solid rgba(220,38,38,.15);
+      border-radius: var(--r-sm); font-size: .82rem; color: var(--ink2); line-height: 1.6;
+    }
+
+    /* ── RESULT MAIN TABS ──── */
+    .res-main-tabs {
+      display: flex; gap: 4px;
+      background: var(--glass-bg);
+      border: 1.5px solid var(--border2);
+      border-radius: 12px; padding: 4px;
+      margin: 18px 0 0;
+    }
+    .res-main-tab {
+      flex: 1; padding: 9px 14px;
+      border-radius: 9px; border: none;
+      background: transparent; color: var(--ink2);
+      font-size: .83rem; font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer; transition: all .18s ease;
+      line-height: 1.2;
+    }
+    .res-main-tab.active {
+      background: var(--ink); color: var(--bg);
+      box-shadow: 0 2px 8px rgba(0,0,0,.13);
+    }
+    .res-main-tab:not(.active):hover { background: var(--border); }
+    .res-tab-pane { display: none; }
+    .res-tab-pane.active { display: block; }
+    .res-analyses-intro {
+      display: flex; flex-direction: column; gap: 10px;
+      padding: 4px 0 6px;
+    }
+    .res-tool-card {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 16px;
+      background: var(--glass-bg); border: 1.5px solid var(--border2);
+      border-radius: var(--r-sm); cursor: pointer;
+      transition: all .16s ease; font-size: .85rem;
+    }
+    .res-tool-card:hover { border-color: var(--teal-bd); background: var(--teal-bg); }
+    .res-tool-card-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .res-tool-card-text { flex: 1; }
+    .res-tool-card-title { font-weight: 700; color: var(--ink); font-size: .85rem; }
+    .res-tool-card-sub { color: var(--muted); font-size: .76rem; margin-top: 1px; }
+    .res-tool-card-arrow { color: var(--muted2); font-size: 1rem; }
+
+    /* ── FRAMEWORKS (10/10/10 & REGRET) ──── */
+    .framework-section {
+      background: var(--glass-bg); backdrop-filter: blur(12px);
+      border: 1.5px solid var(--border); border-radius: var(--r);
+      overflow: hidden; margin-bottom: 24px; box-shadow: var(--shadow);
+    }
+    .framework-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px; cursor: pointer; user-select: none; }
+    .framework-head:hover { background: var(--bg); }
+    .framework-chevron { color: var(--muted2); font-size: .8rem; transition: transform .22s; margin-left: auto; }
+    .framework-section.open .framework-chevron { transform: rotate(180deg); }
+    .framework-body { display: none; border-top: 1px solid var(--border); padding: 16px 20px; }
+    .framework-section.open .framework-body { display: block; }
+    .fw-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+    .fw-tab {
+      flex: 1; padding: 8px 10px; border-radius: 10px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      font-size: .75rem; font-weight: 600; color: var(--muted);
+      cursor: pointer; text-align: center; transition: all .15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .fw-tab.active { border-color: var(--teal); background: var(--teal-bg); color: var(--teal); }
+    .fw-content { display: none; }
+    .fw-content.active { display: block; }
+    .fw-question {
+      font-size: .88rem; color: var(--ink2); font-style: italic; margin-bottom: 12px; line-height: 1.6;
+      padding: 10px 14px; background: var(--teal-bg);
+      border-left: 3px solid var(--teal); border-radius: 0 var(--r-sm) var(--r-sm) 0;
+    }
+    .fw-opts { display: flex; flex-direction: column; gap: 10px; }
+    .fw-opt-row { display: flex; align-items: center; gap: 10px; }
+    .fw-opt-label { font-size: .8rem; font-weight: 600; color: var(--ink2); min-width: 90px; flex-shrink: 0; }
+    .fw-smiley-row { display: flex; gap: 6px; }
+    .fw-smiley {
+      font-size: 1.5rem; cursor: pointer; opacity: .35; transition: all .15s;
+      border: none; background: none; padding: 2px; border-radius: 4px;
+    }
+    .fw-smiley:hover, .fw-smiley.selected { opacity: 1; transform: scale(1.2); }
+    .regret-choice { display: flex; gap: 8px; margin-top: 8px; }
+    .regret-btn {
+      flex: 1; padding: 8px 10px; border-radius: 8px;
+      border: 1.5px solid var(--border); background: var(--white);
+      font-size: .78rem; font-weight: 600; color: var(--muted);
+      cursor: pointer; transition: all .18s; text-align: center; font-family: 'Inter', sans-serif;
+    }
+    .regret-btn:hover { border-color: var(--teal); color: var(--teal); }
+    .regret-btn.yes { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+    .regret-btn.no { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+    .regret-opt { padding: 12px 14px; border-radius: var(--r-sm); background: var(--bg); border: 1px solid var(--border); margin-bottom: 10px; }
+    .regret-opt-name { font-size: .85rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+    .regret-insight {
+      margin-top: 14px; padding: 12px 14px; background: var(--teal-bg);
+      border: 1px solid var(--teal-bd); border-radius: var(--r-sm);
+      font-size: .82rem; color: var(--ink2); line-height: 1.6;
+    }
+
+    /* ── ROBUSTNESS ANALYSIS ──────────────── */
+    .robustness-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .robustness-opt-name { font-size: .82rem; font-weight: 600; color: var(--ink2); min-width: 100px; flex-shrink: 0; }
+    .robustness-bar-wrap { flex: 1; height: 14px; background: var(--bg2); border-radius: 7px; overflow: hidden; }
+    .robustness-bar-fill { height: 100%; border-radius: 7px; transition: width .8s cubic-bezier(.16,1,.3,1); }
+    .robustness-pct { font-size: .8rem; font-weight: 700; min-width: 38px; text-align: right; }
+    .robustness-verdict {
+      margin-top: 12px; padding: 10px 14px; background: var(--teal-bg);
+      border: 1px solid var(--teal-bd); border-radius: var(--r-sm);
+      font-size: .82rem; color: var(--ink2); line-height: 1.6;
+    }
+
+    /* ── AI DEVIL'S ADVOCATE ──────────────── */
+    .devil-section {
+      background: rgba(124,58,237,.05); border: 1.5px solid rgba(124,58,237,.18);
+      border-radius: var(--r); padding: 18px 20px; margin-bottom: 24px;
+    }
+    .devil-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .devil-title { font-size: .88rem; font-weight: 700; color: var(--teal); }
+    .devil-text { font-size: .9rem; color: var(--ink2); line-height: 1.75; }
+    .devil-text strong { color: var(--ink); }
+    .devil-btn {
+      display: flex; align-items: center; gap: 7px;
+      width: 100%; padding: 9px 16px; border-radius: 10px;
+      border: 1.5px solid rgba(5,150,105,.3); background: rgba(5,150,105,.07);
+      color: var(--teal); font-size: .82rem; font-weight: 600; cursor: pointer;
+      transition: all .18s; font-family: 'Inter', sans-serif;
+    }
+    .devil-btn:hover { background: rgba(5,150,105,.14); transform: translateY(-1px); }
+    .devil-btn:disabled { opacity: .5; cursor: default; transform: none; }
+
+    /* ── BIAS DETECTION ───────────────────── */
+    .bias-alert {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 12px 14px; border-radius: var(--r-sm); margin-bottom: 10px;
+      font-size: .82rem; line-height: 1.6;
+    }
+    .bias-alert.bias-statusquo { background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.25); color: #92400e; }
+    .bias-alert.bias-sunk { background: rgba(220,38,38,.06); border: 1px solid rgba(220,38,38,.2); color: #991b1b; }
+    .bias-alert.bias-fewopt { background: rgba(14,116,144,.07); border: 1px solid rgba(14,116,144,.2); color: #0e7490; }
+    .bias-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── VOICE INPUT ──────────────────────── */
+    .voice-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 38px; height: 38px; border-radius: 50%;
+      border: 1.5px solid var(--border); background: var(--glass-bg);
+      cursor: pointer; transition: all .18s; font-size: 1rem; flex-shrink: 0;
+    }
+    .voice-btn:hover { border-color: var(--teal); background: var(--teal-bg); }
+    .voice-btn.recording { border-color: var(--red); background: var(--red-bg); animation: pulse-rec 1s infinite; }
+    @keyframes pulse-rec {
+      0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,.4); }
+      50% { box-shadow: 0 0 0 8px rgba(220,38,38,0); }
+    }
+
+    /* ── SHARE MODAL ──────────────────────── */
+    .share-url-row { display: flex; gap: 8px; margin-top: 14px; }
+    .share-url-row input { flex: 1; font-size: .82rem; }
+    .share-copy-btn {
+      padding: 10px 16px; border-radius: 10px; background: var(--teal);
+      color: #fff; border: none; cursor: pointer;
+      font-size: .82rem; font-weight: 600; transition: all .18s; white-space: nowrap;
+    }
+
+    /* ── EXPRESS MODE ─────────────────────── */
+    .express-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 10px 22px; border-radius: 10px;
+      border: 1.5px solid rgba(245,158,11,.4); background: rgba(245,158,11,.08);
+      color: var(--amber); font-size: .88rem; font-weight: 600;
+      cursor: pointer; transition: all .18s; font-family: 'Inter', sans-serif;
+    }
+    .express-btn:hover { background: rgba(245,158,11,.15); transform: translateY(-1px); }
+
+    /* ── DECISION FATIGUE WARNING ─────────── */
+    .fatigue-banner {
+      background: rgba(245,158,11,.09); border: 1px solid rgba(245,158,11,.3);
+      border-radius: var(--r-sm); padding: 10px 14px;
+      font-size: .8rem; color: #92400e; line-height: 1.6;
+      margin-top: 12px; display: none; align-items: flex-start; gap: 8px;
+    }
+    .fatigue-banner.visible { display: flex; }
+
+    /* ── INTRO NEW BUTTONS LAYOUT ─────────── */
+    .intro-actions-row {
+      display: flex; gap: 10px; width: 100%; max-width: 320px;
+      flex-direction: column; align-items: stretch;
+    }
+
+    /* ── DECISION TEXTAREA ROW ────────────── */
+    .decision-input-row { display: flex; gap: 8px; align-items: flex-start; }
+    .decision-input-row textarea { flex: 1; }
+
+    /* ── COLLAPSIBLE CHEVRON ──────────────── */
+    .coll-chevron { color: var(--muted2); font-size: .8rem; transition: transform .22s; margin-left: auto; }
+    .open .coll-chevron { transform: rotate(180deg); }
+
   </style>
 </head>
 
@@ -5230,7 +5561,14 @@
             </div>
           </div>
 
-          <button class="intro-start-btn" onclick="nav('page-step1')" data-i18n="start_btn">Commencer →</button>
+          <div class="intro-actions-row">
+            <button class="intro-start-btn" onclick="nav('page-step1');checkFatigue()" data-i18n="start_btn">Commencer →</button>
+            <button class="express-btn" onclick="startExpress()" title="Décision en moins de 2 minutes avec 3 critères clés">⚡ Mode express <span class="express-badge" style="font-size:.6rem;padding:2px 6px;border-radius:8px;background:var(--amber);color:#fff;margin-left:4px">2 min</span></button>
+          </div>
+          <div class="fatigue-banner" id="fatigueBanner">
+            <span>⚠️</span>
+            <span id="fatigueTxt">Vous avez déjà pris plusieurs décisions récemment. Prenez le temps de vous reposer avant de décider.</span>
+          </div>
           <p style="margin-top:12px;font-size:.75rem;color:var(--muted2)" data-i18n="footer_note">Gratuit · Aucun compte
             requis · 100% privé</p>
         </div>
@@ -5244,9 +5582,12 @@
           <div class="logo-dot"></div>Lucid
         </div>
         <div class="step-progress" id="sp1"></div>
-        <div class="lang-switcher" style="margin-left:auto;position:static">
-          <button class="lang-btn active" id="btn-fr2" onclick="setLang('fr')">FR</button>
-          <button class="lang-btn" id="btn-en2" onclick="setLang('en')">EN</button>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+          <button class="profile-btn" id="valuesProfileBtn" onclick="openValuesModal()" title="Configurer votre profil de valeurs">🧭 <span id="profileBtnLbl">Mes valeurs</span></button>
+          <div class="lang-switcher" style="position:static">
+            <button class="lang-btn active" id="btn-fr2" onclick="setLang('fr')">FR</button>
+            <button class="lang-btn" id="btn-en2" onclick="setLang('en')">EN</button>
+          </div>
         </div>
       </div>
       <div class="page-scroll">
@@ -5256,11 +5597,23 @@
           <div class="page-sub anim d2" data-i18n="s1_sub">Formulez votre situation et renseignez les options que vous
             envisagez.</div>
 
+          <!-- Templates de décision -->
+          <div class="templates-section anim d2" id="templatesSection">
+            <div class="templates-label">🎯 Modèles rapides</div>
+            <div class="templates-grid" id="templatesGrid"></div>
+          </div>
+
+          <!-- Bias detection alerts (populated by JS) -->
+          <div id="biasAlertsBox"></div>
+
           <div class="card decision-card anim d2">
             <div class="field" style="margin-bottom:0">
               <label for="inp-dec">📝 Votre décision en une phrase</label>
-              <textarea id="inp-dec" rows="2"
-                placeholder="Ex : Dois-je accepter ce nouvel emploi ou rester dans mon poste actuel ?"></textarea>
+              <div class="decision-input-row">
+                <textarea id="inp-dec" rows="2"
+                  placeholder="Ex : Dois-je accepter ce nouvel emploi ou rester dans mon poste actuel ?"></textarea>
+                <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceInput()" title="Dicter ma décision">🎤</button>
+              </div>
             </div>
           </div>
 
@@ -5382,6 +5735,7 @@
           <div class="page-title" id="eval-title" data-i18n="s3_title">Notez chaque option</div>
           <div class="page-sub" data-i18n="s3_sub">Pour chaque critère, donnez une note de <strong>1</strong> (très
             faible) à <strong>10</strong> (excellent) à chaque option. Le score global se met à jour en direct.</div>
+
 
           <div class="eval-grid" id="evalGrid"></div>
           <div class="notes-row" id="notesRow"></div>
@@ -6984,30 +7338,21 @@
         </div>
       </div>
 
-      <!-- ② SCORES -->
-      <div class="sc-cards-row anim d3" id="scoresRow" style="grid-template-columns:repeat(${ncols},1fr)">${scoreCards}</div>
-
-      <!-- ③ SCÉNARIOS — juste sous les scores -->
-      <div class="scenario-panel" id="scenarioBox" style="margin-top:14px">
-        <div class="scenario-panel-head" onclick="toggleScenarioBox()">
-          <span class="scenario-panel-icon">🎛️</span>
-          <div class="scenario-panel-text">
-            <div class="scenario-panel-title">${tr('scenario_title')}</div>
-            <div class="scenario-panel-sub">${tr('scenario_sub')}</div>
-          </div>
-          <div class="scenario-panel-chevron">▾</div>
-        </div>
-        <div class="scenario-panel-body">
-          <div class="sc-tabs">
-            <button class="sc-tab active" onclick="switchScTab('crits',this)">${LANG === 'fr' ? '🎚️ Critères' : '🎚️ Criteria'}</button>
-            <button class="sc-tab" onclick="switchScTab('emotions',this)">${LANG === 'fr' ? '🫀 Émotions' : '🫀 Emotions'}</button>
-          </div>
-          <div class="sc-tab-content">
-            <div class="sc-tab-pane active" id="scPaneCrits"></div>
-            <div class="sc-tab-pane" id="scPaneEmotions"></div>
-          </div>
-        </div>
+      <!-- Onglets principaux -->
+      <div class="res-main-tabs anim d3">
+        <button class="res-main-tab active" onclick="switchResTab('Synthese',this)">📊 ${LANG === 'fr' ? 'Synthèse' : 'Summary'}</button>
+        <button class="res-main-tab" onclick="switchResTab('Analyses',this)">🔬 ${LANG === 'fr' ? 'Approfondir' : 'Deep analysis'}</button>
       </div>
+
+      <!-- Pane 1 : Synthèse -->
+      <div class="res-tab-pane active" id="resTabSynthese">
+
+      <!-- ② SCORES -->
+      <div class="sc-cards-row anim" id="scoresRow" style="grid-template-columns:repeat(${ncols},1fr)">${scoreCards}</div>
+
+      <!-- ③ Solidité -->
+      <div class="res-divider"><span class="res-divider-label">📊 ${LANG === 'fr' ? 'Solidité de votre décision' : 'Decision robustness'}</span></div>
+      ${buildRobustnessSection(scores)}
 
       <!-- ④ Profil visuel -->
       <div class="res-divider" style="margin-top:22px"><span class="res-divider-label">${tr('div_visual')}</span></div>
@@ -7059,11 +7404,16 @@
       <!-- ⑥ Notes -->
       ${hasNotes ? `<div class="res-divider"><span class="res-divider-label">${tr('div_notes')}</span></div>${notesHTML}` : ''}
 
+      </div><!-- /resTabSynthese -->
+
+      <!-- Pane 2 : Analyses -->
+      <div class="res-tab-pane" id="resTabAnalyses"></div>
+
       <!-- ⑦ Actions -->
       <div class="res-actions">
         <button class="btn btn-secondary" onclick="nav('page-step3')">${tr('back_notes')}</button>
         <button class="btn btn-secondary" id="btnSaveTrack" onclick="saveAndTrack()">${tr('save_track')}</button>
-        <button class="btn btn-secondary" onclick="window.print()">${tr('export_pdf')}</button>
+
         <button class="btn btn-primary" onclick="restart()">${tr('new_decision')}</button>
       </div>
     </div>`;
@@ -7240,6 +7590,14 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
       sb.classList.toggle('open');
       const body = sb.querySelector('.scenario-panel-body');
       if (body) body.style.display = sb.classList.contains('open') ? 'block' : 'none';
+    }
+
+    function switchResTab(paneId, btn) {
+      document.querySelectorAll('.res-main-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.res-tab-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const pane = document.getElementById('resTab' + paneId);
+      if (pane) pane.classList.add('active');
     }
 
     function switchScTab(tab, el) {
@@ -8197,6 +8555,869 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
     </div>`;
     }
 
+    /* ══════════════════════════════════════════
+       NOUVELLES FONCTIONNALITÉS
+       ══════════════════════════════════════════ */
+
+    /* ─── TEMPLATES DE DÉCISION ─────────────── */
+    const DECISION_TEMPLATES = [
+      { icon: '💼', label: 'Emploi / Carrière', question: 'Dois-je accepter ce nouvel emploi ou rester dans mon poste actuel ?', criteria: ['career', 'fin_gain', 'stress', 'autonom', 'flex', 'jobsec', 'values', 'family', 'location'], suggestOptions: ['Rester à mon poste actuel', 'Accepter le nouveau poste'] },
+      { icon: '🏠', label: 'Achat immobilier', question: 'Quel bien immobilier correspond le mieux à mon projet de vie ?', criteria: ['cost', 'fin_risk', 'fin_stab', 'location', 'family', 'lt', 'rev', 'wellb'], suggestOptions: ['Option A', 'Option B'] },
+      { icon: '📚', label: 'Formation / Reconversion', question: 'Quelle formation dois-je suivre pour évoluer dans ma carrière ?', criteria: ['skills', 'career', 'cost', 'time', 'passion', 'values', 'lt', 'fin_stab'], suggestOptions: ['Formation A', 'Formation B'] },
+      { icon: '✈️', label: 'Déménagement', question: 'Dois-je déménager dans cette nouvelle ville ?', criteria: ['location', 'family', 'social', 'fin_gain', 'cost', 'wellb', 'career', 'lt'], suggestOptions: ['Rester ici', 'Déménager'] },
+      { icon: '🚀', label: "Créer une entreprise", question: 'Dois-je créer cette entreprise ou rester salarié ?', criteria: ['fin_risk', 'passion', 'autonom', 'lt', 'fin_gain', 'jobsec', 'stress', 'family', 'opp'], suggestOptions: ['Rester salarié', 'Créer mon entreprise'] },
+      { icon: '❤️', label: 'Vie personnelle', question: 'Comment orienter ma vie personnelle et relationnelle ?', criteria: ['wellb', 'values', 'family', 'social', 'time', 'lt', 'health', 'stress'], suggestOptions: ['Option A', 'Option B'] },
+    ];
+
+    let _activeTemplate = null;
+
+    function renderTemplates() {
+      const grid = document.getElementById('templatesGrid');
+      if (!grid) return;
+      grid.innerHTML = DECISION_TEMPLATES.map((t, i) => `
+        <button class="template-chip${_activeTemplate === i ? ' active' : ''}" onclick="applyTemplate(${i})">
+          ${t.icon} ${t.label}
+        </button>`).join('');
+    }
+
+    function applyTemplate(idx) {
+      const t = DECISION_TEMPLATES[idx];
+      _activeTemplate = idx;
+      // Fill decision textarea
+      const decInp = document.getElementById('inp-dec');
+      if (decInp) decInp.value = t.question;
+      // Fill options if still defaults
+      if (S.options.length === 2 && !S.options[0].name && !S.options[1].name) {
+        S.options = t.suggestOptions.map(name => ({ name, desc: '' }));
+        renderOptBuilder();
+        S.options.forEach((opt, i) => {
+          const inp = document.getElementById(`opt-name-${i}`);
+          if (inp) inp.value = opt.name;
+        });
+      }
+      // Pre-select relevant criteria
+      S.criteria = [];
+      t.criteria.forEach(id => {
+        const c = LIB.find(l => l.id === id);
+        if (c) S.criteria.push({ ...c, weight: c.dw, swingRank: S.criteria.length });
+      });
+      // Apply values profile weights if set
+      applyValuesWeights();
+      renderTemplates();
+      // Visual feedback
+      decInp && decInp.focus();
+    }
+
+    /* ─── PROFIL DE VALEURS ──────────────────── */
+    const VALUES_DEFS = [
+      { id: 'famille', icon: '👨‍👩‍👧', label: 'Famille', criteria: { family: 3, social: 2, time: 2, health: 1 } },
+      { id: 'liberte', icon: '🦋', label: 'Liberté', criteria: { autonom: 3, flex: 2, rev: 2, time: 1 } },
+      { id: 'securite', icon: '🛡️', label: 'Sécurité', criteria: { jobsec: 3, fin_stab: 3, risk: 2, fin_risk: 2, stress: 1 } },
+      { id: 'ambition', icon: '🚀', label: 'Ambition', criteria: { career: 3, skills: 2, lt: 2, opp: 2, fin_gain: 1 } },
+      { id: 'bienetre', icon: '🌿', label: 'Bien-être', criteria: { wellb: 3, health: 3, time: 2, stress: 2 } },
+      { id: 'impact', icon: '🌍', label: 'Impact', criteria: { impact: 3, values: 2, innov: 1 } },
+      { id: 'creativite', icon: '🎨', label: 'Créativité', criteria: { innov: 3, passion: 2, skills: 2, autonom: 1 } },
+      { id: 'equilibre', icon: '⚖️', label: 'Équilibre', criteria: { wellb: 2, time: 3, workload: 2, stress: 2, flex: 1 } },
+    ];
+
+    let _selectedValues = [];
+
+    function loadValuesProfile() {
+      try { return JSON.parse(localStorage.getItem('lucid_values') || '[]'); } catch(e) { return []; }
+    }
+
+    function openValuesModal() {
+      _selectedValues = loadValuesProfile().slice();
+      renderValuesGrid();
+      document.getElementById('valuesModal').classList.add('open');
+    }
+
+    function closeValuesModal() {
+      document.getElementById('valuesModal').classList.remove('open');
+    }
+
+    function renderValuesGrid() {
+      const grid = document.getElementById('valuesGrid');
+      if (!grid) return;
+      const alert = document.getElementById('valuesAlertBox');
+      if (_selectedValues.length > 0) {
+        alert.innerHTML = `<div class="values-alert">✅ ${_selectedValues.length} valeur${_selectedValues.length > 1 ? 's' : ''} sélectionnée${_selectedValues.length > 1 ? 's' : ''} — les critères correspondants seront auto-pondérés.</div>`;
+      } else {
+        alert.innerHTML = `<div class="values-alert" style="background:var(--bg2);border-color:var(--border);color:var(--muted)">👆 Sélectionnez jusqu'à 3 valeurs fondamentales</div>`;
+      }
+      grid.innerHTML = VALUES_DEFS.map((v, i) => {
+        const rankIdx = _selectedValues.indexOf(v.id);
+        const selected = rankIdx !== -1;
+        return `
+          <div class="value-chip${selected ? ' selected' : ''}" onclick="toggleValueChip('${v.id}')">
+            ${selected ? `<span class="value-rank">${rankIdx + 1}</span>` : ''}
+            <span class="value-chip-icon">${v.icon}</span>
+            <span class="value-chip-label">${v.label}</span>
+          </div>`;
+      }).join('');
+    }
+
+    function toggleValueChip(id) {
+      const idx = _selectedValues.indexOf(id);
+      if (idx !== -1) {
+        _selectedValues.splice(idx, 1);
+      } else {
+        if (_selectedValues.length >= 3) {
+          _selectedValues.shift(); // remove oldest
+        }
+        _selectedValues.push(id);
+      }
+      renderValuesGrid();
+    }
+
+    function saveValuesProfile() {
+      localStorage.setItem('lucid_values', JSON.stringify(_selectedValues));
+      closeValuesModal();
+      updateProfileBtn();
+      applyValuesWeights();
+      // If on step 2, re-render
+      if (document.getElementById('page-step2').classList.contains('active')) renderSelList();
+    }
+
+    function updateProfileBtn() {
+      const profile = loadValuesProfile();
+      const btn = document.getElementById('valuesProfileBtn');
+      if (!btn) return;
+      if (profile.length > 0) {
+        btn.classList.add('has-profile');
+        const defs = profile.map(id => VALUES_DEFS.find(v => v.id === id)).filter(Boolean);
+        document.getElementById('profileBtnLbl').textContent = defs.map(v => v.icon).join('');
+      } else {
+        btn.classList.remove('has-profile');
+        document.getElementById('profileBtnLbl').textContent = 'Mes valeurs';
+      }
+    }
+
+    function applyValuesWeights() {
+      const profile = loadValuesProfile();
+      if (!profile.length) return;
+      // Build a weight map from selected values
+      const weightMap = {};
+      profile.forEach((vid, rank) => {
+        const def = VALUES_DEFS.find(v => v.id === vid);
+        if (!def) return;
+        const multiplier = rank === 0 ? 3 : rank === 1 ? 2 : 1;
+        Object.entries(def.criteria).forEach(([critId, w]) => {
+          weightMap[critId] = Math.min(3, (weightMap[critId] || 0) + Math.ceil(w * multiplier / 3));
+        });
+      });
+      // Apply to selected criteria
+      S.criteria.forEach(c => {
+        if (weightMap[c.id]) c.weight = Math.min(3, weightMap[c.id]);
+      });
+    }
+
+
+    /* ─── DÉTECTION DE FATIGUE DÉCISIONNELLE ── */
+    function checkFatigue() {
+      const decisions = getDecisions();
+      const now = Date.now();
+      const last24h = decisions.filter(d => now - new Date(d.date).getTime() < 86400000).length;
+      const banner = document.getElementById('fatigueBanner');
+      if (!banner) return;
+      if (last24h >= 2) {
+        const txt = document.getElementById('fatigueTxt');
+        if (txt) txt.innerHTML = `⚠️ Vous avez déjà pris <strong>${last24h} décision${last24h > 1 ? 's' : ''}</strong> dans les dernières 24h. Votre capacité à décider peut être altérée par la fatigue — prenez le temps de vous reposer avant.`;
+        banner.classList.add('visible');
+      }
+    }
+
+    /* ─── DÉTECTION DE BIAIS ─────────────────── */
+    function detectBiases() {
+      const box = document.getElementById('biasAlertsBox');
+      if (!box) return;
+      const alerts = [];
+      const dec = document.getElementById('inp-dec')?.value || S.decision || '';
+
+      // Biais de statu quo: option "actuel/actuelle/rester" présente
+      const statusQuoWords = /actuel|actuelle|rester|statu quo|ne pas changer|conserver|garder|maintenir/i;
+      const hasStatusQuo = S.options.some((o, i) => statusQuoWords.test(o.name + ' ' + (o.desc || '')));
+      if (hasStatusQuo) {
+        alerts.push(`<div class="bias-alert bias-statusquo"><span class="bias-icon">⚠️</span><span><strong>Biais de statu quo détecté :</strong> L'une de vos options semble être le choix "ne rien changer". Veillez à ne pas surpondérer la sécurité du familier par rapport aux bénéfices du changement.</span></div>`);
+      }
+
+      // Fausse dichotomie: seulement 2 options
+      if (S.options.filter(o => o.name.trim()).length === 2) {
+        alerts.push(`<div class="bias-alert bias-fewopt"><span class="bias-icon">💡</span><span><strong>Avez-vous considéré toutes vos options ?</strong> Vous n'avez listé que 2 choix. Existe-t-il une 3ème voie : hybride, différée, partielle ?</span></div>`);
+      }
+
+      // Biais de coût irrécupérable (sunk cost): mot-clé "déjà investi / déjà commencé"
+      const sunkWords = /déjà investi|déjà commencé|j'ai déjà|trop tard|tout ce que j'ai mis/i;
+      if (sunkWords.test(dec)) {
+        alerts.push(`<div class="bias-alert bias-sunk"><span class="bias-icon">🚨</span><span><strong>Attention au coût irrécupérable :</strong> Les investissements passés ne devraient pas influencer votre décision future. Concentrez-vous sur ce que chaque option vous apportera à partir d'aujourd'hui.</span></div>`);
+      }
+
+      box.innerHTML = alerts.join('');
+    }
+
+    /* ─── VOICE INPUT ────────────────────────── */
+    let _recognition = null;
+    let _isRecording = false;
+
+    function toggleVoiceInput() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('La reconnaissance vocale n\'est pas supportée par votre navigateur. Essayez Chrome.');
+        return;
+      }
+      const btn = document.getElementById('voiceBtn');
+      if (_isRecording) {
+        _recognition && _recognition.stop();
+        _isRecording = false;
+        btn && btn.classList.remove('recording');
+        return;
+      }
+      _recognition = new SpeechRecognition();
+      _recognition.lang = LANG === 'fr' ? 'fr-FR' : 'en-US';
+      _recognition.continuous = false;
+      _recognition.interimResults = false;
+      _recognition.onresult = (e) => {
+        const transcript = e.results[0][0].transcript;
+        const inp = document.getElementById('inp-dec');
+        if (inp) { inp.value = (inp.value ? inp.value + ' ' : '') + transcript; }
+        detectBiases();
+      };
+      _recognition.onend = () => {
+        _isRecording = false;
+        btn && btn.classList.remove('recording');
+      };
+      _recognition.onerror = () => {
+        _isRecording = false;
+        btn && btn.classList.remove('recording');
+      };
+      _recognition.start();
+      _isRecording = true;
+      btn && btn.classList.add('recording');
+    }
+
+    /* ─── MODE EXPRESS ───────────────────────── */
+    function startExpress() {
+      // Reset state
+      S = {
+        decision: '', options: [{ name: '', desc: '' }, { name: '', desc: '' }],
+        criteria: [], scores: {}, notes: [], currentCat: 'Tous',
+        weightingMethod: 'simple', _expressMode: true
+      };
+      document.getElementById('inp-dec').value = '';
+      renderOptBuilder();
+      renderStepProgress(1);
+      // Show special note
+      const sub = document.querySelector('#page-step1 .page-sub');
+      if (sub) sub.innerHTML = '<strong>⚡ Mode express :</strong> Saisissez votre question et 2 options. Lucid sélectionnera automatiquement les 3 critères clés.';
+      nav('page-step1');
+    }
+
+    // Override validateStep2 when in express mode to auto-select 3 criteria
+    const _origValidateStep2 = validateStep2;
+    window.validateStep2 = function() {
+      if (S._expressMode && S.criteria.length === 0) {
+        // Auto-select top 3 universal criteria
+        const autoCrits = ['wellb', 'lt', 'values'];
+        autoCrits.forEach(id => {
+          const c = LIB.find(l => l.id === id);
+          if (c) S.criteria.push({ ...c, weight: 2, swingRank: S.criteria.length });
+        });
+      }
+      _origValidateStep2();
+    };
+
+    /* ─── PARTAGER UNE DÉCISION ──────────────── */
+    function openShareModal() {
+      const state = {
+        decision: S.decision,
+        options: S.options,
+        criteria: S.criteria,
+        scores: S.scores,
+        notes: S.notes,
+        weightingMethod: S.weightingMethod
+      };
+      try {
+        const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+        const url = window.location.origin + window.location.pathname + '#share=' + encoded;
+        const input = document.getElementById('shareUrlInput');
+        if (input) input.value = url;
+      } catch(e) {
+        alert('Erreur lors de la génération du lien.');
+        return;
+      }
+      document.getElementById('shareModal').classList.add('open');
+    }
+
+    function closeShareModal() {
+      document.getElementById('shareModal').classList.remove('open');
+    }
+
+    function copyShareUrl() {
+      const input = document.getElementById('shareUrlInput');
+      if (!input) return;
+      input.select();
+      navigator.clipboard ? navigator.clipboard.writeText(input.value).then(() => {
+        const btn = input.nextElementSibling;
+        if (btn) { const orig = btn.textContent; btn.textContent = '✅ Copié !'; setTimeout(() => btn.textContent = orig, 2000); }
+      }) : document.execCommand('copy');
+    }
+
+    function checkShareUrl() {
+      const hash = window.location.hash;
+      if (!hash.startsWith('#share=')) return;
+      try {
+        const encoded = hash.slice(7);
+        const state = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+        if (confirm('🔗 Un lien de décision a été détecté. Voulez-vous charger cette analyse ?')) {
+          Object.assign(S, state);
+          const inp = document.getElementById('inp-dec');
+          if (inp) inp.value = S.decision;
+          renderOptBuilder();
+          buildResults();
+          renderStepProgress(4);
+          nav('page-results');
+          initScenario();
+          setTimeout(drawRadar, 150);
+          generateInterpretation();
+          window.history.replaceState(null, '', window.location.pathname);
+        }
+      } catch(e) { /* invalid share link */ }
+    }
+
+    /* ─── PRÉ-MORTEM ─────────────────────────── */
+    // { optIdx: Set of selected risk ids }
+    let _premortemRisks = {};
+
+    const PREMORTEM_RISKS = [
+      { id: 'finance',   icon: '💸', label: 'Problème financier',          desc: 'Coûts sous-estimés, revenus décevants' },
+      { id: 'time',      icon: '⏰', label: 'Délai sous-estimé',           desc: 'Ça prend bien plus de temps que prévu' },
+      { id: 'stress',    icon: '😰', label: 'Surcharge / épuisement',      desc: 'Stress, burnout, perte d\'énergie' },
+      { id: 'relations', icon: '👥', label: 'Tensions relationnelles',     desc: 'Famille, amis, collègues impactés' },
+      { id: 'complex',   icon: '🔧', label: 'Complexité sous-estimée',     desc: 'Obstacles imprévus, dépendances cachées' },
+      { id: 'motiv',     icon: '🎯', label: 'Perte de motivation',         desc: 'L\'envie disparaît avec le temps' },
+      { id: 'extern',    icon: '🌐', label: 'Contexte externe défavorable',desc: 'Marché, économie, événements hors contrôle' },
+      { id: 'irrev',     icon: '↩️', label: 'Difficile à annuler',         desc: 'Trop engagé pour faire marche arrière' },
+      { id: 'regret',    icon: '😔', label: 'Mauvaise décision pour soi',  desc: 'Pas aligné avec vos vraies valeurs' },
+      { id: 'depend',    icon: '🤝', label: 'Dépendance à des tiers',      desc: 'Succès conditionné par d\'autres personnes' },
+    ];
+
+    function buildPremortemSection(scores) {
+      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
+      // Init sets if needed
+      ranked.forEach(oi => { if (!_premortemRisks[oi]) _premortemRisks[oi] = new Set(); });
+
+      const optsHTML = ranked.map(oi => {
+        const c = resultColors[oi];
+        const riskChips = PREMORTEM_RISKS.map(r => {
+          const sel = _premortemRisks[oi]?.has(r.id);
+          return `<button class="pm-chip${sel ? ' pm-chip-on' : ''}" onclick="togglePmRisk(${oi},'${r.id}',this)" title="${r.desc}"><span class="pm-icon">${r.icon}</span>${r.label}</button>`;
+        }).join('');
+        return `
+          <div class="premortem-opt">
+            <div class="premortem-opt-label"><span style="color:${c.hex};font-size:.88rem;font-weight:800">${esc(S.options[oi].name)}</span></div>
+            <div class="pm-chips">${riskChips}</div>
+          </div>`;
+      }).join('');
+
+      return `
+        <div class="premortem-section" id="premortemSection">
+          <div class="premortem-head" onclick="this.parentElement.classList.toggle('open')">
+            <span style="font-size:1.1rem">💀</span>
+            <div style="flex:1">
+              <div style="font-size:.88rem;font-weight:700;color:#dc2626">Pré-mortem : et si ça échouait ?</div>
+              <div style="font-size:.72rem;color:var(--muted);margin-top:1px">Sélectionnez les risques que vous percevez pour chaque option</div>
+            </div>
+            <div class="coll-chevron">▾</div>
+          </div>
+          <div class="premortem-body">
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6">
+              Imaginez que dans 1 an, chaque option a échoué. <strong>Quels risques auraient pu causer cet échec ?</strong> Cochez tout ce qui vous semble plausible pour chaque option.
+            </p>
+            ${optsHTML}
+            <div id="premortemResult" style="margin-top:14px"></div>
+          </div>
+        </div>`;
+    }
+
+    function togglePmRisk(oi, riskId, btn) {
+      if (!_premortemRisks[oi]) _premortemRisks[oi] = new Set();
+      if (_premortemRisks[oi].has(riskId)) {
+        _premortemRisks[oi].delete(riskId);
+        btn.classList.remove('pm-chip-on');
+      } else {
+        _premortemRisks[oi].add(riskId);
+        btn.classList.add('pm-chip-on');
+      }
+      btn.blur();
+      renderPremortemResult();
+    }
+
+    function renderPremortemResult() {
+      const el = document.getElementById('premortemResult');
+      if (!el) return;
+      const scores = S.options.map((_, i) => calcScore(i));
+      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
+
+      const totalsByOpt = ranked.map(oi => ({ oi, count: (_premortemRisks[oi]?.size || 0) }));
+      const anySelected = totalsByOpt.some(t => t.count > 0);
+      if (!anySelected) { el.innerHTML = ''; return; }
+
+      // Risks shared by ALL options (systemic)
+      const allRiskIds = PREMORTEM_RISKS.map(r => r.id);
+      const sharedRisks = allRiskIds.filter(id => ranked.every(oi => _premortemRisks[oi]?.has(id)));
+      // Risks unique to each option
+      const uniqueRisks = {};
+      ranked.forEach(oi => {
+        uniqueRisks[oi] = [...(_premortemRisks[oi] || [])].filter(id => !ranked.filter(o => o !== oi).every(o => _premortemRisks[o]?.has(id)));
+      });
+
+      const winner = ranked[0];
+      const winnerCount = _premortemRisks[winner]?.size || 0;
+      const maxRisk = ranked.reduce((a, b) => (_premortemRisks[b]?.size || 0) > (_premortemRisks[a]?.size || 0) ? b : a, ranked[0]);
+
+      // Risk summary per option
+      const summaryRows = ranked.map(oi => {
+        const c = resultColors[oi];
+        const count = _premortemRisks[oi]?.size || 0;
+        const width = count > 0 ? Math.round((count / PREMORTEM_RISKS.length) * 100) : 0;
+        const riskLevel = count === 0 ? 'Aucun risque identifié' : count <= 2 ? 'Risque faible' : count <= 5 ? 'Risque modéré' : 'Risque élevé';
+        const riskColor = count === 0 ? 'var(--teal)' : count <= 2 ? 'var(--teal)' : count <= 5 ? 'var(--amber)' : '#dc2626';
+        return `<div class="robustness-bar-row">
+          <span class="robustness-opt-name" style="color:${c.hex}">${esc(S.options[oi].name)}</span>
+          <div class="robustness-bar-wrap">
+            <div class="robustness-bar-fill" style="width:${width}%;background:${riskColor}"></div>
+          </div>
+          <span style="font-size:.75rem;font-weight:700;color:${riskColor};min-width:60px;text-align:right">${count} risque${count > 1 ? 's' : ''}</span>
+        </div>`;
+      }).join('');
+
+      // Insight
+      let insight = '';
+      const winnerIsRiskiest = maxRisk === winner;
+      const allSameRisk = ranked.every(oi => (_premortemRisks[oi]?.size || 0) === winnerCount);
+
+      if (sharedRisks.length > 0) {
+        const sharedNames = sharedRisks.map(id => PREMORTEM_RISKS.find(r => r.id === id)?.label).filter(Boolean).join(', ');
+        insight += `<div style="margin-bottom:8px">⚠️ <strong>Risques communs à toutes les options :</strong> ${sharedNames} — ces risques sont indépendants de votre choix.</div>`;
+      }
+      if (!allSameRisk) {
+        if (winnerIsRiskiest) {
+          const diff = (_premortemRisks[winner]?.size || 0) - (_premortemRisks[ranked[1]]?.size || 0);
+          insight += `💡 <strong>Attention :</strong> Votre option gagnante présente <strong>${diff} risque${diff > 1 ? 's' : ''} de plus</strong> que la suivante. Vérifiez que ces risques sont bien pris en compte dans votre scoring.`;
+        } else {
+          const safest = ranked.reduce((a, b) => (_premortemRisks[b]?.size || 0) < (_premortemRisks[a]?.size || 0) ? b : a, ranked[0]);
+          if (safest === winner) {
+            insight += `✅ <strong>Cohérence :</strong> Votre option gagnante est aussi la moins risquée selon ce pré-mortem. Double signal positif.`;
+          } else {
+            const diff = (_premortemRisks[safest]?.size || 0) - (_premortemRisks[winner]?.size || 0);
+            insight += `💡 <strong>À noter :</strong> "${esc(S.options[safest].name)}" présente <strong>${Math.abs(diff)} risque${Math.abs(diff) > 1 ? 's' : ''} de moins</strong>. Si votre option principale ne s'impose pas franchement, c'est un critère de sécurité à considérer.`;
+          }
+        }
+      } else if (anySelected) {
+        insight += `📊 Les options présentent un profil de risque similaire — le choix ne se joue pas sur la dimension risque.`;
+      }
+
+      el.innerHTML = `
+        <div style="margin-bottom:12px">${summaryRows}</div>
+        ${insight ? `<div class="premortem-insight">${insight}</div>` : ''}`;
+    }
+
+    /* ─── FRAMEWORK 10/10/10 ─────────────────── */
+    let _tenTenTen = {}; // { optIdx: { min: emoji, month: emoji, year: emoji } }
+
+    function buildTenTenTenSection(scores) {
+      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
+      const SMILEYS = ['😟', '😕', '😐', '🙂', '😊'];
+      const periods = [
+        { id: 'min', label: '10 minutes', question: 'Dans 10 minutes, après avoir pris cette décision, comment te sens-tu ?' },
+        { id: 'month', label: '10 mois', question: 'Dans 10 mois, avec le recul, comment tu vis ce choix ?' },
+        { id: 'year', label: '10 ans', question: 'Dans 10 ans, en regardant en arrière, comment tu juges cette décision ?' },
+      ];
+
+      const tabsHTML = periods.map((p, pi) => `<button class="fw-tab${pi === 0 ? ' active' : ''}" onclick="switchFwTab(this, 'fw-${p.id}')">${p.label}</button>`).join('');
+      const contentsHTML = periods.map((p, pi) => {
+        const optsHTML = ranked.map(oi => {
+          const row = `
+            <div class="fw-opt-row">
+              <span class="fw-opt-label" style="color:${resultColors[oi].hex}">${esc(S.options[oi].name)}</span>
+              <div class="fw-smiley-row">
+                ${SMILEYS.map((s, si) => `<button class="fw-smiley${(_tenTenTen[oi]?.[p.id] === si) ? ' selected' : ''}" onclick="setFwScore(${oi},'${p.id}',${si})" title="${s}">${s}</button>`).join('')}
+              </div>
+            </div>`;
+          return row;
+        }).join('');
+        return `<div class="fw-content${pi === 0 ? ' active' : ''}" id="fw-${p.id}">
+          <div class="fw-question">${p.question}</div>
+          <div class="fw-opts">${optsHTML}</div>
+        </div>`;
+      }).join('');
+
+      return `
+        <div class="framework-section" id="tenTenTenSection">
+          <div class="framework-head" onclick="this.parentElement.classList.toggle('open')">
+            <span style="font-size:1.1rem">⏱️</span>
+            <div style="flex:1">
+              <div style="font-size:.88rem;font-weight:700;color:var(--ink)">Règle des 10/10/10</div>
+              <div style="font-size:.72rem;color:var(--muted);margin-top:1px">Comment vous sentirez-vous dans 10 min, 10 mois, 10 ans ?</div>
+            </div>
+            <div class="framework-chevron">▾</div>
+          </div>
+          <div class="framework-body">
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6">
+              La règle des 10/10/10 de <em>Suzy Welch</em> : pour chaque option, notez votre ressenti dans 3 horizons temporels. Révèle si vous décidez sous l'émotion du moment.
+            </p>
+            <div class="fw-tabs">${tabsHTML}</div>
+            ${contentsHTML}
+            <div id="fwInsight" style="margin-top:14px"></div>
+          </div>
+        </div>`;
+    }
+
+    function switchFwTab(btn, contentId) {
+      btn.closest('.framework-body').querySelectorAll('.fw-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      btn.closest('.framework-body').querySelectorAll('.fw-content').forEach(c => c.classList.remove('active'));
+      const el = document.getElementById(contentId);
+      if (el) el.classList.add('active');
+    }
+
+    function setFwScore(oi, period, val) {
+      if (!_tenTenTen[oi]) _tenTenTen[oi] = {};
+      _tenTenTen[oi][period] = val;
+      // Re-render smileys
+      document.querySelectorAll(`#fw-${period} .fw-smiley`).forEach((btn, idx) => {
+        const btnOi = parseInt(btn.closest('.fw-opt-row').querySelector('.fw-opt-label').dataset.oi || 0);
+        // Find option index from DOM order
+      });
+      // Simpler: rebuild insight
+      buildFwInsight();
+      // Update selected state
+      document.querySelectorAll(`#fw-${period} .fw-opt-row`).forEach((row, rowIdx) => {
+        const scores = S.options.map((_, i) => calcScore(i));
+        const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
+        const oi2 = ranked[rowIdx];
+        row.querySelectorAll('.fw-smiley').forEach((s, si) => {
+          s.classList.toggle('selected', _tenTenTen[oi2]?.[period] === si);
+        });
+      });
+    }
+
+    function buildFwInsight() {
+      const el = document.getElementById('fwInsight');
+      if (!el) return;
+      const scores = S.options.map((_, i) => calcScore(i));
+      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
+      const periods = ['min', 'month', 'year'];
+      // Check if there's a mismatch between rational choice and 10/10/10
+      const winner = ranked[0];
+      if (!_tenTenTen[winner]) return;
+      const yearScore = _tenTenTen[winner]?.year;
+      if (yearScore !== undefined && yearScore <= 1) {
+        el.innerHTML = `<div style="padding:10px 14px;background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.2);border-radius:var(--r-sm);font-size:.82rem;color:var(--ink2);line-height:1.6">
+          ⚠️ <strong>Signal d'alerte :</strong> L'option rationnellement gagnante vous semble négative dans 10 ans. Cela suggère un conflit entre votre analyse et votre intuition profonde — mérite réflexion.
+        </div>`;
+      } else if (yearScore !== undefined && yearScore >= 3) {
+        el.innerHTML = `<div style="padding:10px 14px;background:var(--teal-bg);border:1px solid var(--teal-bd);border-radius:var(--r-sm);font-size:.82rem;color:var(--ink2);line-height:1.6">
+          ✅ <strong>Cohérence confirmée :</strong> Votre choix rationnel s'aligne avec votre vision à 10 ans. C'est un signal fort.
+        </div>`;
+      }
+    }
+
+    /* ─── MINIMISATION DU REGRET ─────────────── */
+    let _regretAnswers = {};
+
+    function buildRegretSection(scores) {
+      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
+      const optsHTML = ranked.map(oi => `
+        <div class="regret-opt">
+          <div class="regret-opt-name" style="color:${resultColors[oi].hex}">${esc(S.options[oi].name)}</div>
+          <div style="font-size:.82rem;color:var(--muted);margin-bottom:6px">Dans 80 ans, regretterez-vous de ne pas avoir essayé cette option ?</div>
+          <div class="regret-choice">
+            <button class="regret-btn${_regretAnswers[oi] === 'yes' ? ' yes' : ''}" onclick="setRegret(${oi},'yes')">😟 Oui, probablement</button>
+            <button class="regret-btn${_regretAnswers[oi] === 'no' ? ' no' : ''}" onclick="setRegret(${oi},'no')">😌 Non, je serai en paix</button>
+          </div>
+        </div>`).join('');
+
+      return `
+        <div class="framework-section" id="regretSection">
+          <div class="framework-head" onclick="this.parentElement.classList.toggle('open')">
+            <span style="font-size:1.1rem">🔭</span>
+            <div style="flex:1">
+              <div style="font-size:.88rem;font-weight:700;color:var(--ink)">Minimisation du regret</div>
+              <div style="font-size:.72rem;color:var(--muted);margin-top:1px">La méthode de Jeff Bezos — la vue depuis vos 80 ans</div>
+            </div>
+            <div class="framework-chevron">▾</div>
+          </div>
+          <div class="framework-body">
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6">
+              Jeff Bezos projetait sa décision à 80 ans : <em>"Est-ce que je regretterai de ne pas avoir essayé ?"</em> Cette perspective élimine la peur à court terme.
+            </p>
+            ${optsHTML}
+            <div id="regretInsight" style="margin-top:12px"></div>
+          </div>
+        </div>`;
+    }
+
+    function setRegret(oi, val) {
+      _regretAnswers[oi] = val;
+      // Re-render buttons
+      document.querySelectorAll(`#regretSection .regret-opt`).forEach((el, idx) => {
+        const scores = S.options.map((_, i) => calcScore(i));
+        const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
+        const oi2 = ranked[idx];
+        el.querySelectorAll('.regret-btn').forEach((btn, bi) => {
+          btn.className = 'regret-btn' + (bi === 0 && _regretAnswers[oi2] === 'yes' ? ' yes' : bi === 1 && _regretAnswers[oi2] === 'no' ? ' no' : '');
+        });
+      });
+      // Insight
+      const el = document.getElementById('regretInsight');
+      if (!el) return;
+      const scores = S.options.map((_, i) => calcScore(i));
+      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
+      const winner = ranked[0];
+      const answered = Object.keys(_regretAnswers).length;
+      if (answered < 2) return;
+      const regretOpts = ranked.filter(i => _regretAnswers[i] === 'yes');
+      if (regretOpts.length === 0) {
+        el.innerHTML = `<div class="regret-insight">😌 Vous semblez en paix avec toutes les options non choisies — votre décision ne repose pas sur la peur du regret. C'est un signe de clarté.</div>`;
+      } else if (regretOpts[0] === winner) {
+        el.innerHTML = `<div class="regret-insight">🎯 <strong>Cohérence :</strong> L'option qui vous ferait le plus regretter correspond à votre choix rationnel. Double confirmation.</div>`;
+      } else {
+        el.innerHTML = `<div class="regret-insight">⚡ <strong>Divergence :</strong> L'option que vous regretteriez le plus de ne pas avoir essayée n'est pas celle qui score le mieux dans votre matrice. Interrogez-vous : votre analyse intègre-t-elle bien ce qui compte pour vous dans 80 ans ?</div>`;
+      }
+    }
+
+    /* ─── ANALYSE DE ROBUSTESSE ──────────────── */
+    function buildRobustnessSection(scores) {
+      const results = runMonteCarlo(200);
+      const maxWins = Math.max(...results.map(r => r.wins));
+
+      const bars = [...S.options.map((_, i) => i)]
+        .sort((a, b) => results[b].wins - results[a].wins)
+        .map(oi => {
+          const r = results[oi];
+          const pct = r.wins;
+          const c = resultColors[oi] || activeColors()[oi];
+          const isStable = pct >= 65;
+          return `
+            <div class="robustness-bar-row">
+              <span class="robustness-opt-name" style="color:${c.hex}">${esc(S.options[oi].name)}</span>
+              <div class="robustness-bar-wrap">
+                <div class="robustness-bar-fill" style="width:${pct}%;background:${isStable ? c.hex : 'var(--amber)'}"></div>
+              </div>
+              <span class="robustness-pct" style="color:${c.hex}">${pct}%</span>
+            </div>`;
+        }).join('');
+
+      const actualWinner = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a])[0];
+      const actualWinnerPct = results[actualWinner].wins;
+      const mcWinner = [...S.options.map((_, i) => i)].sort((a, b) => results[b].wins - results[a].wins)[0];
+      let verdict = '';
+      if (actualWinnerPct >= 75) verdict = `<div class="robustness-verdict">✅ <strong>Décision robuste :</strong> "${esc(S.options[actualWinner].name)}" gagne dans <strong>${actualWinnerPct}%</strong> des 200 scénarios simulés — votre choix est stable quelle que soit la pondération exacte.</div>`;
+      else if (actualWinnerPct >= 50) verdict = `<div class="robustness-verdict">⚖️ <strong>Résultat modérément stable :</strong> "${esc(S.options[actualWinner].name)}" est en tête dans ${actualWinnerPct}% des scénarios. La décision finale dépend beaucoup des poids exacts.</div>`;
+      else verdict = `<div class="robustness-verdict">⚠️ <strong>Décision fragile :</strong> "${esc(S.options[actualWinner].name)}" ne gagne que dans ${actualWinnerPct}% des simulations. Avec des pondérations différentes, "${esc(S.options[mcWinner].name)}" serait souvent privilégiée — faites confiance à vos priorités.</div>`;
+
+      return `
+        <div class="framework-section" id="robustnessSection">
+          <div class="framework-head" onclick="this.parentElement.classList.toggle('open')">
+            <span style="font-size:1.1rem">🎲</span>
+            <div style="flex:1">
+              <div style="font-size:.88rem;font-weight:700;color:var(--ink)">Solidité de votre décision</div>
+              <div style="font-size:.72rem;color:var(--muted);margin-top:1px">200 simulations aléatoires des poids — quelle option gagne le plus souvent ?</div>
+            </div>
+            <div class="framework-chevron">▾</div>
+          </div>
+          <div class="framework-body">
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px;line-height:1.6">
+              On fait varier les poids de chaque critère aléatoirement 200 fois pour voir si votre classement est <strong>stable</strong> ou <strong>fragile</strong>.
+            </p>
+            ${bars}
+            ${verdict}
+          </div>
+        </div>`;
+    }
+
+    function runMonteCarlo(iterations) {
+      const results = S.options.map(() => ({ wins: 0 }));
+      for (let iter = 0; iter < iterations; iter++) {
+        // Generate random weights for each criterion
+        const randWeights = {};
+        S.criteria.forEach(c => { randWeights[c.id] = Math.random() * 2 + 0.5; });
+        const totalW = Object.values(randWeights).reduce((a, b) => a + b, 0);
+        // Compute scores
+        const simScores = S.options.map((_, oi) => {
+          let tot = 0;
+          S.criteria.forEach(c => {
+            let v = S.scores[c.id]?.[oi] ?? 5;
+            if (c.invert) v = 11 - v;
+            tot += v * (randWeights[c.id] / totalW);
+          });
+          return tot;
+        });
+        // Find winner
+        const winnerIdx = simScores.indexOf(Math.max(...simScores));
+        results[winnerIdx].wins++;
+      }
+      // Convert to percentage
+      results.forEach(r => { r.wins = Math.round((r.wins / iterations) * 100); });
+      return results;
+    }
+
+    /* ─── AI AVOCAT DU DIABLE ────────────────── */
+    async function generateDevilsAdvocate() {
+      const btn = document.getElementById('devilBtn');
+      if (btn) { btn.disabled = true; btn.textContent = '⏳ Analyse en cours…'; }
+
+      const el = document.getElementById('devilResult');
+      if (!el) return;
+
+      const scores = S.options.map((_, i) => calcScore(i));
+      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
+      const winner = ranked[0];
+      const loser = ranked[ranked.length - 1];
+
+      const loserDetails = S.criteria.map(c => {
+        const v = S.scores[c.id]?.[loser] ?? 5;
+        const eff = c.invert ? 11 - v : v;
+        return `${c.name}: ${v}/10 (effectif: ${eff})`;
+      }).join(', ');
+
+      const prompt = LANG === 'fr'
+        ? `Tu es un avocat du diable expert en prise de décision. L'utilisateur doit décider : "${S.decision}".
+Son analyse multicritères classe "${S.options[winner].name}" (${scores[winner]} pts) devant "${S.options[loser].name}" (${scores[loser]} pts).
+Critères de l'option perdante : ${loserDetails}.
+Mission : Argue en faveur de "${S.options[loser].name}" en 3-4 phrases percutantes. Mets en évidence ce que les chiffres pourraient sous-estimer. Sois direct et convaincant, sans valider le choix — juste challenger. Commence par "🔴 Contre-argument :".`
+        : `You're a devil's advocate expert in decision-making. The user must decide: "${S.decision}".
+Their analysis ranks "${S.options[winner].name}" (${scores[winner]} pts) above "${S.options[loser].name}" (${scores[loser]} pts).
+Losing option criteria: ${loserDetails}.
+Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight what numbers might underestimate. Be direct and convincing, without validating the choice — just challenge it. Start with "🔴 Counter-argument:"`;
+
+      // Loading state
+      el.innerHTML = `<div class="devil-section"><div class="devil-head"><span style="font-size:1.1rem">😈</span><span class="devil-title">Avocat du diable</span></div><div class="devil-text" style="color:var(--muted)">Génération du contre-argument…</div></div>`;
+
+      try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 400,
+            messages: [{ role: 'user', content: prompt }]
+          })
+        });
+        const data = await res.json();
+        const text = data?.content?.[0]?.text;
+        if (text) {
+          const formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, ' ');
+          el.innerHTML = `<div class="devil-section">
+            <div class="devil-head"><span style="font-size:1.1rem">😈</span><span class="devil-title">Avocat du diable — En faveur de "${esc(S.options[loser].name)}"</span></div>
+            <div class="devil-text">${formatted}</div>
+          </div>`;
+        } else throw new Error();
+      } catch(e) {
+        // Fallback local
+        const topCrit = [...S.criteria].sort((a,b) => {
+          const va = S.scores[a.id]?.[loser] ?? 5; const vb = S.scores[b.id]?.[loser] ?? 5;
+          const ea = a.invert ? 11-va : va; const eb = b.invert ? 11-vb : vb;
+          return (eb * b.weight) - (ea * a.weight);
+        })[0];
+        const fallback = LANG === 'fr'
+          ? `🔴 <strong>Contre-argument :</strong> Avez-vous vraiment donné sa chance à "${esc(S.options[loser].name)}" ?${topCrit ? ` Son score sur "${topCrit.name}" est solide (${S.scores[topCrit.id]?.[loser]}/10).` : ''} Parfois, l'option qui score moins bien sur le papier cache des avantages difficiles à quantifier. Êtes-vous certain de ne pas sous-estimer cette option par habitude ou confort ?`
+          : `🔴 <strong>Counter-argument:</strong> Have you truly given "${esc(S.options[loser].name)}" a fair chance?${topCrit ? ` Its score on "${topCrit.name}" is solid (${S.scores[topCrit.id]?.[loser]}/10).` : ''} Sometimes the lower-scoring option hides advantages hard to quantify. Are you sure you're not underestimating it out of habit?`;
+        el.innerHTML = `<div class="devil-section">
+          <div class="devil-head"><span style="font-size:1.1rem">😈</span><span class="devil-title">Avocat du diable — En faveur de "${esc(S.options[loser].name)}"</span></div>
+          <div class="devil-text">${fallback}</div>
+        </div>`;
+      }
+
+      if (btn) { btn.disabled = false; btn.textContent = '😈 Regénérer le contre-argument'; }
+    }
+
+    /* ─── INJECTION DES NOUVELLES SECTIONS DANS LES RÉSULTATS ── */
+    const _origBuildResults = buildResults;
+    window.buildResults = function() {
+      _origBuildResults();
+      // Reset framework state
+      _premortemNotes = {}; _tenTenTen = {}; _regretAnswers = {};
+      // Insert new sections after the notes / before actions
+      const scores = S.options.map((_, i) => calcScore(i));
+      const actionsEl = document.querySelector('.res-actions');
+      if (!actionsEl) return;
+
+      const extraHTML = `
+        <!-- Scénarios -->
+        <div class="res-divider"><span class="res-divider-label">🎛️ ${LANG === 'fr' ? 'Testez vos scénarios' : 'Test your scenarios'}</span></div>
+        <div class="scenario-panel" id="scenarioBox">
+          <div class="scenario-panel-head" onclick="toggleScenarioBox()">
+            <span class="scenario-panel-icon">🎛️</span>
+            <div class="scenario-panel-text">
+              <div class="scenario-panel-title">${tr('scenario_title')}</div>
+              <div class="scenario-panel-sub">${tr('scenario_sub')}</div>
+            </div>
+            <div class="scenario-panel-chevron">▾</div>
+          </div>
+          <div class="scenario-panel-body">
+            <div class="sc-tabs">
+              <button class="sc-tab active" onclick="switchScTab('crits',this)">${LANG === 'fr' ? '🎚️ Critères' : '🎚️ Criteria'}</button>
+              <button class="sc-tab" onclick="switchScTab('emotions',this)">${LANG === 'fr' ? '🫀 Émotions' : '🫀 Emotions'}</button>
+            </div>
+            <div class="sc-tab-content">
+              <div class="sc-tab-pane active" id="scPaneCrits"></div>
+              <div class="sc-tab-pane" id="scPaneEmotions"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pre-mortem -->
+        <div class="res-divider"><span class="res-divider-label">🔮 Anticiper les risques</span></div>
+        ${buildPremortemSection(scores)}
+
+        <!-- 10/10/10 -->
+        <div class="res-divider"><span class="res-divider-label">⏳ Perspectives temporelles</span></div>
+        ${buildTenTenTenSection(scores)}
+
+        <!-- Regret Minimization -->
+        ${buildRegretSection(scores)}
+
+        <!-- Devil's Advocate -->
+        <div class="res-divider"><span class="res-divider-label">🧠 Pensée critique</span></div>
+        <div style="margin-bottom:16px">
+          <button class="devil-btn" id="devilBtn" onclick="generateDevilsAdvocate()">😈 Avocat du diable — challenger mon choix</button>
+        </div>
+        <div id="devilResult"></div>
+      `;
+
+      const analysesPane = document.getElementById('resTabAnalyses');
+      if (analysesPane) analysesPane.innerHTML = extraHTML;
+
+      // Add share button to existing actions
+      const saveBtn = document.getElementById('btnSaveTrack');
+      if (saveBtn && !document.getElementById('btnShare')) {
+        const shareBtn = document.createElement('button');
+        shareBtn.id = 'btnShare';
+        shareBtn.className = 'btn btn-secondary';
+        shareBtn.textContent = '🔗 Partager';
+        shareBtn.onclick = openShareModal;
+        saveBtn.insertAdjacentElement('afterend', shareBtn);
+      }
+    };
+
+    /* ─── INIT ───────────────────────────────── */
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTemplates();
+      updateProfileBtn();
+      checkShareUrl();
+      // Check fatigue on intro page load
+      checkFatigue();
+    });
+
+    // Also detect biases on Step 1 input
+    document.addEventListener('input', (e) => {
+      if (e.target.id === 'inp-dec' || e.target.id?.startsWith('opt-name-')) {
+        detectBiases();
+      }
+    });
+
     /* ─── UTILS ─────────────────────────────── */
     function esc(s) {
       if (!s) return '';
@@ -8229,6 +9450,38 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
       });
     })();
   </script>
+
+  <!-- ══════════════════════════ MODALS ══════════════════════════ -->
+
+  <!-- Modal Profil de valeurs -->
+  <div class="modal-overlay" id="valuesModal">
+    <div class="modal-box">
+      <div class="modal-title">🧭 Votre profil de valeurs</div>
+      <div class="modal-sub">Sélectionnez vos <strong>3 valeurs fondamentales</strong> par ordre d'importance. Lucid les utilisera pour pré-pondérer vos critères automatiquement à chaque décision.</div>
+      <div id="valuesAlertBox"></div>
+      <div class="values-grid" id="valuesGrid"></div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px">
+        <button class="btn btn-secondary" style="padding:9px 18px;font-size:.85rem" onclick="closeValuesModal()">Annuler</button>
+        <button class="btn btn-primary" style="padding:9px 18px;font-size:.85rem" onclick="saveValuesProfile()">Enregistrer mon profil</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Partager décision -->
+  <div class="modal-overlay" id="shareModal">
+    <div class="modal-box">
+      <div class="modal-title">🔗 Partager cette décision</div>
+      <div class="modal-sub">Partagez ce lien pour permettre à quelqu'un de voir votre analyse ou de voter de son côté (données encodées dans l'URL, aucun serveur).</div>
+      <div class="share-url-row">
+        <input type="text" id="shareUrlInput" readonly style="font-size:.78rem;color:var(--muted)">
+        <button class="share-copy-btn" onclick="copyShareUrl()">📋 Copier</button>
+      </div>
+      <p style="font-size:.72rem;color:var(--muted2);margin-top:8px">💡 L'URL contient l'intégralité de votre analyse. Elle peut être longue.</p>
+      <div style="display:flex;justify-content:flex-end;margin-top:16px">
+        <button class="btn btn-secondary" style="padding:9px 18px;font-size:.85rem" onclick="closeShareModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ── PWA : Bannière d'installation ── -->
   <div id="pwa-install-banner" style="
