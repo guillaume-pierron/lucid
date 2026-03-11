@@ -8825,20 +8825,41 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
     }
 
     /* ─── PRÉ-MORTEM ─────────────────────────── */
-    let _premortemNotes = {};
+    // { optIdx: Set of selected risk ids }
+    let _premortemRisks = {};
+
+    const PREMORTEM_RISKS = [
+      { id: 'finance',   icon: '💸', label: 'Problème financier',          desc: 'Coûts sous-estimés, revenus décevants' },
+      { id: 'time',      icon: '⏰', label: 'Délai sous-estimé',           desc: 'Ça prend bien plus de temps que prévu' },
+      { id: 'stress',    icon: '😰', label: 'Surcharge / épuisement',      desc: 'Stress, burnout, perte d\'énergie' },
+      { id: 'relations', icon: '👥', label: 'Tensions relationnelles',     desc: 'Famille, amis, collègues impactés' },
+      { id: 'complex',   icon: '🔧', label: 'Complexité sous-estimée',     desc: 'Obstacles imprévus, dépendances cachées' },
+      { id: 'motiv',     icon: '🎯', label: 'Perte de motivation',         desc: 'L\'envie disparaît avec le temps' },
+      { id: 'extern',    icon: '🌐', label: 'Contexte externe défavorable',desc: 'Marché, économie, événements hors contrôle' },
+      { id: 'irrev',     icon: '↩️', label: 'Difficile à annuler',         desc: 'Trop engagé pour faire marche arrière' },
+      { id: 'regret',    icon: '😔', label: 'Mauvaise décision pour soi',  desc: 'Pas aligné avec vos vraies valeurs' },
+      { id: 'depend',    icon: '🤝', label: 'Dépendance à des tiers',      desc: 'Succès conditionné par d\'autres personnes' },
+    ];
 
     function buildPremortemSection(scores) {
       const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
-      const opts = ranked.map(oi => `
-        <div class="premortem-opt">
-          <div class="premortem-opt-label" style="color:${resultColors[oi].hex}">
-            ${S.options[oi].name}
-          </div>
-          <textarea rows="2" placeholder="Dans 1 an, j'ai choisi cette option et ça s'est mal passé. Pourquoi ? Qu'est-ce qui a failli ?"
-            oninput="_premortemNotes[${oi}]=this.value"
-            style="width:100%;border-radius:var(--r-sm);border:1.5px solid rgba(220,38,38,.2);padding:10px 12px;background:var(--white);font-size:.85rem;line-height:1.5;resize:none;font-family:inherit"
-          >${esc(_premortemNotes[oi] || '')}</textarea>
-        </div>`).join('');
+      // Init sets if needed
+      ranked.forEach(oi => { if (!_premortemRisks[oi]) _premortemRisks[oi] = new Set(); });
+
+      const optsHTML = ranked.map(oi => {
+        const c = resultColors[oi];
+        const riskChips = PREMORTEM_RISKS.map(r => {
+          const sel = _premortemRisks[oi]?.has(r.id);
+          return `<button class="pm-chip${sel ? ' pm-chip-on' : ''}" onclick="togglePmRisk(${oi},'${r.id}')" title="${r.desc}">
+            ${r.icon} ${r.label}
+          </button>`;
+        }).join('');
+        return `
+          <div class="premortem-opt">
+            <div class="premortem-opt-label" style="color:${c.hex}">${esc(S.options[oi].name)}</div>
+            <div class="pm-chips">${riskChips}</div>
+          </div>`;
+      }).join('');
 
       return `
         <div class="premortem-section" id="premortemSection">
@@ -8846,43 +8867,108 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
             <span style="font-size:1.1rem">💀</span>
             <div style="flex:1">
               <div style="font-size:.88rem;font-weight:700;color:#dc2626">Pré-mortem : et si ça échouait ?</div>
-              <div style="font-size:.72rem;color:var(--muted);margin-top:1px">Imaginez le pire pour chaque option — révèle les risques cachés</div>
+              <div style="font-size:.72rem;color:var(--muted);margin-top:1px">Sélectionnez les risques que vous percevez pour chaque option</div>
             </div>
             <div class="coll-chevron">▾</div>
           </div>
           <div class="premortem-body">
             <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6">
-              Pour chaque option, imaginez que vous l'avez choisie et que dans 1 an, elle a échoué. <strong>Qu'est-ce qui s'est passé ?</strong> Notez les risques qui vous viennent naturellement.
+              Imaginez que dans 1 an, chaque option a échoué. <strong>Quels risques auraient pu causer cet échec ?</strong> Cochez tout ce qui vous semble plausible pour chaque option.
             </p>
-            ${opts}
-            <button class="btn btn-secondary" style="font-size:.8rem;padding:8px 16px;margin-top:8px" onclick="analyzePremortem()">
-              🔍 Analyser les risques mentionnés
-            </button>
-            <div id="premortemResult" style="margin-top:12px"></div>
+            ${optsHTML}
+            <div id="premortemResult" style="margin-top:14px"></div>
           </div>
         </div>`;
     }
 
-    function analyzePremortem() {
+    function togglePmRisk(oi, riskId) {
+      if (!_premortemRisks[oi]) _premortemRisks[oi] = new Set();
+      if (_premortemRisks[oi].has(riskId)) _premortemRisks[oi].delete(riskId);
+      else _premortemRisks[oi].add(riskId);
+      // Update chip visual
+      const section = document.getElementById('premortemSection');
+      if (!section) return;
+      const allChips = section.querySelectorAll('.pm-chip');
+      // Re-render just the chips states
+      const scores = S.options.map((_, i) => calcScore(i));
+      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
+      ranked.forEach((optIdx, rowIdx) => {
+        const optChips = section.querySelectorAll(`.premortem-opt:nth-child(${rowIdx + 1}) .pm-chip`);
+        PREMORTEM_RISKS.forEach((r, ri) => {
+          if (optChips[ri]) optChips[ri].classList.toggle('pm-chip-on', _premortemRisks[optIdx]?.has(r.id));
+        });
+      });
+      renderPremortemResult();
+    }
+
+    function renderPremortemResult() {
       const el = document.getElementById('premortemResult');
       if (!el) return;
-      const allNotes = Object.entries(_premortemNotes).filter(([,v]) => v.trim());
-      if (!allNotes.length) {
-        el.innerHTML = `<div class="premortem-insight">✏️ Remplissez au moins un pré-mortem pour obtenir l'analyse.</div>`;
-        return;
-      }
-      // Find common risk keywords
-      const riskWords = {};
-      allNotes.forEach(([oi, txt]) => {
-        const words = txt.toLowerCase().match(/\b\w{4,}\b/g) || [];
-        words.forEach(w => { if (!['cette', 'avec', 'dans', 'pour', 'mais', 'donc', 'bien', 'plus', 'tout', 'être', 'avoir'].includes(w)) riskWords[w] = (riskWords[w] || 0) + 1; });
-      });
-      const topRisks = Object.entries(riskWords).sort((a,b) => b[1]-a[1]).slice(0, 5).map(([w]) => w);
+      const scores = S.options.map((_, i) => calcScore(i));
+      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
 
-      el.innerHTML = `<div class="premortem-insight">
-        <strong>🎯 Risques identifiés :</strong> ${topRisks.map(r => `<span style="background:rgba(220,38,38,.1);color:#dc2626;padding:1px 7px;border-radius:10px;font-size:.78rem;font-weight:600">${r}</span>`).join(' ')}
-        <br><br>Ces éléments sont vos principales sources d'inquiétude. Pensez à créer un critère dédié à ce risque si ce n'est pas encore fait.
-      </div>`;
+      const totalsByOpt = ranked.map(oi => ({ oi, count: (_premortemRisks[oi]?.size || 0) }));
+      const anySelected = totalsByOpt.some(t => t.count > 0);
+      if (!anySelected) return;
+
+      // Risks shared by ALL options (systemic)
+      const allRiskIds = PREMORTEM_RISKS.map(r => r.id);
+      const sharedRisks = allRiskIds.filter(id => ranked.every(oi => _premortemRisks[oi]?.has(id)));
+      // Risks unique to each option
+      const uniqueRisks = {};
+      ranked.forEach(oi => {
+        uniqueRisks[oi] = [...(_premortemRisks[oi] || [])].filter(id => !ranked.filter(o => o !== oi).every(o => _premortemRisks[o]?.has(id)));
+      });
+
+      const winner = ranked[0];
+      const winnerCount = _premortemRisks[winner]?.size || 0;
+      const maxRisk = ranked.reduce((a, b) => (_premortemRisks[b]?.size || 0) > (_premortemRisks[a]?.size || 0) ? b : a, ranked[0]);
+
+      // Risk summary per option
+      const summaryRows = ranked.map(oi => {
+        const c = resultColors[oi];
+        const count = _premortemRisks[oi]?.size || 0;
+        const width = count > 0 ? Math.round((count / PREMORTEM_RISKS.length) * 100) : 0;
+        const riskLevel = count === 0 ? 'Aucun risque identifié' : count <= 2 ? 'Risque faible' : count <= 5 ? 'Risque modéré' : 'Risque élevé';
+        const riskColor = count === 0 ? 'var(--teal)' : count <= 2 ? 'var(--teal)' : count <= 5 ? 'var(--amber)' : '#dc2626';
+        return `<div class="robustness-bar-row">
+          <span class="robustness-opt-name" style="color:${c.hex}">${esc(S.options[oi].name)}</span>
+          <div class="robustness-bar-wrap">
+            <div class="robustness-bar-fill" style="width:${width}%;background:${riskColor}"></div>
+          </div>
+          <span style="font-size:.75rem;font-weight:700;color:${riskColor};min-width:60px;text-align:right">${count} risque${count > 1 ? 's' : ''}</span>
+        </div>`;
+      }).join('');
+
+      // Insight
+      let insight = '';
+      const winnerIsRiskiest = maxRisk === winner;
+      const allSameRisk = ranked.every(oi => (_premortemRisks[oi]?.size || 0) === winnerCount);
+
+      if (sharedRisks.length > 0) {
+        const sharedNames = sharedRisks.map(id => PREMORTEM_RISKS.find(r => r.id === id)?.label).filter(Boolean).join(', ');
+        insight += `<div style="margin-bottom:8px">⚠️ <strong>Risques communs à toutes les options :</strong> ${sharedNames} — ces risques sont indépendants de votre choix.</div>`;
+      }
+      if (!allSameRisk) {
+        if (winnerIsRiskiest) {
+          const diff = (_premortemRisks[winner]?.size || 0) - (_premortemRisks[ranked[1]]?.size || 0);
+          insight += `💡 <strong>Attention :</strong> Votre option gagnante présente <strong>${diff} risque${diff > 1 ? 's' : ''} de plus</strong> que la suivante. Vérifiez que ces risques sont bien pris en compte dans votre scoring.`;
+        } else {
+          const safest = ranked.reduce((a, b) => (_premortemRisks[b]?.size || 0) < (_premortemRisks[a]?.size || 0) ? b : a, ranked[0]);
+          if (safest === winner) {
+            insight += `✅ <strong>Cohérence :</strong> Votre option gagnante est aussi la moins risquée selon ce pré-mortem. Double signal positif.`;
+          } else {
+            const diff = (_premortemRisks[safest]?.size || 0) - (_premortemRisks[winner]?.size || 0);
+            insight += `💡 <strong>À noter :</strong> "${esc(S.options[safest].name)}" présente <strong>${Math.abs(diff)} risque${Math.abs(diff) > 1 ? 's' : ''} de moins</strong>. Si votre option principale ne s'impose pas franchement, c'est un critère de sécurité à considérer.`;
+          }
+        }
+      } else if (anySelected) {
+        insight += `📊 Les options présentent un profil de risque similaire — le choix ne se joue pas sur la dimension risque.`;
+      }
+
+      el.innerHTML = `
+        <div style="margin-bottom:12px">${summaryRows}</div>
+        ${insight ? `<div class="premortem-insight">${insight}</div>` : ''}`;
     }
 
     /* ─── FRAMEWORK 10/10/10 ─────────────────── */
