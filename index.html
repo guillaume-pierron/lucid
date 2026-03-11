@@ -5251,13 +5251,7 @@
     .profile-btn:hover { border-color: var(--teal); color: var(--teal); }
     .profile-btn.has-profile { border-color: var(--teal); background: var(--teal-bg); color: var(--teal); }
 
-    /* ── BLIND SCORING ────────────────────── */
-    .blind-toggle-bar {
-      display: flex; align-items: center; gap: 10px;
-      padding: 8px 14px; background: var(--amber-bg);
-      border-bottom: 1px solid rgba(217,119,6,.2);
-    }
-    .blind-lbl { font-size: .78rem; font-weight: 600; color: var(--amber); flex: 1; }
+
 
     /* ── PRE-MORTEM ───────────────────────── */
     .premortem-section {
@@ -5737,15 +5731,6 @@
           <div class="page-sub" data-i18n="s3_sub">Pour chaque critère, donnez une note de <strong>1</strong> (très
             faible) à <strong>10</strong> (excellent) à chaque option. Le score global se met à jour en direct.</div>
 
-          <!-- Blind scoring toggle -->
-          <div class="blind-toggle-bar" id="blindToggleBar" style="border-radius:var(--r-sm);margin-bottom:12px">
-            <span class="blind-lbl">🙈 Mode aveugle — notez sans voir les noms pour éliminer les biais</span>
-            <label class="mini-toggle">
-              <input type="checkbox" id="blindModeChk" onchange="toggleBlindMode(this.checked)">
-              <div class="mini-toggle-track"></div>
-              <div class="mini-toggle-thumb"></div>
-            </label>
-          </div>
 
           <div class="eval-grid" id="evalGrid"></div>
           <div class="notes-row" id="notesRow"></div>
@@ -8722,20 +8707,6 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
       });
     }
 
-    /* ─── BLIND SCORING ──────────────────────── */
-    let _blindMode = false;
-
-    function toggleBlindMode(on) {
-      _blindMode = on;
-      document.querySelectorAll('.eval-col-name').forEach((el, i) => {
-        if (on) {
-          el._originalHTML = el._originalHTML || el.innerHTML;
-          el.innerHTML = `<span class="opt-badge" style="color:${activeColors()[0].hex}">Option ${LETTERS[i]}</span> <span style="color:var(--muted2);font-style:italic;font-size:.82rem">— nom masqué</span>`;
-        } else if (el._originalHTML) {
-          el.innerHTML = el._originalHTML;
-        }
-      });
-    }
 
     /* ─── DÉTECTION DE FATIGUE DÉCISIONNELLE ── */
     function checkFatigue() {
