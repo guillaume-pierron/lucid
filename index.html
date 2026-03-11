@@ -5387,9 +5387,9 @@
       border-left: 3px solid var(--teal); border-radius: 0 var(--r-sm) var(--r-sm) 0;
     }
     .fw-opts { display: flex; flex-direction: column; gap: 10px; }
-    .fw-opt-row { display: flex; align-items: center; gap: 10px; }
-    .fw-opt-label { font-size: .8rem; font-weight: 600; color: var(--ink2); min-width: 90px; flex-shrink: 0; }
-    .fw-smiley-row { display: flex; gap: 6px; }
+    .fw-opt-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .fw-opt-label { font-size: .8rem; font-weight: 600; color: var(--ink2); min-width: 90px; flex: 1 1 90px; word-break: break-word; }
+    .fw-smiley-row { display: flex; gap: 6px; flex-shrink: 0; }
     .fw-smiley {
       font-size: 1.5rem; cursor: pointer; opacity: .35; transition: all .15s;
       border: none; background: none; padding: 2px; border-radius: 4px;
