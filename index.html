@@ -7391,7 +7391,7 @@
       <div class="bk-table">${bkHeader}${bkRows}</div>
 
       <div style="display:flex;justify-content:center;margin:20px 0 8px;">
-        <button class="btn btn-secondary" onclick="(function(){const b=document.querySelector('.res-main-tab:nth-child(2)');if(b)switchResTab('Analyses',b);setTimeout(function(){window.scrollTo({top:0,behavior:'smooth'});},0);})()">
+        <button class="btn btn-secondary" onclick="(function(){const b=document.querySelector('.res-main-tab:nth-child(2)');if(b)switchResTab('Analyses',b);setTimeout(function(){const el=document.getElementById('scenarioBox');if(el)el.scrollIntoView({behavior:'smooth'});},0);})()">
           🔬 ${LANG === 'fr' ? 'Approfondir l\'analyse' : 'Deep analysis'} →
         </button>
       </div>
