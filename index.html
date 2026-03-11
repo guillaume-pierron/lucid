@@ -5294,12 +5294,14 @@
       box-shadow: 0 1px 3px rgba(0,0,0,.06);
       line-height: 1;
     }
-    .pm-chip:hover {
-      border-color: rgba(220,38,38,.5);
-      background: rgba(220,38,38,.06);
-      color: var(--red);
-      transform: translateY(-1px);
-      box-shadow: 0 3px 8px rgba(220,38,38,.12);
+    @media (hover: hover) {
+      .pm-chip:hover {
+        border-color: rgba(220,38,38,.5);
+        background: rgba(220,38,38,.06);
+        color: var(--red);
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(220,38,38,.12);
+      }
     }
     .pm-chip.pm-chip-on,
     .pm-chip.pm-chip-on:hover {
@@ -8981,7 +8983,7 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
 
       const totalsByOpt = ranked.map(oi => ({ oi, count: (_premortemRisks[oi]?.size || 0) }));
       const anySelected = totalsByOpt.some(t => t.count > 0);
-      if (!anySelected) return;
+      if (!anySelected) { el.innerHTML = ''; return; }
 
       // Risks shared by ALL options (systemic)
       const allRiskIds = PREMORTEM_RISKS.map(r => r.id);
