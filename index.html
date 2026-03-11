@@ -8571,10 +8571,20 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
     }
 
     function applyTemplate(idx) {
+      const decInp = document.getElementById('inp-dec');
+      // Toggle off if already selected
+      if (_activeTemplate === idx) {
+        _activeTemplate = null;
+        if (decInp) decInp.value = '';
+        S.options = [{ name: '', desc: '' }, { name: '', desc: '' }];
+        renderOptBuilder();
+        S.criteria = [];
+        renderTemplates();
+        return;
+      }
       const t = DECISION_TEMPLATES[idx];
       _activeTemplate = idx;
       // Fill decision textarea
-      const decInp = document.getElementById('inp-dec');
       if (decInp) decInp.value = t.question;
       // Fill options with template suggestions
       S.options = t.suggestOptions.map(name => ({ name, desc: '' }));
