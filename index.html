@@ -5272,8 +5272,41 @@
     .premortem-head:hover { background: rgba(220,38,38,.1); }
     .premortem-body { display: none; border-top: 1px solid rgba(220,38,38,.12); padding: 16px 20px; }
     .premortem-section.open .premortem-body { display: block; }
-    .premortem-opt { margin-bottom: 14px; }
-    .premortem-opt-label { font-size: .82rem; font-weight: 700; color: var(--ink2); margin-bottom: 6px; }
+    .premortem-opt { margin-bottom: 18px; }
+    .premortem-opt-label {
+      font-size: .78rem; font-weight: 700; color: var(--muted); text-transform: uppercase;
+      letter-spacing: .06em; margin-bottom: 10px;
+    }
+    .pm-chips {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .pm-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 12px; border-radius: 999px;
+      border: 1.5px solid var(--border2);
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: var(--ink2); font-size: .78rem; font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer; transition: all .16s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+      line-height: 1;
+    }
+    .pm-chip:hover {
+      border-color: rgba(220,38,38,.5);
+      background: rgba(220,38,38,.06);
+      color: var(--red);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(220,38,38,.12);
+    }
+    .pm-chip.pm-chip-on {
+      border-color: var(--red);
+      background: var(--red-bg);
+      color: var(--red);
+      box-shadow: 0 2px 8px rgba(220,38,38,.2);
+    }
+    .pm-chip .pm-icon { font-size: .9rem; line-height: 1; }
     .premortem-insight {
       margin-top: 12px; padding: 12px 14px;
       background: rgba(220,38,38,.06); border: 1px solid rgba(220,38,38,.15);
@@ -8850,13 +8883,11 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         const c = resultColors[oi];
         const riskChips = PREMORTEM_RISKS.map(r => {
           const sel = _premortemRisks[oi]?.has(r.id);
-          return `<button class="pm-chip${sel ? ' pm-chip-on' : ''}" onclick="togglePmRisk(${oi},'${r.id}')" title="${r.desc}">
-            ${r.icon} ${r.label}
-          </button>`;
+          return `<button class="pm-chip${sel ? ' pm-chip-on' : ''}" onclick="togglePmRisk(${oi},'${r.id}')" title="${r.desc}"><span class="pm-icon">${r.icon}</span>${r.label}</button>`;
         }).join('');
         return `
           <div class="premortem-opt">
-            <div class="premortem-opt-label" style="color:${c.hex}">${esc(S.options[oi].name)}</div>
+            <div class="premortem-opt-label"><span style="color:${c.hex};font-size:.88rem;font-weight:800">${esc(S.options[oi].name)}</span></div>
             <div class="pm-chips">${riskChips}</div>
           </div>`;
       }).join('');
