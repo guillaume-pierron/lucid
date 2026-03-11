@@ -8572,8 +8572,11 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
     let _activeTemplate = null;
 
     function renderTemplates() {
+      const section = document.getElementById('templatesSection');
       const grid = document.getElementById('templatesGrid');
-      if (!grid) return;
+      if (!grid || !section) return;
+      section.style.display = S._expressMode ? '' : 'none';
+      if (!S._expressMode) return;
       grid.innerHTML = DECISION_TEMPLATES.map((t, i) => `
         <button class="template-chip${_activeTemplate === i ? ' active' : ''}" onclick="applyTemplate(${i})">
           ${t.icon} ${t.label}
@@ -8806,6 +8809,7 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
       document.getElementById('inp-dec').value = '';
       renderOptBuilder();
       renderStepProgress(1);
+      renderTemplates();
       // Show special note
       const sub = document.querySelector('#page-step1 .page-sub');
       if (sub) sub.innerHTML = '<strong>⚡ Mode express :</strong> Saisissez votre question et 2 options. Lucid sélectionnera automatiquement les 3 critères clés.';
