@@ -7438,7 +7438,7 @@
       <div class="res-actions">
         <button class="btn btn-secondary" onclick="nav('page-step3')">${tr('back_notes')}</button>
         <button class="btn btn-secondary" id="btnSaveTrack" onclick="saveAndTrack()">${tr('save_track')}</button>
-        <button class="btn btn-secondary" onclick="window.print()">${tr('export_pdf')}</button>
+
         <button class="btn btn-primary" onclick="restart()">${tr('new_decision')}</button>
       </div>
     </div>`;
@@ -9382,11 +9382,6 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       if (!actionsEl) return;
 
       const extraHTML = `
-        <!-- Share button -->
-        <div style="margin:0 0 24px">
-          <button class="devil-btn" onclick="openShareModal()" style="background:rgba(14,116,144,.07);border-color:rgba(14,116,144,.3);color:var(--teal)">🔗 Partager cette analyse</button>
-        </div>
-
         <!-- Devil's Advocate -->
         <div class="res-divider"><span class="res-divider-label">🧠 Pensée critique</span></div>
         <div style="margin-bottom:16px">
