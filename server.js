@@ -58,8 +58,9 @@ function syncAll(session) {
 }
 
 /* ── WebSocket server ── */
-const server = app.listen(process.env.PORT || 3000, () => {
-  console.log(`Lucid server → http://localhost:${process.env.PORT || 3000}`);
+const PORT = process.env.PORT || 3000;
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Lucid server → http://0.0.0.0:${PORT}`);
 });
 const wss = new WebSocketServer({ server });
 
