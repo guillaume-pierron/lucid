@@ -5413,6 +5413,67 @@
       font-size: .82rem; color: var(--ink2); line-height: 1.6;
     }
 
+    /* ── MODE COLLABORATIF ────────────────── */
+    .collab-modal-tabs { display: flex; gap: 0; margin: -4px -4px 20px; border-bottom: 1.5px solid var(--border); }
+    .collab-modal-tab {
+      flex: 1; padding: 12px 8px; border: none; background: none; cursor: pointer;
+      font-family: 'Inter', sans-serif; font-size: .82rem; font-weight: 600;
+      color: var(--muted); border-bottom: 2.5px solid transparent; margin-bottom: -1.5px;
+      transition: all .15s;
+    }
+    .collab-modal-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+    .collab-modal-pane { display: none; }
+    .collab-modal-pane.active { display: block; }
+    .collab-merge-area {
+      width: 100%; min-height: 80px; padding: 12px 14px; box-sizing: border-box;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      background: var(--white); font-family: monospace; font-size: .73rem;
+      color: var(--ink); resize: vertical; margin-bottom: 12px;
+    }
+    .collab-merge-area:focus { outline: none; border-color: var(--teal); }
+    .collab-opt-card {
+      background: var(--glass-bg); border: 1.5px solid var(--border);
+      border-radius: var(--r-sm); padding: 14px 16px; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .collab-opt-rank { font-size: .72rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+    .collab-opt-name { font-size: .88rem; font-weight: 700; color: var(--ink); flex: 1; min-width: 0; word-break: break-word; }
+    .collab-opt-avg { text-align: center; flex-shrink: 0; }
+    .collab-avg-num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
+    .collab-score-bar { height: 5px; border-radius: 3px; background: var(--border); margin-top: 6px; overflow: hidden; }
+    .collab-score-bar-fill { height: 100%; border-radius: 3px; transition: width .5s ease; }
+    .collab-disagreement { font-size: .7rem; color: var(--amber); margin-top: 4px; }
+    .collab-participant-table { width: 100%; border-collapse: collapse; font-size: .77rem; margin-top: 8px; }
+    .collab-participant-table th { padding: 5px 8px; text-align: left; font-weight: 700; color: var(--muted); border-bottom: 1.5px solid var(--border); font-size: .7rem; }
+    .collab-participant-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); color: var(--ink); }
+    .collab-participant-table tr:last-child td { border-bottom: none; }
+    .collab-consensus-banner {
+      background: var(--teal-bg); border: 1.5px solid var(--teal); border-radius: var(--r-sm);
+      padding: 14px 16px; margin-bottom: 16px; text-align: center;
+    }
+    /* Page vote */
+    #page-vote .eval-col-head { cursor: default; }
+    .vote-decision-title {
+      font-size: .95rem; color: var(--teal); font-weight: 700; margin-bottom: 20px;
+      padding: 10px 14px; background: var(--teal-bg); border-radius: var(--r-sm);
+      border-left: 3px solid var(--teal); line-height: 1.4;
+    }
+    .vote-collab-tag {
+      font-size: .72rem; color: var(--teal); font-weight: 700; background: var(--teal-bg);
+      padding: 3px 10px; border-radius: 20px; border: 1px solid var(--teal); white-space: nowrap;
+    }
+    .vote-code-box {
+      background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--r-sm);
+      padding: 12px 14px; font-size: .68rem; font-family: monospace; color: var(--muted);
+      word-break: break-all; margin: 12px 0; line-height: 1.5; max-height: 80px; overflow-y: auto;
+    }
+    .vote-name-input {
+      width: 100%; padding: 12px 14px; border-radius: 10px; box-sizing: border-box;
+      border: 1.5px solid var(--border); background: var(--white);
+      font-family: 'Inter', sans-serif; font-size: .9rem; color: var(--ink);
+    }
+    .vote-name-input:focus { outline: none; border-color: var(--teal); }
+
     /* ── ROBUSTNESS ANALYSIS ──────────────── */
     .robustness-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
     .robustness-opt-name { font-size: .82rem; font-weight: 600; color: var(--ink2); min-width: 100px; flex-shrink: 0; }
@@ -5737,7 +5798,43 @@
       </div><!-- /page-scroll -->
     </div>
 
-    <!-- ══════════════════════════ HISTORY ══════════════════════════ -->
+    <!-- ══════════════════════════ PAGE VOTE (mode collaboratif) ══════════════════════════ -->
+  <div class="page" id="page-vote">
+    <div class="app-header">
+      <div class="logo">
+        <div class="logo-dot"></div>Lucid
+      </div>
+      <div class="vote-collab-tag">👥 Vote collectif</div>
+    </div>
+    <div class="page-scroll">
+      <div class="main">
+        <div class="page-eyebrow">Mode collaboratif</div>
+        <div class="page-title">Votez pour chaque option</div>
+        <div class="vote-decision-title" id="voteDecisionTitle"></div>
+        <div class="page-sub" style="margin-bottom:20px">Notez chaque option selon les critères. Vos scores seront combinés avec ceux des autres participants.</div>
+
+        <div style="margin-bottom:24px">
+          <label style="font-size:.82rem;font-weight:600;color:var(--ink);display:block;margin-bottom:8px">Votre prénom / identifiant</label>
+          <input type="text" id="voteParticipantName" class="vote-name-input" placeholder="Ex: Marie, Équipe RH…">
+        </div>
+
+        <div class="eval-grid" id="voteEvalGrid"></div>
+
+        <div class="btn-row" style="margin-top:24px">
+          <button class="btn btn-primary" onclick="generateVoteCode()">✅ Générer mon code de vote</button>
+        </div>
+
+        <div id="voteCodeResult" style="display:none;margin-top:20px;padding:16px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r)">
+          <div style="font-size:.85rem;font-weight:700;color:var(--ink);margin-bottom:6px">📋 Votre code de vote</div>
+          <div class="vote-code-box" id="voteCodeDisplay"></div>
+          <button class="btn btn-secondary" style="width:100%" onclick="copyVoteCode()">📋 Copier mon code de vote</button>
+          <p style="font-size:.73rem;color:var(--muted);margin-top:10px;text-align:center;line-height:1.5">Envoyez ce code à la personne qui a créé la décision pour qu'elle fusionne tous les votes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════ HISTORY ══════════════════════════ -->
     <div class="page" id="page-history">
       <div class="app-header">
         <div class="logo">
@@ -8857,6 +8954,267 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
       } catch(e) { /* invalid share link */ }
     }
 
+    /* ─── MODE COLLABORATIF ──────────────────── */
+    let _myVoteCode = null; // code de vote généré par le participant
+
+    /** Ouvre la modale collab et génère le lien d'invitation */
+    function openCollabModal() {
+      const template = {
+        decision: S.decision,
+        options: S.options,
+        criteria: S.criteria,
+        weightingMethod: S.weightingMethod
+        // pas de scores — chaque participant note de son côté
+      };
+      try {
+        const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(template))));
+        const url = window.location.origin + window.location.pathname + '#collab=' + encoded;
+        const input = document.getElementById('collabLinkInput');
+        if (input) input.value = url;
+      } catch(e) {}
+      document.getElementById('collabVoteCodes').value = '';
+      document.getElementById('collabMergeResults').innerHTML = '';
+      switchCollabTab('invite');
+      document.getElementById('collabModal').classList.add('open');
+    }
+
+    function closeCollabModal() {
+      document.getElementById('collabModal').classList.remove('open');
+    }
+
+    function switchCollabTab(tab) {
+      document.querySelectorAll('.collab-modal-tab').forEach((t, i) => {
+        t.classList.toggle('active', (tab === 'invite' && i === 0) || (tab === 'merge' && i === 1));
+      });
+      document.getElementById('collabPaneInvite').classList.toggle('active', tab === 'invite');
+      document.getElementById('collabPaneMerge').classList.toggle('active', tab === 'merge');
+    }
+
+    function copyCollabLink() {
+      const input = document.getElementById('collabLinkInput');
+      if (!input) return;
+      input.select();
+      navigator.clipboard ? navigator.clipboard.writeText(input.value).then(() => {
+        const btn = input.nextElementSibling;
+        if (btn) { const orig = btn.textContent; btn.textContent = '✅ Copié !'; setTimeout(() => btn.textContent = orig, 2000); }
+      }) : document.execCommand('copy');
+    }
+
+    /** Détecte #collab= dans l'URL et lance le mode vote participant */
+    function checkCollabUrl() {
+      const hash = window.location.hash;
+      if (!hash.startsWith('#collab=')) return;
+      try {
+        const encoded = hash.slice(8);
+        const template = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+        if (!template.decision || !template.options || !template.criteria) return;
+        enterVoteMode(template);
+        window.history.replaceState(null, '', window.location.pathname);
+      } catch(e) { /* lien invalide */ }
+    }
+
+    /** Charge le template dans S et affiche la page de vote */
+    function enterVoteMode(template) {
+      S.decision = template.decision;
+      S.options = template.options;
+      S.criteria = template.criteria;
+      S.weightingMethod = template.weightingMethod || 'simple';
+      S.scores = {};
+      S.criteria.forEach(cr => { S.scores[cr.id] = S.options.map(() => 5); });
+
+      document.getElementById('voteDecisionTitle').textContent = '🎯 ' + template.decision;
+      buildVotePage();
+      document.getElementById('voteCodeResult').style.display = 'none';
+      nav('page-vote');
+    }
+
+    /** Construit la grille de notation dans page-vote (reprend le même rendu que buildEvalPage) */
+    function buildVotePage() {
+      const nOpts = S.options.length;
+      const grid = document.getElementById('voteEvalGrid');
+      grid.style.gridTemplateColumns = `repeat(${Math.min(nOpts, 2)},1fr)`;
+      grid.innerHTML = '';
+      const colors = activeColors();
+
+      S.options.forEach((opt, oi) => {
+        const col = document.createElement('div');
+        col.className = 'eval-col';
+        const c = colors[oi % colors.length];
+
+        const items = S.criteria.map(cr => {
+          const v = S.scores[cr.id]?.[oi] ?? 5;
+          const inv = cr.invert ? `<span class="inv-tag" title="Score élevé = mauvais">↓</span>` : '';
+          const pips = `
+            <div class="fluid-bar" onpointerdown="startFluidDrag(event,${oi},'${cr.id}')" role="slider"
+                 aria-valuemin="1" aria-valuemax="10" aria-valuenow="${v}" tabindex="0">
+              <div class="fluid-bar-fill" id="pip-${oi}-${cr.id}-fill"></div>
+              <div class="fluid-thumb" id="pip-${oi}-${cr.id}-thumb" aria-hidden="true"></div>
+            </div>`;
+          return `
+          <div class="sl-item">
+            <div class="sl-head">
+              <div class="sl-label"><span class="crit-name-badge">${cr.icon} ${cr.name}</span></div>
+              ${inv}
+            </div>
+            <div class="stepper">
+              <button class="stepper-btn" onclick="stepVal(${oi},'${cr.id}',-1)" aria-label="−">−</button>
+              <div class="stepper-track">
+                <div class="fluid-track">
+                  ${pips}
+                  <div class="stepper-emoji" id="se-${oi}-${cr.id}">${scoreEmoji(v, cr.invert ?? false)}</div>
+                </div>
+                <div class="stepper-val" id="sv-${oi}-${cr.id}">${v}</div>
+              </div>
+              <button class="stepper-btn" onclick="stepVal(${oi},'${cr.id}',+1)" aria-label="+">+</button>
+            </div>
+          </div>`;
+        }).join('');
+
+        col.innerHTML = `
+        <div class="eval-col-head" style="background:${c.bg};border-color:${c.border}">
+          <div class="eval-col-name" style="color:${c.hex}"><span class="opt-badge">Option ${LETTERS[oi]}</span> ${esc(opt.name)}</div>
+          <div class="eval-live-score" style="border:1px solid ${c.border}">
+            <div class="eval-live-num" id="live-${oi}" style="color:${c.hex}">—</div>
+            <div class="eval-live-label" style="color:${c.hex}">/ 100</div>
+          </div>
+        </div>
+        <div class="eval-col-body" id="eval-col-body-${oi}" style="border-color:${c.border}">${items}</div>`;
+
+        grid.appendChild(col);
+        S.criteria.forEach(cr => renderStepper(oi, cr.id, S.scores[cr.id]?.[oi] ?? 5, cr.invert ?? false));
+        refreshLive(oi);
+      });
+    }
+
+    /** Génère un code de vote compact (base64) depuis les scores actuels */
+    function generateVoteCode() {
+      const nameInput = document.getElementById('voteParticipantName');
+      const name = (nameInput?.value || '').trim() || 'Anonyme';
+      try {
+        const voteData = { n: name, s: S.scores };
+        const code = btoa(unescape(encodeURIComponent(JSON.stringify(voteData))));
+        _myVoteCode = code;
+        document.getElementById('voteCodeDisplay').textContent = code;
+        const resultDiv = document.getElementById('voteCodeResult');
+        resultDiv.style.display = 'block';
+        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } catch(e) { alert('Erreur lors de la génération du code.'); }
+    }
+
+    function copyVoteCode() {
+      const code = document.getElementById('voteCodeDisplay').textContent;
+      if (!code) return;
+      const btn = event.currentTarget;
+      navigator.clipboard ? navigator.clipboard.writeText(code).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = '✅ Code copié !';
+        setTimeout(() => btn.textContent = orig, 2000);
+      }) : document.execCommand('copy');
+    }
+
+    /** Ajoute le vote de l'hôte dans la zone de fusion */
+    function addMyVoteToMerge() {
+      const voteData = { n: 'Moi (hôte)', s: S.scores };
+      try {
+        const code = btoa(unescape(encodeURIComponent(JSON.stringify(voteData))));
+        const area = document.getElementById('collabVoteCodes');
+        if (!area) return;
+        const existing = area.value.trim();
+        area.value = (existing ? existing + '\n' : '') + code;
+      } catch(e) {}
+    }
+
+    function _parseVoteCode(code) {
+      try { return JSON.parse(decodeURIComponent(escape(atob(code.trim())))); } catch(e) { return null; }
+    }
+
+    /** Calcule le score d'une option à partir d'un objet scores arbitraire */
+    function calcScoreFromScores(optionIndex, scores) {
+      let total = 0, max = 0;
+      S.criteria.forEach(c => {
+        let value = scores[c.id]?.[optionIndex] ?? 5;
+        if (c.invert) value = 11 - value;
+        total += value * c.weight;
+        max += 10 * c.weight;
+      });
+      return max === 0 ? 0 : Math.round((total / max) * 100);
+    }
+
+    /** Fusionne les codes de vote collés et affiche les résultats groupés */
+    function mergeCollabVotes() {
+      const area = document.getElementById('collabVoteCodes');
+      const lines = (area?.value || '').split('\n').map(l => l.trim()).filter(Boolean);
+      const votes = lines.map(_parseVoteCode).filter(Boolean);
+
+      const resultsEl = document.getElementById('collabMergeResults');
+      if (votes.length === 0) {
+        resultsEl.innerHTML = '<p style="color:var(--red);font-size:.82rem">Aucun code de vote valide détecté.</p>';
+        return;
+      }
+
+      // Moyenne des scores par critère × option
+      const avgScores = {};
+      S.criteria.forEach(cr => {
+        avgScores[cr.id] = S.options.map((_, oi) => {
+          const vals = votes.map(v => {
+            const raw = v.s?.[cr.id]?.[oi];
+            return (raw !== undefined && raw !== null) ? Number(raw) : 5;
+          });
+          return Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 10) / 10;
+        });
+      });
+
+      const avgFinal = S.options.map((_, oi) => calcScoreFromScores(oi, avgScores));
+      const ranked = [...S.options.map((_, oi) => oi)].sort((a, b) => avgFinal[b] - avgFinal[a]);
+      const colors = activeColors();
+      const rankEmojis = ['🥇', '🥈', '🥉'];
+
+      const optCardsHTML = ranked.map((oi, rank) => {
+        const c = colors[rank] || colors[colors.length - 1];
+        const score = avgFinal[oi];
+        const partScores = votes.map(v => ({
+          name: v.n || 'Anonyme',
+          score: calcScoreFromScores(oi, v.s || {})
+        }));
+        const scoreMin = Math.min(...partScores.map(p => p.score));
+        const scoreMax = Math.max(...partScores.map(p => p.score));
+        const disagreement = scoreMax - scoreMin;
+
+        const partRows = partScores.map(p =>
+          `<tr><td>${esc(p.name)}</td><td style="font-weight:700;color:${c.hex};text-align:right">${p.score}/100</td></tr>`
+        ).join('');
+
+        return `
+        <div class="collab-opt-card" style="border-color:${c.hex};background:linear-gradient(135deg,var(--white) 55%,${c.bg})">
+          <div class="collab-opt-rank" style="background:${c.bg};color:${c.hex}">${rankEmojis[rank] || `#${rank+1}`}</div>
+          <div style="flex:1;min-width:0">
+            <div class="collab-opt-name">${esc(S.options[oi].name)}</div>
+            <div class="collab-score-bar"><div class="collab-score-bar-fill" style="width:${score}%;background:${c.hex}"></div></div>
+            ${disagreement > 20 ? `<div class="collab-disagreement">⚠️ Forte divergence entre participants (${disagreement} pts d'écart)</div>` : ''}
+          </div>
+          <div class="collab-opt-avg">
+            <div class="collab-avg-num" style="color:${c.hex}">${score}</div>
+            <div style="font-size:.62rem;color:var(--muted)">/100 moy.</div>
+          </div>
+        </div>
+        <details style="margin:-4px 0 12px;font-size:.78rem">
+          <summary style="cursor:pointer;color:var(--muted);padding:4px 2px;user-select:none">Détail par participant</summary>
+          <table class="collab-participant-table" style="margin-top:6px">
+            <thead><tr><th>Participant</th><th style="text-align:right">Score</th></tr></thead>
+            <tbody>${partRows}</tbody>
+          </table>
+        </details>`;
+      }).join('');
+
+      resultsEl.innerHTML = `
+        <div class="collab-consensus-banner">
+          <div style="font-size:.68rem;color:var(--teal);font-weight:700;letter-spacing:.05em;margin-bottom:4px">CONSENSUS DU GROUPE</div>
+          <div style="font-size:1.05rem;font-weight:800;color:var(--ink)">🎯 "${esc(S.options[ranked[0]].name)}"</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:4px">${votes.length} participant${votes.length > 1 ? 's' : ''} · scores moyennés</div>
+        </div>
+        ${optCardsHTML}`;
+    }
+
     /* ─── PRÉ-MORTEM ─────────────────────────── */
     // { optIdx: Set of selected risk ids }
     let _premortemRisks = {};
@@ -9363,7 +9721,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       const analysesPane = document.getElementById('resTabAnalyses');
       if (analysesPane) analysesPane.innerHTML = extraHTML;
 
-      // Add share button to existing actions
+      // Add share + collab buttons to existing actions
       const saveBtn = document.getElementById('btnSaveTrack');
       if (saveBtn && !document.getElementById('btnShare')) {
         const shareBtn = document.createElement('button');
@@ -9373,6 +9731,15 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         shareBtn.onclick = openShareModal;
         saveBtn.insertAdjacentElement('afterend', shareBtn);
       }
+      if (saveBtn && !document.getElementById('btnCollab')) {
+        const collabBtn = document.createElement('button');
+        collabBtn.id = 'btnCollab';
+        collabBtn.className = 'btn btn-secondary';
+        collabBtn.textContent = '👥 Collaborer';
+        collabBtn.onclick = openCollabModal;
+        const shareBtn = document.getElementById('btnShare');
+        (shareBtn || saveBtn).insertAdjacentElement('afterend', collabBtn);
+      }
     };
 
     /* ─── INIT ───────────────────────────────── */
@@ -9380,6 +9747,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       renderTemplates();
       updateProfileBtn();
       checkShareUrl();
+      checkCollabUrl();
       // Check fatigue on intro page load
       checkFatigue();
     });
@@ -9452,6 +9820,49 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       <p style="font-size:.72rem;color:var(--muted2);margin-top:8px">💡 L'URL contient l'intégralité de votre analyse. Elle peut être longue.</p>
       <div style="display:flex;justify-content:flex-end;margin-top:16px">
         <button class="btn btn-secondary" style="padding:9px 18px;font-size:.85rem" onclick="closeShareModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Mode Collaboratif -->
+  <div class="modal-overlay" id="collabModal">
+    <div class="modal-box">
+      <div class="modal-title">👥 Mode collaboratif</div>
+      <div class="modal-sub">Chaque participant note les options de son côté — Lucid calcule la moyenne du groupe.</div>
+
+      <div class="collab-modal-tabs">
+        <button class="collab-modal-tab active" onclick="switchCollabTab('invite')">📤 Inviter à voter</button>
+        <button class="collab-modal-tab" onclick="switchCollabTab('merge')">🔀 Fusionner les votes</button>
+      </div>
+
+      <!-- Onglet Inviter -->
+      <div class="collab-modal-pane active" id="collabPaneInvite">
+        <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px;line-height:1.5">
+          Partagez ce lien. Chaque participant verra les options et critères, notera de son côté, puis obtiendra un <strong>code de vote</strong> à vous renvoyer.
+        </p>
+        <div class="share-url-row">
+          <input type="text" id="collabLinkInput" readonly style="font-size:.75rem;color:var(--muted)">
+          <button class="share-copy-btn" onclick="copyCollabLink()">📋 Copier</button>
+        </div>
+        <p style="font-size:.72rem;color:var(--muted2);margin-top:8px">💡 Le lien encode uniquement la structure de la décision (options + critères), pas vos scores.</p>
+      </div>
+
+      <!-- Onglet Fusionner -->
+      <div class="collab-modal-pane" id="collabPaneMerge">
+        <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px;line-height:1.5">
+          Collez les codes de vote reçus (un par ligne). Lucid calcule la <strong>moyenne des scores</strong> et révèle le consensus.
+        </p>
+        <textarea class="collab-merge-area" id="collabVoteCodes" placeholder="Collez les codes de vote ici…
+Un code par ligne."></textarea>
+        <div style="display:flex;gap:8px;margin-bottom:16px">
+          <button class="btn btn-secondary" style="flex:1;font-size:.8rem;padding:9px 6px" onclick="addMyVoteToMerge()">➕ Inclure mon vote</button>
+          <button class="btn btn-primary" style="flex:1;font-size:.8rem;padding:9px 6px" onclick="mergeCollabVotes()">🔀 Calculer la moyenne</button>
+        </div>
+        <div id="collabMergeResults"></div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;margin-top:16px">
+        <button class="btn btn-secondary" style="padding:9px 18px;font-size:.85rem" onclick="closeCollabModal()">Fermer</button>
       </div>
     </div>
   </div>
