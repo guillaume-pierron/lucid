@@ -10021,8 +10021,9 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     function createGroupSession() {
       const name = document.getElementById('groupCreateName').value.trim();
       if (!name) { _showGroupError('create', 'Entrez votre prénom.'); return; }
+      const btn = document.querySelector('#groupPaneCreate .btn-primary');
+      if (btn) { btn.textContent = 'Connexion…'; btn.disabled = true; }
       _connectWs(() => _wsSend({ type: 'create', name }));
-      closeGroupModal();
     }
 
     function joinGroupSession() {
@@ -10030,8 +10031,9 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       const name = document.getElementById('groupJoinName').value.trim();
       if (!code || code.length < 4) { _showGroupError('join', 'Entrez le code de session.'); return; }
       if (!name) { _showGroupError('join', 'Entrez votre prénom.'); return; }
+      const btn = document.querySelector('#groupPaneJoin .btn-primary');
+      if (btn) { btn.textContent = 'Connexion…'; btn.disabled = true; }
       _connectWs(() => _wsSend({ type: 'join', sessionId: code, name }));
-      closeGroupModal();
     }
 
     function _showGroupError(tab, msg) {
@@ -10071,40 +10073,45 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     }
 
     function _showWsError() {
-      // Show inline error in the modal instead of a blocking alert
       const pane = document.getElementById('groupPaneCreate')?.classList.contains('active')
         ? 'Create' : 'Join';
+      // Reset button
+      const btn = document.querySelector(`#groupPane${pane} .btn-primary`);
+      if (btn) { btn.textContent = pane === 'Create' ? 'Créer la session →' : 'Rejoindre →'; btn.disabled = false; }
       const errEl = document.getElementById(`group${pane}Error`);
       if (errEl) {
-        errEl.innerHTML = '❌ Impossible de joindre le serveur.<br><code style="font-size:.78rem">npm start</code> dans le dossier du projet.';
+        errEl.innerHTML = '❌ Serveur inaccessible. Lancez <code style="font-size:.78rem">npm start</code>.';
         errEl.style.display = 'block';
-        openGroupModal();
       } else {
         alert('❌ Serveur inaccessible. Lancez : npm start');
       }
     }
 
     function _handleWsMsg(msg) {
-      switch (msg.type) {
-        case 'created':
-        case 'joined':
-          _myPid = msg.participantId;
-          _applySession(msg.session);
-          nav('page-collab');
-          // Detect URL param for auto-join on link open
-          if (msg.type === 'created') {
-            // Update URL with session code for easy sharing
-            const url = new URL(location.href);
-            url.searchParams.set('session', msg.session.id);
-            history.replaceState(null, '', url.toString());
-          }
-          break;
-        case 'sync':
-          _applySession(msg.session);
-          break;
-        case 'error':
-          alert('❌ ' + msg.message);
-          break;
+      try {
+        switch (msg.type) {
+          case 'created':
+          case 'joined':
+            _myPid = msg.participantId;
+            _applySession(msg.session);
+            closeGroupModal();
+            nav('page-collab');
+            if (msg.type === 'created') {
+              const url = new URL(location.href);
+              url.searchParams.set('session', msg.session.id);
+              history.replaceState(null, '', url.toString());
+            }
+            break;
+          case 'sync':
+            _applySession(msg.session);
+            break;
+          case 'error':
+            alert('❌ ' + msg.message);
+            break;
+        }
+      } catch(e) {
+        console.error('[Lucid collab]', e);
+        alert('Erreur interne : ' + e.message + '\n\nVoir la console pour les détails.');
       }
     }
 
