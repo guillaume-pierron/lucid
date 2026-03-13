@@ -5191,6 +5191,9 @@
                   0 0 0 3px rgba(5, 150, 105, 0.15) !important;
     }
 
+    /* Reset outline par défaut sur tous les boutons (évite le carré bleu au clic) */
+    button { outline: none; }
+
     /* Focus visible accessible (outline) sur tous les boutons */
     .btn:focus-visible,
     .stepper-btn:focus-visible {
@@ -10619,7 +10622,6 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         return `<div class="cs-crit-chip${active}" onclick="csToggleCriterion('${cr.id}')" style="cursor:pointer">
             <span>${cr.icon}</span>
             <span>${cr.name}</span>
-            ${active ? '<span class="cs-crit-check">✓</span>' : ''}
           </div>`;
       }).join('');
 
