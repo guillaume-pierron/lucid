@@ -5888,11 +5888,16 @@
           </div>
 
           <div class="ai-suggest-wrap" id="aiSuggestWrap">
-            <button class="ai-suggest-btn" id="btnAiSuggest" onclick="suggestCriteria()">✨ Suggestions IA</button>
+            <button class="ai-suggest-btn" id="btnAiSuggest" onclick="suggestCriteria()">💡 Suggestions pour ma décision</button>
             <div class="ai-suggest-chips" id="aiSuggestChips"></div>
           </div>
 
           <div class="cat-tabs" id="catTabs"></div>
+          <div style="position:relative;margin-bottom:8px">
+            <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:.9rem;pointer-events:none">🔍</span>
+            <input type="text" id="critSearch" placeholder="Rechercher un critère…" oninput="filterGrid(null)"
+              style="width:100%;padding:8px 12px 8px 32px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.85rem;background:var(--white);color:var(--text);box-sizing:border-box">
+          </div>
           <div class="crit-grid" id="critGrid"></div>
 
           <div class="custom-form" id="customCritBox">
@@ -6547,6 +6552,23 @@
       rev: { name: 'Reversibility', hint: 'Ease of going back' },
       complex: { name: 'Complexity', hint: 'Difficulty of implementation' },
       dep: { name: 'Dependencies', hint: 'Constraints linked to other factors' },
+      resale: { name: 'Resale value', hint: 'Resale price, asset liquidity' },
+      charges: { name: 'Recurring costs', hint: 'Monthly fixed costs, subscriptions' },
+      comfort: { name: 'Comfort', hint: 'Ergonomics, daily ease of use' },
+      aesthetics: { name: 'Aesthetics', hint: 'Design, visual appearance' },
+      quiet: { name: 'Quiet / Noise level', hint: 'Noise level, tranquility' },
+      safety: { name: 'Physical safety', hint: 'Physical risks, protection' },
+      ease: { name: 'Ease of use', hint: 'Simplicity, learning curve' },
+      size: { name: 'Size / Space', hint: 'Available space, dimensions' },
+      privacy: { name: 'Privacy', hint: 'Data protection, personal privacy' },
+      transport_acc: { name: 'Transport access', hint: 'Proximity to transit, mobility' },
+      neighborhood: { name: 'Neighborhood quality', hint: 'Environment, safety, amenities' },
+      nature: { name: 'Access to nature', hint: 'Green spaces, air, natural setting' },
+      ecology: { name: 'Environmental impact', hint: 'Carbon footprint, sustainability' },
+      reliability: { name: 'Reliability', hint: 'Robustness, durability over time' },
+      maintenance: { name: 'Ease of maintenance', hint: 'Maintenance cost and frequency' },
+      scalability: { name: 'Scalability', hint: 'Can grow and adapt to needs' },
+      connectivity: { name: 'Connectivity', hint: 'Internet, network, integrations' },
     };
 
     function tr(key, ...args) {
@@ -6699,10 +6721,71 @@
       { id: 'opp', cat: 'Stratégique', icon: '🎲', name: 'Opportunité unique', hint: 'Rareté de la chance', invert: false, dw: 1 },
       { id: 'complex', cat: 'Stratégique', icon: '🔧', name: 'Complexité', hint: 'Difficulté de mise en œuvre', invert: true, dw: 1 },
       { id: 'dep', cat: 'Stratégique', icon: '🔗', name: 'Dépendances', hint: 'Contraintes liées à autres facteurs', invert: true, dw: 1 },
+
+      /* ── Critères étendus ── */
+      { id: 'resale',       cat: 'Finance',      icon: '💎', name: 'Valeur de revente',         hint: 'Prix à la revente, liquidité du bien',         invert: false, dw: 1 },
+      { id: 'charges',      cat: 'Finance',      icon: '💳', name: 'Charges récurrentes',        hint: 'Coûts fixes mensuels, abonnements',            invert: true,  dw: 1 },
+      { id: 'comfort',      cat: 'Perso',        icon: '🛋️', name: 'Confort',                    hint: 'Ergonomie, confort d\'usage au quotidien',     invert: false, dw: 1 },
+      { id: 'aesthetics',   cat: 'Perso',        icon: '🎨', name: 'Esthétique',                 hint: 'Design, apparence visuelle',                   invert: false, dw: 1 },
+      { id: 'quiet',        cat: 'Perso',        icon: '🔇', name: 'Calme / Silence',            hint: 'Niveau sonore, tranquillité',                  invert: false, dw: 1 },
+      { id: 'safety',       cat: 'Perso',        icon: '⛑️', name: 'Sécurité physique',          hint: 'Risques physiques, protection, accidentologie', invert: false, dw: 2 },
+      { id: 'ease',         cat: 'Perso',        icon: '✅', name: 'Facilité d\'usage',          hint: 'Simplicité, courbe d\'apprentissage',          invert: false, dw: 1 },
+      { id: 'size',         cat: 'Perso',        icon: '📏', name: 'Taille / Surface',           hint: 'Espace disponible, dimensions',                invert: false, dw: 1 },
+      { id: 'privacy',      cat: 'Perso',        icon: '🔒', name: 'Confidentialité',            hint: 'Protection des données, vie privée',           invert: false, dw: 1 },
+      { id: 'transport_acc',cat: 'Social',       icon: '🚇', name: 'Accessibilité transports',   hint: 'Proximité transports, mobilité',               invert: false, dw: 1 },
+      { id: 'neighborhood', cat: 'Social',       icon: '🏘️', name: 'Qualité du quartier',        hint: 'Environnement, sécurité, commerces, ambiance', invert: false, dw: 1 },
+      { id: 'nature',       cat: 'Social',       icon: '🌳', name: 'Accès à la nature',          hint: 'Espaces verts, air, cadre naturel',            invert: false, dw: 1 },
+      { id: 'ecology',      cat: 'Social',       icon: '♻️', name: 'Impact écologique',          hint: 'Empreinte carbone, durabilité environnementale', invert: false, dw: 1 },
+      { id: 'reliability',  cat: 'Stratégique',  icon: '🔩', name: 'Fiabilité',                  hint: 'Robustesse, durabilité dans le temps',         invert: false, dw: 1 },
+      { id: 'maintenance',  cat: 'Stratégique',  icon: '🔧', name: 'Facilité d\'entretien',      hint: 'Coût et fréquence de maintenance',             invert: false, dw: 1 },
+      { id: 'scalability',  cat: 'Stratégique',  icon: '📐', name: 'Évolutivité',                hint: 'Peut grandir et s\'adapter aux besoins',       invert: false, dw: 1 },
+      { id: 'connectivity', cat: 'Stratégique',  icon: '📶', name: 'Connectivité',               hint: 'Internet, réseau, intégrations',               invert: false, dw: 1 },
     ];
 
     const CATS = ['Tous', 'Finance', 'Pro', 'Perso', 'Social', 'Stratégique'];
     const WEIGHTS = { 1: '×1 Normal', 2: '×2 Important', 3: '×3 Crucial' };
+
+    /* ── Keyword → criteria suggestions ── */
+    const SUGGEST_MAP = [
+      { r: /appartement|appart|logement|loyer|maison|studio|coloc|immobilier|location immobilière|acheter un bien|résidence|habitat/i,
+        ids: ['cost', 'charges', 'size', 'transport_acc', 'neighborhood', 'quiet', 'nature', 'lt', 'resale'] },
+      { r: /scooter|moto(?:cyclette)?|deux.roues|trottinette électrique/i,
+        ids: ['cost', 'charges', 'safety', 'comfort', 'reliability', 'maintenance', 'ecology', 'aesthetics'] },
+      { r: /voiture|auto(?:mobile)?|véhicule|berline|SUV|citadine|électrique|hybride|occasion/i,
+        ids: ['cost', 'charges', 'reliability', 'comfort', 'safety', 'resale', 'maintenance', 'ecology'] },
+      { r: /vélo|trottinette|mobilité douce|transport urbain/i,
+        ids: ['cost', 'safety', 'ecology', 'comfort', 'maintenance', 'transport_acc', 'health', 'time'] },
+      { r: /emploi|travail|job|poste|entreprise|boulot|CDI|CDD|freelance|missions|recrutement|carrière/i,
+        ids: ['fin_gain', 'career', 'wellb', 'stress', 'flex', 'jobsec', 'skills', 'values'] },
+      { r: /voyage|vacances|destination|pays|séjour|partir en|trip|partir à|visiter/i,
+        ids: ['cost', 'wellb', 'safety', 'time', 'social', 'ecology', 'health', 'opp'] },
+      { r: /études|école|université|formation|master|bachelor|diplôme|fac|campus|filière|cursus/i,
+        ids: ['career', 'cost', 'skills', 'lt', 'social', 'wellb', 'transport_acc', 'jobsec'] },
+      { r: /relation|couple|mariage|partenaire|conjoint|fiançailles|sépar|rupture|divorc/i,
+        ids: ['wellb', 'values', 'social', 'family', 'lt', 'stress', 'time', 'rev'] },
+      { r: /startup|entreprendre|créer (?:une |ma )?(?:boîte|société|entreprise)|business|lancer (?:mon|son)|projet entrepreneurial/i,
+        ids: ['roi', 'fin_risk', 'opp', 'lt', 'complex', 'career', 'passion', 'fin_stab'] },
+      { r: /investiss|placement|épargne|bourse|crypto|patrimoine|retraite|SCPI|locatif/i,
+        ids: ['roi', 'fin_risk', 'fin_stab', 'lt', 'rev', 'charges', 'resale', 'dep'] },
+      { r: /santé|médecin|opération|traitement|médicament|chirurgie|thérapie|clinique|hôpital/i,
+        ids: ['health', 'wellb', 'cost', 'stress', 'lt', 'safety', 'time', 'rev'] },
+      { r: /régime|alimentation|nourriture|manger|cuisine|restaurant|repas/i,
+        ids: ['health', 'cost', 'wellb', 'social', 'transport_acc', 'time', 'comfort'] },
+      { r: /téléphone|smartphone|ordinateur|laptop|PC|Mac|tablette|gadget|tech|logiciel|application|outil numérique/i,
+        ids: ['cost', 'reliability', 'ease', 'aesthetics', 'connectivity', 'privacy', 'maintenance', 'scalability'] },
+      { r: /sport|club|salle de (?:sport|gym)|activité physique|entraînement|fitness|musculation/i,
+        ids: ['wellb', 'health', 'cost', 'social', 'time', 'transport_acc', 'passion', 'stress'] },
+      { r: /animal|chien|chat|animaux de compagnie|adoption|pet|NAC/i,
+        ids: ['wellb', 'cost', 'charges', 'time', 'family', 'health', 'stress', 'lt'] },
+      { r: /déménag|partir (?:vivre|habiter)|s'installer|expatriation|émigr/i,
+        ids: ['wellb', 'social', 'cost', 'family', 'career', 'lt', 'neighborhood', 'transport_acc'] },
+      { r: /maison de retraite|EHPAD|parent(?:s)? âgé|dépendance|hébergement senior/i,
+        ids: ['wellb', 'cost', 'charges', 'health', 'safety', 'social', 'family', 'lt'] },
+      { r: /enfant|naissance|adoption|garde|crèche|école pour|éducat/i,
+        ids: ['wellb', 'family', 'cost', 'social', 'neighborhood', 'transport_acc', 'lt', 'stress'] },
+      { r: /vacances|week.end|sortie|loisir|activité|hobby|passe.temps/i,
+        ids: ['cost', 'wellb', 'time', 'social', 'passion', 'transport_acc', 'safety', 'opp'] },
+    ];
 
     /* ─── STATE ─────────────────────────────── */
     let S = {
@@ -6809,51 +6892,44 @@
     /* ─── STEP 2 ────────────────────────────── */
     function buildCriteriaPage() { S.currentCat = tr('cats')[0]; renderCatTabs(); filterGrid(tr('cats')[0]); renderSelList(); }
 
-    async function suggestCriteria() {
+    function suggestCriteria() {
       if (!S.decision.trim()) {
         alert(LANG === 'fr' ? 'Saisissez d\'abord votre décision à l\'étape 1.' : 'Please enter your decision in step 1 first.');
         return;
       }
-      const btn = document.getElementById('btnAiSuggest');
       const chips = document.getElementById('aiSuggestChips');
-      btn.disabled = true;
-      btn.textContent = '⏳ ' + (LANG === 'fr' ? 'Génération…' : 'Generating…');
       chips.innerHTML = '';
-      try {
-        const res = await fetch('/api/suggest-criteria', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ decision: S.decision, lang: LANG })
-        });
-        const data = await res.json();
-        if (!res.ok || !data.criteria?.length) throw new Error(data.error || 'empty');
-        data.criteria.forEach(cr => {
-          const already = S.criteria.some(c => c.name.toLowerCase() === cr.name.toLowerCase());
-          const chip = document.createElement('button');
-          chip.className = 'ai-chip' + (already ? ' ai-chip-added' : '');
-          chip.innerHTML = `${cr.icon || '🔹'} ${esc(cr.name)}`;
-          chip.title = cr.hint || '';
-          chip.onclick = () => {
-            if (chip.classList.contains('ai-chip-added')) return;
-            S.criteria.push({
-              id: 'ai_' + Date.now(),
-              icon: cr.icon || '🔹', name: cr.name, hint: cr.hint || '',
-              cat: 'Perso', invert: false, weight: 1, custom: true,
-              swingRank: S.criteria.length
-            });
-            chip.classList.add('ai-chip-added');
-            chip.disabled = true;
-            renderSelList();
-            filterGrid(S.currentCat);
-          };
-          chips.appendChild(chip);
-        });
-      } catch (e) {
-        chips.innerHTML = `<span style="color:var(--red);font-size:.8rem">⚠️ ${LANG === 'fr' ? 'Suggestions IA indisponibles.' : 'AI suggestions unavailable.'}</span>`;
-      } finally {
-        btn.disabled = false;
-        btn.textContent = '✨ ' + (LANG === 'fr' ? 'Suggestions IA' : 'AI Suggestions');
+
+      // Keyword matching against SUGGEST_MAP
+      const text = S.decision;
+      const matched = [];
+      for (const { r, ids } of SUGGEST_MAP) {
+        if (r.test(text)) {
+          ids.forEach(id => { if (!matched.includes(id)) matched.push(id); });
+        }
       }
+      // Fallback: general criteria if no keyword matched
+      if (matched.length === 0) {
+        ['wellb', 'cost', 'lt', 'stress', 'values', 'rev', 'fin_risk'].forEach(id => {
+          if (!matched.includes(id)) matched.push(id);
+        });
+      }
+
+      const suggestions = matched.slice(0, 6).map(id => LIB.find(c => c.id === id)).filter(Boolean);
+      suggestions.forEach(c => {
+        const already = S.criteria.some(x => x.id === c.id);
+        const chip = document.createElement('button');
+        chip.className = 'ai-chip' + (already ? ' ai-chip-added' : '');
+        chip.innerHTML = `${c.icon} ${esc(LANG === 'en' && LIB_EN[c.id] ? LIB_EN[c.id].name : c.name)}`;
+        chip.title = LANG === 'en' && LIB_EN[c.id] ? LIB_EN[c.id].hint : c.hint;
+        chip.onclick = () => {
+          if (chip.classList.contains('ai-chip-added')) return;
+          toggleCrit(c.id);
+          chip.classList.add('ai-chip-added');
+          chip.disabled = true;
+        };
+        chips.appendChild(chip);
+      });
     }
 
     function renderCatTabs() {
@@ -6866,9 +6942,13 @@
     }
 
     function filterGrid(cat) {
-      S.currentCat = cat; renderCatTabs();
+      if (cat !== null) { S.currentCat = cat; renderCatTabs(); }
+      const q = (document.getElementById('critSearch')?.value || '').toLowerCase().trim();
       const g = document.getElementById('critGrid'); g.innerHTML = '';
-      (cat === tr('cats')[0] ? LIB : LIB.filter(c => c.cat === cat)).forEach(c => {
+      let list = q
+        ? LIB.filter(c => c.name.toLowerCase().includes(q) || c.hint.toLowerCase().includes(q) || c.cat.toLowerCase().includes(q))
+        : (S.currentCat === tr('cats')[0] ? LIB : LIB.filter(c => c.cat === S.currentCat));
+      list.forEach(c => {
         const on = S.criteria.some(x => x.id === c.id);
         const pill = document.createElement('div');
         pill.className = 'crit-pill' + (on ? ' on' : ''); pill.id = 'pill-' + c.id;
