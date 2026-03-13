@@ -10550,22 +10550,17 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
 
       grid.innerHTML = allCrits.map(cr => {
         const active = selectedIds.has(cr.id) ? ' active' : '';
-        const weightRow = active ? (() => {
-          const w = myWeights[cr.id] ?? 1;
-          const chips = [1,2,3,4,5].map(v =>
-            `<button class="cs-weight-chip${v === w ? ' active' : ''}" onclick="csSetWeight('${cr.id}',${v})" title="Importance ${v}/5">${v}</button>`
-          ).join('');
-          return `<div class="cs-weight-row"><span class="cs-weight-label">Importance :</span>${chips}</div>`;
-        })() : '';
+        const w = myWeights[cr.id] ?? 1;
+        const weightBtns = active ? `<span style="display:flex;gap:3px;margin-left:6px" onclick="event.stopPropagation()">
+            ${[1,2,3].map(v => `<button class="weight-btn${v===w?' active':''}" onclick="csSetWeight('${cr.id}',${v})" title="Importance ${v}/3">×${v}</button>`).join('')}
+          </span>` : '';
 
-        return `<div style="display:inline-flex;flex-direction:column;gap:4px;align-items:flex-start">
-          <button class="cs-crit-chip${active}" onclick="csToggleCriterion('${cr.id}')">
+        return `<div class="cs-crit-chip${active}" onclick="csToggleCriterion('${cr.id}')" style="cursor:pointer">
             <span>${cr.icon}</span>
             <span>${cr.name}</span>
             ${active ? '<span class="cs-crit-check">✓</span>' : ''}
-          </button>
-          ${weightRow}
-        </div>`;
+            ${weightBtns}
+          </div>`;
       }).join('');
 
       // Also show weights for selected criteria as a summary below
@@ -10637,7 +10632,16 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     }
 
     function _csBuildMyEvalGrid() {
-      const nOpts = S.options.length;
+      if (!_cs) return;
+      // Sync _cs data into S so that calcScore / refreshLive work correctly
+      const myWeights = _cs.weights?.[_myPid] ?? {};
+      S.options = _cs.options;
+      S.criteria = _cs.criteria.map(c => ({ ...c, weight: myWeights[c.id] ?? c.weight ?? 1 }));
+      _cs.criteria.forEach(cr => {
+        S.scores[cr.id] = _cs.scores?.[_myPid]?.[cr.id] ?? _cs.options.map(() => 5);
+      });
+
+      const nOpts = _cs.options.length;
       const grid = document.getElementById('csEvalGrid');
       // Don't re-render if user is actively editing a comment or score input
       if (grid && grid.contains(document.activeElement) && document.activeElement.tagName === 'TEXTAREA') return;
@@ -10645,13 +10649,13 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       grid.innerHTML = '';
       const colors = activeColors();
 
-      S.options.forEach((opt, oi) => {
+      _cs.options.forEach((opt, oi) => {
         const col = document.createElement('div');
         col.className = 'eval-col';
         const c = colors[oi % colors.length];
 
-        const items = S.criteria.map(cr => {
-          const v = S.scores[cr.id]?.[oi] ?? 5;
+        const items = _cs.criteria.map(cr => {
+          const v = _cs.scores?.[_myPid]?.[cr.id]?.[oi] ?? 5;
           const inv = cr.invert ? `<span class="inv-tag">↓</span>` : '';
           const myComment = _cs?.comments?.[_myPid]?.[cr.id]?.[oi] ?? '';
           const pips = `
@@ -10696,7 +10700,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         <div class="eval-col-body" id="eval-col-body-${oi}" style="border-color:${c.border}">${items}</div>`;
 
         grid.appendChild(col);
-        S.criteria.forEach(cr => renderStepper(oi, cr.id, S.scores[cr.id]?.[oi] ?? 5, cr.invert ?? false));
+        _cs.criteria.forEach(cr => renderStepper(oi, cr.id, _cs.scores?.[_myPid]?.[cr.id]?.[oi] ?? 5, cr.invert ?? false));
         refreshLive(oi);
       });
     }
@@ -10713,11 +10717,17 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
 
     /** Score step in collab mode: update locally + send to server */
     function csStepVal(oi, crId, delta) {
-      if (!S.scores[crId]) S.scores[crId] = S.options.map(() => 5);
-      const cur = S.scores[crId][oi] ?? 5;
+      if (!_cs) return;
+      if (!_cs.scores[_myPid]) _cs.scores[_myPid] = {};
+      if (!_cs.scores[_myPid][crId]) _cs.scores[_myPid][crId] = _cs.options.map(() => 5);
+      const cur = _cs.scores[_myPid][crId][oi] ?? 5;
       const next = Math.max(1, Math.min(10, cur + delta));
+      _cs.scores[_myPid][crId][oi] = next;
+      // Keep S in sync for calcScore / refreshLive
+      if (!S.scores[crId]) S.scores[crId] = _cs.options.map(() => 5);
       S.scores[crId][oi] = next;
-      renderStepper(oi, crId, next, S.criteria.find(c => c.id === crId)?.invert ?? false);
+      const invert = _cs.criteria.find(c => c.id === crId)?.invert ?? false;
+      renderStepper(oi, crId, next, invert);
       refreshLive(oi);
       _wsSend({ type: 'set_score', criterionId: crId, optionIndex: oi, value: next });
     }
