@@ -10247,6 +10247,16 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     let _csScoresRevealed = false; // for anonymous mode: have we revealed scores locally
     let _csWeightingMethod = 'simple'; // 'simple' | 'roc'
     let _csRocRanks = {};              // criterionId -> rank (0-based)
+    let _csInverts = {};               // criterionId -> boolean (per-participant local override)
+    let _csDragId = null;
+    let _csTouchDragId = null;
+    let _csTouchGhost = null;
+    let _csTouchTargetId = null;
+    let _csTouchBefore = true;
+    let _csSwingTouchListened = false;
+    let _csLongPressTimer = null;
+    let _csTouchStartX = 0;
+    let _csTouchStartY = 0;
 
     /* ── Helpers ── */
     function _wsSend(msg) {
@@ -10593,26 +10603,31 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
           if (_csWeightingMethod === 'roc') {
             const rocWeights = _csGetRocWeights();
             const sorted = [..._cs.criteria].sort((a, b) => (_csRocRanks[a.id] ?? 999) - (_csRocRanks[b.id] ?? 999));
-            importanceSection = `<div class="swing-info" style="margin-bottom:8px">${tr('swing_info')}</div>` +
-              sorted.map((cr, i) => {
-                const pct = Math.round((rocWeights[cr.id] ?? 0) * 100);
-                return `<div class="swing-item" style="cursor:default;margin-bottom:4px">
-                  <div class="swing-rank-num">${i + 1}</div>
-                  <div class="swing-item-main">
-                    <div class="swing-item-header">
-                      <span style="font-size:.9rem;flex-shrink:0">${cr.icon}</span>
+            const items = sorted.map((cr, i) => {
+              const pct = Math.round((rocWeights[cr.id] ?? 0) * 100);
+              const inverted = _csInverts[cr.id] ?? cr.invert ?? false;
+              return `<div class="swing-item" id="swing-item-${cr.id}" data-id="${cr.id}">
+                <div class="swing-rank-num">${i + 1}</div>
+                <div class="swing-item-main">
+                  <div class="swing-item-header">
+                    <span style="font-size:.9rem;flex-shrink:0">${cr.icon}</span>
+                    <div class="swing-name-group">
                       <span class="swing-item-name">${cr.name}</span>
+                      ${cr.hint ? `<span class="swing-item-sub">${esc(cr.hint)}</span>` : ''}
                     </div>
                   </div>
-                  <div class="swing-weight-col">
-                    <div class="swing-weight-tag" style="font-size:.8rem;padding:4px 8px">${pct}%</div>
-                  </div>
-                  <div style="display:flex;flex-direction:column;gap:2px;margin-left:4px">
-                    <button onclick="csMoveRank('${cr.id}',-1)" style="width:24px;height:20px;border:1px solid var(--border);border-radius:4px;background:var(--white);cursor:pointer;font-size:.75rem;padding:0;line-height:1" ${i===0 ? 'disabled' : ''}>↑</button>
-                    <button onclick="csMoveRank('${cr.id}',+1)" style="width:24px;height:20px;border:1px solid var(--border);border-radius:4px;background:var(--white);cursor:pointer;font-size:.75rem;padding:0;line-height:1" ${i===sorted.length-1 ? 'disabled' : ''}>↓</button>
-                  </div>
-                </div>`;
-              }).join('');
+                </div>
+                <div class="swing-weight-col">
+                  <button class="inv-btn${inverted ? ' on' : ''}" onclick="csToggleInv('${cr.id}')"
+                    title="${inverted ? tr('inv_tip_on') : tr('inv_tip_off')}">
+                    ${inverted ? tr('inv_on') : tr('inv_off')}
+                  </button>
+                  <div class="swing-weight-tag" style="font-size:.8rem;padding:4px 8px">${pct}%</div>
+                </div>
+              </div>`;
+            }).join('');
+            importanceSection = `<div class="swing-info" style="margin-bottom:8px">${tr('swing_info')}</div>
+              <div id="csCritRocList">${items}</div>`;
           } else {
             importanceSection = _cs.criteria.map(cr => {
               const myW = myWeights[cr.id] ?? 1;
@@ -10632,6 +10647,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
 
           wrapEl.innerHTML = `<div style="font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:8px">Importance des critères</div>` +
             methodToggle + importanceSection;
+          if (_csWeightingMethod === 'roc') requestAnimationFrame(() => _attachCsSwingDnD());
         } else {
           wrapEl.innerHTML = '';
         }
@@ -10699,6 +10715,166 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       _csBuildMyEvalGrid();
     }
 
+    /** Inverse localement le sens d'un critère (score élevé = mauvais) en mode ROC CS. */
+    function csToggleInv(crId) {
+      _csInverts[crId] = !(_csInverts[crId] ?? (_cs?.criteria.find(c => c.id === crId)?.invert ?? false));
+      _renderCsCriteria();
+      _csBuildMyEvalGrid();
+    }
+
+    /** Réordonne fromId avant/après toId dans _csRocRanks. */
+    function _csSwingReorder(fromId, toId, before) {
+      if (fromId === toId) return;
+      const crit = _cs?.criteria ?? [];
+      const sorted = [...crit].sort((a, b) => (_csRocRanks[a.id] ?? 0) - (_csRocRanks[b.id] ?? 0));
+      const fromIdx = sorted.findIndex(c => c.id === fromId);
+      if (fromIdx === -1) return;
+      const [moved] = sorted.splice(fromIdx, 1);
+      const insertAt = before ? sorted.findIndex(c => c.id === toId) : sorted.findIndex(c => c.id === toId) + 1;
+      if (insertAt < 0) return;
+      sorted.splice(insertAt, 0, moved);
+      sorted.forEach((c, i) => { _csRocRanks[c.id] = i; });
+    }
+
+    function _csAnimateDrop(movedId) {
+      const el = document.getElementById(`swing-item-${movedId}`);
+      if (el) requestAnimationFrame(() => {
+        el.classList.add('animate-drop');
+        el.addEventListener('animationend', () => el.classList.remove('animate-drop'), { once: true });
+      });
+    }
+
+    function _csStartTouchDrag(item, touch) {
+      _csTouchDragId = item.dataset.id;
+      if (navigator.vibrate) navigator.vibrate(30);
+      _csTouchGhost = item.cloneNode(true);
+      _csTouchGhost.classList.add('swing-ghost');
+      _csTouchGhost.style.width = item.offsetWidth + 'px';
+      document.body.appendChild(_csTouchGhost);
+      item.classList.add('dragging');
+      _csTouchGhost.style.left = (touch.clientX - 20) + 'px';
+      _csTouchGhost.style.top = (touch.clientY - item.offsetHeight / 2) + 'px';
+    }
+
+    function _csTouchMove(e) {
+      if (!_csTouchDragId) return;
+      e.preventDefault();
+      const t = e.touches[0];
+      if (_csTouchGhost) {
+        _csTouchGhost.style.left = (t.clientX - 20) + 'px';
+        _csTouchGhost.style.top = (t.clientY - 30) + 'px';
+      }
+      _csTouchTargetId = null; _csTouchBefore = true;
+      document.querySelectorAll('#csCritRocList .swing-item').forEach(el => {
+        el.classList.remove('drag-over-above', 'drag-over-below');
+        if (el.dataset.id === _csTouchDragId) return;
+        const r = el.getBoundingClientRect();
+        if (t.clientY >= r.top && t.clientY <= r.bottom) {
+          _csTouchTargetId = el.dataset.id;
+          _csTouchBefore = t.clientY < r.top + r.height / 2;
+          el.classList.add(_csTouchBefore ? 'drag-over-above' : 'drag-over-below');
+        }
+      });
+    }
+
+    function _csTouchEnd() {
+      if (_csLongPressTimer) { clearTimeout(_csLongPressTimer); _csLongPressTimer = null; }
+      document.querySelectorAll('#csCritRocList .swing-item').forEach(el => el.classList.remove('press-holding'));
+      if (!_csTouchDragId) return;
+      if (_csTouchGhost) { _csTouchGhost.remove(); _csTouchGhost = null; }
+      document.querySelectorAll('#csCritRocList .swing-item')
+        .forEach(el => el.classList.remove('dragging', 'drag-over-above', 'drag-over-below'));
+      const movedId = _csTouchDragId;
+      if (_csTouchTargetId) {
+        _csSwingReorder(movedId, _csTouchTargetId, _csTouchBefore);
+        _csBroadcastRocWeights();
+        _renderCsCriteria();
+        _csBuildMyEvalGrid();
+        _csAnimateDrop(movedId);
+      }
+      _csTouchDragId = null; _csTouchTargetId = null;
+    }
+
+    /** Attache les événements drag souris (HTML5) + tactile sur #csCritRocList. */
+    function _attachCsSwingDnD() {
+      document.querySelectorAll('#csCritRocList .swing-item').forEach(item => {
+        item.addEventListener('mousedown', () => item.setAttribute('draggable', 'true'));
+
+        item.addEventListener('dragstart', e => {
+          _csDragId = item.dataset.id;
+          item.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+        });
+
+        item.addEventListener('dragend', () => {
+          _csDragId = null;
+          item.removeAttribute('draggable');
+          item.classList.remove('dragging');
+          document.querySelectorAll('#csCritRocList .swing-item')
+            .forEach(el => el.classList.remove('drag-over-above', 'drag-over-below'));
+        });
+
+        item.addEventListener('dragover', e => {
+          e.preventDefault();
+          if (!_csDragId || item.dataset.id === _csDragId) return;
+          const before = e.clientY < item.getBoundingClientRect().top + item.offsetHeight / 2;
+          document.querySelectorAll('#csCritRocList .swing-item')
+            .forEach(el => el.classList.remove('drag-over-above', 'drag-over-below'));
+          item.classList.add(before ? 'drag-over-above' : 'drag-over-below');
+        });
+
+        item.addEventListener('dragleave', e => {
+          if (!item.contains(e.relatedTarget)) item.classList.remove('drag-over-above', 'drag-over-below');
+        });
+
+        item.addEventListener('drop', e => {
+          e.preventDefault();
+          if (!_csDragId || item.dataset.id === _csDragId) return;
+          const before = e.clientY < item.getBoundingClientRect().top + item.offsetHeight / 2;
+          const movedId = _csDragId;
+          _csSwingReorder(movedId, item.dataset.id, before);
+          _csBroadcastRocWeights();
+          _renderCsCriteria();
+          _csBuildMyEvalGrid();
+          _csAnimateDrop(movedId);
+        });
+
+        // Drag tactile : long press (350 ms)
+        item.addEventListener('contextmenu', e => e.preventDefault());
+        item.addEventListener('touchstart', e => {
+          const t = e.touches[0];
+          _csTouchStartX = t.clientX; _csTouchStartY = t.clientY;
+          const sx = t.clientX, sy = t.clientY;
+          _csLongPressTimer = setTimeout(() => {
+            item.classList.remove('press-holding');
+            _csStartTouchDrag(item, { clientX: sx, clientY: sy });
+          }, 350);
+          item.classList.add('press-holding');
+        }, { passive: true });
+
+        item.addEventListener('touchend', () => {
+          if (_csLongPressTimer) { clearTimeout(_csLongPressTimer); _csLongPressTimer = null; }
+          item.classList.remove('press-holding');
+        }, { passive: true });
+
+        item.addEventListener('touchmove', e => {
+          if (_csTouchDragId) return;
+          const t = e.touches[0];
+          if (Math.abs(t.clientX - _csTouchStartX) > 8 || Math.abs(t.clientY - _csTouchStartY) > 8) {
+            if (_csLongPressTimer) { clearTimeout(_csLongPressTimer); _csLongPressTimer = null; }
+            item.classList.remove('press-holding');
+          }
+        }, { passive: true });
+      });
+
+      if (!_csSwingTouchListened) {
+        _csSwingTouchListened = true;
+        document.addEventListener('touchmove', _csTouchMove, { passive: false });
+        document.addEventListener('touchend', _csTouchEnd, { passive: false });
+        document.addEventListener('touchcancel', _csTouchEnd, { passive: false });
+      }
+    }
+
     function csToggleCriterion(critId) {
       if (!_cs) return;
       const allCrits = typeof LIB !== 'undefined' ? LIB : [];
@@ -10754,7 +10930,11 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       const myWeights = _cs.weights?.[_myPid] ?? {};
       const effectiveWeights = _csWeightingMethod === 'roc' ? _csGetRocWeights() : myWeights;
       S.options = _cs.options;
-      S.criteria = _cs.criteria.map(c => ({ ...c, weight: effectiveWeights[c.id] ?? c.weight ?? 1 }));
+      S.criteria = _cs.criteria.map(c => ({
+        ...c,
+        weight: effectiveWeights[c.id] ?? c.weight ?? 1,
+        invert: _csInverts[c.id] ?? c.invert ?? false,
+      }));
       _cs.criteria.forEach(cr => {
         S.scores[cr.id] = _cs.scores?.[_myPid]?.[cr.id] ?? _cs.options.map(() => 5);
       });
