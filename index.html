@@ -6740,6 +6740,73 @@
       { id: 'maintenance',  cat: 'Stratégique',  icon: '🔧', name: 'Facilité d\'entretien',      hint: 'Coût et fréquence de maintenance',             invert: false, dw: 1 },
       { id: 'scalability',  cat: 'Stratégique',  icon: '📐', name: 'Évolutivité',                hint: 'Peut grandir et s\'adapter aux besoins',       invert: false, dw: 1 },
       { id: 'connectivity', cat: 'Stratégique',  icon: '📶', name: 'Connectivité',               hint: 'Internet, réseau, intégrations',               invert: false, dw: 1 },
+
+      /* ══════════════════════════════════════════════════════════
+         CRITÈRES CACHÉS — visibles uniquement via la recherche
+         ══════════════════════════════════════════════════════════ */
+
+      /* Finance */
+      { id: 'notary_fees',    cat: 'Finance',     icon: '🏛️', name: 'Frais de notaire',           hint: 'Frais d\'achat immobilier, droits de mutation',    invert: true,  dw: 1, hidden: true },
+      { id: 'tax',            cat: 'Finance',     icon: '💰', name: 'Fiscalité / Impôts',         hint: 'Impact fiscal, impôt sur le revenu, plus-value',   invert: true,  dw: 1, hidden: true },
+      { id: 'subsidy',        cat: 'Finance',     icon: '🎁', name: 'Aides / Subventions',        hint: 'PTZ, prêt à taux zéro, CEE, aides régionales',     invert: false, dw: 1, hidden: true },
+      { id: 'salary_growth',  cat: 'Finance',     icon: '📈', name: 'Évolution salariale',        hint: 'Augmentation, progression de rémunération',        invert: false, dw: 1, hidden: true },
+      { id: 'bonus',          cat: 'Finance',     icon: '🎯', name: 'Variable / Bonus',           hint: 'Prime de performance, intéressement, participation', invert: false, dw: 1, hidden: true },
+      { id: 'benefits',       cat: 'Finance',     icon: '🎀', name: 'Avantages en nature',        hint: 'Mutuelle, tickets-resto, voiture de fonction, RTT', invert: false, dw: 1, hidden: true },
+      { id: 'insurance_cost', cat: 'Finance',     icon: '🛡️', name: 'Coût assurance',             hint: 'Primes mensuelles, assurance auto/habitation',      invert: true,  dw: 1, hidden: true },
+      { id: 'rent_yield',     cat: 'Finance',     icon: '🏠', name: 'Rendement locatif',          hint: 'Loyer perçu, taux rendement brut/net, rentabilité', invert: false, dw: 1, hidden: true },
+      { id: 'loan_rate',      cat: 'Finance',     icon: '🏦', name: 'Taux d\'emprunt',            hint: 'Taux immobilier, TAEG, coût total du crédit',       invert: true,  dw: 1, hidden: true },
+
+      /* Pro */
+      { id: 'remote',         cat: 'Pro',         icon: '💻', name: 'Télétravail',                hint: 'Jours de télétravail, full remote, hybride',        invert: false, dw: 1, hidden: true },
+      { id: 'culture',        cat: 'Pro',         icon: '🏢', name: 'Culture d\'entreprise',      hint: 'Valeurs, ambiance, bienveillance, management',      invert: false, dw: 1, hidden: true },
+      { id: 'training',       cat: 'Pro',         icon: '📚', name: 'Formation / Upskilling',     hint: 'Budget formation, CPF, plan de développement',      invert: false, dw: 1, hidden: true },
+      { id: 'management',     cat: 'Pro',         icon: '👤', name: 'Qualité du management',      hint: 'Style de management, feedback, reconnaissance',     invert: false, dw: 1, hidden: true },
+      { id: 'pro_travel',     cat: 'Pro',         icon: '✈️', name: 'Déplacements professionnels', hint: 'Fréquence voyages, mobilité requise, grand déplacement', invert: false, dw: 1, hidden: true },
+      { id: 'sector_growth',  cat: 'Pro',         icon: '🚀', name: 'Dynamisme du secteur',       hint: 'Secteur en croissance, recrutement actif, tech',    invert: false, dw: 1, hidden: true },
+      { id: 'team_size',      cat: 'Pro',         icon: '👥', name: 'Taille de l\'équipe',        hint: 'Petite équipe agile vs grande structure corporate', invert: false, dw: 1, hidden: true },
+
+      /* Perso — logement */
+      { id: 'luminosity',     cat: 'Perso',       icon: '☀️', name: 'Luminosité',                 hint: 'Ensoleillement, exposition, fenêtres, DPE',         invert: false, dw: 1, hidden: true },
+      { id: 'view',           cat: 'Perso',       icon: '🏙️', name: 'Vue / Vis-à-vis',            hint: 'Qualité de la vue, vis-à-vis avec voisins',         invert: false, dw: 1, hidden: true },
+      { id: 'orientation',    cat: 'Perso',       icon: '🧭', name: 'Orientation',                hint: 'Exposition nord/sud/est/ouest du logement',         invert: false, dw: 1, hidden: true },
+      { id: 'floor',          cat: 'Perso',       icon: '🏢', name: 'Étage / Hauteur',            hint: 'Étage, ascenseur, rez-de-chaussée',                 invert: false, dw: 1, hidden: true },
+      { id: 'parking',        cat: 'Perso',       icon: '🅿️', name: 'Parking',                    hint: 'Place de stationnement, garage, box',               invert: false, dw: 1, hidden: true },
+      { id: 'cellar',         cat: 'Perso',       icon: '📦', name: 'Cave / Rangements',          hint: 'Cave, grenier, débarras, espace de stockage',       invert: false, dw: 1, hidden: true },
+      { id: 'dpe',            cat: 'Perso',       icon: '⚡', name: 'Classe énergétique (DPE)',   hint: 'Consommation énergie, isolation thermique, chauffage', invert: false, dw: 1, hidden: true },
+      /* Perso — tech */
+      { id: 'battery_life',   cat: 'Perso',       icon: '🔋', name: 'Autonomie batterie',         hint: 'Durée de vie batterie, charge rapide, Wh',          invert: false, dw: 1, hidden: true },
+      { id: 'screen_quality', cat: 'Perso',       icon: '🖥️', name: 'Qualité d\'écran',           hint: 'Résolution, dalle OLED AMOLED, luminosité, taille', invert: false, dw: 1, hidden: true },
+      { id: 'camera',         cat: 'Perso',       icon: '📷', name: 'Qualité photo / Caméra',     hint: 'Appareil photo, capteur, vidéo 4K, zoom optique',   invert: false, dw: 1, hidden: true },
+      { id: 'storage',        cat: 'Perso',       icon: '💾', name: 'Capacité de stockage',       hint: 'Go ou To disponible, SSD, extension microSD',       invert: false, dw: 1, hidden: true },
+      { id: 'water_resist',   cat: 'Perso',       icon: '💧', name: 'Résistance eau / chocs',     hint: 'IP68, waterproof, robustesse, coque',               invert: false, dw: 1, hidden: true },
+      { id: 'repairability',  cat: 'Perso',       icon: '🔨', name: 'Réparabilité',               hint: 'Score réparabilité iFixit, pièces détachées, SAV',  invert: false, dw: 1, hidden: true },
+      /* Perso — santé */
+      { id: 'recovery',       cat: 'Perso',       icon: '🩹', name: 'Temps de récupération',      hint: 'Convalescence, arrêt de travail, rééducation',      invert: false, dw: 1, hidden: true },
+      { id: 'pain_level',     cat: 'Perso',       icon: '😣', name: 'Niveau de douleur',          hint: 'Douleur post-opératoire, tolérance, traitement',    invert: true,  dw: 1, hidden: true },
+      { id: 'invasiveness',   cat: 'Perso',       icon: '🩺', name: 'Caractère invasif',          hint: 'Chirurgie lourde vs mini-invasif, endoscopie',       invert: true,  dw: 1, hidden: true },
+      { id: 'hospitalization',cat: 'Perso',       icon: '🏥', name: 'Durée d\'hospitalisation',   hint: 'Jours à l\'hôpital, ambulatoire, hôpital de jour',  invert: true,  dw: 1, hidden: true },
+
+      /* Social */
+      { id: 'schools_prox',   cat: 'Social',      icon: '🏫', name: 'Proximité écoles',           hint: 'Crèche, école, collège, lycée à proximité',         invert: false, dw: 1, hidden: true },
+      { id: 'shops',          cat: 'Social',      icon: '🛒', name: 'Commerces de proximité',     hint: 'Supermarché, pharmacie, boulangerie, marché',       invert: false, dw: 1, hidden: true },
+      { id: 'nightlife',      cat: 'Social',      icon: '🎉', name: 'Vie nocturne / Sorties',     hint: 'Bars, restaurants, concerts, animation locale',     invert: false, dw: 1, hidden: true },
+      { id: 'community',      cat: 'Social',      icon: '🤝', name: 'Communauté / Réseau local',  hint: 'Diaspora, associations, réseau professionnel local', invert: false, dw: 1, hidden: true },
+      { id: 'visa',           cat: 'Social',      icon: '🛂', name: 'Visa / Formalités',          hint: 'Facilité d\'obtention du visa, délai, coût, e-visa', invert: false, dw: 1, hidden: true },
+      { id: 'lang_barrier',   cat: 'Social',      icon: '🌐', name: 'Barrière linguistique',      hint: 'Langue locale, anglais suffisant, apprentissage',   invert: true,  dw: 1, hidden: true },
+      { id: 'timezone',       cat: 'Social',      icon: '🕐', name: 'Décalage horaire',           hint: 'Fuseaux horaires avec famille, collègues, jet lag',  invert: true, dw: 1, hidden: true },
+      { id: 'flight_time',    cat: 'Social',      icon: '🛫', name: 'Durée de trajet / Vol',      hint: 'Heures de vol, escales, temps porte-à-porte',       invert: true,  dw: 1, hidden: true },
+      { id: 'coach',          cat: 'Social',      icon: '🏋️', name: 'Encadrement / Coach',        hint: 'Qualité du coaching, accompagnement sportif',       invert: false, dw: 1, hidden: true },
+      { id: 'pet_friendly',   cat: 'Social',      icon: '🐾', name: 'Acceptation animaux',        hint: 'Logement ou lieu acceptant les animaux de compagnie', invert: false, dw: 1, hidden: true },
+
+      /* Stratégique */
+      { id: 'switching_cost', cat: 'Stratégique', icon: '🔄', name: 'Coût de changement',         hint: 'Facilité de changer d\'avis, portabilité, résiliabilité', invert: true, dw: 1, hidden: true },
+      { id: 'reputation',     cat: 'Stratégique', icon: '⭐', name: 'Réputation / Prestige',      hint: 'Notoriété, image de marque, classement, label',     invert: false, dw: 1, hidden: true },
+      { id: 'market_demand',  cat: 'Stratégique', icon: '📊', name: 'Demande du marché',          hint: 'Besoin existant, taille du marché, tendance sectorielle', invert: false, dw: 1, hidden: true },
+      { id: 'competition',    cat: 'Stratégique', icon: '⚔️', name: 'Intensité concurrentielle',  hint: 'Nombre de concurrents, barrières à l\'entrée',      invert: true,  dw: 1, hidden: true },
+      { id: 'regulatory',     cat: 'Stratégique', icon: '📋', name: 'Conformité réglementaire',   hint: 'Obligations légales, RGPD, normes, licences, DUERP', invert: false, dw: 1, hidden: true },
+      { id: 'vendor_lock',    cat: 'Stratégique', icon: '🔐', name: 'Dépendance fournisseur',     hint: 'Risque de lock-in, portabilité, écosystème fermé',   invert: true,  dw: 1, hidden: true },
+      { id: 'job_market',     cat: 'Stratégique', icon: '💼', name: 'Débouchés / Insertion pro',  hint: 'Taux emploi post-formation, demande RH, métier en tension', invert: false, dw: 1, hidden: true },
+      { id: 'validated',      cat: 'Stratégique', icon: '🧪', name: 'Preuve de concept',          hint: 'MVP validé, étude clinique, retour d\'expérience, pilote', invert: false, dw: 1, hidden: true },
     ];
 
     const CATS = ['Tous', 'Finance', 'Pro', 'Perso', 'Social', 'Stratégique'];
@@ -6945,9 +7012,15 @@
       if (cat !== null) { S.currentCat = cat; renderCatTabs(); }
       const q = (document.getElementById('critSearch')?.value || '').toLowerCase().trim();
       const g = document.getElementById('critGrid'); g.innerHTML = '';
-      let list = q
-        ? LIB.filter(c => c.name.toLowerCase().includes(q) || c.hint.toLowerCase().includes(q) || c.cat.toLowerCase().includes(q))
-        : (S.currentCat === tr('cats')[0] ? LIB : LIB.filter(c => c.cat === S.currentCat));
+      let list;
+      if (q) {
+        // Recherche : surface tous les critères, y compris les cachés
+        list = LIB.filter(c => c.name.toLowerCase().includes(q) || c.hint.toLowerCase().includes(q));
+      } else {
+        // Navigation par catégorie : exclure les critères cachés
+        const visible = LIB.filter(c => !c.hidden);
+        list = S.currentCat === tr('cats')[0] ? visible : visible.filter(c => c.cat === S.currentCat);
+      }
       list.forEach(c => {
         const on = S.criteria.some(x => x.id === c.id);
         const pill = document.createElement('div');
@@ -6958,6 +7031,13 @@
       <div><div class="crit-name">${c.name}</div><div class="crit-hint">${c.hint}</div></div>`;
         pill.onclick = () => toggleCrit(c.id); g.appendChild(pill);
       });
+      // Indice discret si la recherche a trouvé des critères cachés
+      if (q && list.some(c => c.hidden)) {
+        const note = document.createElement('p');
+        note.style.cssText = 'font-size:.75rem;color:var(--muted);margin:6px 0 0;grid-column:1/-1';
+        note.textContent = '✨ Critères spécialisés trouvés via la recherche';
+        g.appendChild(note);
+      }
     }
 
     function toggleCrit(id) {
