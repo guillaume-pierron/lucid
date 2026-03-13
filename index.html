@@ -10294,6 +10294,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     let _csLongPressTimer = null;
     let _csTouchStartX = 0;
     let _csTouchStartY = 0;
+    let _csBroadcastTimer = null;
 
     /* ── Helpers ── */
     function _wsSend(msg) {
@@ -10735,10 +10736,15 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       _csBuildMyEvalGrid();
     }
 
-    /** Envoie les poids ROC calculés au serveur via csSetWeight pour chaque critère. */
+    /** Envoie les poids ROC calculés au serveur via csSetWeight pour chaque critère.
+     *  Debounced : regroupe les appels rapides (ex. DnD) en un seul envoi WS. */
     function _csBroadcastRocWeights() {
-      const weights = _csGetRocWeights();
-      Object.entries(weights).forEach(([crId, w]) => csSetWeight(crId, parseFloat(w.toFixed(4))));
+      if (_csBroadcastTimer) clearTimeout(_csBroadcastTimer);
+      _csBroadcastTimer = setTimeout(() => {
+        _csBroadcastTimer = null;
+        const weights = _csGetRocWeights();
+        Object.entries(weights).forEach(([crId, w]) => csSetWeight(crId, parseFloat(w.toFixed(4))));
+      }, 300);
     }
 
     /** Bascule entre méthode simple et ROC en mode CS. */
@@ -10834,7 +10840,10 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
 
     /** Attache les événements drag souris (HTML5) + tactile sur #csCritRocList. */
     function _attachCsSwingDnD() {
-      document.querySelectorAll('#csCritRocList .swing-item').forEach(item => {
+      const list = document.getElementById('csCritRocList');
+      if (!list || list._dndReady) return; // guard : une seule attache par instance DOM
+      list._dndReady = true;
+      list.querySelectorAll('.swing-item').forEach(item => {
         item.addEventListener('mousedown', () => item.setAttribute('draggable', 'true'));
 
         item.addEventListener('dragstart', e => {
