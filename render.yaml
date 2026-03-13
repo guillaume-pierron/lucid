@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: lucid
+    runtime: node
+    buildCommand: npm install --production
+    startCommand: node server.js
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production

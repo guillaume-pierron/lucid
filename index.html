@@ -5413,6 +5413,181 @@
       font-size: .82rem; color: var(--ink2); line-height: 1.6;
     }
 
+    /* ── MODE COLLABORATIF ────────────────── */
+    .collab-modal-tabs { display: flex; gap: 0; margin: -4px -4px 20px; border-bottom: 1.5px solid var(--border); }
+    .collab-modal-tab {
+      flex: 1; padding: 12px 8px; border: none; background: none; cursor: pointer;
+      font-family: 'Inter', sans-serif; font-size: .82rem; font-weight: 600;
+      color: var(--muted); border-bottom: 2.5px solid transparent; margin-bottom: -1.5px;
+      transition: all .15s;
+    }
+    .collab-modal-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+    .collab-modal-pane { display: none; }
+    .collab-modal-pane.active { display: block; }
+    .collab-merge-area {
+      width: 100%; min-height: 80px; padding: 12px 14px; box-sizing: border-box;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      background: var(--white); font-family: monospace; font-size: .73rem;
+      color: var(--ink); resize: vertical; margin-bottom: 12px;
+    }
+    .collab-merge-area:focus { outline: none; border-color: var(--teal); }
+    .collab-opt-card {
+      background: var(--glass-bg); border: 1.5px solid var(--border);
+      border-radius: var(--r-sm); padding: 14px 16px; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .collab-opt-rank { font-size: .72rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+    .collab-opt-name { font-size: .88rem; font-weight: 700; color: var(--ink); flex: 1; min-width: 0; word-break: break-word; }
+    .collab-opt-avg { text-align: center; flex-shrink: 0; }
+    .collab-avg-num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
+    .collab-score-bar { height: 5px; border-radius: 3px; background: var(--border); margin-top: 6px; overflow: hidden; }
+    .collab-score-bar-fill { height: 100%; border-radius: 3px; transition: width .5s ease; }
+    .collab-disagreement { font-size: .7rem; color: var(--amber); margin-top: 4px; }
+    .collab-participant-table { width: 100%; border-collapse: collapse; font-size: .77rem; margin-top: 8px; }
+    .collab-participant-table th { padding: 5px 8px; text-align: left; font-weight: 700; color: var(--muted); border-bottom: 1.5px solid var(--border); font-size: .7rem; }
+    .collab-participant-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); color: var(--ink); }
+    .collab-participant-table tr:last-child td { border-bottom: none; }
+    .collab-consensus-banner {
+      background: var(--teal-bg); border: 1.5px solid var(--teal); border-radius: var(--r-sm);
+      padding: 14px 16px; margin-bottom: 16px; text-align: center;
+    }
+    /* ── PAGE COLLAB (session en direct) ───── */
+    #page-collab { --cs-gap: 16px; }
+    .cs-header { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--border); background: var(--glass-bg); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 10; }
+    .cs-logo { display: flex; align-items: center; gap: 6px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--ink); }
+    .cs-logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
+    .cs-session-code {
+      font-size: .72rem; font-weight: 700; letter-spacing: .08em; color: var(--teal);
+      background: var(--teal-bg); border: 1px solid var(--teal); border-radius: 8px;
+      padding: 4px 10px; cursor: pointer; user-select: all; white-space: nowrap;
+    }
+    .cs-session-code:hover { background: var(--teal); color: #fff; }
+    .cs-participants { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; justify-content: flex-end; }
+    .cs-avatar {
+      display: flex; align-items: center; gap: 5px; font-size: .72rem; font-weight: 600;
+      padding: 3px 8px; border-radius: 20px; color: #fff; white-space: nowrap;
+    }
+    .cs-avatar-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.6); }
+    .cs-avatar.offline { opacity: .45; }
+    .cs-scroll { overflow-y: auto; height: calc(100vh - 57px); }
+    .cs-main { max-width: 700px; margin: 0 auto; padding: 20px 18px 60px; }
+    .cs-section {
+      background: var(--glass-bg); border: 1.5px solid var(--border); border-radius: var(--r);
+      margin-bottom: 16px; overflow: hidden;
+    }
+    .cs-section-head {
+      display: flex; align-items: center; gap: 10px; padding: 14px 16px;
+      cursor: pointer; user-select: none;
+    }
+    .cs-section-head:hover { background: var(--bg); }
+    .cs-section-icon { font-size: 1.1rem; }
+    .cs-section-title { font-size: .92rem; font-weight: 700; color: var(--ink); flex: 1; }
+    .cs-section-sub { font-size: .72rem; color: var(--muted); }
+    .cs-section-chevron { color: var(--muted2); font-size: .8rem; transition: transform .22s; }
+    .cs-section.open .cs-section-chevron { transform: rotate(180deg); }
+    .cs-section-body { display: none; border-top: 1px solid var(--border); padding: 16px; }
+    .cs-section.open .cs-section-body { display: block; }
+    /* Decision */
+    .cs-decision-input {
+      width: 100%; padding: 12px 14px; border-radius: 10px; box-sizing: border-box;
+      border: 1.5px solid var(--border); background: var(--white);
+      font-family: 'Inter', sans-serif; font-size: .95rem; color: var(--ink); resize: none;
+      line-height: 1.5;
+    }
+    .cs-decision-input:focus { outline: none; border-color: var(--teal); }
+    /* Options */
+    .cs-options-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .cs-option-row {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px;
+    }
+    .cs-option-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .cs-option-name { font-size: .88rem; font-weight: 600; color: var(--ink); flex: 1; min-width: 0; word-break: break-word; }
+    .cs-option-by { font-size: .68rem; color: var(--muted); white-space: nowrap; }
+    .cs-option-rm { border: none; background: none; color: var(--muted2); cursor: pointer; font-size: .9rem; padding: 2px 4px; border-radius: 4px; }
+    .cs-option-rm:hover { color: var(--red); background: var(--red-bg); }
+    .cs-add-option-row { display: flex; gap: 8px; }
+    .cs-add-option-input {
+      flex: 1; padding: 10px 12px; border-radius: 10px;
+      border: 1.5px solid var(--border); background: var(--white);
+      font-family: 'Inter', sans-serif; font-size: .88rem; color: var(--ink);
+    }
+    .cs-add-option-input:focus { outline: none; border-color: var(--teal); }
+    /* Criteria */
+    .cs-crit-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+    .cs-crit-chip {
+      display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 20px;
+      border: 1.5px solid var(--border); background: var(--bg); cursor: pointer;
+      font-size: .8rem; font-weight: 600; color: var(--muted); transition: all .15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .cs-crit-chip.active { border-color: var(--teal); background: var(--teal-bg); color: var(--teal); }
+    .cs-crit-chip:hover:not(.active) { border-color: var(--teal); color: var(--ink); }
+    .cs-crit-check { font-size: .75rem; }
+    /* Scoring */
+    .cs-scoring-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+    .cs-scoring-tab {
+      flex: 1; padding: 8px; border-radius: 10px; border: 1.5px solid var(--border);
+      background: var(--bg); font-size: .78rem; font-weight: 600; color: var(--muted);
+      cursor: pointer; text-align: center; font-family: 'Inter', sans-serif; transition: all .15s;
+    }
+    .cs-scoring-tab.active { border-color: var(--teal); background: var(--teal-bg); color: var(--teal); }
+    .cs-scoring-pane { display: none; }
+    .cs-scoring-pane.active { display: block; }
+    /* Scoring table (vue groupe) */
+    .cs-score-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+    .cs-score-table th { padding: 8px 10px; text-align: left; color: var(--muted); font-size: .72rem; font-weight: 700; border-bottom: 1.5px solid var(--border); }
+    .cs-score-table th.opt-col { text-align: center; }
+    .cs-score-table td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .cs-score-table tr:last-child td { border-bottom: none; }
+    .cs-score-table .crit-td { font-size: .8rem; color: var(--ink2); font-weight: 600; white-space: nowrap; }
+    .cs-score-cell { text-align: center; font-weight: 700; font-size: .88rem; }
+    .cs-avg-row td { background: var(--teal-bg); font-weight: 800; }
+    .cs-avg-row .crit-td { color: var(--teal); }
+    /* Results */
+    .cs-result-card {
+      display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+      border: 1.5px solid var(--border); border-radius: var(--r-sm); margin-bottom: 8px;
+      background: var(--white);
+    }
+    .cs-result-rank { font-size: .72rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+    .cs-result-name { font-size: .9rem; font-weight: 700; color: var(--ink); flex: 1; min-width: 0; word-break: break-word; }
+    .cs-result-score-bar { height: 5px; border-radius: 3px; background: var(--border); margin-top: 5px; overflow: hidden; }
+    .cs-result-score-fill { height: 100%; border-radius: 3px; transition: width .6s ease; }
+    .cs-result-num { font-size: 1.4rem; font-weight: 800; text-align: center; flex-shrink: 0; }
+    .cs-empty { font-size: .82rem; color: var(--muted); text-align: center; padding: 20px; font-style: italic; }
+    /* Live badge */
+    .cs-live-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: .68rem; font-weight: 700; color: #fff;
+      background: var(--red); border-radius: 10px; padding: 3px 8px; letter-spacing: .04em;
+    }
+    .cs-live-dot { width: 6px; height: 6px; border-radius: 50%; background: #fff; animation: cs-blink 1.2s infinite; }
+    @keyframes cs-blink { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+
+    /* Page vote */
+    #page-vote .eval-col-head { cursor: default; }
+    .vote-decision-title {
+      font-size: .95rem; color: var(--teal); font-weight: 700; margin-bottom: 20px;
+      padding: 10px 14px; background: var(--teal-bg); border-radius: var(--r-sm);
+      border-left: 3px solid var(--teal); line-height: 1.4;
+    }
+    .vote-collab-tag {
+      font-size: .72rem; color: var(--teal); font-weight: 700; background: var(--teal-bg);
+      padding: 3px 10px; border-radius: 20px; border: 1px solid var(--teal); white-space: nowrap;
+    }
+    .vote-code-box {
+      background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--r-sm);
+      padding: 12px 14px; font-size: .68rem; font-family: monospace; color: var(--muted);
+      word-break: break-all; margin: 12px 0; line-height: 1.5; max-height: 80px; overflow-y: auto;
+    }
+    .vote-name-input {
+      width: 100%; padding: 12px 14px; border-radius: 10px; box-sizing: border-box;
+      border: 1.5px solid var(--border); background: var(--white);
+      font-family: 'Inter', sans-serif; font-size: .9rem; color: var(--ink);
+    }
+    .vote-name-input:focus { outline: none; border-color: var(--teal); }
+
     /* ── ROBUSTNESS ANALYSIS ──────────────── */
     .robustness-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
     .robustness-opt-name { font-size: .82rem; font-weight: 600; color: var(--ink2); min-width: 100px; flex-shrink: 0; }
@@ -5493,6 +5668,14 @@
       display: flex; gap: 10px; width: 100%; max-width: 320px;
       flex-direction: column; align-items: stretch;
     }
+    .intro-group-btn {
+      animation: up .5s .42s ease both;
+      font-size: .92rem; padding: 12px 40px; border-radius: 12px;
+      background: var(--white); color: var(--teal);
+      border: 2px solid var(--teal); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700; cursor: pointer; transition: all .2s; width: 100%;
+    }
+    .intro-group-btn:hover { background: var(--teal-bg); transform: translateY(-2px); }
 
     /* ── DECISION TEXTAREA ROW ────────────── */
     .decision-input-row { display: flex; gap: 8px; align-items: flex-start; }
@@ -5553,6 +5736,7 @@
 
           <div class="intro-actions-row">
             <button class="intro-start-btn" onclick="nav('page-step1');checkFatigue()" data-i18n="start_btn">Commencer →</button>
+            <button class="intro-group-btn" onclick="openGroupModal()">👥 Décider en groupe</button>
           </div>
           <div class="fatigue-banner" id="fatigueBanner">
             <span>⚠️</span>
@@ -5737,7 +5921,153 @@
       </div><!-- /page-scroll -->
     </div>
 
-    <!-- ══════════════════════════ HISTORY ══════════════════════════ -->
+    <!-- ══════════════════════════ PAGE COLLAB (session en direct) ══════════════════════════ -->
+  <div class="page" id="page-collab">
+    <!-- Header sticky -->
+    <div class="cs-header">
+      <div class="cs-logo"><div class="cs-logo-dot"></div>Lucid</div>
+      <div class="cs-live-badge"><div class="cs-live-dot"></div>LIVE</div>
+      <div class="cs-session-code" id="csCode" onclick="copySessionCode()" title="Cliquez pour copier le code"></div>
+      <div class="cs-participants" id="csParticipants"></div>
+    </div>
+
+    <div class="cs-scroll">
+      <div class="cs-main">
+
+        <!-- ① Question -->
+        <div class="cs-section open" id="csSectionDecision">
+          <div class="cs-section-head" onclick="toggleCsSection('csSectionDecision')">
+            <span class="cs-section-icon">❓</span>
+            <div style="flex:1">
+              <div class="cs-section-title">La question de décision</div>
+              <div class="cs-section-sub">Visible et modifiable par tous</div>
+            </div>
+            <span class="cs-section-chevron">▾</span>
+          </div>
+          <div class="cs-section-body">
+            <textarea class="cs-decision-input" id="csDecisionInput" rows="2"
+              placeholder="Ex: Dans quels pays devons-nous partir ?"
+              oninput="csDraftDecision(this.value)"
+              onblur="csSendDecision()"></textarea>
+          </div>
+        </div>
+
+        <!-- ② Options -->
+        <div class="cs-section open" id="csSectionOptions">
+          <div class="cs-section-head" onclick="toggleCsSection('csSectionOptions')">
+            <span class="cs-section-icon">🗂️</span>
+            <div style="flex:1">
+              <div class="cs-section-title">Options à comparer</div>
+              <div class="cs-section-sub" id="csOptionsSub">Chacun peut proposer des options</div>
+            </div>
+            <span class="cs-section-chevron">▾</span>
+          </div>
+          <div class="cs-section-body">
+            <div class="cs-options-grid" id="csOptionsList"></div>
+            <div class="cs-add-option-row" id="csAddOptionRow">
+              <input type="text" class="cs-add-option-input" id="csAddOptionInput"
+                placeholder="Proposer une option…"
+                onkeydown="if(event.key==='Enter')csAddOption()">
+              <button class="btn btn-primary" style="font-size:.82rem;padding:9px 14px" onclick="csAddOption()">+ Ajouter</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ Critères -->
+        <div class="cs-section open" id="csSectionCriteria">
+          <div class="cs-section-head" onclick="toggleCsSection('csSectionCriteria')">
+            <span class="cs-section-icon">📊</span>
+            <div style="flex:1">
+              <div class="cs-section-title">Critères d'évaluation</div>
+              <div class="cs-section-sub" id="csCriteriaSub">Choisissez ce qui compte pour le groupe</div>
+            </div>
+            <span class="cs-section-chevron">▾</span>
+          </div>
+          <div class="cs-section-body">
+            <div class="cs-crit-grid" id="csCritGrid"></div>
+          </div>
+        </div>
+
+        <!-- ④ Notation -->
+        <div class="cs-section open" id="csSectionScoring">
+          <div class="cs-section-head" onclick="toggleCsSection('csSectionScoring')">
+            <span class="cs-section-icon">⭐</span>
+            <div style="flex:1">
+              <div class="cs-section-title">Notation</div>
+              <div class="cs-section-sub">Chacun note, Lucid moyenne les scores</div>
+            </div>
+            <span class="cs-section-chevron">▾</span>
+          </div>
+          <div class="cs-section-body">
+            <div class="cs-scoring-tabs">
+              <button class="cs-scoring-tab active" onclick="switchCsScoreTab('mine')">Mes notes</button>
+              <button class="cs-scoring-tab" onclick="switchCsScoreTab('group')">Vue groupe</button>
+            </div>
+            <div class="cs-scoring-pane active" id="csPaneMine">
+              <div class="eval-grid" id="csEvalGrid"></div>
+            </div>
+            <div class="cs-scoring-pane" id="csPaneGroup">
+              <div id="csGroupTable"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑤ Résultats -->
+        <div class="cs-section open" id="csSectionResults">
+          <div class="cs-section-head" onclick="toggleCsSection('csSectionResults')">
+            <span class="cs-section-icon">🏆</span>
+            <div style="flex:1">
+              <div class="cs-section-title">Résultats du groupe</div>
+              <div class="cs-section-sub">Moyennes calculées en direct</div>
+            </div>
+            <span class="cs-section-chevron">▾</span>
+          </div>
+          <div class="cs-section-body">
+            <div id="csResults"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════ PAGE VOTE (mode collaboratif) ══════════════════════════ -->
+  <div class="page" id="page-vote">
+    <div class="app-header">
+      <div class="logo">
+        <div class="logo-dot"></div>Lucid
+      </div>
+      <div class="vote-collab-tag">👥 Vote collectif</div>
+    </div>
+    <div class="page-scroll">
+      <div class="main">
+        <div class="page-eyebrow">Mode collaboratif</div>
+        <div class="page-title">Votez pour chaque option</div>
+        <div class="vote-decision-title" id="voteDecisionTitle"></div>
+        <div class="page-sub" style="margin-bottom:20px">Notez chaque option selon les critères. Vos scores seront combinés avec ceux des autres participants.</div>
+
+        <div style="margin-bottom:24px">
+          <label style="font-size:.82rem;font-weight:600;color:var(--ink);display:block;margin-bottom:8px">Votre prénom / identifiant</label>
+          <input type="text" id="voteParticipantName" class="vote-name-input" placeholder="Ex: Marie, Équipe RH…">
+        </div>
+
+        <div class="eval-grid" id="voteEvalGrid"></div>
+
+        <div class="btn-row" style="margin-top:24px">
+          <button class="btn btn-primary" onclick="generateVoteCode()">✅ Générer mon code de vote</button>
+        </div>
+
+        <div id="voteCodeResult" style="display:none;margin-top:20px;padding:16px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r)">
+          <div style="font-size:.85rem;font-weight:700;color:var(--ink);margin-bottom:6px">📋 Votre code de vote</div>
+          <div class="vote-code-box" id="voteCodeDisplay"></div>
+          <button class="btn btn-secondary" style="width:100%" onclick="copyVoteCode()">📋 Copier mon code de vote</button>
+          <p style="font-size:.73rem;color:var(--muted);margin-top:10px;text-align:center;line-height:1.5">Envoyez ce code à la personne qui a créé la décision pour qu'elle fusionne tous les votes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════ HISTORY ══════════════════════════ -->
     <div class="page" id="page-history">
       <div class="app-header">
         <div class="logo">
@@ -8857,6 +9187,267 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
       } catch(e) { /* invalid share link */ }
     }
 
+    /* ─── MODE COLLABORATIF ──────────────────── */
+    let _myVoteCode = null; // code de vote généré par le participant
+
+    /** Ouvre la modale collab et génère le lien d'invitation */
+    function openCollabModal() {
+      const template = {
+        decision: S.decision,
+        options: S.options,
+        criteria: S.criteria,
+        weightingMethod: S.weightingMethod
+        // pas de scores — chaque participant note de son côté
+      };
+      try {
+        const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(template))));
+        const url = window.location.origin + window.location.pathname + '#collab=' + encoded;
+        const input = document.getElementById('collabLinkInput');
+        if (input) input.value = url;
+      } catch(e) {}
+      document.getElementById('collabVoteCodes').value = '';
+      document.getElementById('collabMergeResults').innerHTML = '';
+      switchCollabTab('invite');
+      document.getElementById('collabModal').classList.add('open');
+    }
+
+    function closeCollabModal() {
+      document.getElementById('collabModal').classList.remove('open');
+    }
+
+    function switchCollabTab(tab) {
+      document.querySelectorAll('.collab-modal-tab').forEach((t, i) => {
+        t.classList.toggle('active', (tab === 'invite' && i === 0) || (tab === 'merge' && i === 1));
+      });
+      document.getElementById('collabPaneInvite').classList.toggle('active', tab === 'invite');
+      document.getElementById('collabPaneMerge').classList.toggle('active', tab === 'merge');
+    }
+
+    function copyCollabLink() {
+      const input = document.getElementById('collabLinkInput');
+      if (!input) return;
+      input.select();
+      navigator.clipboard ? navigator.clipboard.writeText(input.value).then(() => {
+        const btn = input.nextElementSibling;
+        if (btn) { const orig = btn.textContent; btn.textContent = '✅ Copié !'; setTimeout(() => btn.textContent = orig, 2000); }
+      }) : document.execCommand('copy');
+    }
+
+    /** Détecte #collab= dans l'URL et lance le mode vote participant */
+    function checkCollabUrl() {
+      const hash = window.location.hash;
+      if (!hash.startsWith('#collab=')) return;
+      try {
+        const encoded = hash.slice(8);
+        const template = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+        if (!template.decision || !template.options || !template.criteria) return;
+        enterVoteMode(template);
+        window.history.replaceState(null, '', window.location.pathname);
+      } catch(e) { /* lien invalide */ }
+    }
+
+    /** Charge le template dans S et affiche la page de vote */
+    function enterVoteMode(template) {
+      S.decision = template.decision;
+      S.options = template.options;
+      S.criteria = template.criteria;
+      S.weightingMethod = template.weightingMethod || 'simple';
+      S.scores = {};
+      S.criteria.forEach(cr => { S.scores[cr.id] = S.options.map(() => 5); });
+
+      document.getElementById('voteDecisionTitle').textContent = '🎯 ' + template.decision;
+      buildVotePage();
+      document.getElementById('voteCodeResult').style.display = 'none';
+      nav('page-vote');
+    }
+
+    /** Construit la grille de notation dans page-vote (reprend le même rendu que buildEvalPage) */
+    function buildVotePage() {
+      const nOpts = S.options.length;
+      const grid = document.getElementById('voteEvalGrid');
+      grid.style.gridTemplateColumns = `repeat(${Math.min(nOpts, 2)},1fr)`;
+      grid.innerHTML = '';
+      const colors = activeColors();
+
+      S.options.forEach((opt, oi) => {
+        const col = document.createElement('div');
+        col.className = 'eval-col';
+        const c = colors[oi % colors.length];
+
+        const items = S.criteria.map(cr => {
+          const v = S.scores[cr.id]?.[oi] ?? 5;
+          const inv = cr.invert ? `<span class="inv-tag" title="Score élevé = mauvais">↓</span>` : '';
+          const pips = `
+            <div class="fluid-bar" onpointerdown="startFluidDrag(event,${oi},'${cr.id}')" role="slider"
+                 aria-valuemin="1" aria-valuemax="10" aria-valuenow="${v}" tabindex="0">
+              <div class="fluid-bar-fill" id="pip-${oi}-${cr.id}-fill"></div>
+              <div class="fluid-thumb" id="pip-${oi}-${cr.id}-thumb" aria-hidden="true"></div>
+            </div>`;
+          return `
+          <div class="sl-item">
+            <div class="sl-head">
+              <div class="sl-label"><span class="crit-name-badge">${cr.icon} ${cr.name}</span></div>
+              ${inv}
+            </div>
+            <div class="stepper">
+              <button class="stepper-btn" onclick="stepVal(${oi},'${cr.id}',-1)" aria-label="−">−</button>
+              <div class="stepper-track">
+                <div class="fluid-track">
+                  ${pips}
+                  <div class="stepper-emoji" id="se-${oi}-${cr.id}">${scoreEmoji(v, cr.invert ?? false)}</div>
+                </div>
+                <div class="stepper-val" id="sv-${oi}-${cr.id}">${v}</div>
+              </div>
+              <button class="stepper-btn" onclick="stepVal(${oi},'${cr.id}',+1)" aria-label="+">+</button>
+            </div>
+          </div>`;
+        }).join('');
+
+        col.innerHTML = `
+        <div class="eval-col-head" style="background:${c.bg};border-color:${c.border}">
+          <div class="eval-col-name" style="color:${c.hex}"><span class="opt-badge">Option ${LETTERS[oi]}</span> ${esc(opt.name)}</div>
+          <div class="eval-live-score" style="border:1px solid ${c.border}">
+            <div class="eval-live-num" id="live-${oi}" style="color:${c.hex}">—</div>
+            <div class="eval-live-label" style="color:${c.hex}">/ 100</div>
+          </div>
+        </div>
+        <div class="eval-col-body" id="eval-col-body-${oi}" style="border-color:${c.border}">${items}</div>`;
+
+        grid.appendChild(col);
+        S.criteria.forEach(cr => renderStepper(oi, cr.id, S.scores[cr.id]?.[oi] ?? 5, cr.invert ?? false));
+        refreshLive(oi);
+      });
+    }
+
+    /** Génère un code de vote compact (base64) depuis les scores actuels */
+    function generateVoteCode() {
+      const nameInput = document.getElementById('voteParticipantName');
+      const name = (nameInput?.value || '').trim() || 'Anonyme';
+      try {
+        const voteData = { n: name, s: S.scores };
+        const code = btoa(unescape(encodeURIComponent(JSON.stringify(voteData))));
+        _myVoteCode = code;
+        document.getElementById('voteCodeDisplay').textContent = code;
+        const resultDiv = document.getElementById('voteCodeResult');
+        resultDiv.style.display = 'block';
+        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } catch(e) { alert('Erreur lors de la génération du code.'); }
+    }
+
+    function copyVoteCode() {
+      const code = document.getElementById('voteCodeDisplay').textContent;
+      if (!code) return;
+      const btn = event.currentTarget;
+      navigator.clipboard ? navigator.clipboard.writeText(code).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = '✅ Code copié !';
+        setTimeout(() => btn.textContent = orig, 2000);
+      }) : document.execCommand('copy');
+    }
+
+    /** Ajoute le vote de l'hôte dans la zone de fusion */
+    function addMyVoteToMerge() {
+      const voteData = { n: 'Moi (hôte)', s: S.scores };
+      try {
+        const code = btoa(unescape(encodeURIComponent(JSON.stringify(voteData))));
+        const area = document.getElementById('collabVoteCodes');
+        if (!area) return;
+        const existing = area.value.trim();
+        area.value = (existing ? existing + '\n' : '') + code;
+      } catch(e) {}
+    }
+
+    function _parseVoteCode(code) {
+      try { return JSON.parse(decodeURIComponent(escape(atob(code.trim())))); } catch(e) { return null; }
+    }
+
+    /** Calcule le score d'une option à partir d'un objet scores arbitraire */
+    function calcScoreFromScores(optionIndex, scores) {
+      let total = 0, max = 0;
+      S.criteria.forEach(c => {
+        let value = scores[c.id]?.[optionIndex] ?? 5;
+        if (c.invert) value = 11 - value;
+        total += value * c.weight;
+        max += 10 * c.weight;
+      });
+      return max === 0 ? 0 : Math.round((total / max) * 100);
+    }
+
+    /** Fusionne les codes de vote collés et affiche les résultats groupés */
+    function mergeCollabVotes() {
+      const area = document.getElementById('collabVoteCodes');
+      const lines = (area?.value || '').split('\n').map(l => l.trim()).filter(Boolean);
+      const votes = lines.map(_parseVoteCode).filter(Boolean);
+
+      const resultsEl = document.getElementById('collabMergeResults');
+      if (votes.length === 0) {
+        resultsEl.innerHTML = '<p style="color:var(--red);font-size:.82rem">Aucun code de vote valide détecté.</p>';
+        return;
+      }
+
+      // Moyenne des scores par critère × option
+      const avgScores = {};
+      S.criteria.forEach(cr => {
+        avgScores[cr.id] = S.options.map((_, oi) => {
+          const vals = votes.map(v => {
+            const raw = v.s?.[cr.id]?.[oi];
+            return (raw !== undefined && raw !== null) ? Number(raw) : 5;
+          });
+          return Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 10) / 10;
+        });
+      });
+
+      const avgFinal = S.options.map((_, oi) => calcScoreFromScores(oi, avgScores));
+      const ranked = [...S.options.map((_, oi) => oi)].sort((a, b) => avgFinal[b] - avgFinal[a]);
+      const colors = activeColors();
+      const rankEmojis = ['🥇', '🥈', '🥉'];
+
+      const optCardsHTML = ranked.map((oi, rank) => {
+        const c = colors[rank] || colors[colors.length - 1];
+        const score = avgFinal[oi];
+        const partScores = votes.map(v => ({
+          name: v.n || 'Anonyme',
+          score: calcScoreFromScores(oi, v.s || {})
+        }));
+        const scoreMin = Math.min(...partScores.map(p => p.score));
+        const scoreMax = Math.max(...partScores.map(p => p.score));
+        const disagreement = scoreMax - scoreMin;
+
+        const partRows = partScores.map(p =>
+          `<tr><td>${esc(p.name)}</td><td style="font-weight:700;color:${c.hex};text-align:right">${p.score}/100</td></tr>`
+        ).join('');
+
+        return `
+        <div class="collab-opt-card" style="border-color:${c.hex};background:linear-gradient(135deg,var(--white) 55%,${c.bg})">
+          <div class="collab-opt-rank" style="background:${c.bg};color:${c.hex}">${rankEmojis[rank] || `#${rank+1}`}</div>
+          <div style="flex:1;min-width:0">
+            <div class="collab-opt-name">${esc(S.options[oi].name)}</div>
+            <div class="collab-score-bar"><div class="collab-score-bar-fill" style="width:${score}%;background:${c.hex}"></div></div>
+            ${disagreement > 20 ? `<div class="collab-disagreement">⚠️ Forte divergence entre participants (${disagreement} pts d'écart)</div>` : ''}
+          </div>
+          <div class="collab-opt-avg">
+            <div class="collab-avg-num" style="color:${c.hex}">${score}</div>
+            <div style="font-size:.62rem;color:var(--muted)">/100 moy.</div>
+          </div>
+        </div>
+        <details style="margin:-4px 0 12px;font-size:.78rem">
+          <summary style="cursor:pointer;color:var(--muted);padding:4px 2px;user-select:none">Détail par participant</summary>
+          <table class="collab-participant-table" style="margin-top:6px">
+            <thead><tr><th>Participant</th><th style="text-align:right">Score</th></tr></thead>
+            <tbody>${partRows}</tbody>
+          </table>
+        </details>`;
+      }).join('');
+
+      resultsEl.innerHTML = `
+        <div class="collab-consensus-banner">
+          <div style="font-size:.68rem;color:var(--teal);font-weight:700;letter-spacing:.05em;margin-bottom:4px">CONSENSUS DU GROUPE</div>
+          <div style="font-size:1.05rem;font-weight:800;color:var(--ink)">🎯 "${esc(S.options[ranked[0]].name)}"</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:4px">${votes.length} participant${votes.length > 1 ? 's' : ''} · scores moyennés</div>
+        </div>
+        ${optCardsHTML}`;
+    }
+
     /* ─── PRÉ-MORTEM ─────────────────────────── */
     // { optIdx: Set of selected risk ids }
     let _premortemRisks = {};
@@ -9363,7 +9954,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       const analysesPane = document.getElementById('resTabAnalyses');
       if (analysesPane) analysesPane.innerHTML = extraHTML;
 
-      // Add share button to existing actions
+      // Add share + collab buttons to existing actions
       const saveBtn = document.getElementById('btnSaveTrack');
       if (saveBtn && !document.getElementById('btnShare')) {
         const shareBtn = document.createElement('button');
@@ -9373,13 +9964,683 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         shareBtn.onclick = openShareModal;
         saveBtn.insertAdjacentElement('afterend', shareBtn);
       }
+      if (saveBtn && !document.getElementById('btnCollab')) {
+        const collabBtn = document.createElement('button');
+        collabBtn.id = 'btnCollab';
+        collabBtn.className = 'btn btn-secondary';
+        collabBtn.textContent = '👥 Collaborer';
+        collabBtn.onclick = openCollabModal;
+        const shareBtn = document.getElementById('btnShare');
+        (shareBtn || saveBtn).insertAdjacentElement('afterend', collabBtn);
+      }
     };
+
+    /* ══════════════════════════════════════════
+       MODE GROUPE — session collaborative en direct
+       ══════════════════════════════════════════ */
+
+    let _ws = null;          // WebSocket connection
+    let _cs = null;          // collab session snapshot (from server)
+    let _myPid = null;       // my participant id
+    let _csDecisionDraft = '';// pending decision text
+
+    /* ── Helpers ── */
+    function _wsSend(msg) {
+      if (_ws && _ws.readyState === 1) _ws.send(JSON.stringify(msg));
+    }
+
+    function _wsUrl() {
+      // HTTPS → wss on same host (production reverse-proxy)
+      if (location.protocol === 'https:') return `wss://${location.hostname}`;
+      // HTTP / file:// → ws on same hostname, always port 3000 (Node server)
+      const host = location.hostname || 'localhost';
+      return `ws://${host}:3000`;
+    }
+
+    /* ── Modal groupe (créer / rejoindre) ── */
+    function openGroupModal() {
+      switchGroupTab('create');
+      document.getElementById('groupCreateName').value = '';
+      document.getElementById('groupJoinCode').value = '';
+      document.getElementById('groupJoinName').value = '';
+      document.getElementById('groupCreateError').style.display = 'none';
+      document.getElementById('groupJoinError').style.display = 'none';
+      document.getElementById('groupModal').classList.add('open');
+    }
+    function closeGroupModal() {
+      document.getElementById('groupModal').classList.remove('open');
+    }
+    function switchGroupTab(tab) {
+      document.querySelectorAll('#groupModal .collab-modal-tab').forEach((t, i) => {
+        t.classList.toggle('active', (tab === 'create' && i === 0) || (tab === 'join' && i === 1));
+      });
+      document.getElementById('groupPaneCreate').classList.toggle('active', tab === 'create');
+      document.getElementById('groupPaneJoin').classList.toggle('active', tab === 'join');
+    }
+
+    function createGroupSession() {
+      const name = document.getElementById('groupCreateName').value.trim();
+      if (!name) { _showGroupError('create', 'Entrez votre prénom.'); return; }
+      const btn = document.querySelector('#groupPaneCreate .btn-primary');
+      if (btn) { btn.textContent = 'Connexion…'; btn.disabled = true; }
+      _connectWs(() => _wsSend({ type: 'create', name }));
+    }
+
+    function joinGroupSession() {
+      const code = document.getElementById('groupJoinCode').value.trim().toUpperCase();
+      const name = document.getElementById('groupJoinName').value.trim();
+      if (!code || code.length < 4) { _showGroupError('join', 'Entrez le code de session.'); return; }
+      if (!name) { _showGroupError('join', 'Entrez votre prénom.'); return; }
+      const btn = document.querySelector('#groupPaneJoin .btn-primary');
+      if (btn) { btn.textContent = 'Connexion…'; btn.disabled = true; }
+      _connectWs(() => _wsSend({ type: 'join', sessionId: code, name }));
+    }
+
+    function _showGroupError(tab, msg) {
+      const el = document.getElementById(tab === 'create' ? 'groupCreateError' : 'groupJoinError');
+      el.textContent = msg; el.style.display = 'block';
+    }
+
+    function _connectWs(onOpen) {
+      if (_ws) { _ws.close(); _ws = null; }
+      let connected = false;
+
+      function _tryUrl(url, onFail) {
+        const ws = new WebSocket(url);
+        const timeout = setTimeout(() => { if (!connected) { ws.close(); onFail(); } }, 4000);
+        ws.onopen = () => {
+          connected = true; clearTimeout(timeout);
+          _ws = ws;
+          _ws.onmessage = e => _handleWsMsg(JSON.parse(e.data));
+          _ws.onclose = () => { if (_cs) document.querySelector('#csCode')?.style.setProperty('opacity', '.4'); };
+          onOpen();
+        };
+        ws.onerror = () => { clearTimeout(timeout); if (!connected) onFail(); };
+      }
+
+      const primary = _wsUrl();
+      // Also try the exact current host (handles case where Node serves the page on 3000)
+      const sameHost = location.host && location.host !== `${location.hostname}:3000`
+        ? `ws://${location.host}` : null;
+
+      _tryUrl(primary, () => {
+        if (sameHost && sameHost !== primary) {
+          _tryUrl(sameHost, _showWsError);
+        } else {
+          _showWsError();
+        }
+      });
+    }
+
+    function _showWsError() {
+      const pane = document.getElementById('groupPaneCreate')?.classList.contains('active')
+        ? 'Create' : 'Join';
+      // Reset button
+      const btn = document.querySelector(`#groupPane${pane} .btn-primary`);
+      if (btn) { btn.textContent = pane === 'Create' ? 'Créer la session →' : 'Rejoindre →'; btn.disabled = false; }
+      const errEl = document.getElementById(`group${pane}Error`);
+      if (errEl) {
+        errEl.innerHTML = '❌ Serveur inaccessible. Lancez <code style="font-size:.78rem">npm start</code>.';
+        errEl.style.display = 'block';
+      } else {
+        alert('❌ Serveur inaccessible. Lancez : npm start');
+      }
+    }
+
+    function _handleWsMsg(msg) {
+      try {
+        switch (msg.type) {
+          case 'created':
+          case 'joined':
+            _myPid = msg.participantId;
+            _applySession(msg.session);
+            closeGroupModal();
+            nav('page-collab');
+            if (msg.type === 'created') {
+              const url = new URL(location.href);
+              url.searchParams.set('session', msg.session.id);
+              history.replaceState(null, '', url.toString());
+            }
+            break;
+          case 'sync':
+            _applySession(msg.session);
+            break;
+          case 'error':
+            alert('❌ ' + msg.message);
+            break;
+        }
+      } catch(e) {
+        console.error('[Lucid collab]', e);
+        alert('Erreur interne : ' + e.message + '\n\nVoir la console pour les détails.');
+      }
+    }
+
+    /** Apply a fresh session snapshot from server and re-render */
+    function _applySession(session) {
+      _cs = session;
+
+      // Keep S in sync so existing scoring functions (stepVal, refreshLive, etc.) work
+      S.decision = session.decision;
+      S.options = session.options.map(o => ({ name: o.name, desc: o.desc }));
+      S.criteria = session.criteria;
+      // My scores: use what the server has for me
+      if (session.scores[_myPid]) {
+        S.scores = JSON.parse(JSON.stringify(session.scores[_myPid]));
+      } else {
+        // Init my scores if not yet on server
+        S.scores = {};
+        session.criteria.forEach(cr => {
+          S.scores[cr.id] = session.options.map(() => 5);
+        });
+      }
+
+      _renderCsHeader();
+      _renderCsDecision();
+      _renderCsOptions();
+      _renderCsCriteria();
+      _renderCsScoring();
+      _renderCsResults();
+    }
+
+    /* ── Renderers ── */
+    function _renderCsHeader() {
+      if (!_cs) return;
+      document.getElementById('csCode').textContent = '🔑 ' + _cs.id;
+      const par = document.getElementById('csParticipants');
+      par.innerHTML = _cs.participants.map(p => {
+        const initials = p.name.substring(0, 2).toUpperCase();
+        const offline = p.connected ? '' : ' offline';
+        const isMe = p.id === _myPid ? ' (vous)' : '';
+        const host = p.isHost ? ' ★' : '';
+        return `<div class="cs-avatar${offline}" style="background:${p.color}" title="${p.name}${isMe}${host}">
+          <div class="cs-avatar-dot"></div>${p.name.split(' ')[0]}${p.isHost ? host : ''}
+        </div>`;
+      }).join('');
+    }
+
+    function _renderCsDecision() {
+      if (!_cs) return;
+      const inp = document.getElementById('csDecisionInput');
+      if (inp && document.activeElement !== inp) inp.value = _cs.decision;
+    }
+
+    function csDraftDecision(val) { _csDecisionDraft = val; }
+    function csSendDecision() {
+      _wsSend({ type: 'set_decision', value: _csDecisionDraft || document.getElementById('csDecisionInput').value });
+    }
+
+    function _renderCsOptions() {
+      if (!_cs) return;
+      const list = document.getElementById('csOptionsList');
+      const colors = activeColors();
+      const addRow = document.getElementById('csAddOptionRow');
+      const sub = document.getElementById('csOptionsSub');
+
+      if (_cs.options.length === 0) {
+        list.innerHTML = `<div class="cs-empty">Aucune option pour l'instant — soyez le premier à en proposer !</div>`;
+      } else {
+        list.innerHTML = _cs.options.map((opt, oi) => {
+          const c = colors[oi % colors.length];
+          const owner = _cs.participants.find(p => p.id === opt.addedBy);
+          const ownerName = owner ? owner.name : '';
+          const canRemove = opt.addedBy === _myPid;
+          return `<div class="cs-option-row">
+            <div class="cs-option-dot" style="background:${c.hex}"></div>
+            <div class="cs-option-name">${esc(opt.name)}${opt.desc ? `<span style="font-weight:400;color:var(--muted)"> — ${esc(opt.desc)}</span>` : ''}</div>
+            ${ownerName ? `<div class="cs-option-by" style="color:${c.hex}">par ${esc(ownerName)}</div>` : ''}
+            ${canRemove ? `<button class="cs-option-rm" onclick="csRemoveOption('${opt.id}')" title="Supprimer">✕</button>` : ''}
+          </div>`;
+        }).join('');
+      }
+      if (addRow) addRow.style.display = _cs.options.length >= 8 ? 'none' : 'flex';
+      if (sub) sub.textContent = `${_cs.options.length} option${_cs.options.length > 1 ? 's' : ''}`;
+    }
+
+    function csAddOption() {
+      const inp = document.getElementById('csAddOptionInput');
+      const name = (inp?.value || '').trim();
+      if (!name) return;
+      _wsSend({ type: 'add_option', name, desc: '' });
+      inp.value = '';
+    }
+
+    function csRemoveOption(optId) {
+      _wsSend({ type: 'remove_option', optionId: optId });
+    }
+
+    function _renderCsCriteria() {
+      if (!_cs) return;
+      const grid = document.getElementById('csCritGrid');
+      const sub = document.getElementById('csCriteriaSub');
+      // Show all criteria from the library, highlight selected ones
+      const allCrits = typeof LIB !== 'undefined' ? LIB : [];
+      const selectedIds = new Set(_cs.criteria.map(c => c.id));
+      if (allCrits.length === 0) {
+        grid.innerHTML = `<div class="cs-empty">Bibliothèque non disponible.</div>`;
+        return;
+      }
+      grid.innerHTML = allCrits.map(cr => {
+        const active = selectedIds.has(cr.id) ? ' active' : '';
+        return `<button class="cs-crit-chip${active}" onclick="csToggleCriterion('${cr.id}')">
+          <span>${cr.icon}</span>
+          <span>${cr.name}</span>
+          ${active ? '<span class="cs-crit-check">✓</span>' : ''}
+        </button>`;
+      }).join('');
+      if (sub) sub.textContent = `${_cs.criteria.length} critère${_cs.criteria.length > 1 ? 's' : ''} sélectionné${_cs.criteria.length > 1 ? 's' : ''}`;
+    }
+
+    function csToggleCriterion(critId) {
+      if (!_cs) return;
+      const allCrits = typeof LIB !== 'undefined' ? LIB : [];
+      const cr = allCrits.find(c => c.id === critId);
+      if (!cr) return;
+      const isSelected = _cs.criteria.some(c => c.id === critId);
+      if (isSelected) {
+        _wsSend({ type: 'remove_criterion', criterionId: critId });
+      } else {
+        _wsSend({ type: 'add_criterion', criterion: { ...cr, weight: cr.dw || 1, swingRank: 0 } });
+      }
+    }
+
+    function _renderCsScoring() {
+      if (!_cs || _cs.options.length === 0 || _cs.criteria.length === 0) {
+        document.getElementById('csEvalGrid').innerHTML = `<div class="cs-empty" style="text-align:left">Ajoutez des options et des critères pour commencer à noter.</div>`;
+        document.getElementById('csGroupTable').innerHTML = '';
+        return;
+      }
+      // My scores pane: reuse buildEvalPage logic with S already synced
+      _csBuildMyEvalGrid();
+      // Group table pane
+      _csBuildGroupTable();
+    }
+
+    function _csBuildMyEvalGrid() {
+      const nOpts = S.options.length;
+      const grid = document.getElementById('csEvalGrid');
+      grid.style.gridTemplateColumns = `repeat(${Math.min(nOpts, 2)},1fr)`;
+      grid.innerHTML = '';
+      const colors = activeColors();
+
+      S.options.forEach((opt, oi) => {
+        const col = document.createElement('div');
+        col.className = 'eval-col';
+        const c = colors[oi % colors.length];
+
+        const items = S.criteria.map(cr => {
+          const v = S.scores[cr.id]?.[oi] ?? 5;
+          const inv = cr.invert ? `<span class="inv-tag">↓</span>` : '';
+          const pips = `
+            <div class="fluid-bar" onpointerdown="startFluidDrag(event,${oi},'${cr.id}')" role="slider"
+                 aria-valuemin="1" aria-valuemax="10" aria-valuenow="${v}" tabindex="0">
+              <div class="fluid-bar-fill" id="pip-${oi}-${cr.id}-fill"></div>
+              <div class="fluid-thumb" id="pip-${oi}-${cr.id}-thumb" aria-hidden="true"></div>
+            </div>`;
+          return `
+          <div class="sl-item">
+            <div class="sl-head">
+              <div class="sl-label"><span class="crit-name-badge">${cr.icon} ${cr.name}</span></div>
+              ${inv}
+            </div>
+            <div class="stepper">
+              <button class="stepper-btn" onclick="csStepVal(${oi},'${cr.id}',-1)" aria-label="−">−</button>
+              <div class="stepper-track">
+                <div class="fluid-track">
+                  ${pips}
+                  <div class="stepper-emoji" id="se-${oi}-${cr.id}">${scoreEmoji(v, cr.invert ?? false)}</div>
+                </div>
+                <div class="stepper-val" id="sv-${oi}-${cr.id}">${v}</div>
+              </div>
+              <button class="stepper-btn" onclick="csStepVal(${oi},'${cr.id}',+1)" aria-label="+">+</button>
+            </div>
+          </div>`;
+        }).join('');
+
+        col.innerHTML = `
+        <div class="eval-col-head" style="background:${c.bg};border-color:${c.border}">
+          <div class="eval-col-name" style="color:${c.hex}"><span class="opt-badge">Option ${LETTERS[oi]}</span> ${esc(opt.name)}</div>
+          <div class="eval-live-score" style="border:1px solid ${c.border}">
+            <div class="eval-live-num" id="live-${oi}" style="color:${c.hex}">—</div>
+            <div class="eval-live-label" style="color:${c.hex}">/ 100</div>
+          </div>
+        </div>
+        <div class="eval-col-body" id="eval-col-body-${oi}" style="border-color:${c.border}">${items}</div>`;
+
+        grid.appendChild(col);
+        S.criteria.forEach(cr => renderStepper(oi, cr.id, S.scores[cr.id]?.[oi] ?? 5, cr.invert ?? false));
+        refreshLive(oi);
+      });
+    }
+
+    /* Patch setVal to forward score changes to server in collab mode */
+    const _origSetVal = setVal;
+    // Override globally so fluid drag also sends scores
+    setVal = function(oi, cid, val) {
+      _origSetVal(oi, cid, val);
+      if (_ws && _cs) {
+        _wsSend({ type: 'set_score', criterionId: cid, optionIndex: oi, value: val });
+      }
+    };
+
+    /** Score step in collab mode: update locally + send to server */
+    function csStepVal(oi, crId, delta) {
+      if (!S.scores[crId]) S.scores[crId] = S.options.map(() => 5);
+      const cur = S.scores[crId][oi] ?? 5;
+      const next = Math.max(1, Math.min(10, cur + delta));
+      S.scores[crId][oi] = next;
+      renderStepper(oi, crId, next, S.criteria.find(c => c.id === crId)?.invert ?? false);
+      refreshLive(oi);
+      _wsSend({ type: 'set_score', criterionId: crId, optionIndex: oi, value: next });
+    }
+
+    function _csBuildGroupTable() {
+      if (!_cs) return;
+      const participants = _cs.participants.filter(p => _cs.scores[p.id]);
+      if (participants.length === 0 || _cs.criteria.length === 0 || _cs.options.length === 0) {
+        document.getElementById('csGroupTable').innerHTML = `<div class="cs-empty">Pas encore de notes.</div>`;
+        return;
+      }
+
+      const colors = activeColors();
+      const optHeaders = _cs.options.map((o, oi) =>
+        `<th class="opt-col" style="color:${colors[oi % colors.length].hex}">${esc(o.name)}</th>`
+      ).join('');
+
+      const rows = _cs.criteria.map(cr => {
+        const cells = _cs.options.map((_, oi) => {
+          const participantCells = participants.map(p => {
+            const val = _cs.scores[p.id]?.[cr.id]?.[oi] ?? 5;
+            const isMe = p.id === _myPid;
+            return `<div style="font-size:.72rem;color:${p.color};${isMe ? 'font-weight:800' : ''}">${p.name.split(' ')[0]}: ${val}</div>`;
+          }).join('');
+          // Average
+          const vals = participants.map(p => _cs.scores[p.id]?.[cr.id]?.[oi] ?? 5);
+          const avg = (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1);
+          return `<td class="cs-score-cell">
+            <div style="font-weight:800;font-size:.95rem;color:var(--ink);margin-bottom:4px">${avg}</div>
+            ${participantCells}
+          </td>`;
+        }).join('');
+        return `<tr><td class="crit-td">${cr.icon} ${cr.name}</td>${cells}</tr>`;
+      }).join('');
+
+      // Average row (overall scores)
+      const avgCells = _cs.options.map((_, oi) => {
+        const scores = participants.map(p => calcScoreFromScores(oi, _cs.scores[p.id] || {}));
+        const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+        const c = colors[oi % colors.length];
+        return `<td class="cs-score-cell"><span style="color:${c.hex};font-size:1.1rem">${avg}/100</span></td>`;
+      }).join('');
+
+      document.getElementById('csGroupTable').innerHTML = `
+        <table class="cs-score-table">
+          <thead><tr><th>Critère</th>${optHeaders}</tr></thead>
+          <tbody>${rows}</tbody>
+          <tfoot><tr class="cs-avg-row"><td class="crit-td">Score global</td>${avgCells}</tr></tfoot>
+        </table>`;
+    }
+
+    function _renderCsResults() {
+      if (!_cs || _cs.options.length === 0 || _cs.criteria.length === 0) {
+        document.getElementById('csResults').innerHTML = `<div class="cs-empty">Les résultats apparaîtront dès que tout le groupe aura noté les options.</div>`;
+        return;
+      }
+      const participants = _cs.participants.filter(p => _cs.scores[p.id] && Object.keys(_cs.scores[p.id]).length > 0);
+      if (participants.length === 0) {
+        document.getElementById('csResults').innerHTML = `<div class="cs-empty">Pas encore de notes.</div>`;
+        return;
+      }
+
+      // Average raw scores per criterion per option across all participants
+      const avgRawScores = {};
+      _cs.criteria.forEach(cr => {
+        avgRawScores[cr.id] = _cs.options.map((_, oi) => {
+          const vals = participants.map(p => (_cs.scores[p.id]?.[cr.id]?.[oi] ?? 5));
+          return vals.reduce((a, b) => a + b, 0) / vals.length;
+        });
+      });
+
+      // Average final scores per option
+      const avgFinal = _cs.options.map((_, oi) => {
+        const scores = participants.map(p => calcScoreFromScores(oi, _cs.scores[p.id] || {}));
+        return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+      });
+
+      const ranked = [..._cs.options.map((_, oi) => oi)].sort((a, b) => avgFinal[b] - avgFinal[a]);
+      const colors = activeColors();
+      const rankEmojis = ['🥇', '🥈', '🥉'];
+      const winnerScore = avgFinal[ranked[0]];
+
+      const cards = ranked.map((oi, rank) => {
+        const c = colors[rank] || colors[colors.length - 1];
+        const score = avgFinal[oi];
+        const proximity = winnerScore > 0 ? Math.round((score / winnerScore) * 100) : 100;
+
+        // Per-participant scores for tooltip/detail
+        const partDetail = participants.map(p => {
+          const ps = calcScoreFromScores(oi, _cs.scores[p.id] || {});
+          return `<span style="color:${p.color};font-size:.7rem;font-weight:600">${p.name.split(' ')[0]}: ${ps}</span>`;
+        }).join(' · ');
+
+        // Strengths / weaknesses from averaged scores
+        const allSorted = [..._cs.criteria].sort((a, b) => {
+          const va = avgRawScores[a.id]?.[oi] ?? 5;
+          const vb = avgRawScores[b.id]?.[oi] ?? 5;
+          const ea = a.invert ? 11 - va : va;
+          const eb = b.invert ? 11 - vb : vb;
+          return (eb * (b.weight || 1)) - (ea * (a.weight || 1));
+        });
+        const topCrits = allSorted.slice(0, 2).filter(cr => {
+          const v = avgRawScores[cr.id]?.[oi] ?? 5;
+          return (cr.invert ? 11 - v : v) >= 6;
+        });
+        const worstCrit = [...allSorted].reverse().find(cr => {
+          const v = avgRawScores[cr.id]?.[oi] ?? 5;
+          return (cr.invert ? 11 - v : v) <= 5;
+        });
+        const insightHTML = (topCrits.length || worstCrit) ? `<div class="sc-insights" style="margin-top:6px">
+            ${topCrits.length ? `<div class="sc-insight sc-insight-pro">
+              <span class="sc-insight-dot">↑</span>
+              <span><strong>Points forts :</strong> ${topCrits.map(cr => `${cr.icon} ${cr.name}`).join(', ')}</span>
+            </div>` : ''}
+            ${worstCrit ? `<div class="sc-insight sc-insight-con">
+              <span class="sc-insight-dot">↓</span>
+              <span><strong>À surveiller :</strong> ${worstCrit.icon} ${worstCrit.name}</span>
+            </div>` : ''}
+          </div>` : '';
+
+        return `<div class="cs-result-card" style="border-color:${c.hex};background:linear-gradient(135deg,var(--white) 60%,${c.bg})">
+          <div class="cs-result-rank" style="background:${c.bg};color:${c.hex}">${rankEmojis[rank] || `#${rank+1}`}</div>
+          <div style="flex:1;min-width:0">
+            <div class="cs-result-name">${esc(_cs.options[oi].name)}</div>
+            <div class="cs-result-score-bar">
+              <div class="cs-result-score-fill" style="width:${rank === 0 ? 100 : proximity}%;background:${c.hex}"></div>
+            </div>
+            <div style="margin-top:5px">${partDetail}</div>
+            ${insightHTML}
+          </div>
+          <div class="cs-result-num" style="color:${c.hex}">${score}<span style="font-size:.7rem;color:var(--muted)">/100</span></div>
+        </div>`;
+      }).join('');
+
+      const showRadar = _cs.criteria.length >= 3;
+      document.getElementById('csResults').innerHTML = `
+        <div style="font-size:.72rem;color:var(--muted);margin-bottom:12px">
+          ${participants.length} participant${participants.length > 1 ? 's' : ''} · ${_cs.options.length} options · ${_cs.criteria.length} critères
+        </div>
+        ${showRadar ? `<div style="display:flex;justify-content:center;margin-bottom:16px"><canvas id="csRadarC" width="420" height="320" style="max-width:100%"></canvas></div>` : ''}
+        ${cards}`;
+
+      if (showRadar) {
+        setTimeout(() => _drawCsRadar(avgRawScores, colors), 50);
+      }
+    }
+
+    function _drawCsRadar(avgRawScores, colors) {
+      const canvas = document.getElementById('csRadarC');
+      if (!canvas) return;
+      const crits = _cs.criteria;
+      if (crits.length < 3) return;
+
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      const cx = W / 2, cy = H / 2;
+      const N = crits.length;
+      const R = Math.min(W, H) / 2 - 72;
+      ctx.clearRect(0, 0, W, H);
+      const angle = i => (i / N) * Math.PI * 2 - Math.PI / 2;
+
+      const isDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+      const gridOuter = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.13)';
+      const gridInner = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+      const axisColor = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)';
+      const levelLblColor = isDark ? 'rgba(255,255,255,0.40)' : 'rgba(0,0,0,0.25)';
+      const critNameColor = isDark ? '#e2e8f0' : '#555';
+
+      // Grid rings
+      [2, 4, 6, 8, 10].forEach(lvl => {
+        ctx.beginPath();
+        crits.forEach((_, i) => {
+          const a = angle(i), r = (lvl / 10) * R;
+          i === 0 ? ctx.moveTo(cx + r * Math.cos(a), cy + r * Math.sin(a))
+            : ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+        });
+        ctx.closePath();
+        ctx.strokeStyle = lvl === 10 ? gridOuter : gridInner;
+        ctx.lineWidth = lvl === 10 ? 1.5 : 1;
+        ctx.stroke();
+        if (lvl % 4 === 0) {
+          ctx.font = '9px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillStyle = levelLblColor;
+          ctx.fillText(lvl, cx + 4, cy - (lvl / 10) * R + 10);
+        }
+      });
+
+      // Radial axes
+      crits.forEach((_, i) => {
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + R * Math.cos(angle(i)), cy + R * Math.sin(angle(i)));
+        ctx.strokeStyle = axisColor;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
+
+      // Criterion labels
+      crits.forEach((c, i) => {
+        const a = angle(i);
+        const dist = R + 46;
+        const x = cx + dist * Math.cos(a);
+        const y = cy + dist * Math.sin(a);
+        const short = c.name.length > 12 ? c.name.substring(0, 11) + '…' : c.name;
+        ctx.font = '13px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(c.icon || '', x, y - 8);
+        ctx.font = '10px sans-serif';
+        ctx.fillStyle = critNameColor;
+        ctx.fillText(short, x, y + 6);
+      });
+
+      // Polygon per option (using averaged scores)
+      _cs.options.forEach((_, oi) => {
+        const col = colors[oi] || colors[colors.length - 1];
+        const hex = col.hex.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+
+        const pts = crits.map((c, i) => {
+          const v = avgRawScores[c.id]?.[oi] ?? 5;
+          const eff = c.invert ? 11 - v : v;
+          const rad = (eff / 10) * R;
+          return [cx + rad * Math.cos(angle(i)), cy + rad * Math.sin(angle(i))];
+        });
+
+        ctx.beginPath();
+        pts.forEach(([px, py], i) => i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py));
+        ctx.closePath();
+        ctx.fillStyle = `rgba(${r},${g},${b},0.12)`;
+        ctx.fill();
+        ctx.strokeStyle = col.hex;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        pts.forEach(([px, py]) => {
+          ctx.beginPath();
+          ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = col.hex;
+          ctx.fill();
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        });
+      });
+
+      // Legend
+      _cs.options.forEach((opt, oi) => {
+        const col = colors[oi] || colors[colors.length - 1];
+        const y = H - (_cs.options.length - oi) * 16 - 4;
+        ctx.beginPath();
+        ctx.rect(8, y - 6, 12, 10);
+        ctx.fillStyle = col.hex + '44';
+        ctx.fill();
+        ctx.strokeStyle = col.hex;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.font = '10px sans-serif';
+        ctx.fillStyle = critNameColor;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        const label = opt.name.length > 18 ? opt.name.substring(0, 17) + '…' : opt.name;
+        ctx.fillText(label, 24, y - 1);
+      });
+    }
+
+    /* ── Helpers collab ── */
+    function toggleCsSection(id) {
+      document.getElementById(id).classList.toggle('open');
+    }
+
+    function copySessionCode() {
+      const code = _cs?.id;
+      if (!code) return;
+      const url = new URL(location.href);
+      url.searchParams.set('session', code);
+      navigator.clipboard?.writeText(url.toString()).then(() => {
+        const el = document.getElementById('csCode');
+        const orig = el.textContent;
+        el.textContent = '✅ Lien copié !';
+        setTimeout(() => el.textContent = orig, 2000);
+      });
+    }
+
+    function switchCsScoreTab(tab) {
+      document.querySelectorAll('.cs-scoring-tab').forEach((t, i) =>
+        t.classList.toggle('active', (tab === 'mine' && i === 0) || (tab === 'group' && i === 1)));
+      document.getElementById('csPaneMine').classList.toggle('active', tab === 'mine');
+      document.getElementById('csPaneGroup').classList.toggle('active', tab === 'group');
+    }
+
+    /** Auto-join if URL has ?session=CODE */
+    function checkSessionUrl() {
+      const params = new URLSearchParams(location.search);
+      const code = params.get('session');
+      if (!code) return;
+      // Show join modal pre-filled
+      openGroupModal();
+      switchGroupTab('join');
+      document.getElementById('groupJoinCode').value = code.toUpperCase();
+    }
 
     /* ─── INIT ───────────────────────────────── */
     window.addEventListener('DOMContentLoaded', () => {
       renderTemplates();
       updateProfileBtn();
       checkShareUrl();
+      checkCollabUrl();
+      checkSessionUrl();
       // Check fatigue on intro page load
       checkFatigue();
     });
@@ -9452,6 +10713,86 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       <p style="font-size:.72rem;color:var(--muted2);margin-top:8px">💡 L'URL contient l'intégralité de votre analyse. Elle peut être longue.</p>
       <div style="display:flex;justify-content:flex-end;margin-top:16px">
         <button class="btn btn-secondary" style="padding:9px 18px;font-size:.85rem" onclick="closeShareModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Mode Collaboratif -->
+  <div class="modal-overlay" id="collabModal">
+    <div class="modal-box">
+      <div class="modal-title">👥 Mode collaboratif</div>
+      <div class="modal-sub">Chaque participant note les options de son côté — Lucid calcule la moyenne du groupe.</div>
+
+      <div class="collab-modal-tabs">
+        <button class="collab-modal-tab active" onclick="switchCollabTab('invite')">📤 Inviter à voter</button>
+        <button class="collab-modal-tab" onclick="switchCollabTab('merge')">🔀 Fusionner les votes</button>
+      </div>
+
+      <!-- Onglet Inviter -->
+      <div class="collab-modal-pane active" id="collabPaneInvite">
+        <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px;line-height:1.5">
+          Partagez ce lien. Chaque participant verra les options et critères, notera de son côté, puis obtiendra un <strong>code de vote</strong> à vous renvoyer.
+        </p>
+        <div class="share-url-row">
+          <input type="text" id="collabLinkInput" readonly style="font-size:.75rem;color:var(--muted)">
+          <button class="share-copy-btn" onclick="copyCollabLink()">📋 Copier</button>
+        </div>
+        <p style="font-size:.72rem;color:var(--muted2);margin-top:8px">💡 Le lien encode uniquement la structure de la décision (options + critères), pas vos scores.</p>
+      </div>
+
+      <!-- Onglet Fusionner -->
+      <div class="collab-modal-pane" id="collabPaneMerge">
+        <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px;line-height:1.5">
+          Collez les codes de vote reçus (un par ligne). Lucid calcule la <strong>moyenne des scores</strong> et révèle le consensus.
+        </p>
+        <textarea class="collab-merge-area" id="collabVoteCodes" placeholder="Collez les codes de vote ici…
+Un code par ligne."></textarea>
+        <div style="display:flex;gap:8px;margin-bottom:16px">
+          <button class="btn btn-secondary" style="flex:1;font-size:.8rem;padding:9px 6px" onclick="addMyVoteToMerge()">➕ Inclure mon vote</button>
+          <button class="btn btn-primary" style="flex:1;font-size:.8rem;padding:9px 6px" onclick="mergeCollabVotes()">🔀 Calculer la moyenne</button>
+        </div>
+        <div id="collabMergeResults"></div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;margin-top:16px">
+        <button class="btn btn-secondary" style="padding:9px 18px;font-size:.85rem" onclick="closeCollabModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Créer / Rejoindre une session groupe -->
+  <div class="modal-overlay" id="groupModal">
+    <div class="modal-box">
+      <div class="modal-title">👥 Décision en groupe</div>
+      <div class="modal-sub">Créez une session et invitez vos amis à rejoindre en direct. Chacun propose des options, choisit des critères et note — Lucid calcule les moyennes instantanément.</div>
+
+      <div class="collab-modal-tabs" style="margin-top:4px">
+        <button class="collab-modal-tab active" onclick="switchGroupTab('create')">✨ Créer une session</button>
+        <button class="collab-modal-tab" onclick="switchGroupTab('join')">🔗 Rejoindre</button>
+      </div>
+
+      <!-- Créer -->
+      <div class="collab-modal-pane active" id="groupPaneCreate">
+        <label style="font-size:.82rem;font-weight:600;color:var(--ink);display:block;margin-bottom:6px">Votre prénom</label>
+        <input type="text" id="groupCreateName" class="vote-name-input" placeholder="Ex: Marie" style="margin-bottom:16px">
+        <div id="groupCreateError" style="color:var(--red);font-size:.8rem;margin-bottom:8px;display:none"></div>
+        <button class="btn btn-primary" style="width:100%" onclick="createGroupSession()">Créer la session →</button>
+      </div>
+
+      <!-- Rejoindre -->
+      <div class="collab-modal-pane" id="groupPaneJoin">
+        <label style="font-size:.82rem;font-weight:600;color:var(--ink);display:block;margin-bottom:6px">Code de session (6 lettres)</label>
+        <input type="text" id="groupJoinCode" class="vote-name-input" placeholder="Ex: ABC123" maxlength="6"
+          style="text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-bottom:12px"
+          oninput="this.value=this.value.toUpperCase()">
+        <label style="font-size:.82rem;font-weight:600;color:var(--ink);display:block;margin-bottom:6px">Votre prénom</label>
+        <input type="text" id="groupJoinName" class="vote-name-input" placeholder="Ex: Paul" style="margin-bottom:16px">
+        <div id="groupJoinError" style="color:var(--red);font-size:.8rem;margin-bottom:8px;display:none"></div>
+        <button class="btn btn-primary" style="width:100%" onclick="joinGroupSession()">Rejoindre →</button>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;margin-top:16px">
+        <button class="btn btn-secondary" style="padding:9px 18px;font-size:.85rem" onclick="closeGroupModal()">Annuler</button>
       </div>
     </div>
   </div>
