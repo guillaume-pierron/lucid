@@ -1051,6 +1051,7 @@
       line-height: 1.4;
     }
 
+
     .custom-form {
       background: var(--glass-bg);
       backdrop-filter: blur(16px);
@@ -5453,6 +5454,124 @@
     }
     /* ── PAGE COLLAB (session en direct) ───── */
     #page-collab { --cs-gap: 16px; }
+
+    /* Phase bar */
+    .cs-phase-bar {
+      display: flex; align-items: center; gap: 0;
+      background: var(--glass-bg); border-bottom: 1px solid var(--border);
+      padding: 0 18px; overflow-x: auto; position: sticky; top: 57px; z-index: 9;
+    }
+    .cs-phase-step {
+      display: flex; align-items: center; gap: 6px; padding: 9px 12px;
+      font-size: .72rem; font-weight: 600; color: var(--muted); white-space: nowrap;
+      border-bottom: 2.5px solid transparent; transition: all .2s; cursor: default;
+    }
+    .cs-phase-step.active { color: var(--teal); border-bottom-color: var(--teal); }
+    .cs-phase-step.done { color: var(--muted2); }
+    .cs-phase-num {
+      width: 18px; height: 18px; border-radius: 50%; font-size: .65rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--border); color: var(--muted);
+    }
+    .cs-phase-step.active .cs-phase-num { background: var(--teal); color: #fff; }
+    .cs-phase-step.done .cs-phase-num { background: var(--teal-bg); color: var(--teal); }
+    .cs-phase-sep { color: var(--muted2); font-size: .75rem; padding: 0 2px; flex-shrink: 0; }
+    .cs-phase-host-btn {
+      margin-left: auto; padding: 5px 12px; border-radius: 20px; font-size: .72rem;
+      font-weight: 700; border: 1.5px solid var(--teal); background: var(--teal);
+      color: #fff; cursor: pointer; white-space: nowrap; transition: all .15s;
+      font-family: 'Inter', sans-serif; flex-shrink: 0;
+    }
+    .cs-phase-host-btn:hover { opacity: .85; }
+    .cs-phase-host-btn.back { background: none; color: var(--muted); border-color: var(--border); }
+    .cs-phase-host-btn.back:hover { border-color: var(--muted); color: var(--ink); }
+
+    /* Ready indicator */
+    .cs-ready-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; padding: 10px 14px; background: var(--bg); border-radius: var(--r-sm); border: 1px solid var(--border); }
+    .cs-ready-chip {
+      display: flex; align-items: center; gap: 5px; font-size: .7rem; font-weight: 600;
+      padding: 3px 8px; border-radius: 20px; border: 1px solid var(--border);
+    }
+    .cs-ready-chip.done { border-color: var(--teal); color: var(--teal); background: var(--teal-bg); }
+    .cs-ready-chip.waiting { color: var(--muted); }
+    .cs-ready-btn {
+      width: 100%; padding: 10px; margin-top: 14px; border-radius: 10px;
+      border: 1.5px solid var(--teal); background: var(--teal-bg);
+      color: var(--teal); font-size: .85rem; font-weight: 700; cursor: pointer;
+      transition: all .18s; font-family: 'Inter', sans-serif;
+    }
+    .cs-ready-btn:hover { background: var(--teal); color: #fff; }
+    .cs-ready-btn.done { background: var(--teal); color: #fff; }
+
+    /* Anonymous badge */
+    .cs-anon-badge {
+      display: inline-flex; align-items: center; gap: 4px; font-size: .65rem; font-weight: 700;
+      color: #8b5cf6; background: rgba(139,92,246,.1); border: 1px solid rgba(139,92,246,.3);
+      border-radius: 8px; padding: 3px 7px; white-space: nowrap;
+    }
+
+    /* Section locked overlay */
+    .cs-section.phase-locked .cs-section-body { opacity: .45; pointer-events: none; }
+    .cs-section.phase-active { border-color: var(--teal); }
+    .cs-phase-label {
+      font-size: .68rem; font-weight: 700; padding: 2px 7px; border-radius: 6px;
+      background: var(--teal); color: #fff; margin-left: 4px;
+    }
+
+    /* Weight chips */
+    .cs-weight-row { display: flex; align-items: center; gap: 5px; margin-top: 6px; flex-wrap: wrap; }
+    .cs-weight-label { font-size: .65rem; color: var(--muted); font-weight: 600; }
+    .cs-weight-chip {
+      width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border);
+      background: var(--bg); font-size: .68rem; font-weight: 800; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .12s; color: var(--muted); font-family: 'Inter', sans-serif;
+    }
+    .cs-weight-chip.active { border-color: var(--teal); background: var(--teal); color: #fff; }
+    .cs-weight-chip:hover:not(.active) { border-color: var(--teal); color: var(--teal); }
+
+    /* Comment input under score */
+    .cs-comment-row { margin-top: 6px; }
+    .cs-comment-input {
+      width: 100%; box-sizing: border-box; padding: 5px 8px; font-size: .72rem;
+      font-family: 'Inter', sans-serif; border: 1px solid var(--border); border-radius: 7px;
+      background: var(--white); color: var(--muted); resize: none; line-height: 1.4;
+    }
+    .cs-comment-input:focus { outline: none; border-color: var(--teal); color: var(--ink); }
+
+    /* Disagreement in group table */
+    .cs-score-cell.high-variance { background: rgba(245,158,11,.1); }
+    .cs-score-cell.low-variance { background: rgba(5,150,105,.06); }
+    .cs-variance-icon { font-size: .65rem; margin-left: 3px; vertical-align: middle; }
+
+    /* Invite / QR modal */
+    .cs-invite-btn {
+      padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--bg); font-size: .72rem; font-weight: 600; color: var(--muted);
+      cursor: pointer; transition: all .15s; white-space: nowrap; font-family: 'Inter', sans-serif;
+    }
+    .cs-invite-btn:hover { border-color: var(--teal); color: var(--teal); }
+    #csInviteModal .modal-box { max-width: 340px; }
+    .cs-qr-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 16px 0; }
+    .cs-qr-code { width: 160px; height: 160px; border: 1px solid var(--border); border-radius: var(--r-sm); }
+    .cs-session-code-big {
+      font-size: 2rem; font-weight: 900; letter-spacing: .15em; color: var(--teal);
+      background: var(--teal-bg); border: 2px solid var(--teal); border-radius: var(--r-sm);
+      padding: 10px 24px; font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .cs-invite-link-row { display: flex; gap: 6px; margin-top: 8px; }
+    .cs-invite-link-input { flex: 1; font-size: .75rem; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 8px; color: var(--muted); background: var(--bg); }
+
+    /* Reveal scores button (anonymous mode) */
+    .cs-reveal-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 16px;
+      border: 1.5px solid #8b5cf6; background: rgba(139,92,246,.08);
+      color: #8b5cf6; font-size: .85rem; font-weight: 700; cursor: pointer;
+      transition: all .18s; font-family: 'Inter', sans-serif;
+    }
+    .cs-reveal-btn:hover { background: #8b5cf6; color: #fff; }
+
     .cs-header { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--border); background: var(--glass-bg); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 10; }
     .cs-logo { display: flex; align-items: center; gap: 6px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--ink); }
     .cs-logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
@@ -5841,7 +5960,13 @@
             </div>
           </div>
 
+
           <div class="cat-tabs" id="catTabs"></div>
+          <div style="position:relative;margin-bottom:8px">
+            <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:.9rem;pointer-events:none">🔍</span>
+            <input type="text" id="critSearch" placeholder="Rechercher un critère…" oninput="filterGrid(null)"
+              style="width:100%;padding:8px 12px 8px 32px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.85rem;background:var(--white);color:var(--text);box-sizing:border-box">
+          </div>
           <div class="crit-grid" id="critGrid"></div>
 
           <div class="custom-form" id="customCritBox">
@@ -5928,10 +6053,15 @@
       <div class="cs-logo"><div class="cs-logo-dot"></div>Lucid</div>
       <div class="cs-live-badge"><div class="cs-live-dot"></div>LIVE</div>
       <div class="cs-session-code" id="csCode" onclick="copySessionCode()" title="Cliquez pour copier le code"></div>
+      <div id="csAnonBadge" style="display:none" class="cs-anon-badge">🔒 Anonyme</div>
+      <button class="cs-invite-btn" onclick="csOpenInvite()" title="Inviter des participants">📲 Inviter</button>
       <div class="cs-participants" id="csParticipants"></div>
     </div>
 
-    <div class="cs-scroll">
+    <!-- Phase progress bar -->
+    <div class="cs-phase-bar" id="csPhaseBar"></div>
+
+    <div class="cs-scroll" style="height:calc(100vh - 97px)">
       <div class="cs-main">
 
         <!-- ① Question -->
@@ -5984,7 +6114,14 @@
             <span class="cs-section-chevron">▾</span>
           </div>
           <div class="cs-section-body">
+            <div style="position:relative;margin-bottom:8px">
+              <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:.9rem;pointer-events:none">🔍</span>
+              <input type="text" id="csCritSearch" placeholder="Rechercher un critère…"
+                     oninput="_renderCsCriteria()"
+                     style="width:100%;padding:8px 12px 8px 32px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.85rem;background:var(--white);color:var(--text);box-sizing:border-box">
+            </div>
             <div class="cs-crit-grid" id="csCritGrid"></div>
+            <div id="csCritWeightSummary" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div>
           </div>
         </div>
 
@@ -5999,12 +6136,14 @@
             <span class="cs-section-chevron">▾</span>
           </div>
           <div class="cs-section-body">
+            <div id="csReadyRow"></div>
             <div class="cs-scoring-tabs">
               <button class="cs-scoring-tab active" onclick="switchCsScoreTab('mine')">Mes notes</button>
               <button class="cs-scoring-tab" onclick="switchCsScoreTab('group')">Vue groupe</button>
             </div>
             <div class="cs-scoring-pane active" id="csPaneMine">
               <div class="eval-grid" id="csEvalGrid"></div>
+              <button class="cs-ready-btn" id="csReadyBtn" onclick="csSetReady(true)">✓ J'ai terminé de noter</button>
             </div>
             <div class="cs-scoring-pane" id="csPaneGroup">
               <div id="csGroupTable"></div>
@@ -6496,6 +6635,23 @@
       rev: { name: 'Reversibility', hint: 'Ease of going back' },
       complex: { name: 'Complexity', hint: 'Difficulty of implementation' },
       dep: { name: 'Dependencies', hint: 'Constraints linked to other factors' },
+      resale: { name: 'Resale value', hint: 'Resale price, asset liquidity' },
+      charges: { name: 'Recurring costs', hint: 'Monthly fixed costs, subscriptions' },
+      comfort: { name: 'Comfort', hint: 'Ergonomics, daily ease of use' },
+      aesthetics: { name: 'Aesthetics', hint: 'Design, visual appearance' },
+      quiet: { name: 'Quiet / Noise level', hint: 'Noise level, tranquility' },
+      safety: { name: 'Physical safety', hint: 'Physical risks, protection' },
+      ease: { name: 'Ease of use', hint: 'Simplicity, learning curve' },
+      size: { name: 'Size / Space', hint: 'Available space, dimensions' },
+      privacy: { name: 'Privacy', hint: 'Data protection, personal privacy' },
+      transport_acc: { name: 'Transport access', hint: 'Proximity to transit, mobility' },
+      neighborhood: { name: 'Neighborhood quality', hint: 'Environment, safety, amenities' },
+      nature: { name: 'Access to nature', hint: 'Green spaces, air, natural setting' },
+      ecology: { name: 'Environmental impact', hint: 'Carbon footprint, sustainability' },
+      reliability: { name: 'Reliability', hint: 'Robustness, durability over time' },
+      maintenance: { name: 'Ease of maintenance', hint: 'Maintenance cost and frequency' },
+      scalability: { name: 'Scalability', hint: 'Can grow and adapt to needs' },
+      connectivity: { name: 'Connectivity', hint: 'Internet, network, integrations' },
     };
 
     function tr(key, ...args) {
@@ -6648,10 +6804,97 @@
       { id: 'opp', cat: 'Stratégique', icon: '🎲', name: 'Opportunité unique', hint: 'Rareté de la chance', invert: false, dw: 1 },
       { id: 'complex', cat: 'Stratégique', icon: '🔧', name: 'Complexité', hint: 'Difficulté de mise en œuvre', invert: true, dw: 1 },
       { id: 'dep', cat: 'Stratégique', icon: '🔗', name: 'Dépendances', hint: 'Contraintes liées à autres facteurs', invert: true, dw: 1 },
+
+      /* ── Critères étendus ── */
+      { id: 'resale',       cat: 'Finance',      icon: '💎', name: 'Valeur de revente',         hint: 'Prix à la revente, liquidité du bien',         invert: false, dw: 1 },
+      { id: 'charges',      cat: 'Finance',      icon: '💳', name: 'Charges récurrentes',        hint: 'Coûts fixes mensuels, abonnements',            invert: true,  dw: 1 },
+      { id: 'comfort',      cat: 'Perso',        icon: '🛋️', name: 'Confort',                    hint: 'Ergonomie, confort d\'usage au quotidien',     invert: false, dw: 1 },
+      { id: 'aesthetics',   cat: 'Perso',        icon: '🎨', name: 'Esthétique',                 hint: 'Design, apparence visuelle',                   invert: false, dw: 1 },
+      { id: 'quiet',        cat: 'Perso',        icon: '🔇', name: 'Calme / Silence',            hint: 'Niveau sonore, tranquillité',                  invert: false, dw: 1 },
+      { id: 'safety',       cat: 'Perso',        icon: '⛑️', name: 'Sécurité physique',          hint: 'Risques physiques, protection, accidentologie', invert: false, dw: 2 },
+      { id: 'ease',         cat: 'Perso',        icon: '✅', name: 'Facilité d\'usage',          hint: 'Simplicité, courbe d\'apprentissage',          invert: false, dw: 1 },
+      { id: 'size',         cat: 'Perso',        icon: '📏', name: 'Taille / Surface',           hint: 'Espace disponible, dimensions',                invert: false, dw: 1 },
+      { id: 'privacy',      cat: 'Perso',        icon: '🔒', name: 'Confidentialité',            hint: 'Protection des données, vie privée',           invert: false, dw: 1 },
+      { id: 'transport_acc',cat: 'Social',       icon: '🚇', name: 'Accessibilité transports',   hint: 'Proximité transports, mobilité',               invert: false, dw: 1 },
+      { id: 'neighborhood', cat: 'Social',       icon: '🏘️', name: 'Qualité du quartier',        hint: 'Environnement, sécurité, commerces, ambiance', invert: false, dw: 1 },
+      { id: 'nature',       cat: 'Social',       icon: '🌳', name: 'Accès à la nature',          hint: 'Espaces verts, air, cadre naturel',            invert: false, dw: 1 },
+      { id: 'ecology',      cat: 'Social',       icon: '♻️', name: 'Impact écologique',          hint: 'Empreinte carbone, durabilité environnementale', invert: false, dw: 1 },
+      { id: 'reliability',  cat: 'Stratégique',  icon: '🔩', name: 'Fiabilité',                  hint: 'Robustesse, durabilité dans le temps',         invert: false, dw: 1 },
+      { id: 'maintenance',  cat: 'Stratégique',  icon: '🔧', name: 'Facilité d\'entretien',      hint: 'Coût et fréquence de maintenance',             invert: false, dw: 1 },
+      { id: 'scalability',  cat: 'Stratégique',  icon: '📐', name: 'Évolutivité',                hint: 'Peut grandir et s\'adapter aux besoins',       invert: false, dw: 1 },
+      { id: 'connectivity', cat: 'Stratégique',  icon: '📶', name: 'Connectivité',               hint: 'Internet, réseau, intégrations',               invert: false, dw: 1 },
+
+      /* ══════════════════════════════════════════════════════════
+         CRITÈRES CACHÉS — visibles uniquement via la recherche
+         ══════════════════════════════════════════════════════════ */
+
+      /* Finance */
+      { id: 'notary_fees',    cat: 'Finance',     icon: '🏛️', name: 'Frais de notaire',           hint: 'Frais d\'achat immobilier, droits de mutation',    invert: true,  dw: 1, hidden: true },
+      { id: 'tax',            cat: 'Finance',     icon: '💰', name: 'Fiscalité / Impôts',         hint: 'Impact fiscal, impôt sur le revenu, plus-value',   invert: true,  dw: 1, hidden: true },
+      { id: 'subsidy',        cat: 'Finance',     icon: '🎁', name: 'Aides / Subventions',        hint: 'PTZ, prêt à taux zéro, CEE, aides régionales',     invert: false, dw: 1, hidden: true },
+      { id: 'salary_growth',  cat: 'Finance',     icon: '📈', name: 'Évolution salariale',        hint: 'Augmentation, progression de rémunération',        invert: false, dw: 1, hidden: true },
+      { id: 'bonus',          cat: 'Finance',     icon: '🎯', name: 'Variable / Bonus',           hint: 'Prime de performance, intéressement, participation', invert: false, dw: 1, hidden: true },
+      { id: 'benefits',       cat: 'Finance',     icon: '🎀', name: 'Avantages en nature',        hint: 'Mutuelle, tickets-resto, voiture de fonction, RTT', invert: false, dw: 1, hidden: true },
+      { id: 'insurance_cost', cat: 'Finance',     icon: '🛡️', name: 'Coût assurance',             hint: 'Primes mensuelles, assurance auto/habitation',      invert: true,  dw: 1, hidden: true },
+      { id: 'rent_yield',     cat: 'Finance',     icon: '🏠', name: 'Rendement locatif',          hint: 'Loyer perçu, taux rendement brut/net, rentabilité', invert: false, dw: 1, hidden: true },
+      { id: 'loan_rate',      cat: 'Finance',     icon: '🏦', name: 'Taux d\'emprunt',            hint: 'Taux immobilier, TAEG, coût total du crédit',       invert: true,  dw: 1, hidden: true },
+
+      /* Pro */
+      { id: 'remote',         cat: 'Pro',         icon: '💻', name: 'Télétravail',                hint: 'Jours de télétravail, full remote, hybride',        invert: false, dw: 1, hidden: true },
+      { id: 'culture',        cat: 'Pro',         icon: '🏢', name: 'Culture d\'entreprise',      hint: 'Valeurs, ambiance, bienveillance, management',      invert: false, dw: 1, hidden: true },
+      { id: 'training',       cat: 'Pro',         icon: '📚', name: 'Formation / Upskilling',     hint: 'Budget formation, CPF, plan de développement',      invert: false, dw: 1, hidden: true },
+      { id: 'management',     cat: 'Pro',         icon: '👤', name: 'Qualité du management',      hint: 'Style de management, feedback, reconnaissance',     invert: false, dw: 1, hidden: true },
+      { id: 'pro_travel',     cat: 'Pro',         icon: '✈️', name: 'Déplacements professionnels', hint: 'Fréquence voyages, mobilité requise, grand déplacement', invert: false, dw: 1, hidden: true },
+      { id: 'sector_growth',  cat: 'Pro',         icon: '🚀', name: 'Dynamisme du secteur',       hint: 'Secteur en croissance, recrutement actif, tech',    invert: false, dw: 1, hidden: true },
+      { id: 'team_size',      cat: 'Pro',         icon: '👥', name: 'Taille de l\'équipe',        hint: 'Petite équipe agile vs grande structure corporate', invert: false, dw: 1, hidden: true },
+
+      /* Perso — logement */
+      { id: 'luminosity',     cat: 'Perso',       icon: '☀️', name: 'Luminosité',                 hint: 'Ensoleillement, exposition, fenêtres, DPE',         invert: false, dw: 1, hidden: true },
+      { id: 'view',           cat: 'Perso',       icon: '🏙️', name: 'Vue / Vis-à-vis',            hint: 'Qualité de la vue, vis-à-vis avec voisins',         invert: false, dw: 1, hidden: true },
+      { id: 'orientation',    cat: 'Perso',       icon: '🧭', name: 'Orientation',                hint: 'Exposition nord/sud/est/ouest du logement',         invert: false, dw: 1, hidden: true },
+      { id: 'floor',          cat: 'Perso',       icon: '🏢', name: 'Étage / Hauteur',            hint: 'Étage, ascenseur, rez-de-chaussée',                 invert: false, dw: 1, hidden: true },
+      { id: 'parking',        cat: 'Perso',       icon: '🅿️', name: 'Parking',                    hint: 'Place de stationnement, garage, box',               invert: false, dw: 1, hidden: true },
+      { id: 'cellar',         cat: 'Perso',       icon: '📦', name: 'Cave / Rangements',          hint: 'Cave, grenier, débarras, espace de stockage',       invert: false, dw: 1, hidden: true },
+      { id: 'dpe',            cat: 'Perso',       icon: '⚡', name: 'Classe énergétique (DPE)',   hint: 'Consommation énergie, isolation thermique, chauffage', invert: false, dw: 1, hidden: true },
+      /* Perso — tech */
+      { id: 'battery_life',   cat: 'Perso',       icon: '🔋', name: 'Autonomie batterie',         hint: 'Durée de vie batterie, charge rapide, Wh',          invert: false, dw: 1, hidden: true },
+      { id: 'screen_quality', cat: 'Perso',       icon: '🖥️', name: 'Qualité d\'écran',           hint: 'Résolution, dalle OLED AMOLED, luminosité, taille', invert: false, dw: 1, hidden: true },
+      { id: 'camera',         cat: 'Perso',       icon: '📷', name: 'Qualité photo / Caméra',     hint: 'Appareil photo, capteur, vidéo 4K, zoom optique',   invert: false, dw: 1, hidden: true },
+      { id: 'storage',        cat: 'Perso',       icon: '💾', name: 'Capacité de stockage',       hint: 'Go ou To disponible, SSD, extension microSD',       invert: false, dw: 1, hidden: true },
+      { id: 'water_resist',   cat: 'Perso',       icon: '💧', name: 'Résistance eau / chocs',     hint: 'IP68, waterproof, robustesse, coque',               invert: false, dw: 1, hidden: true },
+      { id: 'repairability',  cat: 'Perso',       icon: '🔨', name: 'Réparabilité',               hint: 'Score réparabilité iFixit, pièces détachées, SAV',  invert: false, dw: 1, hidden: true },
+      /* Perso — santé */
+      { id: 'recovery',       cat: 'Perso',       icon: '🩹', name: 'Temps de récupération',      hint: 'Convalescence, arrêt de travail, rééducation',      invert: false, dw: 1, hidden: true },
+      { id: 'pain_level',     cat: 'Perso',       icon: '😣', name: 'Niveau de douleur',          hint: 'Douleur post-opératoire, tolérance, traitement',    invert: true,  dw: 1, hidden: true },
+      { id: 'invasiveness',   cat: 'Perso',       icon: '🩺', name: 'Caractère invasif',          hint: 'Chirurgie lourde vs mini-invasif, endoscopie',       invert: true,  dw: 1, hidden: true },
+      { id: 'hospitalization',cat: 'Perso',       icon: '🏥', name: 'Durée d\'hospitalisation',   hint: 'Jours à l\'hôpital, ambulatoire, hôpital de jour',  invert: true,  dw: 1, hidden: true },
+
+      /* Social */
+      { id: 'schools_prox',   cat: 'Social',      icon: '🏫', name: 'Proximité écoles',           hint: 'Crèche, école, collège, lycée à proximité',         invert: false, dw: 1, hidden: true },
+      { id: 'shops',          cat: 'Social',      icon: '🛒', name: 'Commerces de proximité',     hint: 'Supermarché, pharmacie, boulangerie, marché',       invert: false, dw: 1, hidden: true },
+      { id: 'nightlife',      cat: 'Social',      icon: '🎉', name: 'Vie nocturne / Sorties',     hint: 'Bars, restaurants, concerts, animation locale',     invert: false, dw: 1, hidden: true },
+      { id: 'community',      cat: 'Social',      icon: '🤝', name: 'Communauté / Réseau local',  hint: 'Diaspora, associations, réseau professionnel local', invert: false, dw: 1, hidden: true },
+      { id: 'visa',           cat: 'Social',      icon: '🛂', name: 'Visa / Formalités',          hint: 'Facilité d\'obtention du visa, délai, coût, e-visa', invert: false, dw: 1, hidden: true },
+      { id: 'lang_barrier',   cat: 'Social',      icon: '🌐', name: 'Barrière linguistique',      hint: 'Langue locale, anglais suffisant, apprentissage',   invert: true,  dw: 1, hidden: true },
+      { id: 'timezone',       cat: 'Social',      icon: '🕐', name: 'Décalage horaire',           hint: 'Fuseaux horaires avec famille, collègues, jet lag',  invert: true, dw: 1, hidden: true },
+      { id: 'flight_time',    cat: 'Social',      icon: '🛫', name: 'Durée de trajet / Vol',      hint: 'Heures de vol, escales, temps porte-à-porte',       invert: true,  dw: 1, hidden: true },
+      { id: 'coach',          cat: 'Social',      icon: '🏋️', name: 'Encadrement / Coach',        hint: 'Qualité du coaching, accompagnement sportif',       invert: false, dw: 1, hidden: true },
+      { id: 'pet_friendly',   cat: 'Social',      icon: '🐾', name: 'Acceptation animaux',        hint: 'Logement ou lieu acceptant les animaux de compagnie', invert: false, dw: 1, hidden: true },
+
+      /* Stratégique */
+      { id: 'switching_cost', cat: 'Stratégique', icon: '🔄', name: 'Coût de changement',         hint: 'Facilité de changer d\'avis, portabilité, résiliabilité', invert: true, dw: 1, hidden: true },
+      { id: 'reputation',     cat: 'Stratégique', icon: '⭐', name: 'Réputation / Prestige',      hint: 'Notoriété, image de marque, classement, label',     invert: false, dw: 1, hidden: true },
+      { id: 'market_demand',  cat: 'Stratégique', icon: '📊', name: 'Demande du marché',          hint: 'Besoin existant, taille du marché, tendance sectorielle', invert: false, dw: 1, hidden: true },
+      { id: 'competition',    cat: 'Stratégique', icon: '⚔️', name: 'Intensité concurrentielle',  hint: 'Nombre de concurrents, barrières à l\'entrée',      invert: true,  dw: 1, hidden: true },
+      { id: 'regulatory',     cat: 'Stratégique', icon: '📋', name: 'Conformité réglementaire',   hint: 'Obligations légales, RGPD, normes, licences, DUERP', invert: false, dw: 1, hidden: true },
+      { id: 'vendor_lock',    cat: 'Stratégique', icon: '🔐', name: 'Dépendance fournisseur',     hint: 'Risque de lock-in, portabilité, écosystème fermé',   invert: true,  dw: 1, hidden: true },
+      { id: 'job_market',     cat: 'Stratégique', icon: '💼', name: 'Débouchés / Insertion pro',  hint: 'Taux emploi post-formation, demande RH, métier en tension', invert: false, dw: 1, hidden: true },
+      { id: 'validated',      cat: 'Stratégique', icon: '🧪', name: 'Preuve de concept',          hint: 'MVP validé, étude clinique, retour d\'expérience, pilote', invert: false, dw: 1, hidden: true },
     ];
 
     const CATS = ['Tous', 'Finance', 'Pro', 'Perso', 'Social', 'Stratégique'];
-    const WEIGHTS = { 1: '×1 Normal', 2: '×2 Important', 3: '×3 Crucial' };
+    const WEIGHTS = { 1: 'Normale', 2: 'Importante', 3: 'Cruciale' };
+
 
     /* ─── STATE ─────────────────────────────── */
     let S = {
@@ -6758,6 +7001,7 @@
     /* ─── STEP 2 ────────────────────────────── */
     function buildCriteriaPage() { S.currentCat = tr('cats')[0]; renderCatTabs(); filterGrid(tr('cats')[0]); renderSelList(); }
 
+
     function renderCatTabs() {
       const t = document.getElementById('catTabs'); t.innerHTML = '';
       CATS.forEach(cat => {
@@ -6768,9 +7012,19 @@
     }
 
     function filterGrid(cat) {
-      S.currentCat = cat; renderCatTabs();
+      if (cat !== null) { S.currentCat = cat; renderCatTabs(); }
+      const q = (document.getElementById('critSearch')?.value || '').toLowerCase().trim();
       const g = document.getElementById('critGrid'); g.innerHTML = '';
-      (cat === tr('cats')[0] ? LIB : LIB.filter(c => c.cat === cat)).forEach(c => {
+      let list;
+      if (q) {
+        // Recherche : surface tous les critères, y compris les cachés
+        list = LIB.filter(c => c.name.toLowerCase().includes(q) || c.hint.toLowerCase().includes(q));
+      } else {
+        // Navigation par catégorie : exclure les critères cachés
+        const visible = LIB.filter(c => !c.hidden);
+        list = S.currentCat === tr('cats')[0] ? visible : visible.filter(c => c.cat === S.currentCat);
+      }
+      list.forEach(c => {
         const on = S.criteria.some(x => x.id === c.id);
         const pill = document.createElement('div');
         pill.className = 'crit-pill' + (on ? ' on' : ''); pill.id = 'pill-' + c.id;
@@ -6780,6 +7034,13 @@
       <div><div class="crit-name">${c.name}</div><div class="crit-hint">${c.hint}</div></div>`;
         pill.onclick = () => toggleCrit(c.id); g.appendChild(pill);
       });
+      // Indice discret si la recherche a trouvé des critères cachés
+      if (q && list.some(c => c.hidden)) {
+        const note = document.createElement('p');
+        note.style.cssText = 'font-size:.75rem;color:var(--muted);margin:6px 0 0;grid-column:1/-1';
+        note.textContent = '✨ Critères spécialisés trouvés via la recherche';
+        g.appendChild(note);
+      }
     }
 
     function toggleCrit(id) {
@@ -9983,6 +10244,19 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     let _cs = null;          // collab session snapshot (from server)
     let _myPid = null;       // my participant id
     let _csDecisionDraft = '';// pending decision text
+    let _csScoresRevealed = false; // for anonymous mode: have we revealed scores locally
+    let _csWeightingMethod = 'simple'; // 'simple' | 'roc'
+    let _csRocRanks = {};              // criterionId -> rank (0-based)
+    let _csInverts = {};               // criterionId -> boolean (per-participant local override)
+    let _csDragId = null;
+    let _csTouchDragId = null;
+    let _csTouchGhost = null;
+    let _csTouchTargetId = null;
+    let _csTouchBefore = true;
+    let _csSwingTouchListened = false;
+    let _csLongPressTimer = null;
+    let _csTouchStartX = 0;
+    let _csTouchStartY = 0;
 
     /* ── Helpers ── */
     function _wsSend(msg) {
@@ -10021,9 +10295,10 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     function createGroupSession() {
       const name = document.getElementById('groupCreateName').value.trim();
       if (!name) { _showGroupError('create', 'Entrez votre prénom.'); return; }
+      const anonymous = document.getElementById('groupCreateAnon')?.checked ?? false;
       const btn = document.querySelector('#groupPaneCreate .btn-primary');
       if (btn) { btn.textContent = 'Connexion…'; btn.disabled = true; }
-      _connectWs(() => _wsSend({ type: 'create', name }));
+      _connectWs(() => _wsSend({ type: 'create', name, anonymous }));
     }
 
     function joinGroupSession() {
@@ -10093,6 +10368,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
           case 'created':
           case 'joined':
             _myPid = msg.participantId;
+            _csScoresRevealed = false;
             _applySession(msg.session);
             closeGroupModal();
             nav('page-collab');
@@ -10134,6 +10410,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         });
       }
 
+      _renderCsPhaseBar();
       _renderCsHeader();
       _renderCsDecision();
       _renderCsOptions();
@@ -10142,18 +10419,86 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       _renderCsResults();
     }
 
+    /* ── Phase bar ── */
+    function _renderCsPhaseBar() {
+      if (!_cs) return;
+      const phase = _cs.phase ?? 0;
+      const isHost = _cs.participants.find(p => p.id === _myPid)?.isHost;
+      const steps = [
+        { label: 'Options', icon: '🗂️' },
+        { label: 'Critères', icon: '📊' },
+        { label: 'Notation', icon: '⭐' },
+        { label: 'Résultats', icon: '🏆' }
+      ];
+      const bar = document.getElementById('csPhaseBar');
+      if (!bar) return;
+
+      let html = steps.map((s, i) => {
+        const cls = i === phase ? 'active' : i < phase ? 'done' : '';
+        const check = i < phase ? '✓' : i + 1;
+        return `
+          <div class="cs-phase-step ${cls}">
+            <div class="cs-phase-num">${check}</div>
+            ${s.icon} ${s.label}
+          </div>
+          ${i < 3 ? '<span class="cs-phase-sep">›</span>' : ''}`;
+      }).join('');
+
+      if (isHost) {
+        if (phase < 3) {
+          html += `<button class="cs-phase-host-btn" onclick="csSetPhase(${phase + 1})">
+            Étape suivante →
+          </button>`;
+        }
+        if (phase > 0) {
+          html += `<button class="cs-phase-host-btn back" onclick="csSetPhase(${phase - 1})" style="margin-left:${phase < 3 ? '6px' : 'auto'}">
+            ← Retour
+          </button>`;
+        }
+      }
+
+      bar.innerHTML = html;
+
+      // Lock / unlock sections based on phase
+      // Options + Criteria: toujours accessibles
+      // Scoring: verrouillé avant phase 2
+      // Results: verrouillé avant phase 3
+      const sections = [
+        { id: 'csSectionDecision', activePhase: -1 },
+        { id: 'csSectionOptions',  activePhase: 0 },
+        { id: 'csSectionCriteria', activePhase: 1 },
+        { id: 'csSectionScoring',  activePhase: 2 },
+        { id: 'csSectionResults',  activePhase: 3 },
+      ];
+      sections.forEach(({ id, activePhase }) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (activePhase === -1) return;
+        // Aucun verrou — les phases sont un guide visuel, pas une barrière
+        el.classList.remove('phase-locked');
+        el.classList.toggle('phase-active', phase === activePhase);
+        if (phase === activePhase) el.classList.add('open');
+      });
+    }
+
     /* ── Renderers ── */
     function _renderCsHeader() {
       if (!_cs) return;
       document.getElementById('csCode').textContent = '🔑 ' + _cs.id;
+
+      // Anonymous badge
+      const anonBadge = document.getElementById('csAnonBadge');
+      if (anonBadge) anonBadge.style.display = _cs.anonymous ? 'inline-flex' : 'none';
+
       const par = document.getElementById('csParticipants');
       par.innerHTML = _cs.participants.map(p => {
-        const initials = p.name.substring(0, 2).toUpperCase();
         const offline = p.connected ? '' : ' offline';
         const isMe = p.id === _myPid ? ' (vous)' : '';
         const host = p.isHost ? ' ★' : '';
-        return `<div class="cs-avatar${offline}" style="background:${p.color}" title="${p.name}${isMe}${host}">
-          <div class="cs-avatar-dot"></div>${p.name.split(' ')[0]}${p.isHost ? host : ''}
+        const ready = _cs.ready?.[p.id] ? ' ✓' : '';
+        const readyStyle = _cs.ready?.[p.id] ? 'box-shadow:0 0 0 2px #059669;' : '';
+        return `<div class="cs-avatar${offline}" style="background:${p.color};${readyStyle}" title="${p.name}${isMe}${host}${ready ? ' (prêt)' : ''}">
+          <div class="cs-avatar-dot"></div>${p.name.split(' ')[0]}${p.isHost ? host : ''}${_cs.ready?.[p.id] ? '<span style="font-size:.6rem">✓</span>' : ''}
         </div>`;
       }).join('');
     }
@@ -10212,22 +10557,322 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       if (!_cs) return;
       const grid = document.getElementById('csCritGrid');
       const sub = document.getElementById('csCriteriaSub');
-      // Show all criteria from the library, highlight selected ones
       const allCrits = typeof LIB !== 'undefined' ? LIB : [];
       const selectedIds = new Set(_cs.criteria.map(c => c.id));
       if (allCrits.length === 0) {
         grid.innerHTML = `<div class="cs-empty">Bibliothèque non disponible.</div>`;
         return;
       }
-      grid.innerHTML = allCrits.map(cr => {
+      const myWeights = _cs.weights?.[_myPid] || {};
+
+      // En mode ROC, s'assurer que tout critère nouvellement sélectionné a un rang
+      if (_csWeightingMethod === 'roc' && _cs.criteria.length > 0) _csInitRocRanks();
+
+      // Filtre par recherche
+      const q = (document.getElementById('csCritSearch')?.value || '').toLowerCase().trim();
+      const visible = q
+        ? allCrits.filter(c => c.name.toLowerCase().includes(q) || (c.hint || '').toLowerCase().includes(q))
+        : allCrits.filter(c => !c.hidden);
+
+      // Chips simples (juste toggle, sans boutons de poids)
+      grid.innerHTML = visible.map(cr => {
         const active = selectedIds.has(cr.id) ? ' active' : '';
-        return `<button class="cs-crit-chip${active}" onclick="csToggleCriterion('${cr.id}')">
-          <span>${cr.icon}</span>
-          <span>${cr.name}</span>
-          ${active ? '<span class="cs-crit-check">✓</span>' : ''}
-        </button>`;
+        return `<div class="cs-crit-chip${active}" onclick="csToggleCriterion('${cr.id}')" style="cursor:pointer">
+            <span>${cr.icon}</span>
+            <span>${cr.name}</span>
+            ${active ? '<span class="cs-crit-check">✓</span>' : ''}
+          </div>`;
       }).join('');
+
+      if (q && visible.some(c => c.hidden)) {
+        grid.insertAdjacentHTML('beforeend', `<p style="font-size:.75rem;color:var(--muted);margin:6px 0 0;grid-column:1/-1">✨ Critères spécialisés trouvés via la recherche</p>`);
+      }
+
+      // Section importance (comme l'analyse classique) pour les critères sélectionnés
+      const wrapEl = document.getElementById('csCritWeightSummary');
+      if (wrapEl) {
+        if (_cs.criteria.length > 0) {
+          const methodToggle = `
+            <div class="method-toggle-bar" style="margin-bottom:10px">
+              <span class="method-lbl">Pondération :</span>
+              <button class="method-btn${_csWeightingMethod === 'simple' ? ' active' : ''}" onclick="csToggleWeightingMethod('simple')">${tr('swing_method_simple')}</button>
+              <button class="method-btn${_csWeightingMethod === 'roc' ? ' active' : ''}" onclick="csToggleWeightingMethod('roc')">${tr('swing_method_swing')}</button>
+            </div>`;
+
+          let importanceSection;
+          if (_csWeightingMethod === 'roc') {
+            const rocWeights = _csGetRocWeights();
+            const sorted = [..._cs.criteria].sort((a, b) => (_csRocRanks[a.id] ?? 999) - (_csRocRanks[b.id] ?? 999));
+            const items = sorted.map((cr, i) => {
+              const pct = Math.round((rocWeights[cr.id] ?? 0) * 100);
+              const inverted = _csInverts[cr.id] ?? cr.invert ?? false;
+              return `<div class="swing-item" id="swing-item-${cr.id}" data-id="${cr.id}">
+                <div class="swing-rank-num">${i + 1}</div>
+                <div class="swing-item-main">
+                  <div class="swing-item-header">
+                    <span style="font-size:.9rem;flex-shrink:0">${cr.icon}</span>
+                    <div class="swing-name-group">
+                      <span class="swing-item-name">${cr.name}</span>
+                      ${cr.hint ? `<span class="swing-item-sub">${esc(cr.hint)}</span>` : ''}
+                    </div>
+                  </div>
+                </div>
+                <div class="swing-weight-col">
+                  <button class="inv-btn${inverted ? ' on' : ''}" onclick="csToggleInv('${cr.id}')"
+                    title="${inverted ? tr('inv_tip_on') : tr('inv_tip_off')}">
+                    ${inverted ? tr('inv_on') : tr('inv_off')}
+                  </button>
+                  <div class="swing-weight-tag" style="font-size:.8rem;padding:4px 8px">${pct}%</div>
+                </div>
+              </div>`;
+            }).join('');
+            importanceSection = `<div class="swing-info" style="margin-bottom:8px">${tr('swing_info')}</div>
+              <div id="csCritRocList">${items}</div>`;
+          } else {
+            importanceSection = _cs.criteria.map(cr => {
+              const myW = myWeights[cr.id] ?? 1;
+              return `<div class="sel-item weight-${myW}" style="margin-bottom:6px">
+                <div class="sel-item-header">
+                  <div class="sel-icon">${cr.icon}</div>
+                  <div class="sel-name">${cr.name}</div>
+                </div>
+                <div class="sel-item-controls">
+                  <div class="weight-group">
+                    ${[1,2,3].map(v => `<button class="weight-btn${v===myW?' active':''}" onclick="csSetWeight('${cr.id}',${v})">${WEIGHTS[v]}</button>`).join('')}
+                  </div>
+                </div>
+              </div>`;
+            }).join('');
+          }
+
+          wrapEl.innerHTML = `<div style="font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:8px">Importance des critères</div>` +
+            methodToggle + importanceSection;
+          if (_csWeightingMethod === 'roc') requestAnimationFrame(() => _attachCsSwingDnD());
+        } else {
+          wrapEl.innerHTML = '';
+        }
+      }
+
       if (sub) sub.textContent = `${_cs.criteria.length} critère${_cs.criteria.length > 1 ? 's' : ''} sélectionné${_cs.criteria.length > 1 ? 's' : ''}`;
+    }
+
+    /** Calcule les poids ROC normalisés (somme=1) depuis _csRocRanks. */
+    function _csGetRocWeights() {
+      const crit = _cs?.criteria ?? [];
+      const N = crit.length;
+      if (N === 0) return {};
+      const sorted = [...crit].sort((a, b) => (_csRocRanks[a.id] ?? 999) - (_csRocRanks[b.id] ?? 999));
+      const weights = {};
+      for (let rank = 0; rank < N; rank++) {
+        let w = 0;
+        for (let k = rank; k < N; k++) w += 1 / (k + 1);
+        weights[sorted[rank].id] = w / N;
+      }
+      return weights;
+    }
+
+    /** Initialise ou complète les rangs ROC pour les critères sélectionnés. */
+    function _csInitRocRanks() {
+      const crit = _cs?.criteria ?? [];
+      const knownIds = new Set(Object.keys(_csRocRanks).filter(id => crit.some(c => c.id === id)));
+      let nextRank = knownIds.size;
+      crit.forEach(c => { if (!knownIds.has(c.id)) { _csRocRanks[c.id] = nextRank++; } });
+      // Renormalise
+      const sorted = [...crit].sort((a, b) => (_csRocRanks[a.id] ?? 0) - (_csRocRanks[b.id] ?? 0));
+      sorted.forEach((c, i) => { _csRocRanks[c.id] = i; });
+    }
+
+    /** Déplace un critère vers le haut (-1) ou le bas (+1) dans le classement ROC. */
+    function csMoveRank(crId, direction) {
+      const crit = _cs?.criteria ?? [];
+      const sorted = [...crit].sort((a, b) => (_csRocRanks[a.id] ?? 0) - (_csRocRanks[b.id] ?? 0));
+      const idx = sorted.findIndex(c => c.id === crId);
+      if (idx === -1) return;
+      const swapIdx = idx + direction;
+      if (swapIdx < 0 || swapIdx >= sorted.length) return;
+      const tmp = _csRocRanks[sorted[idx].id];
+      _csRocRanks[sorted[idx].id] = _csRocRanks[sorted[swapIdx].id];
+      _csRocRanks[sorted[swapIdx].id] = tmp;
+      _csBroadcastRocWeights();
+      _renderCsCriteria();
+      _csBuildMyEvalGrid();
+    }
+
+    /** Envoie les poids ROC calculés au serveur via csSetWeight pour chaque critère. */
+    function _csBroadcastRocWeights() {
+      const weights = _csGetRocWeights();
+      Object.entries(weights).forEach(([crId, w]) => csSetWeight(crId, parseFloat(w.toFixed(4))));
+    }
+
+    /** Bascule entre méthode simple et ROC en mode CS. */
+    function csToggleWeightingMethod(method) {
+      _csWeightingMethod = method;
+      if (method === 'roc') {
+        _csInitRocRanks();
+        _csBroadcastRocWeights();
+      }
+      _renderCsCriteria();
+      _csBuildMyEvalGrid();
+    }
+
+    /** Inverse localement le sens d'un critère (score élevé = mauvais) en mode ROC CS. */
+    function csToggleInv(crId) {
+      _csInverts[crId] = !(_csInverts[crId] ?? (_cs?.criteria.find(c => c.id === crId)?.invert ?? false));
+      _renderCsCriteria();
+      _csBuildMyEvalGrid();
+    }
+
+    /** Réordonne fromId avant/après toId dans _csRocRanks. */
+    function _csSwingReorder(fromId, toId, before) {
+      if (fromId === toId) return;
+      const crit = _cs?.criteria ?? [];
+      const sorted = [...crit].sort((a, b) => (_csRocRanks[a.id] ?? 0) - (_csRocRanks[b.id] ?? 0));
+      const fromIdx = sorted.findIndex(c => c.id === fromId);
+      if (fromIdx === -1) return;
+      const [moved] = sorted.splice(fromIdx, 1);
+      const insertAt = before ? sorted.findIndex(c => c.id === toId) : sorted.findIndex(c => c.id === toId) + 1;
+      if (insertAt < 0) return;
+      sorted.splice(insertAt, 0, moved);
+      sorted.forEach((c, i) => { _csRocRanks[c.id] = i; });
+    }
+
+    function _csAnimateDrop(movedId) {
+      const el = document.getElementById(`swing-item-${movedId}`);
+      if (el) requestAnimationFrame(() => {
+        el.classList.add('animate-drop');
+        el.addEventListener('animationend', () => el.classList.remove('animate-drop'), { once: true });
+      });
+    }
+
+    function _csStartTouchDrag(item, touch) {
+      _csTouchDragId = item.dataset.id;
+      if (navigator.vibrate) navigator.vibrate(30);
+      _csTouchGhost = item.cloneNode(true);
+      _csTouchGhost.classList.add('swing-ghost');
+      _csTouchGhost.style.width = item.offsetWidth + 'px';
+      document.body.appendChild(_csTouchGhost);
+      item.classList.add('dragging');
+      _csTouchGhost.style.left = (touch.clientX - 20) + 'px';
+      _csTouchGhost.style.top = (touch.clientY - item.offsetHeight / 2) + 'px';
+    }
+
+    function _csTouchMove(e) {
+      if (!_csTouchDragId) return;
+      e.preventDefault();
+      const t = e.touches[0];
+      if (_csTouchGhost) {
+        _csTouchGhost.style.left = (t.clientX - 20) + 'px';
+        _csTouchGhost.style.top = (t.clientY - 30) + 'px';
+      }
+      _csTouchTargetId = null; _csTouchBefore = true;
+      document.querySelectorAll('#csCritRocList .swing-item').forEach(el => {
+        el.classList.remove('drag-over-above', 'drag-over-below');
+        if (el.dataset.id === _csTouchDragId) return;
+        const r = el.getBoundingClientRect();
+        if (t.clientY >= r.top && t.clientY <= r.bottom) {
+          _csTouchTargetId = el.dataset.id;
+          _csTouchBefore = t.clientY < r.top + r.height / 2;
+          el.classList.add(_csTouchBefore ? 'drag-over-above' : 'drag-over-below');
+        }
+      });
+    }
+
+    function _csTouchEnd() {
+      if (_csLongPressTimer) { clearTimeout(_csLongPressTimer); _csLongPressTimer = null; }
+      document.querySelectorAll('#csCritRocList .swing-item').forEach(el => el.classList.remove('press-holding'));
+      if (!_csTouchDragId) return;
+      if (_csTouchGhost) { _csTouchGhost.remove(); _csTouchGhost = null; }
+      document.querySelectorAll('#csCritRocList .swing-item')
+        .forEach(el => el.classList.remove('dragging', 'drag-over-above', 'drag-over-below'));
+      const movedId = _csTouchDragId;
+      if (_csTouchTargetId) {
+        _csSwingReorder(movedId, _csTouchTargetId, _csTouchBefore);
+        _csBroadcastRocWeights();
+        _renderCsCriteria();
+        _csBuildMyEvalGrid();
+        _csAnimateDrop(movedId);
+      }
+      _csTouchDragId = null; _csTouchTargetId = null;
+    }
+
+    /** Attache les événements drag souris (HTML5) + tactile sur #csCritRocList. */
+    function _attachCsSwingDnD() {
+      document.querySelectorAll('#csCritRocList .swing-item').forEach(item => {
+        item.addEventListener('mousedown', () => item.setAttribute('draggable', 'true'));
+
+        item.addEventListener('dragstart', e => {
+          _csDragId = item.dataset.id;
+          item.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+        });
+
+        item.addEventListener('dragend', () => {
+          _csDragId = null;
+          item.removeAttribute('draggable');
+          item.classList.remove('dragging');
+          document.querySelectorAll('#csCritRocList .swing-item')
+            .forEach(el => el.classList.remove('drag-over-above', 'drag-over-below'));
+        });
+
+        item.addEventListener('dragover', e => {
+          e.preventDefault();
+          if (!_csDragId || item.dataset.id === _csDragId) return;
+          const before = e.clientY < item.getBoundingClientRect().top + item.offsetHeight / 2;
+          document.querySelectorAll('#csCritRocList .swing-item')
+            .forEach(el => el.classList.remove('drag-over-above', 'drag-over-below'));
+          item.classList.add(before ? 'drag-over-above' : 'drag-over-below');
+        });
+
+        item.addEventListener('dragleave', e => {
+          if (!item.contains(e.relatedTarget)) item.classList.remove('drag-over-above', 'drag-over-below');
+        });
+
+        item.addEventListener('drop', e => {
+          e.preventDefault();
+          if (!_csDragId || item.dataset.id === _csDragId) return;
+          const before = e.clientY < item.getBoundingClientRect().top + item.offsetHeight / 2;
+          const movedId = _csDragId;
+          _csSwingReorder(movedId, item.dataset.id, before);
+          _csBroadcastRocWeights();
+          _renderCsCriteria();
+          _csBuildMyEvalGrid();
+          _csAnimateDrop(movedId);
+        });
+
+        // Drag tactile : long press (350 ms)
+        item.addEventListener('contextmenu', e => e.preventDefault());
+        item.addEventListener('touchstart', e => {
+          const t = e.touches[0];
+          _csTouchStartX = t.clientX; _csTouchStartY = t.clientY;
+          const sx = t.clientX, sy = t.clientY;
+          _csLongPressTimer = setTimeout(() => {
+            item.classList.remove('press-holding');
+            _csStartTouchDrag(item, { clientX: sx, clientY: sy });
+          }, 350);
+          item.classList.add('press-holding');
+        }, { passive: true });
+
+        item.addEventListener('touchend', () => {
+          if (_csLongPressTimer) { clearTimeout(_csLongPressTimer); _csLongPressTimer = null; }
+          item.classList.remove('press-holding');
+        }, { passive: true });
+
+        item.addEventListener('touchmove', e => {
+          if (_csTouchDragId) return;
+          const t = e.touches[0];
+          if (Math.abs(t.clientX - _csTouchStartX) > 8 || Math.abs(t.clientY - _csTouchStartY) > 8) {
+            if (_csLongPressTimer) { clearTimeout(_csLongPressTimer); _csLongPressTimer = null; }
+            item.classList.remove('press-holding');
+          }
+        }, { passive: true });
+      });
+
+      if (!_csSwingTouchListened) {
+        _csSwingTouchListened = true;
+        document.addEventListener('touchmove', _csTouchMove, { passive: false });
+        document.addEventListener('touchend', _csTouchEnd, { passive: false });
+        document.addEventListener('touchcancel', _csTouchEnd, { passive: false });
+      }
     }
 
     function csToggleCriterion(critId) {
@@ -10247,29 +10892,70 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       if (!_cs || _cs.options.length === 0 || _cs.criteria.length === 0) {
         document.getElementById('csEvalGrid').innerHTML = `<div class="cs-empty" style="text-align:left">Ajoutez des options et des critères pour commencer à noter.</div>`;
         document.getElementById('csGroupTable').innerHTML = '';
+        document.getElementById('csReadyRow').innerHTML = '';
         return;
       }
-      // My scores pane: reuse buildEvalPage logic with S already synced
+
+      // Ready row: show who has finished
+      const readyRow = document.getElementById('csReadyRow');
+      if (readyRow) {
+        const chips = _cs.participants.map(p => {
+          const done = _cs.ready?.[p.id];
+          return `<div class="cs-ready-chip ${done ? 'done' : 'waiting'}">
+            <span style="color:${p.color}">●</span> ${esc(p.name.split(' ')[0])} ${done ? '✓' : '…'}
+          </div>`;
+        }).join('');
+        const readyCount = _cs.participants.filter(p => _cs.ready?.[p.id]).length;
+        readyRow.innerHTML = `<div class="cs-ready-row">${chips}
+          <span style="margin-left:auto;font-size:.7rem;color:var(--muted);white-space:nowrap">${readyCount}/${_cs.participants.length} prêts</span>
+        </div>`;
+      }
+
+      // Ready button state
+      const readyBtn = document.getElementById('csReadyBtn');
+      if (readyBtn) {
+        const amReady = _cs.ready?.[_myPid];
+        readyBtn.textContent = amReady ? '✓ Noté ! (annuler)' : '✓ J\'ai terminé de noter';
+        readyBtn.classList.toggle('done', !!amReady);
+        readyBtn.onclick = () => csSetReady(!amReady);
+      }
+
       _csBuildMyEvalGrid();
-      // Group table pane
       _csBuildGroupTable();
     }
 
     function _csBuildMyEvalGrid() {
-      const nOpts = S.options.length;
+      if (!_cs) return;
+      // Sync _cs data into S so that calcScore / refreshLive work correctly
+      const myWeights = _cs.weights?.[_myPid] ?? {};
+      const effectiveWeights = _csWeightingMethod === 'roc' ? _csGetRocWeights() : myWeights;
+      S.options = _cs.options;
+      S.criteria = _cs.criteria.map(c => ({
+        ...c,
+        weight: effectiveWeights[c.id] ?? c.weight ?? 1,
+        invert: _csInverts[c.id] ?? c.invert ?? false,
+      }));
+      _cs.criteria.forEach(cr => {
+        S.scores[cr.id] = _cs.scores?.[_myPid]?.[cr.id] ?? _cs.options.map(() => 5);
+      });
+
+      const nOpts = _cs.options.length;
       const grid = document.getElementById('csEvalGrid');
+      // Don't re-render if user is actively editing a comment or score input
+      if (grid && grid.contains(document.activeElement) && document.activeElement.tagName === 'TEXTAREA') return;
       grid.style.gridTemplateColumns = `repeat(${Math.min(nOpts, 2)},1fr)`;
       grid.innerHTML = '';
       const colors = activeColors();
 
-      S.options.forEach((opt, oi) => {
+      _cs.options.forEach((opt, oi) => {
         const col = document.createElement('div');
         col.className = 'eval-col';
         const c = colors[oi % colors.length];
 
-        const items = S.criteria.map(cr => {
-          const v = S.scores[cr.id]?.[oi] ?? 5;
+        const items = _cs.criteria.map(cr => {
+          const v = _cs.scores?.[_myPid]?.[cr.id]?.[oi] ?? 5;
           const inv = cr.invert ? `<span class="inv-tag">↓</span>` : '';
+          const myComment = _cs?.comments?.[_myPid]?.[cr.id]?.[oi] ?? '';
           const pips = `
             <div class="fluid-bar" onpointerdown="startFluidDrag(event,${oi},'${cr.id}')" role="slider"
                  aria-valuemin="1" aria-valuemax="10" aria-valuenow="${v}" tabindex="0">
@@ -10293,6 +10979,11 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
               </div>
               <button class="stepper-btn" onclick="csStepVal(${oi},'${cr.id}',+1)" aria-label="+">+</button>
             </div>
+            <div class="cs-comment-row">
+              <textarea class="cs-comment-input" rows="1"
+                placeholder="Justifier ce score (optionnel)…"
+                onblur="csSetComment(${oi},'${cr.id}',this.value)">${esc(myComment)}</textarea>
+            </div>
           </div>`;
         }).join('');
 
@@ -10307,7 +10998,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         <div class="eval-col-body" id="eval-col-body-${oi}" style="border-color:${c.border}">${items}</div>`;
 
         grid.appendChild(col);
-        S.criteria.forEach(cr => renderStepper(oi, cr.id, S.scores[cr.id]?.[oi] ?? 5, cr.invert ?? false));
+        _cs.criteria.forEach(cr => renderStepper(oi, cr.id, _cs.scores?.[_myPid]?.[cr.id]?.[oi] ?? 5, cr.invert ?? false));
         refreshLive(oi);
       });
     }
@@ -10324,11 +11015,17 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
 
     /** Score step in collab mode: update locally + send to server */
     function csStepVal(oi, crId, delta) {
-      if (!S.scores[crId]) S.scores[crId] = S.options.map(() => 5);
-      const cur = S.scores[crId][oi] ?? 5;
+      if (!_cs) return;
+      if (!_cs.scores[_myPid]) _cs.scores[_myPid] = {};
+      if (!_cs.scores[_myPid][crId]) _cs.scores[_myPid][crId] = _cs.options.map(() => 5);
+      const cur = _cs.scores[_myPid][crId][oi] ?? 5;
       const next = Math.max(1, Math.min(10, cur + delta));
+      _cs.scores[_myPid][crId][oi] = next;
+      // Keep S in sync for calcScore / refreshLive
+      if (!S.scores[crId]) S.scores[crId] = _cs.options.map(() => 5);
       S.scores[crId][oi] = next;
-      renderStepper(oi, crId, next, S.criteria.find(c => c.id === crId)?.invert ?? false);
+      const invert = _cs.criteria.find(c => c.id === crId)?.invert ?? false;
+      renderStepper(oi, crId, next, invert);
       refreshLive(oi);
       _wsSend({ type: 'set_score', criterionId: crId, optionIndex: oi, value: next });
     }
@@ -10341,38 +11038,91 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         return;
       }
 
+      // In anonymous mode, hide individual scores until phase 3 or revealed
+      const hideIndividual = _cs.anonymous && _cs.phase < 3 && !_csScoresRevealed;
+
       const colors = activeColors();
       const optHeaders = _cs.options.map((o, oi) =>
         `<th class="opt-col" style="color:${colors[oi % colors.length].hex}">${esc(o.name)}</th>`
       ).join('');
 
+      // Compute std dev helper
+      function stdDev(vals) {
+        if (vals.length < 2) return 0;
+        const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+        return Math.sqrt(vals.reduce((s, v) => s + (v - avg) ** 2, 0) / vals.length);
+      }
+
       const rows = _cs.criteria.map(cr => {
         const cells = _cs.options.map((_, oi) => {
-          const participantCells = participants.map(p => {
-            const val = _cs.scores[p.id]?.[cr.id]?.[oi] ?? 5;
-            const isMe = p.id === _myPid;
-            return `<div style="font-size:.72rem;color:${p.color};${isMe ? 'font-weight:800' : ''}">${p.name.split(' ')[0]}: ${val}</div>`;
-          }).join('');
-          // Average
           const vals = participants.map(p => _cs.scores[p.id]?.[cr.id]?.[oi] ?? 5);
           const avg = (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1);
-          return `<td class="cs-score-cell">
-            <div style="font-weight:800;font-size:.95rem;color:var(--ink);margin-bottom:4px">${avg}</div>
+          const sd = stdDev(vals);
+          const varianceClass = sd >= 2.5 ? 'high-variance' : sd <= 1 && participants.length > 1 ? 'low-variance' : '';
+          const varianceIcon = sd >= 2.5
+            ? `<span class="cs-variance-icon" title="Désaccord élevé (σ=${sd.toFixed(1)})">⚠️</span>`
+            : sd <= 1 && participants.length > 1
+              ? `<span class="cs-variance-icon" title="Consensus (σ=${sd.toFixed(1)})">🤝</span>`
+              : '';
+
+          let participantCells = '';
+          if (!hideIndividual) {
+            participantCells = participants.map(p => {
+              const val = _cs.scores[p.id]?.[cr.id]?.[oi] ?? 5;
+              const isMe = p.id === _myPid;
+              const comment = _cs.comments?.[p.id]?.[cr.id]?.[oi];
+              const commentEl = comment ? `<span title="${esc(comment)}" style="cursor:help"> 💬</span>` : '';
+              return `<div style="font-size:.72rem;color:${p.color};${isMe ? 'font-weight:800' : ''}">${p.name.split(' ')[0]}: ${val}${commentEl}</div>`;
+            }).join('');
+          } else {
+            participantCells = `<div style="font-size:.68rem;color:var(--muted);font-style:italic">🔒 Masqué</div>`;
+          }
+
+          return `<td class="cs-score-cell ${varianceClass}">
+            <div style="font-weight:800;font-size:.95rem;color:var(--ink);margin-bottom:4px">${avg}${varianceIcon}</div>
             ${participantCells}
           </td>`;
         }).join('');
         return `<tr><td class="crit-td">${cr.icon} ${cr.name}</td>${cells}</tr>`;
       }).join('');
 
-      // Average row (overall scores)
+      // Average row — use individual weights per participant
       const avgCells = _cs.options.map((_, oi) => {
-        const scores = participants.map(p => calcScoreFromScores(oi, _cs.scores[p.id] || {}));
+        const scores = participants.map(p => calcScoreWithWeights(oi, _cs.scores[p.id] || {}, _cs.weights?.[p.id]));
         const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
         const c = colors[oi % colors.length];
         return `<td class="cs-score-cell"><span style="color:${c.hex};font-size:1.1rem">${avg}/100</span></td>`;
       }).join('');
 
+      // Disagreement summary
+      let disagreementHtml = '';
+      if (participants.length >= 2) {
+        const highVarCells = [];
+        _cs.criteria.forEach(cr => {
+          _cs.options.forEach((opt, oi) => {
+            const vals = participants.map(p => _cs.scores[p.id]?.[cr.id]?.[oi] ?? 5);
+            const sd = stdDev(vals);
+            if (sd >= 2.5) highVarCells.push({ cr, opt, sd: sd.toFixed(1) });
+          });
+        });
+        if (highVarCells.length > 0) {
+          const items = highVarCells.slice(0, 3).map(({ cr, opt, sd }) =>
+            `<span style="font-size:.72rem;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:6px;padding:2px 7px;color:#92400e">${cr.icon} ${cr.name} / ${esc(opt.name)} (σ=${sd})</span>`
+          ).join(' ');
+          disagreementHtml = `<div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+            <span style="font-size:.72rem;font-weight:700;color:var(--amber)">⚠️ Points de désaccord :</span> ${items}
+          </div>`;
+        }
+      }
+
+      const anonymousReveal = hideIndividual ? `
+        <button class="cs-reveal-btn" onclick="_csScoresRevealed=true;_csBuildGroupTable()">
+          👁️ Révéler les scores individuels
+        </button>` : '';
+
       document.getElementById('csGroupTable').innerHTML = `
+        ${anonymousReveal}
+        ${disagreementHtml}
         <table class="cs-score-table">
           <thead><tr><th>Critère</th>${optHeaders}</tr></thead>
           <tbody>${rows}</tbody>
@@ -10400,9 +11150,9 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         });
       });
 
-      // Average final scores per option
+      // Average final scores per option — use each participant's individual weights
       const avgFinal = _cs.options.map((_, oi) => {
-        const scores = participants.map(p => calcScoreFromScores(oi, _cs.scores[p.id] || {}));
+        const scores = participants.map(p => calcScoreWithWeights(oi, _cs.scores[p.id] || {}, _cs.weights?.[p.id]));
         return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       });
 
@@ -10416,11 +11166,14 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         const score = avgFinal[oi];
         const proximity = winnerScore > 0 ? Math.round((score / winnerScore) * 100) : 100;
 
-        // Per-participant scores for tooltip/detail
-        const partDetail = participants.map(p => {
-          const ps = calcScoreFromScores(oi, _cs.scores[p.id] || {});
-          return `<span style="color:${p.color};font-size:.7rem;font-weight:600">${p.name.split(' ')[0]}: ${ps}</span>`;
-        }).join(' · ');
+        // Per-participant scores (use individual weights)
+        const hideIndividualResults = _cs.anonymous && _cs.phase < 3 && !_csScoresRevealed;
+        const partDetail = hideIndividualResults
+          ? `<span style="font-size:.7rem;color:var(--muted);font-style:italic">🔒 Scores anonymes</span>`
+          : participants.map(p => {
+              const ps = calcScoreWithWeights(oi, _cs.scores[p.id] || {}, _cs.weights?.[p.id]);
+              return `<span style="color:${p.color};font-size:.7rem;font-weight:600">${p.name.split(' ')[0]}: ${ps}</span>`;
+            }).join(' · ');
 
         // Strengths / weaknesses from averaged scores
         const allSorted = [..._cs.criteria].sort((a, b) => {
@@ -10623,6 +11376,55 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       document.getElementById('csPaneGroup').classList.toggle('active', tab === 'group');
     }
 
+    /* ── Collab action handlers ── */
+    function csSetPhase(n) { _wsSend({ type: 'set_phase', value: n }); }
+
+    function csSetReady(val) { _wsSend({ type: 'set_ready', value: val }); }
+
+    function csSetWeight(crId, val) { _wsSend({ type: 'set_weight', criterionId: crId, value: val }); }
+
+    function csSetComment(oi, crId, val) {
+      _wsSend({ type: 'set_comment', criterionId: crId, optionIndex: oi, value: val });
+    }
+
+    /** Calcule le score d'une option avec les poids individuels d'un participant */
+    function calcScoreWithWeights(optionIndex, scores, weights) {
+      let total = 0, max = 0;
+      S.criteria.forEach(c => {
+        let value = scores[c.id]?.[optionIndex] ?? 5;
+        if (c.invert) value = 11 - value;
+        const w = weights?.[c.id] ?? c.weight ?? 1;
+        total += value * w;
+        max += 10 * w;
+      });
+      return max === 0 ? 0 : Math.round((total / max) * 100);
+    }
+
+    /* ── Invite / QR ── */
+    function csOpenInvite() {
+      if (!_cs) return;
+      const url = new URL(location.href);
+      url.searchParams.set('session', _cs.id);
+      const joinUrl = url.toString();
+      document.getElementById('csInviteCode').textContent = _cs.id;
+      document.getElementById('csInviteLinkInput').value = joinUrl;
+      const qrImg = document.getElementById('csInviteQr');
+      if (qrImg) {
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(joinUrl)}&size=160x160&margin=8`;
+        qrImg.style.display = 'block';
+      }
+      document.getElementById('csInviteModal').classList.add('open');
+    }
+
+    function csCopyInviteLink() {
+      const input = document.getElementById('csInviteLinkInput');
+      if (!input) return;
+      navigator.clipboard?.writeText(input.value).then(() => {
+        const btn = input.nextElementSibling;
+        if (btn) { const orig = btn.textContent; btn.textContent = '✅ Copié !'; setTimeout(() => btn.textContent = orig, 2000); }
+      }).catch(() => { input.select(); document.execCommand('copy'); });
+    }
+
     /** Auto-join if URL has ?session=CODE */
     function checkSessionUrl() {
       const params = new URLSearchParams(location.search);
@@ -10760,6 +11562,25 @@ Un code par ligne."></textarea>
     </div>
   </div>
 
+  <!-- Modal Invitation avec QR code -->
+  <div class="modal-overlay" id="csInviteModal">
+    <div class="modal-box" style="max-width:340px">
+      <div class="modal-title">📲 Inviter à rejoindre</div>
+      <div class="modal-sub">Partagez le code ou le lien ci-dessous avec votre groupe.</div>
+      <div class="cs-qr-wrap">
+        <div class="cs-session-code-big" id="csInviteCode"></div>
+        <img id="csInviteQr" class="cs-qr-code" alt="QR code" onerror="this.style.display='none'">
+      </div>
+      <div class="cs-invite-link-row">
+        <input type="text" class="cs-invite-link-input" id="csInviteLinkInput" readonly>
+        <button class="btn btn-primary" style="padding:8px 14px;font-size:.8rem" onclick="csCopyInviteLink()">📋 Copier</button>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:16px">
+        <button class="btn btn-secondary" style="padding:9px 18px;font-size:.85rem" onclick="document.getElementById('csInviteModal').classList.remove('open')">Fermer</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal Créer / Rejoindre une session groupe -->
   <div class="modal-overlay" id="groupModal">
     <div class="modal-box">
@@ -10774,7 +11595,14 @@ Un code par ligne."></textarea>
       <!-- Créer -->
       <div class="collab-modal-pane active" id="groupPaneCreate">
         <label style="font-size:.82rem;font-weight:600;color:var(--ink);display:block;margin-bottom:6px">Votre prénom</label>
-        <input type="text" id="groupCreateName" class="vote-name-input" placeholder="Ex: Marie" style="margin-bottom:16px">
+        <input type="text" id="groupCreateName" class="vote-name-input" placeholder="Ex: Marie" style="margin-bottom:12px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:14px;padding:10px 12px;background:var(--bg);border-radius:10px;border:1px solid var(--border)">
+          <input type="checkbox" id="groupCreateAnon" style="width:15px;height:15px;accent-color:var(--teal)">
+          <div>
+            <div style="font-size:.82rem;font-weight:700;color:var(--ink)">🔒 Mode anonyme</div>
+            <div style="font-size:.7rem;color:var(--muted)">Les scores individuels sont cachés jusqu'aux résultats</div>
+          </div>
+        </label>
         <div id="groupCreateError" style="color:var(--red);font-size:.8rem;margin-bottom:8px;display:none"></div>
         <button class="btn btn-primary" style="width:100%" onclick="createGroupSession()">Créer la session →</button>
       </div>
