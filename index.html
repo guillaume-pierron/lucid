@@ -10442,8 +10442,11 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       bar.innerHTML = html;
 
       // Lock / unlock sections based on phase
+      // Options + Criteria: toujours accessibles
+      // Scoring: verrouillé avant phase 2
+      // Results: verrouillé avant phase 3
       const sections = [
-        { id: 'csSectionDecision', activePhase: -1 },  // always accessible
+        { id: 'csSectionDecision', activePhase: -1 },
         { id: 'csSectionOptions',  activePhase: 0 },
         { id: 'csSectionCriteria', activePhase: 1 },
         { id: 'csSectionScoring',  activePhase: 2 },
@@ -10453,8 +10456,9 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         const el = document.getElementById(id);
         if (!el) return;
         if (activePhase === -1) return;
-        // Only lock FUTURE phases — past and current are always accessible
-        el.classList.toggle('phase-locked', phase < activePhase);
+        // Seules scoring et results ont un verrou (il faut atteindre la phase)
+        const shouldLock = activePhase >= 2 && phase < activePhase;
+        el.classList.toggle('phase-locked', shouldLock);
         el.classList.toggle('phase-active', phase === activePhase);
         if (phase === activePhase) el.classList.add('open');
       });
