@@ -10391,7 +10391,16 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         return;
       }
 
-      // Average scores per option across all participants
+      // Average raw scores per criterion per option across all participants
+      const avgRawScores = {};
+      _cs.criteria.forEach(cr => {
+        avgRawScores[cr.id] = _cs.options.map((_, oi) => {
+          const vals = participants.map(p => (_cs.scores[p.id]?.[cr.id]?.[oi] ?? 5));
+          return vals.reduce((a, b) => a + b, 0) / vals.length;
+        });
+      });
+
+      // Average final scores per option
       const avgFinal = _cs.options.map((_, oi) => {
         const scores = participants.map(p => calcScoreFromScores(oi, _cs.scores[p.id] || {}));
         return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
@@ -10413,6 +10422,33 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
           return `<span style="color:${p.color};font-size:.7rem;font-weight:600">${p.name.split(' ')[0]}: ${ps}</span>`;
         }).join(' · ');
 
+        // Strengths / weaknesses from averaged scores
+        const allSorted = [..._cs.criteria].sort((a, b) => {
+          const va = avgRawScores[a.id]?.[oi] ?? 5;
+          const vb = avgRawScores[b.id]?.[oi] ?? 5;
+          const ea = a.invert ? 11 - va : va;
+          const eb = b.invert ? 11 - vb : vb;
+          return (eb * (b.weight || 1)) - (ea * (a.weight || 1));
+        });
+        const topCrits = allSorted.slice(0, 2).filter(cr => {
+          const v = avgRawScores[cr.id]?.[oi] ?? 5;
+          return (cr.invert ? 11 - v : v) >= 6;
+        });
+        const worstCrit = [...allSorted].reverse().find(cr => {
+          const v = avgRawScores[cr.id]?.[oi] ?? 5;
+          return (cr.invert ? 11 - v : v) <= 5;
+        });
+        const insightHTML = (topCrits.length || worstCrit) ? `<div class="sc-insights" style="margin-top:6px">
+            ${topCrits.length ? `<div class="sc-insight sc-insight-pro">
+              <span class="sc-insight-dot">↑</span>
+              <span><strong>Points forts :</strong> ${topCrits.map(cr => `${cr.icon} ${cr.name}`).join(', ')}</span>
+            </div>` : ''}
+            ${worstCrit ? `<div class="sc-insight sc-insight-con">
+              <span class="sc-insight-dot">↓</span>
+              <span><strong>À surveiller :</strong> ${worstCrit.icon} ${worstCrit.name}</span>
+            </div>` : ''}
+          </div>` : '';
+
         return `<div class="cs-result-card" style="border-color:${c.hex};background:linear-gradient(135deg,var(--white) 60%,${c.bg})">
           <div class="cs-result-rank" style="background:${c.bg};color:${c.hex}">${rankEmojis[rank] || `#${rank+1}`}</div>
           <div style="flex:1;min-width:0">
@@ -10421,16 +10457,145 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
               <div class="cs-result-score-fill" style="width:${rank === 0 ? 100 : proximity}%;background:${c.hex}"></div>
             </div>
             <div style="margin-top:5px">${partDetail}</div>
+            ${insightHTML}
           </div>
           <div class="cs-result-num" style="color:${c.hex}">${score}<span style="font-size:.7rem;color:var(--muted)">/100</span></div>
         </div>`;
       }).join('');
 
+      const showRadar = _cs.criteria.length >= 3;
       document.getElementById('csResults').innerHTML = `
         <div style="font-size:.72rem;color:var(--muted);margin-bottom:12px">
           ${participants.length} participant${participants.length > 1 ? 's' : ''} · ${_cs.options.length} options · ${_cs.criteria.length} critères
         </div>
+        ${showRadar ? `<div style="display:flex;justify-content:center;margin-bottom:16px"><canvas id="csRadarC" width="420" height="320" style="max-width:100%"></canvas></div>` : ''}
         ${cards}`;
+
+      if (showRadar) {
+        setTimeout(() => _drawCsRadar(avgRawScores, colors), 50);
+      }
+    }
+
+    function _drawCsRadar(avgRawScores, colors) {
+      const canvas = document.getElementById('csRadarC');
+      if (!canvas) return;
+      const crits = _cs.criteria;
+      if (crits.length < 3) return;
+
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      const cx = W / 2, cy = H / 2;
+      const N = crits.length;
+      const R = Math.min(W, H) / 2 - 72;
+      ctx.clearRect(0, 0, W, H);
+      const angle = i => (i / N) * Math.PI * 2 - Math.PI / 2;
+
+      const isDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+      const gridOuter = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.13)';
+      const gridInner = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+      const axisColor = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)';
+      const levelLblColor = isDark ? 'rgba(255,255,255,0.40)' : 'rgba(0,0,0,0.25)';
+      const critNameColor = isDark ? '#e2e8f0' : '#555';
+
+      // Grid rings
+      [2, 4, 6, 8, 10].forEach(lvl => {
+        ctx.beginPath();
+        crits.forEach((_, i) => {
+          const a = angle(i), r = (lvl / 10) * R;
+          i === 0 ? ctx.moveTo(cx + r * Math.cos(a), cy + r * Math.sin(a))
+            : ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+        });
+        ctx.closePath();
+        ctx.strokeStyle = lvl === 10 ? gridOuter : gridInner;
+        ctx.lineWidth = lvl === 10 ? 1.5 : 1;
+        ctx.stroke();
+        if (lvl % 4 === 0) {
+          ctx.font = '9px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillStyle = levelLblColor;
+          ctx.fillText(lvl, cx + 4, cy - (lvl / 10) * R + 10);
+        }
+      });
+
+      // Radial axes
+      crits.forEach((_, i) => {
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + R * Math.cos(angle(i)), cy + R * Math.sin(angle(i)));
+        ctx.strokeStyle = axisColor;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
+
+      // Criterion labels
+      crits.forEach((c, i) => {
+        const a = angle(i);
+        const dist = R + 46;
+        const x = cx + dist * Math.cos(a);
+        const y = cy + dist * Math.sin(a);
+        const short = c.name.length > 12 ? c.name.substring(0, 11) + '…' : c.name;
+        ctx.font = '13px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(c.icon || '', x, y - 8);
+        ctx.font = '10px sans-serif';
+        ctx.fillStyle = critNameColor;
+        ctx.fillText(short, x, y + 6);
+      });
+
+      // Polygon per option (using averaged scores)
+      _cs.options.forEach((_, oi) => {
+        const col = colors[oi] || colors[colors.length - 1];
+        const hex = col.hex.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+
+        const pts = crits.map((c, i) => {
+          const v = avgRawScores[c.id]?.[oi] ?? 5;
+          const eff = c.invert ? 11 - v : v;
+          const rad = (eff / 10) * R;
+          return [cx + rad * Math.cos(angle(i)), cy + rad * Math.sin(angle(i))];
+        });
+
+        ctx.beginPath();
+        pts.forEach(([px, py], i) => i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py));
+        ctx.closePath();
+        ctx.fillStyle = `rgba(${r},${g},${b},0.12)`;
+        ctx.fill();
+        ctx.strokeStyle = col.hex;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        pts.forEach(([px, py]) => {
+          ctx.beginPath();
+          ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = col.hex;
+          ctx.fill();
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        });
+      });
+
+      // Legend
+      _cs.options.forEach((opt, oi) => {
+        const col = colors[oi] || colors[colors.length - 1];
+        const y = H - (_cs.options.length - oi) * 16 - 4;
+        ctx.beginPath();
+        ctx.rect(8, y - 6, 12, 10);
+        ctx.fillStyle = col.hex + '44';
+        ctx.fill();
+        ctx.strokeStyle = col.hex;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.font = '10px sans-serif';
+        ctx.fillStyle = critNameColor;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        const label = opt.name.length > 18 ? opt.name.substring(0, 17) + '…' : opt.name;
+        ctx.fillText(label, 24, y - 1);
+      });
     }
 
     /* ── Helpers collab ── */
