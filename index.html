@@ -10456,9 +10456,8 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         const el = document.getElementById(id);
         if (!el) return;
         if (activePhase === -1) return;
-        // Seules scoring et results ont un verrou (il faut atteindre la phase)
-        const shouldLock = activePhase >= 2 && phase < activePhase;
-        el.classList.toggle('phase-locked', shouldLock);
+        // Aucun verrou — les phases sont un guide visuel, pas une barrière
+        el.classList.remove('phase-locked');
         el.classList.toggle('phase-active', phase === activePhase);
         if (phase === activePhase) el.classList.add('open');
       });
