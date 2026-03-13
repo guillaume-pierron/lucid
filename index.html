@@ -10453,9 +10453,9 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         const el = document.getElementById(id);
         if (!el) return;
         if (activePhase === -1) return;
-        el.classList.toggle('phase-locked', phase !== activePhase && activePhase >= 0);
+        // Only lock FUTURE phases — past and current are always accessible
+        el.classList.toggle('phase-locked', phase < activePhase);
         el.classList.toggle('phase-active', phase === activePhase);
-        // Auto-open active section
         if (phase === activePhase) el.classList.add('open');
       });
     }
