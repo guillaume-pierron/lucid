@@ -10245,6 +10245,8 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     let _myPid = null;       // my participant id
     let _csDecisionDraft = '';// pending decision text
     let _csScoresRevealed = false; // for anonymous mode: have we revealed scores locally
+    let _csWeightingMethod = 'simple'; // 'simple' | 'roc'
+    let _csRocRanks = {};              // criterionId -> rank (0-based)
 
     /* ── Helpers ── */
     function _wsSend(msg) {
@@ -10553,6 +10555,9 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       }
       const myWeights = _cs.weights?.[_myPid] || {};
 
+      // En mode ROC, s'assurer que tout critère nouvellement sélectionné a un rang
+      if (_csWeightingMethod === 'roc' && _cs.criteria.length > 0) _csInitRocRanks();
+
       // Filtre par recherche
       const q = (document.getElementById('csCritSearch')?.value || '').toLowerCase().trim();
       const visible = q
@@ -10577,8 +10582,39 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       const wrapEl = document.getElementById('csCritWeightSummary');
       if (wrapEl) {
         if (_cs.criteria.length > 0) {
-          wrapEl.innerHTML = `<div style="font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:8px">Importance des critères</div>` +
-            _cs.criteria.map(cr => {
+          const methodToggle = `
+            <div class="method-toggle-bar" style="margin-bottom:10px">
+              <span class="method-lbl">Pondération :</span>
+              <button class="method-btn${_csWeightingMethod === 'simple' ? ' active' : ''}" onclick="csToggleWeightingMethod('simple')">${tr('swing_method_simple')}</button>
+              <button class="method-btn${_csWeightingMethod === 'roc' ? ' active' : ''}" onclick="csToggleWeightingMethod('roc')">${tr('swing_method_swing')}</button>
+            </div>`;
+
+          let importanceSection;
+          if (_csWeightingMethod === 'roc') {
+            const rocWeights = _csGetRocWeights();
+            const sorted = [..._cs.criteria].sort((a, b) => (_csRocRanks[a.id] ?? 999) - (_csRocRanks[b.id] ?? 999));
+            importanceSection = `<div class="swing-info" style="margin-bottom:8px">${tr('swing_info')}</div>` +
+              sorted.map((cr, i) => {
+                const pct = Math.round((rocWeights[cr.id] ?? 0) * 100);
+                return `<div class="swing-item" style="cursor:default;margin-bottom:4px">
+                  <div class="swing-rank-num">${i + 1}</div>
+                  <div class="swing-item-main">
+                    <div class="swing-item-header">
+                      <span style="font-size:.9rem;flex-shrink:0">${cr.icon}</span>
+                      <span class="swing-item-name">${cr.name}</span>
+                    </div>
+                  </div>
+                  <div class="swing-weight-col">
+                    <div class="swing-weight-tag" style="font-size:.8rem;padding:4px 8px">${pct}%</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:2px;margin-left:4px">
+                    <button onclick="csMoveRank('${cr.id}',-1)" style="width:24px;height:20px;border:1px solid var(--border);border-radius:4px;background:var(--white);cursor:pointer;font-size:.75rem;padding:0;line-height:1" ${i===0 ? 'disabled' : ''}>↑</button>
+                    <button onclick="csMoveRank('${cr.id}',+1)" style="width:24px;height:20px;border:1px solid var(--border);border-radius:4px;background:var(--white);cursor:pointer;font-size:.75rem;padding:0;line-height:1" ${i===sorted.length-1 ? 'disabled' : ''}>↓</button>
+                  </div>
+                </div>`;
+              }).join('');
+          } else {
+            importanceSection = _cs.criteria.map(cr => {
               const myW = myWeights[cr.id] ?? 1;
               return `<div class="sel-item weight-${myW}" style="margin-bottom:6px">
                 <div class="sel-item-header">
@@ -10592,12 +10628,75 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
                 </div>
               </div>`;
             }).join('');
+          }
+
+          wrapEl.innerHTML = `<div style="font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:8px">Importance des critères</div>` +
+            methodToggle + importanceSection;
         } else {
           wrapEl.innerHTML = '';
         }
       }
 
       if (sub) sub.textContent = `${_cs.criteria.length} critère${_cs.criteria.length > 1 ? 's' : ''} sélectionné${_cs.criteria.length > 1 ? 's' : ''}`;
+    }
+
+    /** Calcule les poids ROC normalisés (somme=1) depuis _csRocRanks. */
+    function _csGetRocWeights() {
+      const crit = _cs?.criteria ?? [];
+      const N = crit.length;
+      if (N === 0) return {};
+      const sorted = [...crit].sort((a, b) => (_csRocRanks[a.id] ?? 999) - (_csRocRanks[b.id] ?? 999));
+      const weights = {};
+      for (let rank = 0; rank < N; rank++) {
+        let w = 0;
+        for (let k = rank; k < N; k++) w += 1 / (k + 1);
+        weights[sorted[rank].id] = w / N;
+      }
+      return weights;
+    }
+
+    /** Initialise ou complète les rangs ROC pour les critères sélectionnés. */
+    function _csInitRocRanks() {
+      const crit = _cs?.criteria ?? [];
+      const knownIds = new Set(Object.keys(_csRocRanks).filter(id => crit.some(c => c.id === id)));
+      let nextRank = knownIds.size;
+      crit.forEach(c => { if (!knownIds.has(c.id)) { _csRocRanks[c.id] = nextRank++; } });
+      // Renormalise
+      const sorted = [...crit].sort((a, b) => (_csRocRanks[a.id] ?? 0) - (_csRocRanks[b.id] ?? 0));
+      sorted.forEach((c, i) => { _csRocRanks[c.id] = i; });
+    }
+
+    /** Déplace un critère vers le haut (-1) ou le bas (+1) dans le classement ROC. */
+    function csMoveRank(crId, direction) {
+      const crit = _cs?.criteria ?? [];
+      const sorted = [...crit].sort((a, b) => (_csRocRanks[a.id] ?? 0) - (_csRocRanks[b.id] ?? 0));
+      const idx = sorted.findIndex(c => c.id === crId);
+      if (idx === -1) return;
+      const swapIdx = idx + direction;
+      if (swapIdx < 0 || swapIdx >= sorted.length) return;
+      const tmp = _csRocRanks[sorted[idx].id];
+      _csRocRanks[sorted[idx].id] = _csRocRanks[sorted[swapIdx].id];
+      _csRocRanks[sorted[swapIdx].id] = tmp;
+      _csBroadcastRocWeights();
+      _renderCsCriteria();
+      _csBuildMyEvalGrid();
+    }
+
+    /** Envoie les poids ROC calculés au serveur via csSetWeight pour chaque critère. */
+    function _csBroadcastRocWeights() {
+      const weights = _csGetRocWeights();
+      Object.entries(weights).forEach(([crId, w]) => csSetWeight(crId, parseFloat(w.toFixed(4))));
+    }
+
+    /** Bascule entre méthode simple et ROC en mode CS. */
+    function csToggleWeightingMethod(method) {
+      _csWeightingMethod = method;
+      if (method === 'roc') {
+        _csInitRocRanks();
+        _csBroadcastRocWeights();
+      }
+      _renderCsCriteria();
+      _csBuildMyEvalGrid();
     }
 
     function csToggleCriterion(critId) {
@@ -10653,8 +10752,9 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       if (!_cs) return;
       // Sync _cs data into S so that calcScore / refreshLive work correctly
       const myWeights = _cs.weights?.[_myPid] ?? {};
+      const effectiveWeights = _csWeightingMethod === 'roc' ? _csGetRocWeights() : myWeights;
       S.options = _cs.options;
-      S.criteria = _cs.criteria.map(c => ({ ...c, weight: myWeights[c.id] ?? c.weight ?? 1 }));
+      S.criteria = _cs.criteria.map(c => ({ ...c, weight: effectiveWeights[c.id] ?? c.weight ?? 1 }));
       _cs.criteria.forEach(cr => {
         S.scores[cr.id] = _cs.scores?.[_myPid]?.[cr.id] ?? _cs.options.map(() => 5);
       });
