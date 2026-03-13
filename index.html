@@ -139,7 +139,11 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
+
+    /* Reset outline par défaut sur tous les boutons (évite le carré bleu au clic) */
+    button { outline: none; }
 
     html,
     body {
@@ -5190,9 +5194,6 @@
       box-shadow: 0 8px 28px rgba(5, 150, 105, 0.42),
                   0 0 0 3px rgba(5, 150, 105, 0.15) !important;
     }
-
-    /* Reset outline par défaut sur tous les boutons (évite le carré bleu au clic) */
-    button { outline: none; }
 
     /* Focus visible accessible (outline) sur tous les boutons */
     .btn:focus-visible,
