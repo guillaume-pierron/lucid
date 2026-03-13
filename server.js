@@ -3,6 +3,7 @@ const { WebSocketServer } = require('ws');
 const { randomBytes } = require('crypto');
 
 const app = express();
+app.get('/healthz', (_, res) => res.send('ok'));
 app.use(express.static(__dirname));
 
 /* ── Session store ── */
