@@ -5454,6 +5454,124 @@
     }
     /* ── PAGE COLLAB (session en direct) ───── */
     #page-collab { --cs-gap: 16px; }
+
+    /* Phase bar */
+    .cs-phase-bar {
+      display: flex; align-items: center; gap: 0;
+      background: var(--glass-bg); border-bottom: 1px solid var(--border);
+      padding: 0 18px; overflow-x: auto; position: sticky; top: 57px; z-index: 9;
+    }
+    .cs-phase-step {
+      display: flex; align-items: center; gap: 6px; padding: 9px 12px;
+      font-size: .72rem; font-weight: 600; color: var(--muted); white-space: nowrap;
+      border-bottom: 2.5px solid transparent; transition: all .2s; cursor: default;
+    }
+    .cs-phase-step.active { color: var(--teal); border-bottom-color: var(--teal); }
+    .cs-phase-step.done { color: var(--muted2); }
+    .cs-phase-num {
+      width: 18px; height: 18px; border-radius: 50%; font-size: .65rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--border); color: var(--muted);
+    }
+    .cs-phase-step.active .cs-phase-num { background: var(--teal); color: #fff; }
+    .cs-phase-step.done .cs-phase-num { background: var(--teal-bg); color: var(--teal); }
+    .cs-phase-sep { color: var(--muted2); font-size: .75rem; padding: 0 2px; flex-shrink: 0; }
+    .cs-phase-host-btn {
+      margin-left: auto; padding: 5px 12px; border-radius: 20px; font-size: .72rem;
+      font-weight: 700; border: 1.5px solid var(--teal); background: var(--teal);
+      color: #fff; cursor: pointer; white-space: nowrap; transition: all .15s;
+      font-family: 'Inter', sans-serif; flex-shrink: 0;
+    }
+    .cs-phase-host-btn:hover { opacity: .85; }
+    .cs-phase-host-btn.back { background: none; color: var(--muted); border-color: var(--border); }
+    .cs-phase-host-btn.back:hover { border-color: var(--muted); color: var(--ink); }
+
+    /* Ready indicator */
+    .cs-ready-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; padding: 10px 14px; background: var(--bg); border-radius: var(--r-sm); border: 1px solid var(--border); }
+    .cs-ready-chip {
+      display: flex; align-items: center; gap: 5px; font-size: .7rem; font-weight: 600;
+      padding: 3px 8px; border-radius: 20px; border: 1px solid var(--border);
+    }
+    .cs-ready-chip.done { border-color: var(--teal); color: var(--teal); background: var(--teal-bg); }
+    .cs-ready-chip.waiting { color: var(--muted); }
+    .cs-ready-btn {
+      width: 100%; padding: 10px; margin-top: 14px; border-radius: 10px;
+      border: 1.5px solid var(--teal); background: var(--teal-bg);
+      color: var(--teal); font-size: .85rem; font-weight: 700; cursor: pointer;
+      transition: all .18s; font-family: 'Inter', sans-serif;
+    }
+    .cs-ready-btn:hover { background: var(--teal); color: #fff; }
+    .cs-ready-btn.done { background: var(--teal); color: #fff; }
+
+    /* Anonymous badge */
+    .cs-anon-badge {
+      display: inline-flex; align-items: center; gap: 4px; font-size: .65rem; font-weight: 700;
+      color: #8b5cf6; background: rgba(139,92,246,.1); border: 1px solid rgba(139,92,246,.3);
+      border-radius: 8px; padding: 3px 7px; white-space: nowrap;
+    }
+
+    /* Section locked overlay */
+    .cs-section.phase-locked .cs-section-body { opacity: .45; pointer-events: none; }
+    .cs-section.phase-active { border-color: var(--teal); }
+    .cs-phase-label {
+      font-size: .68rem; font-weight: 700; padding: 2px 7px; border-radius: 6px;
+      background: var(--teal); color: #fff; margin-left: 4px;
+    }
+
+    /* Weight chips */
+    .cs-weight-row { display: flex; align-items: center; gap: 5px; margin-top: 6px; flex-wrap: wrap; }
+    .cs-weight-label { font-size: .65rem; color: var(--muted); font-weight: 600; }
+    .cs-weight-chip {
+      width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border);
+      background: var(--bg); font-size: .68rem; font-weight: 800; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .12s; color: var(--muted); font-family: 'Inter', sans-serif;
+    }
+    .cs-weight-chip.active { border-color: var(--teal); background: var(--teal); color: #fff; }
+    .cs-weight-chip:hover:not(.active) { border-color: var(--teal); color: var(--teal); }
+
+    /* Comment input under score */
+    .cs-comment-row { margin-top: 6px; }
+    .cs-comment-input {
+      width: 100%; box-sizing: border-box; padding: 5px 8px; font-size: .72rem;
+      font-family: 'Inter', sans-serif; border: 1px solid var(--border); border-radius: 7px;
+      background: var(--white); color: var(--muted); resize: none; line-height: 1.4;
+    }
+    .cs-comment-input:focus { outline: none; border-color: var(--teal); color: var(--ink); }
+
+    /* Disagreement in group table */
+    .cs-score-cell.high-variance { background: rgba(245,158,11,.1); }
+    .cs-score-cell.low-variance { background: rgba(5,150,105,.06); }
+    .cs-variance-icon { font-size: .65rem; margin-left: 3px; vertical-align: middle; }
+
+    /* Invite / QR modal */
+    .cs-invite-btn {
+      padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--bg); font-size: .72rem; font-weight: 600; color: var(--muted);
+      cursor: pointer; transition: all .15s; white-space: nowrap; font-family: 'Inter', sans-serif;
+    }
+    .cs-invite-btn:hover { border-color: var(--teal); color: var(--teal); }
+    #csInviteModal .modal-box { max-width: 340px; }
+    .cs-qr-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 16px 0; }
+    .cs-qr-code { width: 160px; height: 160px; border: 1px solid var(--border); border-radius: var(--r-sm); }
+    .cs-session-code-big {
+      font-size: 2rem; font-weight: 900; letter-spacing: .15em; color: var(--teal);
+      background: var(--teal-bg); border: 2px solid var(--teal); border-radius: var(--r-sm);
+      padding: 10px 24px; font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .cs-invite-link-row { display: flex; gap: 6px; margin-top: 8px; }
+    .cs-invite-link-input { flex: 1; font-size: .75rem; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 8px; color: var(--muted); background: var(--bg); }
+
+    /* Reveal scores button (anonymous mode) */
+    .cs-reveal-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 16px;
+      border: 1.5px solid #8b5cf6; background: rgba(139,92,246,.08);
+      color: #8b5cf6; font-size: .85rem; font-weight: 700; cursor: pointer;
+      transition: all .18s; font-family: 'Inter', sans-serif;
+    }
+    .cs-reveal-btn:hover { background: #8b5cf6; color: #fff; }
+
     .cs-header { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--border); background: var(--glass-bg); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 10; }
     .cs-logo { display: flex; align-items: center; gap: 6px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--ink); }
     .cs-logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
@@ -5935,10 +6053,15 @@
       <div class="cs-logo"><div class="cs-logo-dot"></div>Lucid</div>
       <div class="cs-live-badge"><div class="cs-live-dot"></div>LIVE</div>
       <div class="cs-session-code" id="csCode" onclick="copySessionCode()" title="Cliquez pour copier le code"></div>
+      <div id="csAnonBadge" style="display:none" class="cs-anon-badge">🔒 Anonyme</div>
+      <button class="cs-invite-btn" onclick="csOpenInvite()" title="Inviter des participants">📲 Inviter</button>
       <div class="cs-participants" id="csParticipants"></div>
     </div>
 
-    <div class="cs-scroll">
+    <!-- Phase progress bar -->
+    <div class="cs-phase-bar" id="csPhaseBar"></div>
+
+    <div class="cs-scroll" style="height:calc(100vh - 97px)">
       <div class="cs-main">
 
         <!-- ① Question -->
@@ -5992,6 +6115,7 @@
           </div>
           <div class="cs-section-body">
             <div class="cs-crit-grid" id="csCritGrid"></div>
+            <div id="csCritWeightSummary" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div>
           </div>
         </div>
 
@@ -6006,12 +6130,14 @@
             <span class="cs-section-chevron">▾</span>
           </div>
           <div class="cs-section-body">
+            <div id="csReadyRow"></div>
             <div class="cs-scoring-tabs">
               <button class="cs-scoring-tab active" onclick="switchCsScoreTab('mine')">Mes notes</button>
               <button class="cs-scoring-tab" onclick="switchCsScoreTab('group')">Vue groupe</button>
             </div>
             <div class="cs-scoring-pane active" id="csPaneMine">
               <div class="eval-grid" id="csEvalGrid"></div>
+              <button class="cs-ready-btn" id="csReadyBtn" onclick="csSetReady(true)">✓ J'ai terminé de noter</button>
             </div>
             <div class="cs-scoring-pane" id="csPaneGroup">
               <div id="csGroupTable"></div>
@@ -10112,6 +10238,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     let _cs = null;          // collab session snapshot (from server)
     let _myPid = null;       // my participant id
     let _csDecisionDraft = '';// pending decision text
+    let _csScoresRevealed = false; // for anonymous mode: have we revealed scores locally
 
     /* ── Helpers ── */
     function _wsSend(msg) {
@@ -10150,9 +10277,10 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     function createGroupSession() {
       const name = document.getElementById('groupCreateName').value.trim();
       if (!name) { _showGroupError('create', 'Entrez votre prénom.'); return; }
+      const anonymous = document.getElementById('groupCreateAnon')?.checked ?? false;
       const btn = document.querySelector('#groupPaneCreate .btn-primary');
       if (btn) { btn.textContent = 'Connexion…'; btn.disabled = true; }
-      _connectWs(() => _wsSend({ type: 'create', name }));
+      _connectWs(() => _wsSend({ type: 'create', name, anonymous }));
     }
 
     function joinGroupSession() {
@@ -10222,6 +10350,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
           case 'created':
           case 'joined':
             _myPid = msg.participantId;
+            _csScoresRevealed = false;
             _applySession(msg.session);
             closeGroupModal();
             nav('page-collab');
@@ -10263,6 +10392,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         });
       }
 
+      _renderCsPhaseBar();
       _renderCsHeader();
       _renderCsDecision();
       _renderCsOptions();
@@ -10271,18 +10401,83 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       _renderCsResults();
     }
 
+    /* ── Phase bar ── */
+    function _renderCsPhaseBar() {
+      if (!_cs) return;
+      const phase = _cs.phase ?? 0;
+      const isHost = _cs.participants.find(p => p.id === _myPid)?.isHost;
+      const steps = [
+        { label: 'Options', icon: '🗂️' },
+        { label: 'Critères', icon: '📊' },
+        { label: 'Notation', icon: '⭐' },
+        { label: 'Résultats', icon: '🏆' }
+      ];
+      const bar = document.getElementById('csPhaseBar');
+      if (!bar) return;
+
+      let html = steps.map((s, i) => {
+        const cls = i === phase ? 'active' : i < phase ? 'done' : '';
+        const check = i < phase ? '✓' : i + 1;
+        return `
+          <div class="cs-phase-step ${cls}">
+            <div class="cs-phase-num">${check}</div>
+            ${s.icon} ${s.label}
+          </div>
+          ${i < 3 ? '<span class="cs-phase-sep">›</span>' : ''}`;
+      }).join('');
+
+      if (isHost) {
+        if (phase < 3) {
+          html += `<button class="cs-phase-host-btn" onclick="csSetPhase(${phase + 1})">
+            Étape suivante →
+          </button>`;
+        }
+        if (phase > 0) {
+          html += `<button class="cs-phase-host-btn back" onclick="csSetPhase(${phase - 1})" style="margin-left:${phase < 3 ? '6px' : 'auto'}">
+            ← Retour
+          </button>`;
+        }
+      }
+
+      bar.innerHTML = html;
+
+      // Lock / unlock sections based on phase
+      const sections = [
+        { id: 'csSectionDecision', activePhase: -1 },  // always accessible
+        { id: 'csSectionOptions',  activePhase: 0 },
+        { id: 'csSectionCriteria', activePhase: 1 },
+        { id: 'csSectionScoring',  activePhase: 2 },
+        { id: 'csSectionResults',  activePhase: 3 },
+      ];
+      sections.forEach(({ id, activePhase }) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (activePhase === -1) return;
+        el.classList.toggle('phase-locked', phase !== activePhase && activePhase >= 0);
+        el.classList.toggle('phase-active', phase === activePhase);
+        // Auto-open active section
+        if (phase === activePhase) el.classList.add('open');
+      });
+    }
+
     /* ── Renderers ── */
     function _renderCsHeader() {
       if (!_cs) return;
       document.getElementById('csCode').textContent = '🔑 ' + _cs.id;
+
+      // Anonymous badge
+      const anonBadge = document.getElementById('csAnonBadge');
+      if (anonBadge) anonBadge.style.display = _cs.anonymous ? 'inline-flex' : 'none';
+
       const par = document.getElementById('csParticipants');
       par.innerHTML = _cs.participants.map(p => {
-        const initials = p.name.substring(0, 2).toUpperCase();
         const offline = p.connected ? '' : ' offline';
         const isMe = p.id === _myPid ? ' (vous)' : '';
         const host = p.isHost ? ' ★' : '';
-        return `<div class="cs-avatar${offline}" style="background:${p.color}" title="${p.name}${isMe}${host}">
-          <div class="cs-avatar-dot"></div>${p.name.split(' ')[0]}${p.isHost ? host : ''}
+        const ready = _cs.ready?.[p.id] ? ' ✓' : '';
+        const readyStyle = _cs.ready?.[p.id] ? 'box-shadow:0 0 0 2px #059669;' : '';
+        return `<div class="cs-avatar${offline}" style="background:${p.color};${readyStyle}" title="${p.name}${isMe}${host}${ready ? ' (prêt)' : ''}">
+          <div class="cs-avatar-dot"></div>${p.name.split(' ')[0]}${p.isHost ? host : ''}${_cs.ready?.[p.id] ? '<span style="font-size:.6rem">✓</span>' : ''}
         </div>`;
       }).join('');
     }
@@ -10341,21 +10536,50 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       if (!_cs) return;
       const grid = document.getElementById('csCritGrid');
       const sub = document.getElementById('csCriteriaSub');
-      // Show all criteria from the library, highlight selected ones
       const allCrits = typeof LIB !== 'undefined' ? LIB : [];
       const selectedIds = new Set(_cs.criteria.map(c => c.id));
       if (allCrits.length === 0) {
         grid.innerHTML = `<div class="cs-empty">Bibliothèque non disponible.</div>`;
         return;
       }
+      const myWeights = _cs.weights?.[_myPid] || {};
+
       grid.innerHTML = allCrits.map(cr => {
         const active = selectedIds.has(cr.id) ? ' active' : '';
-        return `<button class="cs-crit-chip${active}" onclick="csToggleCriterion('${cr.id}')">
-          <span>${cr.icon}</span>
-          <span>${cr.name}</span>
-          ${active ? '<span class="cs-crit-check">✓</span>' : ''}
-        </button>`;
+        const weightRow = active ? (() => {
+          const w = myWeights[cr.id] ?? 1;
+          const chips = [1,2,3,4,5].map(v =>
+            `<button class="cs-weight-chip${v === w ? ' active' : ''}" onclick="csSetWeight('${cr.id}',${v})" title="Importance ${v}/5">${v}</button>`
+          ).join('');
+          return `<div class="cs-weight-row"><span class="cs-weight-label">Importance :</span>${chips}</div>`;
+        })() : '';
+
+        return `<div style="display:inline-flex;flex-direction:column;gap:4px;align-items:flex-start">
+          <button class="cs-crit-chip${active}" onclick="csToggleCriterion('${cr.id}')">
+            <span>${cr.icon}</span>
+            <span>${cr.name}</span>
+            ${active ? '<span class="cs-crit-check">✓</span>' : ''}
+          </button>
+          ${weightRow}
+        </div>`;
       }).join('');
+
+      // Also show weights for selected criteria as a summary below
+      if (_cs.criteria.length > 0) {
+        const weightSummary = _cs.criteria.map(cr => {
+          const myW = myWeights[cr.id] ?? 1;
+          const others = _cs.participants.filter(p => p.id !== _myPid && _cs.weights?.[p.id]?.[cr.id]);
+          const otherAvg = others.length > 0
+            ? (others.reduce((s, p) => s + (_cs.weights[p.id][cr.id] ?? 1), 0) / others.length).toFixed(1)
+            : null;
+          return `<div style="font-size:.7rem;color:var(--muted);margin-top:2px">
+            ${cr.icon} ${cr.name} — vous: <strong style="color:var(--teal)">${myW}/5</strong>${otherAvg ? ` · groupe: ${otherAvg}/5` : ''}
+          </div>`;
+        }).join('');
+        const wrapEl = document.getElementById('csCritWeightSummary');
+        if (wrapEl) wrapEl.innerHTML = weightSummary;
+      }
+
       if (sub) sub.textContent = `${_cs.criteria.length} critère${_cs.criteria.length > 1 ? 's' : ''} sélectionné${_cs.criteria.length > 1 ? 's' : ''}`;
     }
 
@@ -10376,17 +10600,43 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       if (!_cs || _cs.options.length === 0 || _cs.criteria.length === 0) {
         document.getElementById('csEvalGrid').innerHTML = `<div class="cs-empty" style="text-align:left">Ajoutez des options et des critères pour commencer à noter.</div>`;
         document.getElementById('csGroupTable').innerHTML = '';
+        document.getElementById('csReadyRow').innerHTML = '';
         return;
       }
-      // My scores pane: reuse buildEvalPage logic with S already synced
+
+      // Ready row: show who has finished
+      const readyRow = document.getElementById('csReadyRow');
+      if (readyRow) {
+        const chips = _cs.participants.map(p => {
+          const done = _cs.ready?.[p.id];
+          return `<div class="cs-ready-chip ${done ? 'done' : 'waiting'}">
+            <span style="color:${p.color}">●</span> ${esc(p.name.split(' ')[0])} ${done ? '✓' : '…'}
+          </div>`;
+        }).join('');
+        const readyCount = _cs.participants.filter(p => _cs.ready?.[p.id]).length;
+        readyRow.innerHTML = `<div class="cs-ready-row">${chips}
+          <span style="margin-left:auto;font-size:.7rem;color:var(--muted);white-space:nowrap">${readyCount}/${_cs.participants.length} prêts</span>
+        </div>`;
+      }
+
+      // Ready button state
+      const readyBtn = document.getElementById('csReadyBtn');
+      if (readyBtn) {
+        const amReady = _cs.ready?.[_myPid];
+        readyBtn.textContent = amReady ? '✓ Noté ! (annuler)' : '✓ J\'ai terminé de noter';
+        readyBtn.classList.toggle('done', !!amReady);
+        readyBtn.onclick = () => csSetReady(!amReady);
+      }
+
       _csBuildMyEvalGrid();
-      // Group table pane
       _csBuildGroupTable();
     }
 
     function _csBuildMyEvalGrid() {
       const nOpts = S.options.length;
       const grid = document.getElementById('csEvalGrid');
+      // Don't re-render if user is actively editing a comment or score input
+      if (grid && grid.contains(document.activeElement) && document.activeElement.tagName === 'TEXTAREA') return;
       grid.style.gridTemplateColumns = `repeat(${Math.min(nOpts, 2)},1fr)`;
       grid.innerHTML = '';
       const colors = activeColors();
@@ -10399,6 +10649,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         const items = S.criteria.map(cr => {
           const v = S.scores[cr.id]?.[oi] ?? 5;
           const inv = cr.invert ? `<span class="inv-tag">↓</span>` : '';
+          const myComment = _cs?.comments?.[_myPid]?.[cr.id]?.[oi] ?? '';
           const pips = `
             <div class="fluid-bar" onpointerdown="startFluidDrag(event,${oi},'${cr.id}')" role="slider"
                  aria-valuemin="1" aria-valuemax="10" aria-valuenow="${v}" tabindex="0">
@@ -10421,6 +10672,11 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
                 <div class="stepper-val" id="sv-${oi}-${cr.id}">${v}</div>
               </div>
               <button class="stepper-btn" onclick="csStepVal(${oi},'${cr.id}',+1)" aria-label="+">+</button>
+            </div>
+            <div class="cs-comment-row">
+              <textarea class="cs-comment-input" rows="1"
+                placeholder="Justifier ce score (optionnel)…"
+                onblur="csSetComment(${oi},'${cr.id}',this.value)">${esc(myComment)}</textarea>
             </div>
           </div>`;
         }).join('');
@@ -10470,38 +10726,91 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         return;
       }
 
+      // In anonymous mode, hide individual scores until phase 3 or revealed
+      const hideIndividual = _cs.anonymous && _cs.phase < 3 && !_csScoresRevealed;
+
       const colors = activeColors();
       const optHeaders = _cs.options.map((o, oi) =>
         `<th class="opt-col" style="color:${colors[oi % colors.length].hex}">${esc(o.name)}</th>`
       ).join('');
 
+      // Compute std dev helper
+      function stdDev(vals) {
+        if (vals.length < 2) return 0;
+        const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+        return Math.sqrt(vals.reduce((s, v) => s + (v - avg) ** 2, 0) / vals.length);
+      }
+
       const rows = _cs.criteria.map(cr => {
         const cells = _cs.options.map((_, oi) => {
-          const participantCells = participants.map(p => {
-            const val = _cs.scores[p.id]?.[cr.id]?.[oi] ?? 5;
-            const isMe = p.id === _myPid;
-            return `<div style="font-size:.72rem;color:${p.color};${isMe ? 'font-weight:800' : ''}">${p.name.split(' ')[0]}: ${val}</div>`;
-          }).join('');
-          // Average
           const vals = participants.map(p => _cs.scores[p.id]?.[cr.id]?.[oi] ?? 5);
           const avg = (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1);
-          return `<td class="cs-score-cell">
-            <div style="font-weight:800;font-size:.95rem;color:var(--ink);margin-bottom:4px">${avg}</div>
+          const sd = stdDev(vals);
+          const varianceClass = sd >= 2.5 ? 'high-variance' : sd <= 1 && participants.length > 1 ? 'low-variance' : '';
+          const varianceIcon = sd >= 2.5
+            ? `<span class="cs-variance-icon" title="Désaccord élevé (σ=${sd.toFixed(1)})">⚠️</span>`
+            : sd <= 1 && participants.length > 1
+              ? `<span class="cs-variance-icon" title="Consensus (σ=${sd.toFixed(1)})">🤝</span>`
+              : '';
+
+          let participantCells = '';
+          if (!hideIndividual) {
+            participantCells = participants.map(p => {
+              const val = _cs.scores[p.id]?.[cr.id]?.[oi] ?? 5;
+              const isMe = p.id === _myPid;
+              const comment = _cs.comments?.[p.id]?.[cr.id]?.[oi];
+              const commentEl = comment ? `<span title="${esc(comment)}" style="cursor:help"> 💬</span>` : '';
+              return `<div style="font-size:.72rem;color:${p.color};${isMe ? 'font-weight:800' : ''}">${p.name.split(' ')[0]}: ${val}${commentEl}</div>`;
+            }).join('');
+          } else {
+            participantCells = `<div style="font-size:.68rem;color:var(--muted);font-style:italic">🔒 Masqué</div>`;
+          }
+
+          return `<td class="cs-score-cell ${varianceClass}">
+            <div style="font-weight:800;font-size:.95rem;color:var(--ink);margin-bottom:4px">${avg}${varianceIcon}</div>
             ${participantCells}
           </td>`;
         }).join('');
         return `<tr><td class="crit-td">${cr.icon} ${cr.name}</td>${cells}</tr>`;
       }).join('');
 
-      // Average row (overall scores)
+      // Average row — use individual weights per participant
       const avgCells = _cs.options.map((_, oi) => {
-        const scores = participants.map(p => calcScoreFromScores(oi, _cs.scores[p.id] || {}));
+        const scores = participants.map(p => calcScoreWithWeights(oi, _cs.scores[p.id] || {}, _cs.weights?.[p.id]));
         const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
         const c = colors[oi % colors.length];
         return `<td class="cs-score-cell"><span style="color:${c.hex};font-size:1.1rem">${avg}/100</span></td>`;
       }).join('');
 
+      // Disagreement summary
+      let disagreementHtml = '';
+      if (participants.length >= 2) {
+        const highVarCells = [];
+        _cs.criteria.forEach(cr => {
+          _cs.options.forEach((opt, oi) => {
+            const vals = participants.map(p => _cs.scores[p.id]?.[cr.id]?.[oi] ?? 5);
+            const sd = stdDev(vals);
+            if (sd >= 2.5) highVarCells.push({ cr, opt, sd: sd.toFixed(1) });
+          });
+        });
+        if (highVarCells.length > 0) {
+          const items = highVarCells.slice(0, 3).map(({ cr, opt, sd }) =>
+            `<span style="font-size:.72rem;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:6px;padding:2px 7px;color:#92400e">${cr.icon} ${cr.name} / ${esc(opt.name)} (σ=${sd})</span>`
+          ).join(' ');
+          disagreementHtml = `<div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+            <span style="font-size:.72rem;font-weight:700;color:var(--amber)">⚠️ Points de désaccord :</span> ${items}
+          </div>`;
+        }
+      }
+
+      const anonymousReveal = hideIndividual ? `
+        <button class="cs-reveal-btn" onclick="_csScoresRevealed=true;_csBuildGroupTable()">
+          👁️ Révéler les scores individuels
+        </button>` : '';
+
       document.getElementById('csGroupTable').innerHTML = `
+        ${anonymousReveal}
+        ${disagreementHtml}
         <table class="cs-score-table">
           <thead><tr><th>Critère</th>${optHeaders}</tr></thead>
           <tbody>${rows}</tbody>
@@ -10529,9 +10838,9 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         });
       });
 
-      // Average final scores per option
+      // Average final scores per option — use each participant's individual weights
       const avgFinal = _cs.options.map((_, oi) => {
-        const scores = participants.map(p => calcScoreFromScores(oi, _cs.scores[p.id] || {}));
+        const scores = participants.map(p => calcScoreWithWeights(oi, _cs.scores[p.id] || {}, _cs.weights?.[p.id]));
         return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       });
 
@@ -10545,11 +10854,14 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         const score = avgFinal[oi];
         const proximity = winnerScore > 0 ? Math.round((score / winnerScore) * 100) : 100;
 
-        // Per-participant scores for tooltip/detail
-        const partDetail = participants.map(p => {
-          const ps = calcScoreFromScores(oi, _cs.scores[p.id] || {});
-          return `<span style="color:${p.color};font-size:.7rem;font-weight:600">${p.name.split(' ')[0]}: ${ps}</span>`;
-        }).join(' · ');
+        // Per-participant scores (use individual weights)
+        const hideIndividualResults = _cs.anonymous && _cs.phase < 3 && !_csScoresRevealed;
+        const partDetail = hideIndividualResults
+          ? `<span style="font-size:.7rem;color:var(--muted);font-style:italic">🔒 Scores anonymes</span>`
+          : participants.map(p => {
+              const ps = calcScoreWithWeights(oi, _cs.scores[p.id] || {}, _cs.weights?.[p.id]);
+              return `<span style="color:${p.color};font-size:.7rem;font-weight:600">${p.name.split(' ')[0]}: ${ps}</span>`;
+            }).join(' · ');
 
         // Strengths / weaknesses from averaged scores
         const allSorted = [..._cs.criteria].sort((a, b) => {
@@ -10752,6 +11064,55 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       document.getElementById('csPaneGroup').classList.toggle('active', tab === 'group');
     }
 
+    /* ── Collab action handlers ── */
+    function csSetPhase(n) { _wsSend({ type: 'set_phase', value: n }); }
+
+    function csSetReady(val) { _wsSend({ type: 'set_ready', value: val }); }
+
+    function csSetWeight(crId, val) { _wsSend({ type: 'set_weight', criterionId: crId, value: val }); }
+
+    function csSetComment(oi, crId, val) {
+      _wsSend({ type: 'set_comment', criterionId: crId, optionIndex: oi, value: val });
+    }
+
+    /** Calcule le score d'une option avec les poids individuels d'un participant */
+    function calcScoreWithWeights(optionIndex, scores, weights) {
+      let total = 0, max = 0;
+      S.criteria.forEach(c => {
+        let value = scores[c.id]?.[optionIndex] ?? 5;
+        if (c.invert) value = 11 - value;
+        const w = weights?.[c.id] ?? c.weight ?? 1;
+        total += value * w;
+        max += 10 * w;
+      });
+      return max === 0 ? 0 : Math.round((total / max) * 100);
+    }
+
+    /* ── Invite / QR ── */
+    function csOpenInvite() {
+      if (!_cs) return;
+      const url = new URL(location.href);
+      url.searchParams.set('session', _cs.id);
+      const joinUrl = url.toString();
+      document.getElementById('csInviteCode').textContent = _cs.id;
+      document.getElementById('csInviteLinkInput').value = joinUrl;
+      const qrImg = document.getElementById('csInviteQr');
+      if (qrImg) {
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(joinUrl)}&size=160x160&margin=8`;
+        qrImg.style.display = 'block';
+      }
+      document.getElementById('csInviteModal').classList.add('open');
+    }
+
+    function csCopyInviteLink() {
+      const input = document.getElementById('csInviteLinkInput');
+      if (!input) return;
+      navigator.clipboard?.writeText(input.value).then(() => {
+        const btn = input.nextElementSibling;
+        if (btn) { const orig = btn.textContent; btn.textContent = '✅ Copié !'; setTimeout(() => btn.textContent = orig, 2000); }
+      }).catch(() => { input.select(); document.execCommand('copy'); });
+    }
+
     /** Auto-join if URL has ?session=CODE */
     function checkSessionUrl() {
       const params = new URLSearchParams(location.search);
@@ -10889,6 +11250,25 @@ Un code par ligne."></textarea>
     </div>
   </div>
 
+  <!-- Modal Invitation avec QR code -->
+  <div class="modal-overlay" id="csInviteModal">
+    <div class="modal-box" style="max-width:340px">
+      <div class="modal-title">📲 Inviter à rejoindre</div>
+      <div class="modal-sub">Partagez le code ou le lien ci-dessous avec votre groupe.</div>
+      <div class="cs-qr-wrap">
+        <div class="cs-session-code-big" id="csInviteCode"></div>
+        <img id="csInviteQr" class="cs-qr-code" alt="QR code" onerror="this.style.display='none'">
+      </div>
+      <div class="cs-invite-link-row">
+        <input type="text" class="cs-invite-link-input" id="csInviteLinkInput" readonly>
+        <button class="btn btn-primary" style="padding:8px 14px;font-size:.8rem" onclick="csCopyInviteLink()">📋 Copier</button>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:16px">
+        <button class="btn btn-secondary" style="padding:9px 18px;font-size:.85rem" onclick="document.getElementById('csInviteModal').classList.remove('open')">Fermer</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal Créer / Rejoindre une session groupe -->
   <div class="modal-overlay" id="groupModal">
     <div class="modal-box">
@@ -10903,7 +11283,14 @@ Un code par ligne."></textarea>
       <!-- Créer -->
       <div class="collab-modal-pane active" id="groupPaneCreate">
         <label style="font-size:.82rem;font-weight:600;color:var(--ink);display:block;margin-bottom:6px">Votre prénom</label>
-        <input type="text" id="groupCreateName" class="vote-name-input" placeholder="Ex: Marie" style="margin-bottom:16px">
+        <input type="text" id="groupCreateName" class="vote-name-input" placeholder="Ex: Marie" style="margin-bottom:12px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:14px;padding:10px 12px;background:var(--bg);border-radius:10px;border:1px solid var(--border)">
+          <input type="checkbox" id="groupCreateAnon" style="width:15px;height:15px;accent-color:var(--teal)">
+          <div>
+            <div style="font-size:.82rem;font-weight:700;color:var(--ink)">🔒 Mode anonyme</div>
+            <div style="font-size:.7rem;color:var(--muted)">Les scores individuels sont cachés jusqu'aux résultats</div>
+          </div>
+        </label>
         <div id="groupCreateError" style="color:var(--red);font-size:.8rem;margin-bottom:8px;display:none"></div>
         <button class="btn btn-primary" style="width:100%" onclick="createGroupSession()">Créer la session →</button>
       </div>
