@@ -5675,8 +5675,9 @@
       display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 20px;
       border: 1.5px solid var(--border); background: var(--bg); cursor: pointer;
       font-size: .8rem; font-weight: 600; color: var(--muted); transition: all .15s;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', sans-serif; outline: none;
     }
+    .cs-crit-chip:focus, .cs-crit-chip:focus-visible { outline: none; }
     .cs-crit-chip.active { border-color: var(--teal); background: var(--teal-bg); color: var(--teal); }
     .cs-crit-chip:hover:not(.active) { border-color: var(--teal); color: var(--ink); }
     .cs-crit-check { font-size: .75rem; }
