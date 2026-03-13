@@ -11,7 +11,7 @@ const sessions = new Map(); // id → session
 const COLORS = ['#2d7d5a', '#f59e0b', '#3b82f6', '#ef4444', '#8b5cf6', '#ec4899'];
 
 function uid(len = 6) {
-  return randomBytes(len).toString('base64url').replace(/[^A-Z0-9]/gi, '').slice(0, len).toUpperCase();
+  return randomBytes(len).toString('hex').slice(0, len).toUpperCase();
 }
 
 function createSession(hostId, hostName) {
