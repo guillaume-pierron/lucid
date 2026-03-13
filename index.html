@@ -676,6 +676,43 @@
       }
     }
 
+    /* ── Mobile portrait : tout tenir sans scroll ── */
+    @media (max-width: 480px) {
+      .mascot {
+        width: 110px !important;
+        max-height: 13dvh !important;
+      }
+
+      .mascot-wrap {
+        margin-bottom: 2px;
+      }
+
+      .intro-badge {
+        margin-bottom: 8px;
+      }
+
+      .intro-logo {
+        margin-bottom: 6px;
+      }
+
+      .intro-tagline {
+        margin-bottom: 10px;
+      }
+
+      .intro-how {
+        margin-bottom: 14px;
+      }
+
+      .how-card {
+        padding: 10px 8px;
+      }
+
+      .intro-wrap {
+        padding-top: max(14px, env(safe-area-inset-top));
+        padding-bottom: max(18px, env(safe-area-inset-bottom));
+      }
+    }
+
     /* ── AI INTERPRETATION ───────────────────── */
     .interp-box {
       background: var(--glass-bg);
