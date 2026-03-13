@@ -9990,8 +9990,11 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     }
 
     function _wsUrl() {
-      const proto = location.protocol === 'https:' ? 'wss' : 'ws';
-      return `${proto}://${location.host}`;
+      // HTTPS → wss on same host (production reverse-proxy)
+      if (location.protocol === 'https:') return `wss://${location.hostname}`;
+      // HTTP / file:// → ws on same hostname, always port 3000 (Node server)
+      const host = location.hostname || 'localhost';
+      return `ws://${host}:3000`;
     }
 
     /* ── Modal groupe (créer / rejoindre) ── */
@@ -10038,15 +10041,47 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
 
     function _connectWs(onOpen) {
       if (_ws) { _ws.close(); _ws = null; }
-      _ws = new WebSocket(_wsUrl());
-      _ws.onopen = () => onOpen();
-      _ws.onmessage = e => _handleWsMsg(JSON.parse(e.data));
-      _ws.onerror = () => alert('Connexion impossible. Le serveur est-il démarré ? (npm start)');
-      _ws.onclose = () => {
-        if (_cs) {
-          document.querySelector('#csCode')?.style.setProperty('opacity', '.4');
+      let connected = false;
+
+      function _tryUrl(url, onFail) {
+        const ws = new WebSocket(url);
+        const timeout = setTimeout(() => { if (!connected) { ws.close(); onFail(); } }, 4000);
+        ws.onopen = () => {
+          connected = true; clearTimeout(timeout);
+          _ws = ws;
+          _ws.onmessage = e => _handleWsMsg(JSON.parse(e.data));
+          _ws.onclose = () => { if (_cs) document.querySelector('#csCode')?.style.setProperty('opacity', '.4'); };
+          onOpen();
+        };
+        ws.onerror = () => { clearTimeout(timeout); if (!connected) onFail(); };
+      }
+
+      const primary = _wsUrl();
+      // Also try the exact current host (handles case where Node serves the page on 3000)
+      const sameHost = location.host && location.host !== `${location.hostname}:3000`
+        ? `ws://${location.host}` : null;
+
+      _tryUrl(primary, () => {
+        if (sameHost && sameHost !== primary) {
+          _tryUrl(sameHost, _showWsError);
+        } else {
+          _showWsError();
         }
-      };
+      });
+    }
+
+    function _showWsError() {
+      // Show inline error in the modal instead of a blocking alert
+      const pane = document.getElementById('groupPaneCreate')?.classList.contains('active')
+        ? 'Create' : 'Join';
+      const errEl = document.getElementById(`group${pane}Error`);
+      if (errEl) {
+        errEl.innerHTML = '❌ Impossible de joindre le serveur.<br><code style="font-size:.78rem">npm start</code> dans le dossier du projet.';
+        errEl.style.display = 'block';
+        openGroupModal();
+      } else {
+        alert('❌ Serveur inaccessible. Lancez : npm start');
+      }
     }
 
     function _handleWsMsg(msg) {
