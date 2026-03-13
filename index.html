@@ -6114,6 +6114,12 @@
             <span class="cs-section-chevron">▾</span>
           </div>
           <div class="cs-section-body">
+            <div style="position:relative;margin-bottom:8px">
+              <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:.9rem;pointer-events:none">🔍</span>
+              <input type="text" id="csCritSearch" placeholder="Rechercher un critère…"
+                     oninput="_renderCsCriteria()"
+                     style="width:100%;padding:8px 12px 8px 32px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.85rem;background:var(--white);color:var(--text);box-sizing:border-box">
+            </div>
             <div class="cs-crit-grid" id="csCritGrid"></div>
             <div id="csCritWeightSummary" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div>
           </div>
@@ -6887,7 +6893,7 @@
     ];
 
     const CATS = ['Tous', 'Finance', 'Pro', 'Perso', 'Social', 'Stratégique'];
-    const WEIGHTS = { 1: '×1 Normal', 2: '×2 Important', 3: '×3 Crucial' };
+    const WEIGHTS = { 1: 'Normale', 2: 'Importante', 3: 'Cruciale' };
 
 
     /* ─── STATE ─────────────────────────────── */
@@ -10547,35 +10553,48 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       }
       const myWeights = _cs.weights?.[_myPid] || {};
 
-      grid.innerHTML = allCrits.map(cr => {
-        const active = selectedIds.has(cr.id) ? ' active' : '';
-        const w = myWeights[cr.id] ?? 1;
-        const weightBtns = active ? `<span style="display:flex;gap:3px;margin-left:6px" onclick="event.stopPropagation()">
-            ${[1,2,3].map(v => `<button class="weight-btn${v===w?' active':''}" onclick="csSetWeight('${cr.id}',${v})" title="Importance ${v}/3">×${v}</button>`).join('')}
-          </span>` : '';
+      // Filtre par recherche
+      const q = (document.getElementById('csCritSearch')?.value || '').toLowerCase().trim();
+      const visible = q
+        ? allCrits.filter(c => c.name.toLowerCase().includes(q) || (c.hint || '').toLowerCase().includes(q))
+        : allCrits.filter(c => !c.hidden);
 
+      // Chips simples (juste toggle, sans boutons de poids)
+      grid.innerHTML = visible.map(cr => {
+        const active = selectedIds.has(cr.id) ? ' active' : '';
         return `<div class="cs-crit-chip${active}" onclick="csToggleCriterion('${cr.id}')" style="cursor:pointer">
             <span>${cr.icon}</span>
             <span>${cr.name}</span>
             ${active ? '<span class="cs-crit-check">✓</span>' : ''}
-            ${weightBtns}
           </div>`;
       }).join('');
 
-      // Also show weights for selected criteria as a summary below
-      if (_cs.criteria.length > 0) {
-        const weightSummary = _cs.criteria.map(cr => {
-          const myW = myWeights[cr.id] ?? 1;
-          const others = _cs.participants.filter(p => p.id !== _myPid && _cs.weights?.[p.id]?.[cr.id]);
-          const otherAvg = others.length > 0
-            ? (others.reduce((s, p) => s + (_cs.weights[p.id][cr.id] ?? 1), 0) / others.length).toFixed(1)
-            : null;
-          return `<div style="font-size:.7rem;color:var(--muted);margin-top:2px">
-            ${cr.icon} ${cr.name} — vous: <strong style="color:var(--teal)">${myW}/5</strong>${otherAvg ? ` · groupe: ${otherAvg}/5` : ''}
-          </div>`;
-        }).join('');
-        const wrapEl = document.getElementById('csCritWeightSummary');
-        if (wrapEl) wrapEl.innerHTML = weightSummary;
+      if (q && visible.some(c => c.hidden)) {
+        grid.insertAdjacentHTML('beforeend', `<p style="font-size:.75rem;color:var(--muted);margin:6px 0 0;grid-column:1/-1">✨ Critères spécialisés trouvés via la recherche</p>`);
+      }
+
+      // Section importance (comme l'analyse classique) pour les critères sélectionnés
+      const wrapEl = document.getElementById('csCritWeightSummary');
+      if (wrapEl) {
+        if (_cs.criteria.length > 0) {
+          wrapEl.innerHTML = `<div style="font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:8px">Importance des critères</div>` +
+            _cs.criteria.map(cr => {
+              const myW = myWeights[cr.id] ?? 1;
+              return `<div class="sel-item weight-${myW}" style="margin-bottom:6px">
+                <div class="sel-item-header">
+                  <div class="sel-icon">${cr.icon}</div>
+                  <div class="sel-name">${cr.name}</div>
+                </div>
+                <div class="sel-item-controls">
+                  <div class="weight-group">
+                    ${[1,2,3].map(v => `<button class="weight-btn${v===myW?' active':''}" onclick="csSetWeight('${cr.id}',${v})">${WEIGHTS[v]}</button>`).join('')}
+                  </div>
+                </div>
+              </div>`;
+            }).join('');
+        } else {
+          wrapEl.innerHTML = '';
+        }
       }
 
       if (sub) sub.textContent = `${_cs.criteria.length} critère${_cs.criteria.length > 1 ? 's' : ''} sélectionné${_cs.criteria.length > 1 ? 's' : ''}`;
