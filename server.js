@@ -4,6 +4,44 @@ const { randomBytes } = require('crypto');
 
 const app = express();
 app.get('/healthz', (_, res) => res.send('ok'));
+app.use(express.json());
+
+/* ── AI: suggest criteria ── */
+app.post('/api/suggest-criteria', async (req, res) => {
+  const { decision, lang } = req.body || {};
+  if (!decision) return res.status(400).json({ error: 'decision required' });
+
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: 'AI not configured' });
+
+  const prompt = lang === 'en'
+    ? `Decision to make: "${decision}"\n\nSuggest exactly 5 relevant and specific evaluation criteria for this decision. Return ONLY a valid JSON array, no explanation, no markdown:\n[{"icon":"emoji","name":"short name (2-3 words max)","hint":"one-line description"}]`
+    : `Décision à prendre : "${decision}"\n\nSuggère exactement 5 critères d'évaluation pertinents et spécifiques pour cette décision. Réponds UNIQUEMENT avec un tableau JSON valide, sans explication, sans markdown :\n[{"icon":"emoji","name":"nom court (2-3 mots max)","hint":"description en une ligne"}]`;
+
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 500,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await r.json();
+    const text = data?.content?.[0]?.text || '[]';
+    const match = text.match(/\[[\s\S]*\]/);
+    const criteria = match ? JSON.parse(match[0]) : [];
+    res.json({ criteria: criteria.slice(0, 5) });
+  } catch (e) {
+    res.status(500).json({ error: 'AI error', criteria: [] });
+  }
+});
+
 app.use(express.static(__dirname));
 
 /* ── Session store ── */

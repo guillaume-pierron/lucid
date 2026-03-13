@@ -1051,6 +1051,52 @@
       line-height: 1.4;
     }
 
+    /* ── AI Suggest chips ── */
+    .ai-suggest-wrap {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .ai-suggest-btn {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border: 1.5px solid var(--teal);
+      border-radius: 20px;
+      background: transparent;
+      color: var(--teal);
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .ai-suggest-btn:hover { background: var(--teal); color: #fff; }
+    .ai-suggest-btn:disabled { opacity: .55; cursor: default; }
+    .ai-suggest-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .ai-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 13px;
+      border: 1.5px solid var(--teal);
+      border-radius: 20px;
+      background: var(--white);
+      color: var(--teal);
+      font-size: .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .ai-chip:hover { background: var(--teal); color: #fff; }
+    .ai-chip.ai-chip-added { opacity: .4; cursor: default; border-color: var(--border); color: var(--muted); background: transparent; }
+
     .custom-form {
       background: var(--glass-bg);
       backdrop-filter: blur(16px);
@@ -5841,6 +5887,11 @@
             </div>
           </div>
 
+          <div class="ai-suggest-wrap" id="aiSuggestWrap">
+            <button class="ai-suggest-btn" id="btnAiSuggest" onclick="suggestCriteria()">✨ Suggestions IA</button>
+            <div class="ai-suggest-chips" id="aiSuggestChips"></div>
+          </div>
+
           <div class="cat-tabs" id="catTabs"></div>
           <div class="crit-grid" id="critGrid"></div>
 
@@ -6757,6 +6808,53 @@
 
     /* ─── STEP 2 ────────────────────────────── */
     function buildCriteriaPage() { S.currentCat = tr('cats')[0]; renderCatTabs(); filterGrid(tr('cats')[0]); renderSelList(); }
+
+    async function suggestCriteria() {
+      if (!S.decision.trim()) {
+        alert(LANG === 'fr' ? 'Saisissez d\'abord votre décision à l\'étape 1.' : 'Please enter your decision in step 1 first.');
+        return;
+      }
+      const btn = document.getElementById('btnAiSuggest');
+      const chips = document.getElementById('aiSuggestChips');
+      btn.disabled = true;
+      btn.textContent = '⏳ ' + (LANG === 'fr' ? 'Génération…' : 'Generating…');
+      chips.innerHTML = '';
+      try {
+        const res = await fetch('/api/suggest-criteria', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ decision: S.decision, lang: LANG })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.criteria?.length) throw new Error(data.error || 'empty');
+        data.criteria.forEach(cr => {
+          const already = S.criteria.some(c => c.name.toLowerCase() === cr.name.toLowerCase());
+          const chip = document.createElement('button');
+          chip.className = 'ai-chip' + (already ? ' ai-chip-added' : '');
+          chip.innerHTML = `${cr.icon || '🔹'} ${esc(cr.name)}`;
+          chip.title = cr.hint || '';
+          chip.onclick = () => {
+            if (chip.classList.contains('ai-chip-added')) return;
+            S.criteria.push({
+              id: 'ai_' + Date.now(),
+              icon: cr.icon || '🔹', name: cr.name, hint: cr.hint || '',
+              cat: 'Perso', invert: false, weight: 1, custom: true,
+              swingRank: S.criteria.length
+            });
+            chip.classList.add('ai-chip-added');
+            chip.disabled = true;
+            renderSelList();
+            filterGrid(S.currentCat);
+          };
+          chips.appendChild(chip);
+        });
+      } catch (e) {
+        chips.innerHTML = `<span style="color:var(--red);font-size:.8rem">⚠️ ${LANG === 'fr' ? 'Suggestions IA indisponibles.' : 'AI suggestions unavailable.'}</span>`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '✨ ' + (LANG === 'fr' ? 'Suggestions IA' : 'AI Suggestions');
+      }
+    }
 
     function renderCatTabs() {
       const t = document.getElementById('catTabs'); t.innerHTML = '';
