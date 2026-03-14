@@ -10673,18 +10673,23 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
           } else {
             importanceSection = _cs.criteria.map(cr => {
               const myW = myWeights[cr.id] ?? 1;
+              const inverted = _csInverts[cr.id] ?? cr.invert ?? false;
               return `<div class="sel-item weight-${myW}" style="margin-bottom:6px">
                 <div class="sel-item-header">
                   <div class="sel-icon">${cr.icon}</div>
                   <div class="sel-name">
-                    ${cr.name}
+                    ${cr.name}${inverted ? ` <span class="inv-tag" title="${tr('inv_tip_on')}">${tr('inv_tag')}</span>` : ''}
                     ${cr.hint ? `<div class="sel-hint">${cr.hint}</div>` : ''}
                   </div>
+                  <button class="rm-btn" onclick="csToggleCriterion('${cr.id}')" title="Retirer">✕</button>
                 </div>
                 <div class="sel-item-controls">
                   <div class="weight-group">
                     ${[1,2,3].map(v => `<button class="weight-btn${v===myW?' active':''}" onclick="csSetWeight('${cr.id}',${v})">${WEIGHTS[v]}</button>`).join('')}
                   </div>
+                  <button class="inv-btn${inverted ? ' on' : ''}" onclick="csToggleInv('${cr.id}')" title="${inverted ? tr('inv_tip_on') : tr('inv_tip_off')}">
+                    ${inverted ? tr('inv_on') : tr('inv_off')}
+                  </button>
                 </div>
               </div>`;
             }).join('');
