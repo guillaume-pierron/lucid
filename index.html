@@ -139,7 +139,11 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
+
+    /* Reset outline par défaut sur tous les boutons (évite le carré bleu au clic) */
+    button { outline: none; }
 
     html,
     body {
@@ -673,6 +677,43 @@
 
       .intro-tagline {
         margin-bottom: 10px;
+      }
+    }
+
+    /* ── Mobile portrait : tout tenir sans scroll ── */
+    @media (max-width: 480px) {
+      .mascot {
+        width: 110px !important;
+        max-height: 13dvh !important;
+      }
+
+      .mascot-wrap {
+        margin-bottom: 2px;
+      }
+
+      .intro-badge {
+        margin-bottom: 8px;
+      }
+
+      .intro-logo {
+        margin-bottom: 6px;
+      }
+
+      .intro-tagline {
+        margin-bottom: 10px;
+      }
+
+      .intro-how {
+        margin-bottom: 14px;
+      }
+
+      .how-card {
+        padding: 10px 8px;
+      }
+
+      .intro-wrap {
+        padding-top: max(14px, env(safe-area-inset-top));
+        padding-bottom: max(18px, env(safe-area-inset-bottom));
       }
     }
 
@@ -1645,8 +1686,9 @@
     .sel-item-controls {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       margin-top: 10px;
-      gap: 12px;
+      gap: 8px;
     }
 
     .weight-group {
@@ -1775,8 +1817,6 @@
       flex-shrink: 0;
       align-self: flex-end;
       position: relative;
-      margin-left: auto;
-      /* push away from weight buttons */
     }
 
     /* arrow indicator before text: up/down state */
@@ -5638,8 +5678,9 @@
       display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 20px;
       border: 1.5px solid var(--border); background: var(--bg); cursor: pointer;
       font-size: .8rem; font-weight: 600; color: var(--muted); transition: all .15s;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', sans-serif; outline: none;
     }
+    .cs-crit-chip:focus, .cs-crit-chip:focus-visible { outline: none; }
     .cs-crit-chip.active { border-color: var(--teal); background: var(--teal-bg); color: var(--teal); }
     .cs-crit-chip:hover:not(.active) { border-color: var(--teal); color: var(--ink); }
     .cs-crit-check { font-size: .75rem; }
@@ -10257,6 +10298,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     let _csLongPressTimer = null;
     let _csTouchStartX = 0;
     let _csTouchStartY = 0;
+    let _csBroadcastTimer = null;
 
     /* ── Helpers ── */
     function _wsSend(msg) {
@@ -10580,7 +10622,6 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         return `<div class="cs-crit-chip${active}" onclick="csToggleCriterion('${cr.id}')" style="cursor:pointer">
             <span>${cr.icon}</span>
             <span>${cr.name}</span>
-            ${active ? '<span class="cs-crit-check">✓</span>' : ''}
           </div>`;
       }).join('');
 
@@ -10631,15 +10672,23 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
           } else {
             importanceSection = _cs.criteria.map(cr => {
               const myW = myWeights[cr.id] ?? 1;
+              const inverted = _csInverts[cr.id] ?? cr.invert ?? false;
               return `<div class="sel-item weight-${myW}" style="margin-bottom:6px">
                 <div class="sel-item-header">
                   <div class="sel-icon">${cr.icon}</div>
-                  <div class="sel-name">${cr.name}</div>
+                  <div class="sel-name">
+                    ${cr.name}${inverted ? ` <span class="inv-tag" title="${tr('inv_tip_on')}">${tr('inv_tag')}</span>` : ''}
+                    ${cr.hint ? `<div class="sel-hint">${cr.hint}</div>` : ''}
+                  </div>
+                  <button class="rm-btn" onclick="csToggleCriterion('${cr.id}')" title="Retirer">✕</button>
                 </div>
                 <div class="sel-item-controls">
                   <div class="weight-group">
                     ${[1,2,3].map(v => `<button class="weight-btn${v===myW?' active':''}" onclick="csSetWeight('${cr.id}',${v})">${WEIGHTS[v]}</button>`).join('')}
                   </div>
+                  <button class="inv-btn${inverted ? ' on' : ''}" onclick="csToggleInv('${cr.id}')" title="${inverted ? tr('inv_tip_on') : tr('inv_tip_off')}">
+                    ${inverted ? tr('inv_on') : tr('inv_off')}
+                  </button>
                 </div>
               </div>`;
             }).join('');
@@ -10698,10 +10747,15 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       _csBuildMyEvalGrid();
     }
 
-    /** Envoie les poids ROC calculés au serveur via csSetWeight pour chaque critère. */
+    /** Envoie les poids ROC calculés au serveur via csSetWeight pour chaque critère.
+     *  Debounced : regroupe les appels rapides (ex. DnD) en un seul envoi WS. */
     function _csBroadcastRocWeights() {
-      const weights = _csGetRocWeights();
-      Object.entries(weights).forEach(([crId, w]) => csSetWeight(crId, parseFloat(w.toFixed(4))));
+      if (_csBroadcastTimer) clearTimeout(_csBroadcastTimer);
+      _csBroadcastTimer = setTimeout(() => {
+        _csBroadcastTimer = null;
+        const weights = _csGetRocWeights();
+        Object.entries(weights).forEach(([crId, w]) => csSetWeight(crId, parseFloat(w.toFixed(4))));
+      }, 300);
     }
 
     /** Bascule entre méthode simple et ROC en mode CS. */
@@ -10797,7 +10851,10 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
 
     /** Attache les événements drag souris (HTML5) + tactile sur #csCritRocList. */
     function _attachCsSwingDnD() {
-      document.querySelectorAll('#csCritRocList .swing-item').forEach(item => {
+      const list = document.getElementById('csCritRocList');
+      if (!list || list._dndReady) return; // guard : une seule attache par instance DOM
+      list._dndReady = true;
+      list.querySelectorAll('.swing-item').forEach(item => {
         item.addEventListener('mousedown', () => item.setAttribute('draggable', 'true'));
 
         item.addEventListener('dragstart', e => {
