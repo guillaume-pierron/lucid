@@ -10676,7 +10676,10 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
               return `<div class="sel-item weight-${myW}" style="margin-bottom:6px">
                 <div class="sel-item-header">
                   <div class="sel-icon">${cr.icon}</div>
-                  <div class="sel-name">${cr.name}</div>
+                  <div class="sel-name">
+                    ${cr.name}
+                    ${cr.hint ? `<div class="sel-hint">${cr.hint}</div>` : ''}
+                  </div>
                 </div>
                 <div class="sel-item-controls">
                   <div class="weight-group">
