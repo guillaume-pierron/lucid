@@ -7824,16 +7824,28 @@
       document.body.appendChild(canvas);
       const ctx = canvas.getContext('2d');
       canvas.width = innerWidth; canvas.height = innerHeight;
-      const cols = ['#2D7D5A','#F59E0B','#6366F1','#EC4899','#10B981','#3B82F6'];
-      const particles = Array.from({length: 70}, () => ({
-        x: Math.random() * canvas.width, y: -20 - Math.random() * 60,
-        vx: (Math.random() - 0.5) * 4, vy: 2.5 + Math.random() * 3,
+      const cols = ['#2D7D5A','#F59E0B','#6366F1','#EC4899','#10B981','#3B82F6','#F43F5E','#FBBF24'];
+      const cx = canvas.width / 2;
+      const particles = Array.from({length: 90}, (_, k) => {
+        /* 40 depuis le centre-haut, 25 gauche, 25 droite */
+        const zone = k < 40 ? 0 : k < 65 ? 1 : 2;
+        const x = zone === 0 ? cx + (Math.random() - 0.5) * cx
+                : zone === 1 ? Math.random() * cx * 0.4
+                :              cx * 1.6 + Math.random() * cx * 0.4;
+        const angle0 = zone === 0 ? -Math.PI/2 + (Math.random()-0.5)*1.2
+                     : zone === 1 ? -Math.PI/4 + (Math.random()-0.5)*0.8
+                     :               -Math.PI*3/4 + (Math.random()-0.5)*0.8;
+        const speed = 4 + Math.random() * 5;
+        return {
+        x, y: zone === 0 ? -10 - Math.random()*30 : Math.random() * canvas.height * 0.3,
+        vx: Math.cos(angle0) * speed, vy: Math.sin(angle0) * speed + (zone===0 ? 1 : -1),
         color: cols[Math.floor(Math.random() * cols.length)],
-        w: 7 + Math.random() * 6, h: 4 + Math.random() * 4,
-        angle: Math.random() * Math.PI * 2, spin: (Math.random() - 0.5) * 0.18,
+        w: 7 + Math.random() * 7, h: 4 + Math.random() * 4,
+        angle: Math.random() * Math.PI * 2, spin: (Math.random() - 0.5) * 0.22,
         circle: Math.random() > 0.6,
-      }));
-      let t0 = null; const dur = 3000;
+        };
+      });
+      let t0 = null; const dur = 3500;
       function draw(ts) {
         if (!t0) t0 = ts;
         const elapsed = ts - t0;
@@ -7884,10 +7896,8 @@
         });
       }, 40);
 
-      /* Confetti si gagnant clair */
-      const scores = S.options.map((_, i) => calcScore(i));
-      const sorted = [...scores].sort((a, b) => b - a);
-      if (sorted.length >= 2 && sorted[0] - sorted[1] > 4) setTimeout(launchConfetti, 500);
+      /* Confetti à chaque résultat */
+      setTimeout(launchConfetti, 500);
     }
 
     function buildResults() {
