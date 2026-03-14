@@ -5929,6 +5929,94 @@
     .coll-chevron { color: var(--muted2); font-size: .8rem; transition: transform .22s; margin-left: auto; }
     .open .coll-chevron { transform: rotate(180deg); }
 
+    /* ══════════════════════════════════════════
+       MODE SELECTION PAGE
+       ══════════════════════════════════════════ */
+    .page-mode-wrap { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 24px 16px 40px; }
+    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 480px; }
+    .mode-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r); padding: 18px 14px; cursor: pointer; transition: all .22s; text-align: left; }
+    .mode-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow); }
+    .mode-card-icon { font-size: 1.8rem; margin-bottom: 8px; }
+    .mode-card-title { font-size: .92rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+    .mode-card-desc { font-size: .76rem; color: var(--muted); line-height: 1.4; }
+    .mode-card.wide { grid-column: 1 / -1; display: flex; align-items: center; gap: 14px; }
+    .mode-card.wide .mode-card-icon { font-size: 1.5rem; margin-bottom: 0; flex-shrink: 0; }
+    .mode-card.wide .mode-card-text { flex: 1; }
+
+    /* ══════════════════════════════════════════
+       MODE PRIORISER
+       ══════════════════════════════════════════ */
+    .prio-item-row { display: flex; align-items: center; gap: 8px; background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r-sm); padding: 10px 12px; }
+    .prio-item-label { flex: 1; font-size: .88rem; font-weight: 600; }
+    .prio-q-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .prio-q-btn { padding: 12px 8px; border: 2px solid var(--border); border-radius: var(--r-sm); background: var(--white); font-size: .82rem; font-weight: 600; cursor: pointer; transition: all .18s; text-align: center; color: var(--ink); width: 100%; line-height: 1.4; }
+    .prio-q-btn:hover { border-color: var(--primary); background: var(--teal-bg); }
+    .prio-q-btn.sel { border-color: var(--teal); background: var(--teal-bg); color: var(--teal); }
+    .prio-quad { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r); padding: 14px; margin-bottom: 10px; }
+    .prio-quad-title { font-size: .85rem; font-weight: 700; margin-bottom: 8px; }
+    .prio-quad-sub { font-size: .72rem; font-weight: 400; color: var(--muted); }
+    .prio-quad-items { display: flex; flex-wrap: wrap; gap: 6px; min-height: 24px; }
+    .prio-quad-chip { background: var(--bg2); border-radius: 20px; padding: 4px 10px; font-size: .76rem; font-weight: 600; }
+    .prio-progress-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .prio-progress-label { font-size: .82rem; color: var(--muted); }
+    .prio-progress-count { font-size: .82rem; font-weight: 700; color: var(--primary); }
+
+    /* ══════════════════════════════════════════
+       MODE PESER
+       ══════════════════════════════════════════ */
+    .peser-scenario { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r); padding: 16px; margin-bottom: 12px; }
+    .peser-scenario-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .peser-scenario-icon { font-size: 1.4rem; }
+    .peser-scenario-name { font-size: .92rem; font-weight: 700; }
+    .peser-slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .peser-slider-label { font-size: .78rem; color: var(--muted); width: 90px; flex-shrink: 0; }
+    .peser-slider { flex: 1; accent-color: var(--teal); }
+    .peser-slider-val { font-size: .82rem; font-weight: 700; min-width: 36px; text-align: right; }
+    .peser-result-bar { display: flex; border-radius: var(--r-sm); overflow: hidden; height: 20px; margin: 16px 0 8px; }
+    .peser-result-seg { height: 100%; transition: width .6s ease; display: flex; align-items: center; justify-content: center; font-size: .65rem; font-weight: 700; color: #fff; }
+    .peser-verdict { background: var(--teal-bg); border: 1.5px solid var(--teal-bd); border-radius: var(--r); padding: 16px; margin-top: 12px; font-size: .88rem; line-height: 1.6; }
+    .peser-verdict-title { font-weight: 700; margin-bottom: 6px; color: var(--teal); }
+
+    /* ══════════════════════════════════════════
+       MODE CLARIFIER
+       ══════════════════════════════════════════ */
+    .clarify-progress-bar { height: 4px; background: var(--bg2); border-radius: 2px; margin-bottom: 28px; overflow: hidden; }
+    .clarify-progress-fill { height: 100%; background: var(--primary); border-radius: 2px; transition: width .4s ease; }
+    .clarify-q-num { font-size: .78rem; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+    .clarify-question { font-size: 1.08rem; font-weight: 700; color: var(--ink); margin-bottom: 6px; line-height: 1.4; }
+    .clarify-hint { font-size: .8rem; color: var(--muted); margin-bottom: 16px; font-style: italic; }
+    .clarify-textarea { width: 100%; min-height: 110px; padding: 12px; border: 1.5px solid var(--border); border-radius: var(--r-sm); background: var(--white); color: var(--ink); font-size: .9rem; font-family: var(--font-sans); resize: none; line-height: 1.5; transition: border-color .18s; }
+    .clarify-textarea:focus { outline: none; border-color: var(--primary); }
+    .clarify-answers-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .clarify-answer-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r-sm); padding: 12px 14px; }
+    .clarify-answer-q-label { font-size: .72rem; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    .clarify-answer-text { font-size: .86rem; color: var(--ink); line-height: 1.4; }
+    .clarify-synthesis { background: linear-gradient(135deg, var(--teal-bg), var(--white)); border: 1.5px solid var(--teal-bd); border-radius: var(--r); padding: 18px; margin-bottom: 16px; }
+    .clarify-synthesis-label { font-size: .72rem; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+    .clarify-synthesis-text { font-size: .9rem; color: var(--ink); line-height: 1.65; }
+
+    /* ══════════════════════════════════════════
+       MODE DÉCIDER VITE
+       ══════════════════════════════════════════ */
+    .dv-dots { display: flex; gap: 8px; justify-content: center; margin-bottom: 28px; }
+    .dv-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--bg2); transition: all .25s; }
+    .dv-dot.active { background: var(--primary); transform: scale(1.25); }
+    .dv-dot.done { background: var(--teal); }
+    .dv-step-icon { font-size: 2.4rem; text-align: center; margin-bottom: 8px; }
+    .dv-step-q { font-size: 1.05rem; font-weight: 700; text-align: center; margin-bottom: 6px; line-height: 1.4; }
+    .dv-step-hint { font-size: .8rem; color: var(--muted); text-align: center; margin-bottom: 24px; font-style: italic; }
+    .dv-options { display: flex; flex-direction: column; gap: 10px; }
+    .dv-option-btn { background: var(--white); border: 2px solid var(--border); border-radius: var(--r); padding: 16px; cursor: pointer; transition: all .2s; font-size: .92rem; font-weight: 600; text-align: center; color: var(--ink); width: 100%; }
+    .dv-option-btn:hover { border-color: var(--primary); transform: translateY(-1px); box-shadow: var(--shadow); }
+    .dv-option-btn.selected { border-color: var(--teal); background: var(--teal-bg); color: var(--teal); }
+    .dv-result-wrap { text-align: center; padding: 12px 0; animation: pageEnter .35s ease both; }
+    .dv-result-icon { font-size: 3rem; margin-bottom: 12px; }
+    .dv-result-winner { font-size: 1.3rem; font-weight: 800; color: var(--teal); margin-bottom: 14px; padding: 12px 24px; background: var(--teal-bg); border: 2px solid var(--teal-bd); border-radius: var(--r); display: inline-block; }
+    .dv-result-insight { font-size: .88rem; color: var(--muted); line-height: 1.7; max-width: 320px; margin: 0 auto 20px; }
+    .dv-options-input { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .dv-option-input-row { display: flex; align-items: center; gap: 8px; }
+    .dv-option-badge { font-size: .75rem; font-weight: 700; padding: 5px 10px; border-radius: var(--r-sm); background: var(--bg2); color: var(--muted); white-space: nowrap; }
+
   </style>
 </head>
 
@@ -5979,7 +6067,7 @@
           </div>
 
           <div class="intro-actions-row">
-            <button class="intro-start-btn" onclick="nav('page-step1');checkFatigue()" data-i18n="start_btn">Commencer →</button>
+            <button class="intro-start-btn" onclick="nav('page-mode')" data-i18n="start_btn">Commencer →</button>
             <button class="intro-group-btn" onclick="openGroupModal()">👥 Décider en groupe</button>
           </div>
           <div class="fatigue-banner" id="fatigueBanner">
@@ -6375,6 +6463,99 @@
       </div>
       <div class="page-scroll" id="resScroll">
         <div id="resContent"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════ MODE SELECTION ══════════════════════════ -->
+    <div class="page" id="page-mode">
+      <div class="app-header">
+        <div class="logo"><div class="logo-dot"></div>Lucid</div>
+        <div class="lang-switcher" style="margin-left:auto">
+          <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+          <button class="lang-btn" onclick="setLang('en')">EN</button>
+        </div>
+      </div>
+      <div class="page-mode-wrap">
+        <div style="max-width:480px;width:100%">
+          <div class="page-eyebrow">Bienvenue</div>
+          <div class="page-title" style="margin-bottom:6px">Comment veux-tu décider ?</div>
+          <div style="font-size:.85rem;color:var(--muted);margin-bottom:24px">Choisis le mode adapté à ta situation.</div>
+          <div class="mode-grid">
+            <div class="mode-card" onclick="nav('page-step1');checkFatigue()">
+              <div class="mode-card-icon">⚖️</div>
+              <div class="mode-card-title">Comparer</div>
+              <div class="mode-card-desc">Compare des options avec des critères pondérés</div>
+            </div>
+            <div class="mode-card" onclick="startPrioriser()">
+              <div class="mode-card-icon">📊</div>
+              <div class="mode-card-title">Prioriser</div>
+              <div class="mode-card-desc">Classe tes projets par impact et effort</div>
+            </div>
+            <div class="mode-card" onclick="startPeser()">
+              <div class="mode-card-icon">🎲</div>
+              <div class="mode-card-title">Peser</div>
+              <div class="mode-card-desc">Analyse les risques et bénéfices</div>
+            </div>
+            <div class="mode-card" onclick="startClarifier()">
+              <div class="mode-card-icon">🔍</div>
+              <div class="mode-card-title">Clarifier</div>
+              <div class="mode-card-desc">Structure ta réflexion pas à pas</div>
+            </div>
+            <div class="mode-card wide" onclick="startDecideVite()">
+              <div class="mode-card-icon">⚡</div>
+              <div class="mode-card-text">
+                <div class="mode-card-title">Décider Vite</div>
+                <div class="mode-card-desc">Prends une décision en moins de 2 minutes</div>
+              </div>
+            </div>
+          </div>
+          <button class="intro-group-btn" onclick="openGroupModal()" style="margin-top:16px">👥 Décider en groupe</button>
+          <p style="margin-top:12px;font-size:.75rem;color:var(--muted2);text-align:center">Gratuit · Aucun compte requis · 100% privé</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════ MODE PRIORISER ══════════════════════════ -->
+    <div class="page" id="page-prioriser">
+      <div class="app-header">
+        <div class="logo"><div class="logo-dot"></div>Lucid</div>
+        <button onclick="nav('page-mode')" style="margin-left:auto;background:none;border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 12px;font-size:.8rem;cursor:pointer;color:var(--ink2)">← Modes</button>
+      </div>
+      <div class="page-scroll">
+        <div class="main" id="prioContent"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════ MODE PESER ══════════════════════════ -->
+    <div class="page" id="page-peser">
+      <div class="app-header">
+        <div class="logo"><div class="logo-dot"></div>Lucid</div>
+        <button onclick="nav('page-mode')" style="margin-left:auto;background:none;border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 12px;font-size:.8rem;cursor:pointer;color:var(--ink2)">← Modes</button>
+      </div>
+      <div class="page-scroll">
+        <div class="main" id="peserContent"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════ MODE CLARIFIER ══════════════════════════ -->
+    <div class="page" id="page-clarifier">
+      <div class="app-header">
+        <div class="logo"><div class="logo-dot"></div>Lucid</div>
+        <button onclick="nav('page-mode')" style="margin-left:auto;background:none;border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 12px;font-size:.8rem;cursor:pointer;color:var(--ink2)">← Modes</button>
+      </div>
+      <div class="page-scroll">
+        <div class="main" id="clarifyContent"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════ MODE DÉCIDER VITE ══════════════════════════ -->
+    <div class="page" id="page-decide-vite">
+      <div class="app-header">
+        <div class="logo"><div class="logo-dot"></div>Lucid</div>
+        <button onclick="nav('page-mode')" style="margin-left:auto;background:none;border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 12px;font-size:.8rem;cursor:pointer;color:var(--ink2)">← Modes</button>
+      </div>
+      <div class="page-scroll">
+        <div class="main" id="dvContent"></div>
       </div>
     </div>
 
@@ -11706,6 +11887,544 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       renderStepProgress(1);
       nav('page-intro');
     }
+
+    /* ══════════════════════════════════════════
+       MODE PRIORISER — Matrice Impact × Effort
+       ══════════════════════════════════════════ */
+
+    let _prioItems = [];
+    let _prioCurrent = 0;
+    let _prioPhase = 'input'; // 'input' | 'assign' | 'result'
+
+    function startPrioriser() {
+      _prioItems = [];
+      _prioCurrent = 0;
+      _prioPhase = 'input';
+      nav('page-prioriser');
+      _renderPrioContent();
+    }
+
+    function _renderPrioContent() {
+      const el = document.getElementById('prioContent');
+      if (!el) return;
+      if (_prioPhase === 'input') _renderPrioInput(el);
+      else if (_prioPhase === 'assign') _renderPrioAssign(el);
+      else _renderPrioResult(el);
+    }
+
+    function _renderPrioInput(el) {
+      el.innerHTML = `
+        <div class="page-eyebrow">Prioriser</div>
+        <div class="page-title">Quels éléments veux-tu prioriser ?</div>
+        <div class="page-sub">Liste tes projets, tâches ou idées. Tu les classeras ensuite.</div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="field" style="margin-bottom:0">
+            <label>Ajouter un élément</label>
+            <div style="display:flex;gap:8px">
+              <input type="text" id="prioItemInput" placeholder="Ex: Refaire le site web" style="flex:1"
+                onkeydown="if(event.key==='Enter')_addPrioItem()">
+              <button class="btn btn-primary" onclick="_addPrioItem()" style="white-space:nowrap">+ Ajouter</button>
+            </div>
+          </div>
+        </div>
+        <div id="prioItemsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px"></div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="nav('page-mode')">← Retour</button>
+          <button class="btn btn-primary" onclick="_startPrioAssign()">Classer →</button>
+        </div>`;
+      _renderPrioItemsList();
+    }
+
+    function _renderPrioItemsList() {
+      const el = document.getElementById('prioItemsList');
+      if (!el) return;
+      if (_prioItems.length === 0) {
+        el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:.85rem;padding:20px">Aucun élément — ajoute au moins 2.</div>';
+        return;
+      }
+      el.innerHTML = _prioItems.map((item, i) => `
+        <div class="prio-item-row">
+          <span class="prio-item-label">${esc(item.label)}</span>
+          <button onclick="_removePrioItem(${i})"
+            style="background:none;border:none;color:var(--muted2);font-size:1.1rem;cursor:pointer;padding:2px 6px">✕</button>
+        </div>`).join('');
+    }
+
+    function _addPrioItem() {
+      const input = document.getElementById('prioItemInput');
+      const val = input?.value.trim();
+      if (!val) return;
+      if (_prioItems.length >= 12) return;
+      _prioItems.push({ label: val, impact: null, effort: null });
+      input.value = '';
+      _renderPrioItemsList();
+      input.focus();
+    }
+
+    function _removePrioItem(i) {
+      _prioItems.splice(i, 1);
+      _renderPrioItemsList();
+    }
+
+    function _startPrioAssign() {
+      if (_prioItems.length < 2) { alert('Ajoute au moins 2 éléments.'); return; }
+      _prioItems.forEach(item => { item.impact = null; item.effort = null; });
+      _prioCurrent = 0;
+      _prioPhase = 'assign';
+      _renderPrioContent();
+    }
+
+    function _renderPrioAssign(el) {
+      const item = _prioItems[_prioCurrent];
+      const total = _prioItems.length;
+      const pct = Math.round((_prioCurrent / total) * 100);
+      el.innerHTML = `
+        <div class="prio-progress-row">
+          <span class="prio-progress-label">${_prioCurrent + 1} / ${total}</span>
+          <span class="prio-progress-count">${pct}% classé</span>
+        </div>
+        <div style="height:4px;background:var(--bg2);border-radius:2px;margin-bottom:24px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:var(--primary);border-radius:2px;transition:width .4s ease"></div>
+        </div>
+        <div class="card" style="text-align:center;margin-bottom:20px">
+          <div style="font-size:1.3rem;margin-bottom:6px">📌</div>
+          <div style="font-size:1.05rem;font-weight:700;color:var(--ink)">${esc(item.label)}</div>
+        </div>
+        <div style="font-size:.85rem;font-weight:700;color:var(--ink2);margin-bottom:10px">Impact sur tes objectifs :</div>
+        <div class="prio-q-grid" style="margin-bottom:20px">
+          <button class="prio-q-btn${item.impact === 'faible' ? ' sel' : ''}" onclick="_setPrioImpact('faible')">
+            📉 Impact faible<br><span style="font-weight:400;font-size:.72rem">Changement limité</span>
+          </button>
+          <button class="prio-q-btn${item.impact === 'fort' ? ' sel' : ''}" onclick="_setPrioImpact('fort')">
+            🚀 Impact fort<br><span style="font-weight:400;font-size:.72rem">Change les choses</span>
+          </button>
+        </div>
+        <div style="font-size:.85rem;font-weight:700;color:var(--ink2);margin-bottom:10px">Effort nécessaire :</div>
+        <div class="prio-q-grid">
+          <button class="prio-q-btn${item.effort === 'faible' ? ' sel' : ''}" onclick="_setPrioEffort('faible')">
+            😌 Effort faible<br><span style="font-weight:400;font-size:.72rem">Rapide à faire</span>
+          </button>
+          <button class="prio-q-btn${item.effort === 'fort' ? ' sel' : ''}" onclick="_setPrioEffort('fort')">
+            💪 Effort fort<br><span style="font-weight:400;font-size:.72rem">Demande du temps</span>
+          </button>
+        </div>`;
+    }
+
+    function _setPrioImpact(val) {
+      _prioItems[_prioCurrent].impact = val;
+      _checkPrioAdvance();
+    }
+
+    function _setPrioEffort(val) {
+      _prioItems[_prioCurrent].effort = val;
+      _checkPrioAdvance();
+    }
+
+    function _checkPrioAdvance() {
+      const item = _prioItems[_prioCurrent];
+      const el = document.getElementById('prioContent');
+      if (item.impact !== null && item.effort !== null) {
+        setTimeout(() => {
+          _prioCurrent++;
+          if (_prioCurrent >= _prioItems.length) _prioPhase = 'result';
+          _renderPrioContent();
+        }, 350);
+      } else if (el) {
+        _renderPrioAssign(el);
+      }
+    }
+
+    function _getPrioQuadrant(item) {
+      if (item.impact === 'fort' && item.effort === 'faible') return 'now';
+      if (item.impact === 'fort' && item.effort === 'fort') return 'plan';
+      if (item.impact === 'faible' && item.effort === 'faible') return 'deleg';
+      return 'avoid';
+    }
+
+    const _prioQuadrantMeta = {
+      now:   { label: '✅ Fais maintenant',     desc: 'Fort impact, peu d\'effort — priorité absolue' },
+      plan:  { label: '📅 Planifie',            desc: 'Fort impact mais effort élevé — à organiser' },
+      deleg: { label: '🔄 Délègue ou reporte',  desc: 'Faible impact, peu d\'effort — à faire après' },
+      avoid: { label: '🗑️ Évite ou abandonne',  desc: 'Faible impact, effort élevé — questionne sa valeur' },
+    };
+
+    function _renderPrioResult(el) {
+      const quadrants = { now: [], plan: [], deleg: [], avoid: [] };
+      _prioItems.forEach(item => quadrants[_getPrioQuadrant(item)].push(item.label));
+      const order = ['now', 'plan', 'deleg', 'avoid'];
+      el.innerHTML = `
+        <div class="page-eyebrow">Résultat</div>
+        <div class="page-title" style="margin-bottom:20px">Ta matrice de priorités</div>
+        ${order.filter(q => quadrants[q].length > 0).map(q => {
+          const m = _prioQuadrantMeta[q];
+          return `<div class="prio-quad">
+            <div class="prio-quad-title">${m.label} <span class="prio-quad-sub">— ${m.desc}</span></div>
+            <div class="prio-quad-items">
+              ${quadrants[q].map(lbl => `<span class="prio-quad-chip">${esc(lbl)}</span>`).join('')}
+            </div>
+          </div>`;
+        }).join('')}
+        <div class="btn-row" style="margin-top:16px">
+          <button class="btn btn-secondary" onclick="nav('page-mode')">← Accueil</button>
+          <button class="btn btn-primary" onclick="startPrioriser()">Recommencer</button>
+        </div>`;
+    }
+
+    /* ══════════════════════════════════════════
+       MODE PESER — Analyse Risques & Bénéfices
+       ══════════════════════════════════════════ */
+
+    function startPeser() {
+      nav('page-peser');
+      _renderPeserForm();
+    }
+
+    function _renderPeserForm() {
+      const el = document.getElementById('peserContent');
+      if (!el) return;
+      el.innerHTML = `
+        <div class="page-eyebrow">Peser</div>
+        <div class="page-title">Analyse risques & bénéfices</div>
+        <div class="page-sub" style="margin-bottom:20px">Décris ta décision, puis évalue 3 scénarios possibles.</div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="field" style="margin-bottom:0">
+            <label>Ta décision en une phrase</label>
+            <textarea id="peserContext" rows="2"
+              placeholder="Ex : Quitter mon CDI pour devenir freelance"
+              style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:var(--white);color:var(--ink);font-family:var(--font-sans);font-size:.9rem;resize:none"></textarea>
+          </div>
+        </div>
+        ${_peserScenarioHTML('opt', '🟢', 'Scénario optimiste', 'Les choses se passent mieux que prévu', 30, 4)}
+        ${_peserScenarioHTML('neu', '🟡', 'Scénario neutre',    'Les choses se passent comme prévu',    50, 3)}
+        ${_peserScenarioHTML('pes', '🔴', 'Scénario pessimiste','Les choses se passent moins bien que prévu', 20, 2)}
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="nav('page-mode')">← Retour</button>
+          <button class="btn btn-primary" onclick="_computePeser()">Analyser →</button>
+        </div>`;
+    }
+
+    function _peserScenarioHTML(id, icon, name, hint, defaultProb, defaultImp) {
+      return `
+        <div class="peser-scenario">
+          <div class="peser-scenario-header">
+            <span class="peser-scenario-icon">${icon}</span>
+            <div>
+              <div class="peser-scenario-name">${name}</div>
+              <div style="font-size:.75rem;color:var(--muted)">${hint}</div>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:10px">
+            <label style="font-size:.78rem">Ce que ça donnerait concrètement</label>
+            <textarea id="peser-desc-${id}" rows="2"
+              placeholder="Décris ce scénario…"
+              style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:var(--white);color:var(--ink);font-family:var(--font-sans);font-size:.85rem;resize:none"></textarea>
+          </div>
+          <div class="peser-slider-row">
+            <span class="peser-slider-label">Probabilité</span>
+            <input type="range" class="peser-slider" id="peser-prob-${id}" min="0" max="100" value="${defaultProb}"
+              oninput="document.getElementById('peser-prob-val-${id}').textContent=this.value+'%'">
+            <span class="peser-slider-val" id="peser-prob-val-${id}">${defaultProb}%</span>
+          </div>
+          <div class="peser-slider-row">
+            <span class="peser-slider-label">Impact sur ta vie</span>
+            <input type="range" class="peser-slider" id="peser-imp-${id}" min="1" max="5" value="${defaultImp}"
+              oninput="document.getElementById('peser-imp-val-${id}').textContent=this.value+'/5'">
+            <span class="peser-slider-val" id="peser-imp-val-${id}">${defaultImp}/5</span>
+          </div>
+        </div>`;
+    }
+
+    function _computePeser() {
+      const context = document.getElementById('peserContext')?.value.trim() || 'Ta décision';
+      const scenarios = ['opt', 'neu', 'pes'].map(id => ({
+        id,
+        prob:   parseInt(document.getElementById(`peser-prob-${id}`)?.value || 0),
+        impact: parseInt(document.getElementById(`peser-imp-${id}`)?.value || 3),
+      }));
+      const totalProb = scenarios.reduce((s, sc) => s + sc.prob, 0) || 1;
+      scenarios.forEach(sc => sc.normProb = sc.prob / totalProb);
+      const expected  = scenarios.reduce((s, sc) => s + sc.normProb * sc.impact, 0);
+      const optSc     = scenarios.find(s => s.id === 'opt');
+      const pesSc     = scenarios.find(s => s.id === 'pes');
+      const upside    = optSc.impact - 3;
+      const downside  = 3 - pesSc.impact;
+      const asymmetry = downside > 0 ? (upside / downside) : 99;
+
+      let verdictIcon, verdict;
+      if (expected >= 3.5 && asymmetry >= 1.5) {
+        verdictIcon = '✅';
+        verdict = `L'espérance de valeur est favorable (${expected.toFixed(1)}/5) et les gains potentiels dépassent les pertes. Asymétrie : ${asymmetry.toFixed(1)}x.`;
+      } else if (expected >= 3 && asymmetry >= 0.8) {
+        verdictIcon = '🟡';
+        verdict = `L'espérance est neutre à légèrement positive (${expected.toFixed(1)}/5). La décision est raisonnable mais sans forte conviction. Asymétrie : ${asymmetry.toFixed(1)}x.`;
+      } else if (pesSc.normProb > 0.4 && pesSc.impact <= 2) {
+        verdictIcon = '⚠️';
+        verdict = `Le scénario pessimiste est probable (${Math.round(pesSc.normProb*100)}%) et son impact est fort. Assure-toi d'avoir un plan de secours avant de décider.`;
+      } else {
+        verdictIcon = '🔴';
+        verdict = `L'analyse montre un risque élevé par rapport aux bénéfices (espérance : ${expected.toFixed(1)}/5). Reconsidère ou cherche à améliorer le scénario pessimiste.`;
+      }
+
+      const colors = { opt: '#16a34a', neu: '#d97706', pes: '#dc2626' };
+      const names  = { opt: 'Optimiste', neu: 'Neutre', pes: 'Pessimiste' };
+      const icons  = { opt: '🟢', neu: '🟡', pes: '🔴' };
+
+      const el = document.getElementById('peserContent');
+      if (!el) return;
+      el.innerHTML = `
+        <div class="page-eyebrow">Résultat</div>
+        <div class="page-title" style="margin-bottom:4px">${esc(context)}</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:20px">Analyse des 3 scénarios</div>
+        <div class="peser-result-bar">
+          ${scenarios.map(sc => {
+            const w = Math.round(sc.normProb * 100);
+            return `<div class="peser-result-seg" style="width:${w}%;background:${colors[sc.id]}">${w > 10 ? w + '%' : ''}</div>`;
+          }).join('')}
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+          ${scenarios.map(sc => `
+            <div style="flex:1;min-width:80px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px;text-align:center">
+              <div style="font-size:1.1rem">${icons[sc.id]}</div>
+              <div style="font-size:.72rem;font-weight:700;margin:4px 0">${names[sc.id]}</div>
+              <div style="font-size:.8rem;color:var(--primary);font-weight:700">${Math.round(sc.normProb * 100)}%</div>
+              <div style="font-size:.72rem;color:var(--muted)">Impact: ${sc.impact}/5</div>
+            </div>`).join('')}
+        </div>
+        <div class="peser-verdict">
+          <div class="peser-verdict-title">${verdictIcon} Verdict</div>
+          ${verdict}
+        </div>
+        <div class="btn-row" style="margin-top:20px">
+          <button class="btn btn-secondary" onclick="nav('page-mode')">← Accueil</button>
+          <button class="btn btn-primary" onclick="startPeser()">Recommencer</button>
+        </div>`;
+    }
+
+    /* ══════════════════════════════════════════
+       MODE CLARIFIER — Réflexion guidée
+       ══════════════════════════════════════════ */
+
+    const _clarifyQs = [
+      { q: 'Quelle est la décision que tu dois prendre ?',                              hint: 'Formule-la en une ou deux phrases simples.' },
+      { q: 'Qu\'est-ce qui t\'empêche de décider facilement ?',                         hint: 'Peur, manque d\'info, avis des autres… sois honnête.' },
+      { q: 'Qu\'est-ce que tu perdrais si tu ne fais rien ?',                           hint: 'Imagine que tu laisses passer l\'occasion.' },
+      { q: 'Dans 1 an, si tu regrettes de ne pas avoir agi, ce sera pour quelle raison ?', hint: 'Projette-toi dans le futur.' },
+      { q: 'Que conseillerais-tu à un ami dans exactement ta situation ?',              hint: 'Prends du recul comme si c\'était quelqu\'un d\'autre.' },
+      { q: 'Au fond de toi, quelle est la décision que tu connais déjà ?',              hint: 'Écoute ton instinct, même s\'il fait peur.' },
+    ];
+
+    let _clarifyStep    = 0;
+    let _clarifyAnswers = [];
+
+    function startClarifier() {
+      _clarifyStep    = 0;
+      _clarifyAnswers = [];
+      nav('page-clarifier');
+      _renderClarifyStep();
+    }
+
+    function _renderClarifyStep() {
+      const el = document.getElementById('clarifyContent');
+      if (!el) return;
+      const total = _clarifyQs.length;
+      const pct   = Math.round((_clarifyStep / total) * 100);
+      const q     = _clarifyQs[_clarifyStep];
+      el.innerHTML = `
+        <div class="clarify-progress-bar">
+          <div class="clarify-progress-fill" style="width:${pct}%"></div>
+        </div>
+        <div class="clarify-q-num">Question ${_clarifyStep + 1} sur ${total}</div>
+        <div class="clarify-question">${q.q}</div>
+        <div class="clarify-hint">${q.hint}</div>
+        <textarea class="clarify-textarea" id="clarifyInput"
+          placeholder="Écris librement…"
+          onkeydown="if(event.ctrlKey&&event.key==='Enter')_clarifyNext()">${_clarifyAnswers[_clarifyStep] || ''}</textarea>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:4px;margin-bottom:16px">Ctrl+Entrée pour continuer</div>
+        <div class="btn-row">
+          ${_clarifyStep > 0
+            ? `<button class="btn btn-secondary" onclick="_clarifyBack()">← Précédent</button>`
+            : `<button class="btn btn-secondary" onclick="nav('page-mode')">← Retour</button>`}
+          <button class="btn btn-primary" onclick="_clarifyNext()">Suivant →</button>
+        </div>`;
+      setTimeout(() => {
+        const inp = document.getElementById('clarifyInput');
+        if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+      }, 80);
+    }
+
+    function _clarifyNext() {
+      const val = document.getElementById('clarifyInput')?.value.trim();
+      if (!val) { document.getElementById('clarifyInput')?.focus(); return; }
+      _clarifyAnswers[_clarifyStep] = val;
+      _clarifyStep++;
+      if (_clarifyStep >= _clarifyQs.length) _renderClarifySynthesis();
+      else _renderClarifyStep();
+    }
+
+    function _clarifyBack() {
+      if (_clarifyStep > 0) {
+        _clarifyStep--;
+        _renderClarifyStep();
+      }
+    }
+
+    function _renderClarifySynthesis() {
+      const el = document.getElementById('clarifyContent');
+      if (!el) return;
+      const instinct  = _clarifyAnswers[5] || '—';
+      const obstacle  = _clarifyAnswers[1] || '—';
+      el.innerHTML = `
+        <div class="page-eyebrow">Synthèse</div>
+        <div class="page-title" style="margin-bottom:6px">Ce que ta réflexion révèle</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:20px">Tes 6 réponses, relues ensemble.</div>
+        <div class="clarify-synthesis">
+          <div class="clarify-synthesis-label">💡 Ce que tu sais déjà</div>
+          <div class="clarify-synthesis-text">"${esc(instinct)}"<br><br>
+            Ton instinct et tes conseils imaginaires à un ami convergent souvent vers la même réponse.
+            Si tu devais agir maintenant, tu sais probablement quoi faire.
+          </div>
+        </div>
+        <div class="clarify-synthesis" style="background:var(--white);border-color:var(--border)">
+          <div class="clarify-synthesis-label" style="color:var(--muted)">🔒 Ce qui te freine</div>
+          <div class="clarify-synthesis-text">"${esc(obstacle)}"<br><br>
+            Nommer l'obstacle est la première étape pour le dépasser.
+            Est-ce une vraie contrainte ou une peur déguisée en raison ?
+          </div>
+        </div>
+        <div class="clarify-answers-list">
+          ${_clarifyQs.map((q, i) => `
+            <div class="clarify-answer-card">
+              <div class="clarify-answer-q-label">Q${i + 1} — ${q.q}</div>
+              <div class="clarify-answer-text">${esc(_clarifyAnswers[i] || '—')}</div>
+            </div>`).join('')}
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="nav('page-mode')">← Accueil</button>
+          <button class="btn btn-primary" onclick="startClarifier()">Recommencer</button>
+        </div>`;
+    }
+
+    /* ══════════════════════════════════════════
+       MODE DÉCIDER VITE — Quick Decision (2 min)
+       ══════════════════════════════════════════ */
+
+    const _dvQs = [
+      { icon: '🧠', q: 'Ton instinct te dit quoi ?',                                     hint: 'La première réponse qui te vient, sans réfléchir.' },
+      { icon: '👥', q: 'Que conseillerais-tu à un ami dans ta situation ?',               hint: 'Prends le recul d\'un proche bienveillant.' },
+      { icon: '⏰', q: 'Dans 1 an, tu regretteras de ne pas avoir choisi…',               hint: 'Le regret futur est un excellent guide.' },
+    ];
+
+    let _dvStep    = 0;   // 0 = saisie options, 1-3 = questions, 4 = résultat
+    let _dvOpts    = ['', ''];
+    let _dvAnswers = [];  // index choisi (0 ou 1) pour chaque question
+
+    function startDecideVite() {
+      _dvStep    = 0;
+      _dvOpts    = ['', ''];
+      _dvAnswers = [];
+      nav('page-decide-vite');
+      _renderDvContent();
+    }
+
+    function _renderDvContent() {
+      const el = document.getElementById('dvContent');
+      if (!el) return;
+      if      (_dvStep === 0)             _renderDvOptions(el);
+      else if (_dvStep <= _dvQs.length)   _renderDvQuestion(el);
+      else                                _renderDvResult(el);
+    }
+
+    function _renderDvOptions(el) {
+      el.innerHTML = `
+        <div class="page-eyebrow">Décider Vite</div>
+        <div class="page-title">Entre tes 2 options</div>
+        <div class="page-sub" style="margin-bottom:20px">Juste les noms — on fera le reste en 3 questions.</div>
+        <div class="dv-options-input">
+          <div class="dv-option-input-row">
+            <span class="dv-option-badge">Option A</span>
+            <input type="text" id="dvOpt0" value="${esc(_dvOpts[0])}"
+              placeholder="Ex: Rester dans mon poste actuel"
+              style="flex:1;padding:12px;border:2px solid var(--border);border-radius:var(--r-sm);background:var(--white);color:var(--ink);font-size:.9rem;font-family:var(--font-sans)">
+          </div>
+          <div class="dv-option-input-row">
+            <span class="dv-option-badge">Option B</span>
+            <input type="text" id="dvOpt1" value="${esc(_dvOpts[1])}"
+              placeholder="Ex: Accepter la nouvelle offre"
+              style="flex:1;padding:12px;border:2px solid var(--border);border-radius:var(--r-sm);background:var(--white);color:var(--ink);font-size:.9rem;font-family:var(--font-sans)">
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="nav('page-mode')">← Retour</button>
+          <button class="btn btn-primary" onclick="_dvStartQuestions()">C'est parti ⚡</button>
+        </div>`;
+    }
+
+    function _dvStartQuestions() {
+      _dvOpts[0] = document.getElementById('dvOpt0')?.value.trim() || 'Option A';
+      _dvOpts[1] = document.getElementById('dvOpt1')?.value.trim() || 'Option B';
+      _dvStep = 1;
+      _renderDvContent();
+    }
+
+    function _renderDvQuestion(el) {
+      const qi = _dvStep - 1;
+      const q  = _dvQs[qi];
+      const dots = _dvQs.map((_, i) => {
+        if (i < qi)      return '<div class="dv-dot done"></div>';
+        if (i === qi)    return '<div class="dv-dot active"></div>';
+        return '<div class="dv-dot"></div>';
+      }).join('');
+      el.innerHTML = `
+        <div class="dv-dots">${dots}</div>
+        <div class="dv-step-icon">${q.icon}</div>
+        <div class="dv-step-q">${q.q}</div>
+        <div class="dv-step-hint">${q.hint}</div>
+        <div class="dv-options">
+          <button class="dv-option-btn${_dvAnswers[qi] === 0 ? ' selected' : ''}" onclick="_dvAnswer(${qi}, 0)">${esc(_dvOpts[0])}</button>
+          <button class="dv-option-btn${_dvAnswers[qi] === 1 ? ' selected' : ''}" onclick="_dvAnswer(${qi}, 1)">${esc(_dvOpts[1])}</button>
+        </div>
+        <div class="btn-row" style="margin-top:16px">
+          ${_dvStep > 1
+            ? `<button class="btn btn-secondary" onclick="_dvBack()">← Précédent</button>`
+            : `<button class="btn btn-secondary" onclick="nav('page-mode')">← Retour</button>`}
+        </div>`;
+    }
+
+    function _dvAnswer(qi, optIdx) {
+      _dvAnswers[qi] = optIdx;
+      setTimeout(() => { _dvStep++; _renderDvContent(); }, 300);
+    }
+
+    function _dvBack() {
+      if (_dvStep > 1) { _dvStep--; _renderDvContent(); }
+    }
+
+    function _renderDvResult(el) {
+      const votes  = [0, 0];
+      _dvAnswers.forEach(a => { if (a === 0 || a === 1) votes[a]++; });
+      const winner  = votes[0] > votes[1] ? 0 : votes[1] > votes[0] ? 1 : -1;
+      const unanim  = winner >= 0 && votes[winner] === 3;
+      const labels  = ['Instinct', 'Ami bienveillant', 'Regret futur'];
+      if (typeof launchConfetti === 'function') launchConfetti();
+      el.innerHTML = `
+        <div class="dv-result-wrap">
+          <div class="dv-result-icon">${winner >= 0 ? '🎯' : '⚖️'}</div>
+          <div style="font-size:.85rem;color:var(--muted);margin-bottom:12px">
+            ${unanim ? 'Tes 3 réponses confirment clairement' : winner >= 0 ? 'La majorité de tes réponses indique' : 'Résultat parfaitement partagé'}
+          </div>
+          ${winner >= 0
+            ? `<div class="dv-result-winner">${esc(_dvOpts[winner])}</div>`
+            : `<div style="font-size:1rem;font-weight:700;margin:0 auto 16px;color:var(--amber);padding:12px 24px;background:var(--amber-bg);border-radius:var(--r);display:inline-block">Égalité — fais confiance à ton instinct</div>`}
+          <div class="dv-result-insight">
+            ${_dvAnswers.map((a, i) => `<span style="color:var(--muted)">${labels[i]}</span> → <strong>${esc(_dvOpts[a])}</strong>`).join('<br>')}
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="nav('page-mode')">← Accueil</button>
+          <button class="btn btn-primary" onclick="startDecideVite()">Recommencer</button>
+        </div>`;
+    }
+
   </script>
   <script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.8/dist/lottie-player.js"></script>
   <script>
