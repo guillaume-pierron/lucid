@@ -6514,13 +6514,7 @@
                 <div class="mode-card-desc">Prends une décision en moins de 2 minutes</div>
               </div>
             </div>
-            <div class="mode-card wide" onclick="startVoter()">
-              <div class="mode-card-icon">🗳️</div>
-              <div class="mode-card-text">
-                <div class="mode-card-title">Voter</div>
-                <div class="mode-card-desc">Note chaque option de 1 à 10 avec des émojis et classe-les</div>
-              </div>
-            </div>
+
           </div>
           <button class="intro-group-btn" onclick="openGroupModal()" style="margin-top:16px">👥 Décider en groupe</button>
           <p style="margin-top:12px;font-size:.75rem;color:var(--muted2);text-align:center">Gratuit · Aucun compte requis · 100% privé</p>
@@ -6572,16 +6566,6 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════ MODE VOTER ══════════════════════════ -->
-    <div class="page" id="page-voter">
-      <div class="app-header">
-        <div class="logo"><div class="logo-dot"></div>Lucid</div>
-        <button onclick="nav('page-mode')" style="margin-left:auto;background:none;border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 12px;font-size:.8rem;cursor:pointer;color:var(--ink2)">← Modes</button>
-      </div>
-      <div class="page-scroll">
-        <div class="main" id="voterContent"></div>
-      </div>
-    </div>
 
   </div>
 
@@ -12452,165 +12436,6 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
        MODE VOTER — Vote 1→10 avec émojis
        ══════════════════════════════════════════ */
 
-    const _VOTER_EMOJIS = ['😭','😞','😟','😕','😐','🙂','😊','😄','😁','🤩'];
-    let _voterItems  = [];   // [{ label, score }]
-    let _voterPhase  = 'input'; // 'input' | 'score' | 'result'
-
-    function startVoter() {
-      _voterItems = [];
-      _voterPhase = 'input';
-      nav('page-voter');
-      _renderVoterContent();
-    }
-
-    function _renderVoterContent() {
-      const el = document.getElementById('voterContent');
-      if (!el) return;
-      if      (_voterPhase === 'input')  _renderVoterInput(el);
-      else if (_voterPhase === 'score')  _renderVoterScore(el);
-      else                               _renderVoterResult(el);
-    }
-
-    function _renderVoterInput(el) {
-      el.innerHTML = `
-        <div class="page-eyebrow">Voter</div>
-        <div class="page-title">Quelles options veux-tu noter ?</div>
-        <div class="page-sub">Liste tes options. Tu leur donneras ensuite une note de 1 à 10.</div>
-        <div class="card" style="margin-bottom:16px">
-          <div class="field" style="margin-bottom:0">
-            <label>Ajouter une option</label>
-            <div style="display:flex;gap:8px">
-              <input type="text" id="voterItemInput" placeholder="Ex: Partir vivre à Barcelone" style="flex:1"
-                onkeydown="if(event.key==='Enter')_addVoterItem()">
-              <button class="btn btn-primary" onclick="_addVoterItem()" style="white-space:nowrap">+ Ajouter</button>
-            </div>
-          </div>
-        </div>
-        <div id="voterItemsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px"></div>
-        <div class="btn-row">
-          <button class="btn btn-secondary" onclick="nav('page-mode')">← Retour</button>
-          <button class="btn btn-primary" onclick="_startVoterScore()">Voter →</button>
-        </div>`;
-      _renderVoterItemsList();
-    }
-
-    function _renderVoterItemsList() {
-      const el = document.getElementById('voterItemsList');
-      if (!el) return;
-      if (_voterItems.length === 0) {
-        el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:.85rem;padding:20px">Aucune option — ajoute au moins 2.</div>';
-        return;
-      }
-      el.innerHTML = _voterItems.map((item, i) => `
-        <div class="prio-item-row">
-          <span class="prio-item-label">${esc(item.label)}</span>
-          <button onclick="_removeVoterItem(${i})"
-            style="background:none;border:none;color:var(--muted2);font-size:1.1rem;cursor:pointer;padding:2px 6px">✕</button>
-        </div>`).join('');
-    }
-
-    function _addVoterItem() {
-      const input = document.getElementById('voterItemInput');
-      const val = input?.value.trim();
-      if (!val) return;
-      if (_voterItems.length >= 12) return;
-      _voterItems.push({ label: val, score: 5 });
-      input.value = '';
-      _renderVoterItemsList();
-      input.focus();
-    }
-
-    function _removeVoterItem(i) {
-      _voterItems.splice(i, 1);
-      _renderVoterItemsList();
-    }
-
-    function _startVoterScore() {
-      if (_voterItems.length < 2) { alert('Ajoute au moins 2 options.'); return; }
-      _voterItems.forEach(item => { item.score = 5; });
-      _voterPhase = 'score';
-      _renderVoterContent();
-    }
-
-    function _renderVoterScore(el) {
-      const items = _voterItems.map((item, i) => {
-        const emoji = _VOTER_EMOJIS[item.score - 1];
-        return `
-          <div class="sl-item" style="margin-bottom:16px">
-            <div class="sl-head" style="margin-bottom:10px">
-              <div class="sl-label" style="font-weight:700;font-size:.95rem;color:var(--ink)">${esc(item.label)}</div>
-            </div>
-            <div class="stepper">
-              <button class="stepper-btn" onclick="_setVoterScore(${i}, Math.max(1, _voterItems[${i}].score - 1))" aria-label="Diminuer">−</button>
-              <div class="stepper-track">
-                <div class="stepper-emoji" id="voter-emoji-${i}">${emoji}</div>
-                <div class="stepper-val" id="voter-val-${i}">${item.score}</div>
-              </div>
-              <button class="stepper-btn" onclick="_setVoterScore(${i}, Math.min(10, _voterItems[${i}].score + 1))" aria-label="Augmenter">+</button>
-            </div>
-          </div>`;
-      }).join('');
-
-      el.innerHTML = `
-        <div class="page-eyebrow">Voter</div>
-        <div class="page-title">Note chaque option de 1 à 10</div>
-        <div class="page-sub" style="margin-bottom:20px">1 = très mauvais · 10 = excellent</div>
-        <div style="margin-bottom:8px">${items}</div>
-        <div class="btn-row">
-          <button class="btn btn-secondary" onclick="_voterPhase='input';_renderVoterContent()">← Retour</button>
-          <button class="btn btn-primary" onclick="_voterPhase='result';_renderVoterContent()">Voir le résultat →</button>
-        </div>`;
-    }
-
-    function _setVoterScore(i, val) {
-      _voterItems[i].score = val;
-      const emojiEl = document.getElementById('voter-emoji-' + i);
-      const valEl   = document.getElementById('voter-val-'   + i);
-      if (emojiEl) {
-        emojiEl.textContent = _VOTER_EMOJIS[val - 1];
-        emojiEl.classList.remove('bump');
-        void emojiEl.offsetWidth;
-        emojiEl.classList.add('bump');
-        setTimeout(() => emojiEl.classList.remove('bump'), 120);
-      }
-      if (valEl) valEl.textContent = val;
-    }
-
-    function _renderVoterResult(el) {
-      const sorted = [..._voterItems].sort((a, b) => b.score - a.score);
-      const max = sorted[0].score;
-      if (typeof launchConfetti === 'function') launchConfetti();
-
-      const rows = sorted.map((item, rank) => {
-        const emoji  = _VOTER_EMOJIS[item.score - 1];
-        const pct    = Math.round((item.score / 10) * 100);
-        const medal  = rank === 0 ? '🥇' : rank === 1 ? '🥈' : rank === 2 ? '🥉' : `${rank + 1}.`;
-        const isTop  = item.score === max;
-        return `
-          <div style="margin-bottom:12px;padding:12px 14px;background:var(--white);border:${isTop ? '2px solid var(--primary)' : '1.5px solid var(--border)'};border-radius:var(--r);display:flex;align-items:center;gap:12px">
-            <span style="font-size:1.3rem;min-width:28px;text-align:center">${medal}</span>
-            <div style="flex:1">
-              <div style="font-weight:700;font-size:.92rem;color:var(--ink);margin-bottom:4px">${esc(item.label)}</div>
-              <div style="height:6px;background:var(--bg2);border-radius:3px;overflow:hidden">
-                <div style="height:100%;width:${pct}%;background:${isTop ? 'var(--primary)' : 'var(--border)'};border-radius:3px;transition:width .5s ease"></div>
-              </div>
-            </div>
-            <div style="text-align:center;min-width:44px">
-              <div style="font-size:1.4rem">${emoji}</div>
-              <div style="font-size:.8rem;font-weight:700;color:var(--ink2)">${item.score}/10</div>
-            </div>
-          </div>`;
-      }).join('');
-
-      el.innerHTML = `
-        <div class="page-eyebrow">Résultat</div>
-        <div class="page-title" style="margin-bottom:20px">Classement des options</div>
-        ${rows}
-        <div class="btn-row" style="margin-top:20px">
-          <button class="btn btn-secondary" onclick="nav('page-mode')">← Accueil</button>
-          <button class="btn btn-primary" onclick="startVoter()">Recommencer</button>
-        </div>`;
-    }
 
   </script>
   <script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.8/dist/lottie-player.js"></script>
