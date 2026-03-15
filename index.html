@@ -437,11 +437,11 @@
       border: 1px solid var(--border);
       border-radius: var(--r);
       box-shadow: var(--shadow);
-      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+      padding: 16px;
+      transition: box-shadow 0.2s ease;
     }
 
     .card:hover {
-      transform: scale(1.01) translateY(-2px);
       box-shadow: var(--shadow-lg);
     }
 
@@ -878,6 +878,12 @@
       margin-bottom: 20px;
       position: relative;
       overflow: visible;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    }
+
+    .decision-card:hover {
+      transform: scale(1.01) translateY(-2px);
+      box-shadow: var(--shadow-lg);
     }
 
     .options-list {
@@ -12108,8 +12114,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
           <div class="field" style="margin-bottom:0">
             <label>Ta décision en une phrase</label>
             <textarea id="peserContext" rows="2"
-              placeholder="Ex : Quitter mon CDI pour devenir freelance"
-              style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:var(--white);color:var(--ink);font-family:var(--font-sans);font-size:.9rem;resize:none"></textarea>
+              placeholder="Ex : Quitter mon CDI pour devenir freelance"></textarea>
           </div>
         </div>
         ${_peserScenarioHTML('opt', '🟢', 'Scénario optimiste', 'Les choses se passent mieux que prévu', 30, 4)}
@@ -12135,7 +12140,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
             <label style="font-size:.78rem">Ce que ça donnerait concrètement</label>
             <textarea id="peser-desc-${id}" rows="2"
               placeholder="Décris ce scénario…"
-              style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:var(--white);color:var(--ink);font-family:var(--font-sans);font-size:.85rem;resize:none"></textarea>
+              style="font-size:.85rem"></textarea>
           </div>
           <div class="peser-slider-row">
             <span class="peser-slider-label">Probabilité</span>
