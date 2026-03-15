@@ -108,6 +108,233 @@ app.post('/api/peser-analysis', async (req, res) => {
   }
 });
 
+/* ── AI: detect biases (deep psychological analysis) ── */
+app.post('/api/detect-biases', async (req, res) => {
+  const { decision, options, criteria, scores, lang } = req.body || {};
+  if (!decision) return res.status(400).json({ error: 'decision required' });
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: 'AI not configured' });
+
+  const optionsText = (options || []).map((o, i) => `${i+1}. ${o.name}${o.desc ? ': '+o.desc : ''}`).join('\n');
+  const criteriaText = (criteria || []).map(c => `- ${c.name} (poids: ${c.weight||1})`).join('\n');
+
+  const prompt = lang === 'en'
+    ? `You are an expert cognitive psychologist specializing in decision biases (Kahneman, Tversky, Ariely, Thaler).
+Analyze this decision and detect cognitive biases present:
+
+DECISION: "${decision}"
+OPTIONS:\n${optionsText}
+CRITERIA:\n${criteriaText}
+
+Return ONLY a valid JSON array (max 4 biases). Each item:
+{"bias":"exact bias name","severity":"low|medium|high","explanation":"1-2 sentences specific to this exact decision","suggestion":"1 concrete counter-measure"}
+Only include biases genuinely relevant. Return [] if none.`
+    : `Tu es expert en psychologie cognitive spécialisé dans les biais décisionnels (Kahneman, Tversky, Ariely, Thaler).
+Analyse cette décision et détecte les biais cognitifs réellement présents :
+
+DÉCISION : "${decision}"
+OPTIONS :\n${optionsText}
+CRITÈRES :\n${criteriaText}
+
+Réponds UNIQUEMENT avec un tableau JSON valide (max 4 biais). Chaque élément :
+{"bias":"nom exact du biais","severity":"low|medium|high","explanation":"1-2 phrases spécifiques à CETTE décision précise","suggestion":"1 contre-mesure concrète actionnable"}
+N'inclus que les biais réellement pertinents. Retourne [] si aucun.`;
+
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 700, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await r.json();
+    const text = data?.content?.[0]?.text || '[]';
+    const match = text.match(/\[[\s\S]*\]/);
+    const biases = match ? JSON.parse(match[0]) : [];
+    res.json({ biases: biases.slice(0, 4) });
+  } catch (e) {
+    res.status(500).json({ error: 'AI error', biases: [] });
+  }
+});
+
+/* ── AI: socratic coach ── */
+app.post('/api/coach', async (req, res) => {
+  const { decision, history, lang } = req.body || {};
+  if (!decision) return res.status(400).json({ error: 'decision required' });
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: 'AI not configured' });
+
+  const historyText = (history || []).map(h => `Q: ${h.q}\nR: ${h.a}`).join('\n\n');
+
+  const system = lang === 'en'
+    ? `You are Dr. Lucid, a wise decision coach inspired by Socrates, Carl Rogers, and positive psychology.
+Your role: help people think more clearly through powerful questions.
+Rules: Ask ONE question at a time. Be specific to their situation. Explore values, consequences, emotions, hidden assumptions. Be warm and non-judgmental. Never tell them what to decide. Build on their previous answer. Keep questions under 25 words.`
+    : `Tu es Dr. Lucid, un coach décisionnel inspiré de Socrate, Carl Rogers et la psychologie positive.
+Ton rôle : aider à penser plus clairement par des questions puissantes.
+Règles : Pose UNE seule question à la fois. Sois spécifique à leur situation. Explore valeurs, conséquences, émotions, hypothèses cachées. Sois chaleureux et sans jugement. Ne dis jamais quoi décider. Appuie-toi sur leur réponse précédente. Questions courtes, moins de 25 mots.`;
+
+  const user = lang === 'en'
+    ? `Decision I face: "${decision}"\n\n${historyText ? 'Our conversation:\n' + historyText + '\n\n' : ''}Ask me your next powerful coaching question. ONLY the question, nothing else.`
+    : `Décision que je dois prendre : "${decision}"\n\n${historyText ? 'Notre conversation :\n' + historyText + '\n\n' : ''}Pose-moi ta prochaine question de coaching puissante. UNIQUEMENT la question, rien d'autre.`;
+
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 150, system, messages: [{ role: 'user', content: user }] })
+    });
+    const data = await r.json();
+    res.json({ question: data?.content?.[0]?.text?.trim() || '' });
+  } catch (e) {
+    res.status(500).json({ error: 'AI error', question: '' });
+  }
+});
+
+/* ── AI: narrative synthesis ── */
+app.post('/api/narrative', async (req, res) => {
+  const { decision, options, criteria, scores, ranked, lang } = req.body || {};
+  if (!decision) return res.status(400).json({ error: 'decision required' });
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: 'AI not configured' });
+
+  const winner = options?.[ranked?.[0]];
+  const optSummary = (options || []).map((o, i) => {
+    const pos = (ranked || []).indexOf(i) + 1;
+    const top = (criteria || []).map(c => ({
+      name: c.name,
+      eff: c.invert ? 11 - (scores?.[c.id]?.[i] ?? 5) : (scores?.[c.id]?.[i] ?? 5),
+      w: c.weight || 1
+    })).sort((a, b) => b.eff * b.w - a.eff * a.w)[0];
+    return `"${o.name}" (#${pos})${top ? ' — fort sur: ' + top.name + ' (' + top.eff + '/10)' : ''}`;
+  }).join('\n');
+
+  const prompt = lang === 'en'
+    ? `You're a decision psychologist writing a personal narrative for someone who just completed a structured decision analysis.
+
+Decision: "${decision}"
+Options: \n${optSummary}
+Winner: "${winner?.name}"
+
+Write 4-5 sentences that:
+1. Acknowledge the difficulty and importance of this choice
+2. Reveal what the analysis says about their values and priorities
+3. Give psychological meaning to why "${winner?.name}" emerged (not just "it scored highest")
+4. Include one forward-looking encouragement
+
+Style: warm, human, psychologically insightful. No bullets. Second person ("you"). Don't start with "I" or "Your analysis".`
+    : `Tu es psychologue décisionnel et tu écris un récit personnel pour quelqu'un qui vient de compléter une analyse structurée.
+
+Décision : "${decision}"
+Options :\n${optSummary}
+Gagnant : "${winner?.name}"
+
+Écris 4-5 phrases qui :
+1. Reconnaissent la difficulté et l'importance de ce choix
+2. Révèlent ce que l'analyse dit de ses valeurs et priorités
+3. Donnent un sens psychologique à pourquoi "${winner?.name}" a émergé
+4. Incluent un encouragement tourné vers l'avenir
+
+Style : chaleureux, humain, perspicace. Pas de puces. Tutoiement. Ne commence pas par "Je" ou "Ton analyse".`;
+
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 500, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await r.json();
+    res.json({ narrative: data?.content?.[0]?.text?.trim() || '' });
+  } catch (e) {
+    res.status(500).json({ error: 'AI error', narrative: '' });
+  }
+});
+
+/* ── AI: temporal consequences simulation ── */
+app.post('/api/temporal', async (req, res) => {
+  const { decision, option, criteria, scores, optionIndex, lang } = req.body || {};
+  if (!decision || !option) return res.status(400).json({ error: 'decision and option required' });
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: 'AI not configured' });
+
+  const critText = (criteria || []).map(c => `${c.name}: ${scores?.[c.id]?.[optionIndex] ?? 5}/10`).join(', ');
+
+  const prompt = lang === 'en'
+    ? `Expert in temporal decision analysis. Simulate consequences of choosing "${option}" for: "${decision}".
+
+Criteria scores: ${critText}
+
+Return ONLY valid JSON:
+{"short":{"timeframe":"3 months","positive":"1-2 realistic sentences about early benefits","challenge":"1-2 sentences about early difficulties","emotion":"optimistic|anxious|excited|uncertain"},"medium":{"timeframe":"1 year","positive":"...","challenge":"...","emotion":"satisfied|stressed|fulfilled|mixed"},"long":{"timeframe":"5 years","positive":"...","challenge":"...","emotion":"proud|regretful|content|transformed"}}
+
+Be specific to this decision, not generic.`
+    : `Expert en analyse temporelle des décisions. Simule les conséquences du choix "${option}" pour : "${decision}".
+
+Scores critères : ${critText}
+
+Réponds UNIQUEMENT avec du JSON valide :
+{"short":{"timeframe":"3 mois","positive":"1-2 phrases réalistes sur les bénéfices précoces","challenge":"1-2 phrases sur les difficultés initiales","emotion":"optimiste|anxieux|enthousiaste|incertain"},"medium":{"timeframe":"1 an","positive":"...","challenge":"...","emotion":"satisfait|stressé|épanoui|mitigé"},"long":{"timeframe":"5 ans","positive":"...","challenge":"...","emotion":"fier|regret|serein|transformé"}}
+
+Sois spécifique à CETTE décision, pas générique.`;
+
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 700, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await r.json();
+    const text = data?.content?.[0]?.text || '{}';
+    const match = text.match(/\{[\s\S]*\}/);
+    const temporal = match ? JSON.parse(match[0]) : {};
+    res.json({ temporal });
+  } catch (e) {
+    res.status(500).json({ error: 'AI error', temporal: {} });
+  }
+});
+
+/* ── AI: framework recommendation ── */
+app.post('/api/framework', async (req, res) => {
+  const { decision, urgency, reversibility, complexity, numOptions, lang } = req.body || {};
+  if (!decision) return res.status(400).json({ error: 'decision required' });
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: 'AI not configured' });
+
+  const prompt = lang === 'en'
+    ? `Decision framework expert. Recommend the best framework for:
+
+Decision: "${decision}"
+Urgency: ${urgency}/5 | Reversibility: ${reversibility}/5 | Complexity: ${complexity}/5 | Options: ${numOptions}
+
+Available: Eisenhower Matrix, OODA Loop, Cynefin Framework, Weighted Decision Matrix, Pre-mortem Analysis, 10/10/10 Rule, Second-Order Thinking, Inversion Method, WRAP Method
+
+Return ONLY valid JSON:
+{"framework":"Name","emoji":"emoji","reason":"1-2 sentences why this fits","key_question":"The one question this framework answers best"}`
+    : `Expert en frameworks décisionnels. Recommande le meilleur framework pour :
+
+Décision : "${decision}"
+Urgence : ${urgency}/5 | Réversibilité : ${reversibility}/5 | Complexité : ${complexity}/5 | Options : ${numOptions}
+
+Disponibles : Matrice Eisenhower, Boucle OODA, Cynefin, Matrice pondérée, Pré-mortem, Règle 10/10/10, Pensée de 2e ordre, Méthode d'inversion, Méthode WRAP
+
+Réponds UNIQUEMENT avec du JSON valide :
+{"framework":"Nom","emoji":"emoji","reason":"1-2 phrases pourquoi ce framework convient","key_question":"La question que ce framework aide le mieux à répondre"}`;
+
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 300, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await r.json();
+    const text = data?.content?.[0]?.text || '{}';
+    const match = text.match(/\{[\s\S]*\}/);
+    const framework = match ? JSON.parse(match[0]) : {};
+    res.json({ framework });
+  } catch (e) {
+    res.status(500).json({ error: 'AI error', framework: {} });
+  }
+});
+
 app.use(express.static(__dirname));
 
 /* ── Session store ── */

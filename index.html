@@ -6030,6 +6030,263 @@
     .dv-option-input-row { display: flex; align-items: center; gap: 8px; }
     .dv-option-badge { font-size: .75rem; font-weight: 700; padding: 5px 10px; border-radius: var(--r-sm); background: var(--bg2); color: var(--muted); white-space: nowrap; }
 
+    /* ══════════════════════════════════════════
+       LUCID 2.0 — NOUVEAUX STYLES PSYCHOLOGIQUES
+       ══════════════════════════════════════════ */
+
+    /* ── Bouton Coach décisionnel ── */
+    .coach-trigger-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, oklch(72% 0.18 280), oklch(65% 0.2 240));
+      color: #fff; border: none; border-radius: var(--r-sm);
+      padding: 10px 18px; font-size: .82rem; font-weight: 700;
+      cursor: pointer; transition: all .2s; box-shadow: 0 4px 16px oklch(65% 0.2 240 / .3);
+      margin-top: 12px; width: 100%;
+    }
+    .coach-trigger-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px oklch(65% 0.2 240 / .4); }
+
+    /* ── Modal Coach ── */
+    .coach-modal-box {
+      background: var(--white); border-radius: 24px;
+      padding: 28px 28px 24px; max-width: 520px; width: 100%;
+      box-shadow: var(--shadow-lg); position: relative;
+      max-height: 90vh; display: flex; flex-direction: column;
+    }
+    .coach-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .coach-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, oklch(72% 0.18 280), oklch(65% 0.2 240));
+      display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0;
+    }
+    .coach-title { font-size: 1.1rem; font-weight: 800; color: var(--ink); }
+    .coach-subtitle { font-size: .75rem; color: var(--muted); }
+    .coach-history { flex: 1; overflow-y: auto; margin-bottom: 16px; }
+    .coach-exchange { margin-bottom: 16px; }
+    .coach-q-bubble {
+      background: linear-gradient(135deg, oklch(72% 0.18 280 / .1), oklch(65% 0.2 240 / .1));
+      border: 1px solid oklch(65% 0.2 240 / .2);
+      border-radius: 16px 16px 16px 4px; padding: 14px 16px;
+      font-size: .9rem; color: var(--ink); line-height: 1.55; margin-bottom: 8px;
+      animation: fadeUp .3s ease;
+    }
+    .coach-a-bubble {
+      background: var(--bg2); border-radius: 16px 16px 4px 16px;
+      padding: 12px 16px; font-size: .85rem; color: var(--ink2); line-height: 1.5;
+      margin-left: 24px; font-style: italic;
+    }
+    .coach-current-q {
+      background: linear-gradient(135deg, oklch(72% 0.18 280 / .12), oklch(65% 0.2 240 / .12));
+      border: 1.5px solid oklch(65% 0.2 240 / .3);
+      border-radius: 16px 16px 16px 4px; padding: 16px 18px;
+      font-size: .95rem; font-weight: 600; color: var(--ink); line-height: 1.55;
+      margin-bottom: 14px; animation: fadeUp .4s ease;
+    }
+    .coach-input-area {
+      display: flex; gap: 8px; align-items: flex-end;
+    }
+    .coach-textarea {
+      flex: 1; padding: 12px 14px; border: 1.5px solid var(--border2);
+      border-radius: 14px; font-size: .88rem; resize: none; min-height: 72px;
+      font-family: var(--font-sans); color: var(--ink); background: var(--bg);
+      transition: border-color .2s;
+    }
+    .coach-textarea:focus { outline: none; border-color: oklch(65% 0.2 240); }
+    .coach-send-btn {
+      background: oklch(65% 0.2 240); color: #fff; border: none;
+      border-radius: 12px; padding: 12px 18px; font-size: .85rem; font-weight: 700;
+      cursor: pointer; transition: all .2s; white-space: nowrap;
+    }
+    .coach-send-btn:hover { background: oklch(60% 0.2 240); }
+    .coach-send-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .coach-insight-box {
+      background: linear-gradient(135deg, #fef3c7, #fffbea);
+      border: 1px solid #f0d080; border-radius: 12px;
+      padding: 14px 16px; font-size: .82rem; color: #92400e; line-height: 1.5;
+      margin-top: 12px; display: none;
+    }
+    .coach-insight-box.visible { display: block; animation: fadeUp .3s ease; }
+    .coach-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--muted); }
+
+    /* ── Emotional Check-in ── */
+    .emotional-modal-box {
+      background: var(--white); border-radius: 24px;
+      padding: 28px; max-width: 440px; width: 100%;
+      box-shadow: var(--shadow-lg);
+    }
+    .emotion-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 16px 0;
+    }
+    .emotion-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      padding: 12px 6px; border: 2px solid var(--border);
+      border-radius: 14px; cursor: pointer; background: var(--bg);
+      transition: all .2s; font-size: .72rem; font-weight: 600; color: var(--ink2);
+    }
+    .emotion-btn .emotion-emoji { font-size: 1.6rem; }
+    .emotion-btn:hover, .emotion-btn.selected { border-color: oklch(65% 0.2 240); background: oklch(65% 0.2 240 / .08); color: var(--ink); }
+    .emotion-regulation-tip {
+      background: var(--teal-bg); border: 1px solid var(--teal-bd);
+      border-radius: 12px; padding: 14px 16px; margin-top: 12px;
+      font-size: .82rem; color: #065f46; line-height: 1.55; display: none;
+    }
+    .emotion-regulation-tip.visible { display: block; animation: fadeUp .3s ease; }
+    .energy-meter {
+      display: flex; align-items: center; gap: 10px; margin: 14px 0;
+      padding: 12px 16px; background: var(--bg); border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .energy-label { font-size: .78rem; font-weight: 700; color: var(--ink2); flex-shrink: 0; }
+    .energy-bar { flex: 1; height: 8px; background: var(--bg2); border-radius: 4px; overflow: hidden; }
+    .energy-fill { height: 100%; border-radius: 4px; transition: width .5s ease; }
+    .energy-val { font-size: .78rem; font-weight: 800; flex-shrink: 0; }
+
+    /* ── Narrative Section (résultats) ── */
+    .narrative-section {
+      background: linear-gradient(135deg, oklch(75% 0.1 280 / .08), oklch(70% 0.15 240 / .08));
+      border: 1.5px solid oklch(65% 0.15 240 / .2);
+      border-radius: 18px; padding: 22px 24px; margin-bottom: 20px;
+    }
+    .narrative-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .narrative-icon { font-size: 1.4rem; }
+    .narrative-head-title { font-size: .95rem; font-weight: 800; color: var(--ink); }
+    .narrative-head-sub { font-size: .72rem; color: var(--muted); }
+    .narrative-text {
+      font-size: .92rem; line-height: 1.7; color: var(--ink2);
+      font-family: 'Lora', serif; font-weight: 500; letter-spacing: .01em;
+    }
+    .narrative-loading { color: var(--muted); font-size: .85rem; font-style: italic; }
+
+    /* ── Temporal Simulation ── */
+    .temporal-section { margin-bottom: 20px; }
+    .temporal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 640px) { .temporal-grid { grid-template-columns: 1fr; } }
+    .temporal-card {
+      border-radius: 16px; padding: 16px; border: 1.5px solid var(--border);
+      background: var(--white); transition: transform .2s;
+    }
+    .temporal-card:hover { transform: translateY(-2px); }
+    .temporal-card.short { border-color: oklch(55% 0.18 140 / .3); background: oklch(55% 0.18 140 / .05); }
+    .temporal-card.medium { border-color: oklch(65% 0.2 240 / .3); background: oklch(65% 0.2 240 / .05); }
+    .temporal-card.long { border-color: oklch(70% 0.2 80 / .3); background: oklch(70% 0.2 80 / .05); }
+    .temporal-timeframe {
+      font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em;
+      margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+    }
+    .temporal-card.short .temporal-timeframe { color: oklch(50% 0.18 140); }
+    .temporal-card.medium .temporal-timeframe { color: oklch(55% 0.2 240); }
+    .temporal-card.long .temporal-timeframe { color: oklch(60% 0.2 80); }
+    .temporal-positive { font-size: .82rem; color: var(--ink); line-height: 1.5; margin-bottom: 8px; }
+    .temporal-positive::before { content: '✓ '; color: var(--teal); font-weight: 700; }
+    .temporal-challenge { font-size: .82rem; color: var(--ink2); line-height: 1.5; }
+    .temporal-challenge::before { content: '△ '; color: var(--amber); font-weight: 700; }
+    .temporal-emotion {
+      display: inline-block; margin-top: 10px; padding: 3px 10px;
+      border-radius: 20px; font-size: .7rem; font-weight: 700;
+      background: var(--bg2); color: var(--muted);
+    }
+    .temporal-option-selector {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px;
+    }
+    .temporal-option-btn {
+      padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border2);
+      background: var(--bg); font-size: .78rem; font-weight: 600;
+      cursor: pointer; transition: all .2s; color: var(--ink2);
+    }
+    .temporal-option-btn.active {
+      background: oklch(65% 0.2 240); border-color: oklch(65% 0.2 240);
+      color: #fff;
+    }
+    .temporal-skeleton { height: 120px; background: var(--bg2); border-radius: 14px; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .5; } }
+
+    /* ── Framework Recommendation ── */
+    .framework-rec {
+      background: linear-gradient(135deg, #fef3c7, #fffbea);
+      border: 1.5px solid #f0d080; border-radius: 16px;
+      padding: 18px 20px; margin-bottom: 16px;
+    }
+    .framework-rec-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .framework-emoji { font-size: 1.8rem; }
+    .framework-name { font-size: 1rem; font-weight: 800; color: #92400e; }
+    .framework-badge { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #d97706; background: rgba(217,119,6,.12); padding: 2px 8px; border-radius: 10px; }
+    .framework-reason { font-size: .83rem; color: #78350f; line-height: 1.5; margin-bottom: 8px; }
+    .framework-question {
+      font-size: .82rem; font-weight: 700; color: #92400e;
+      border-left: 3px solid #d97706; padding-left: 10px; font-style: italic;
+    }
+    .framework-urgency-row {
+      display: flex; gap: 12px; flex-wrap: wrap; margin: 14px 0 6px;
+    }
+    .framework-urgency-item { flex: 1; min-width: 100px; }
+    .framework-urgency-label { font-size: .7rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .06em; }
+    .framework-slider {
+      width: 100%; appearance: none; height: 4px; border-radius: 2px;
+      background: var(--bg2); outline: none; accent-color: oklch(65% 0.2 240);
+    }
+
+    /* ── AI Bias Alerts Enhanced ── */
+    .bias-alert-ai {
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 8px;
+      display: flex; gap: 10px; align-items: flex-start; font-size: .82rem;
+      line-height: 1.5; border: 1.5px solid;
+    }
+    .bias-alert-ai.high { background: #fee2e2; border-color: #fca5a5; color: #7f1d1d; }
+    .bias-alert-ai.medium { background: #fef3c7; border-color: #fde68a; color: #78350f; }
+    .bias-alert-ai.low { background: #f0fdf4; border-color: #a7f3d0; color: #064e3b; }
+    .bias-icon-badge { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .bias-content strong { font-weight: 800; display: block; margin-bottom: 2px; }
+    .bias-suggestion {
+      margin-top: 6px; font-size: .78rem; font-weight: 600;
+      opacity: .85; border-top: 1px solid rgba(0,0,0,.08); padding-top: 6px;
+    }
+    .bias-suggestion::before { content: '→ '; }
+    .ai-bias-trigger {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .78rem; font-weight: 700; color: oklch(65% 0.2 240);
+      background: oklch(65% 0.2 240 / .08); border: 1px solid oklch(65% 0.2 240 / .2);
+      border-radius: 20px; padding: 5px 12px; cursor: pointer;
+      transition: all .2s; margin-top: 8px;
+    }
+    .ai-bias-trigger:hover { background: oklch(65% 0.2 240 / .15); }
+
+    /* ── Mental Energy Indicator ── */
+    .mental-energy-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .72rem; font-weight: 700; padding: 4px 10px;
+      border-radius: 20px; border: 1px solid; margin-bottom: 8px;
+    }
+    .mental-energy-pill.high { background: #dcfce7; border-color: #86efac; color: #166534; }
+    .mental-energy-pill.medium { background: #fef3c7; border-color: #fde68a; color: #92400e; }
+    .mental-energy-pill.low { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+    .mental-energy-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .mental-energy-pill.high .mental-energy-dot { background: #16a34a; }
+    .mental-energy-pill.medium .mental-energy-dot { background: #d97706; }
+    .mental-energy-pill.low .mental-energy-dot { background: #dc2626; }
+
+    /* ── Values Alignment Score ── */
+    .values-alignment-bar {
+      display: flex; align-items: center; gap: 10px; padding: 12px 16px;
+      background: var(--bg); border-radius: 12px; margin-bottom: 12px;
+      border: 1px solid var(--border);
+    }
+    .va-label { font-size: .78rem; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+    .va-track { flex: 1; height: 8px; background: var(--bg2); border-radius: 4px; overflow: hidden; }
+    .va-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, oklch(65% 0.17 145), oklch(65% 0.15 240)); transition: width .6s ease; }
+    .va-pct { font-size: .82rem; font-weight: 800; color: var(--ink); flex-shrink: 0; }
+
+    /* ── Monte Carlo Badge ── */
+    .monte-carlo-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, oklch(65% 0.17 300), oklch(65% 0.2 240));
+      color: #fff; border-radius: 20px; padding: 4px 12px;
+      font-size: .72rem; font-weight: 700; margin-left: 8px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
   </style>
 </head>
 
@@ -6124,6 +6381,12 @@
           <!-- Bias detection alerts (populated by JS) -->
           <div id="biasAlertsBox"></div>
 
+          <!-- Mental energy + emotional state row -->
+          <div id="wellbeingRow" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+            <div id="mentalEnergyPill"></div>
+            <button onclick="openEmotionalModal()" style="font-size:.72rem;font-weight:700;color:var(--muted);background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;cursor:pointer;transition:all .2s" title="Check-in émotionnel">🫀 Mon état</button>
+          </div>
+
           <div class="card decision-card anim d2">
             <div class="field" style="margin-bottom:0">
               <label for="inp-dec">📝 Votre décision en une phrase</label>
@@ -6134,6 +6397,17 @@
               </div>
             </div>
           </div>
+
+          <!-- Coach + Framework recommendation -->
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;margin-bottom:4px">
+            <button class="coach-trigger-btn" onclick="openCoachModal()" style="flex:1;min-width:180px">
+              🦉 Clarifier avec le Coach IA
+            </button>
+            <button onclick="openFrameworkModal()" style="flex:1;min-width:140px;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--bg2);color:var(--ink2);border:1.5px solid var(--border2);border-radius:var(--r-sm);padding:10px 16px;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:0">
+              🧭 Quel framework ?
+            </button>
+          </div>
+          <div id="frameworkRecBox" style="margin-top:4px"></div>
 
           <div class="anim d3">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
@@ -9732,32 +10006,164 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
       }
     }
 
-    /* ─── DÉTECTION DE BIAIS ─────────────────── */
+    /* ─── DÉTECTION DE BIAIS (12 biais) ─────── */
     function detectBiases() {
       const box = document.getElementById('biasAlertsBox');
       if (!box) return;
       const alerts = [];
-      const dec = document.getElementById('inp-dec')?.value || S.decision || '';
+      const dec = (document.getElementById('inp-dec')?.value || S.decision || '').toLowerCase();
+      const opts = S.options.filter(o => o.name.trim());
+      const numOpts = opts.length;
 
-      // Biais de statu quo: option "actuel/actuelle/rester" présente
-      const statusQuoWords = /actuel|actuelle|rester|statu quo|ne pas changer|conserver|garder|maintenir/i;
-      const hasStatusQuo = S.options.some((o, i) => statusQuoWords.test(o.name + ' ' + (o.desc || '')));
-      if (hasStatusQuo) {
-        alerts.push(`<div class="bias-alert bias-statusquo"><span class="bias-icon">⚠️</span><span><strong>Biais de statu quo détecté :</strong> L'une de vos options semble être le choix "ne rien changer". Veillez à ne pas surpondérer la sécurité du familier par rapport aux bénéfices du changement.</span></div>`);
+      // 1. Biais de statu quo
+      const statusQuoWords = /actuel|actuelle|rester|statu quo|ne pas changer|conserver|garder|maintenir|comme avant/i;
+      if (opts.some(o => statusQuoWords.test(o.name + ' ' + (o.desc||'')))) {
+        alerts.push(biasAlert('⚠️','medium','Biais de statu quo',
+          'Une de vos options est "ne rien changer". Nous surpondérons naturellement la sécurité du familier.',
+          'Demandez-vous : si vous ne connaissiez pas la situation actuelle, choisiriez-vous quand même cette option ?'));
       }
 
-      // Fausse dichotomie: seulement 2 options
-      if (S.options.filter(o => o.name.trim()).length === 2) {
-        alerts.push(`<div class="bias-alert bias-fewopt"><span class="bias-icon">💡</span><span><strong>Avez-vous considéré toutes vos options ?</strong> Vous n'avez listé que 2 choix. Existe-t-il une 3ème voie : hybride, différée, partielle ?</span></div>`);
+      // 2. Fausse dichotomie
+      if (numOpts === 2) {
+        alerts.push(biasAlert('💡','low','Fausse dichotomie potentielle',
+          'Vous n\'avez listé que 2 options. Le cerveau humain cherche souvent à binariser des situations complexes.',
+          'Cherchez une 3ème voie : hybride, différée, partielle, ou une option non envisagée.'));
       }
 
-      // Biais de coût irrécupérable (sunk cost): mot-clé "déjà investi / déjà commencé"
-      const sunkWords = /déjà investi|déjà commencé|j'ai déjà|trop tard|tout ce que j'ai mis/i;
+      // 3. Coût irrécupérable (Sunk Cost)
+      const sunkWords = /déjà investi|déjà commencé|j.ai déjà|trop tard|tout ce que j.ai mis|abandonner ce que j/i;
       if (sunkWords.test(dec)) {
-        alerts.push(`<div class="bias-alert bias-sunk"><span class="bias-icon">🚨</span><span><strong>Attention au coût irrécupérable :</strong> Les investissements passés ne devraient pas influencer votre décision future. Concentrez-vous sur ce que chaque option vous apportera à partir d'aujourd'hui.</span></div>`);
+        alerts.push(biasAlert('🚨','high','Biais du coût irrécupérable',
+          'Vous mentionnez des investissements passés. Ces coûts ne peuvent pas être récupérés et ne devraient pas influencer votre décision.',
+          'Ignorez ce qui a déjà été dépensé. Décidez uniquement en fonction des bénéfices futurs de chaque option.'));
       }
 
-      box.innerHTML = alerts.join('');
+      // 4. Biais d'ancrage (prix / chiffres mentionnés)
+      const anchorWords = /\d+\s*(€|euros?|k|000|%|ans?|mois|jours?)/i;
+      if (anchorWords.test(dec) && numOpts > 1) {
+        alerts.push(biasAlert('⚓','low','Biais d\'ancrage potentiel',
+          'Des chiffres dans votre description peuvent agir comme ancres et biaiser l\'évaluation des autres options.',
+          'Re-évaluez chaque option indépendamment, sans vous laisser influencer par les montants ou durées mentionnés.'));
+      }
+
+      // 5. Aversion à la perte
+      const lossWords = /perdre|perte|risque de perdre|ne pas perdre|éviter de perdre|peur de perdre/i;
+      if (lossWords.test(dec)) {
+        alerts.push(biasAlert('😨','medium','Aversion à la perte',
+          'Votre formulation révèle une focalisation sur les pertes potentielles. Kahneman a montré que les pertes pèsent 2× plus que les gains équivalents.',
+          'Reformulez chaque option en termes de gains possibles. Demandez-vous : qu\'est-ce que cette option vous apporte de positif ?'));
+      }
+
+      // 6. Biais de confirmation (options très similaires)
+      const nameWords = opts.map(o => o.name.toLowerCase().split(/\s+/));
+      if (numOpts >= 3 && nameWords.length >= 2) {
+        const allNames = opts.map(o => o.name.toLowerCase());
+        const dominated = allNames.some((n,i) => allNames.some((m,j) => i!==j && n.includes(m.substring(0,4)) && m.length > 3));
+        if (dominated) {
+          alerts.push(biasAlert('🔍','low','Options potentiellement similaires',
+            'Certaines de vos options semblent proches. Le biais de confirmation peut nous pousser à créer des variantes de notre option préférée.',
+            'Assurez-vous que vos options sont vraiment distinctes. Avez-vous inclus une option radicalement différente ?'));
+        }
+      }
+
+      // 7. Fatigue décisionnelle (heure tardive ou nombre d'options max)
+      const hour = new Date().getHours();
+      if ((hour >= 22 || hour <= 6) && numOpts > 2) {
+        alerts.push(biasAlert('🌙','medium','Fatigue décisionnelle temporelle',
+          'Décider en soirée/nuit augmente les choix impulsifs et réduit la pensée critique de 30% selon les études.',
+          'Si possible, reportez cette décision au matin. Si urgent : prenez d\'abord 5 minutes de respiration lente.'));
+      }
+
+      // 8. Biais d'optimisme
+      const optimismWords = /sûrement|certainement|à coup sûr|forcément|évidemment|sans aucun doute/i;
+      if (optimismWords.test(dec)) {
+        alerts.push(biasAlert('🌟','low','Biais d\'optimisme',
+          'Votre formulation montre une grande certitude. Nous avons tendance à surestimer les probabilités de succès.',
+          'Appliquez le "pré-mortem" : imaginez que votre option préférée a échoué dans 1 an. Qu\'est-ce qui a mal tourné ?'));
+      }
+
+      // 9. Biais d'autorité (mention d'une personne influente)
+      const authorityWords = /mon chef|mon manager|mon patron|mes parents|tout le monde dit|on m.a dit|ils pensent que/i;
+      if (authorityWords.test(dec)) {
+        alerts.push(biasAlert('👑','low','Biais d\'autorité potentiel',
+          'Vous mentionnez l\'opinion d\'autres personnes. Leur avis peut inconsciemment biaiser votre propre évaluation.',
+          'Demandez-vous : si personne ne savait votre choix, lequel feriez-vous ? Quelle est VOTRE préférence profonde ?'));
+      }
+
+      // 10. Biais de disponibilité (événement récent)
+      const recencyWords = /récemment|la semaine dernière|hier|ce matin|après ce qui s.est passé|suite à/i;
+      if (recencyWords.test(dec)) {
+        alerts.push(biasAlert('📅','low','Biais de disponibilité',
+          'Un événement récent semble influencer cette décision. Nous surpondérons ce qui est récent et sous-estimons les données de fond.',
+          'Prenez du recul : cette situation est-elle représentative de la réalité habituelle, ou exceptionnelle ?'));
+      }
+
+      // 11. Effet de cadrage négatif
+      const negFrameWords = /ne pas|éviter|empêcher|s.opposer|refuser|ne jamais/i;
+      const posFrameWords = /obtenir|gagner|réaliser|accomplir|atteindre|créer/i;
+      const hasNeg = negFrameWords.test(dec);
+      const hasPos = posFrameWords.test(dec);
+      if (hasNeg && !hasPos) {
+        alerts.push(biasAlert('🖼️','low','Effet de cadrage négatif',
+          'Votre décision est formulée en termes d\'évitement plutôt que d\'aspiration. Cela peut réduire la qualité de l\'analyse.',
+          'Reformulez positivement : "Comment puis-je obtenir X ?" plutôt que "Comment éviter Y ?"'));
+      }
+
+      // 12. Surcharge de choix (paradox of choice)
+      if (numOpts >= 6) {
+        alerts.push(biasAlert('🤯','medium','Surcharge de choix (Paradoxe de Schwartz)',
+          'Avec 6 options ou plus, la qualité décisionnelle diminue. Trop de choix génère anxiété et regret post-décision.',
+          'Éliminez d\'abord les options clairement sous-optimales jusqu\'à avoir 3-4 options vraiment compétitives.'));
+      }
+
+      // Afficher max 4 alertes locales (les plus pertinentes)
+      const topAlerts = alerts.slice(0, 4);
+      box.innerHTML = topAlerts.join('');
+
+      // Bouton pour analyse IA approfondie
+      if ((S.decision || document.getElementById('inp-dec')?.value) && numOpts >= 2) {
+        box.innerHTML += `<button class="ai-bias-trigger" onclick="runAIBiasDetection()">✦ Analyse IA approfondie des biais</button>`;
+      }
+    }
+
+    function biasAlert(icon, severity, title, explanation, suggestion) {
+      return `<div class="bias-alert-ai ${severity}">
+        <span class="bias-icon-badge">${icon}</span>
+        <div class="bias-content">
+          <strong>${title}</strong>${explanation}
+          <div class="bias-suggestion">${suggestion}</div>
+        </div>
+      </div>`;
+    }
+
+    async function runAIBiasDetection() {
+      const box = document.getElementById('biasAlertsBox');
+      if (!box) return;
+      const decision = document.getElementById('inp-dec')?.value || S.decision;
+      if (!decision) return;
+
+      const btn = box.querySelector('.ai-bias-trigger');
+      if (btn) { btn.textContent = '⏳ Analyse en cours…'; btn.style.pointerEvents = 'none'; }
+
+      try {
+        const r = await fetch('/api/detect-biases', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ decision, options: S.options, criteria: S.criteria, scores: S.scores, lang: LANG })
+        });
+        const data = await r.json();
+        if (data.biases && data.biases.length > 0) {
+          const aiAlertsHTML = data.biases.map(b => biasAlert(
+            b.severity === 'high' ? '🚨' : b.severity === 'medium' ? '⚠️' : '💡',
+            b.severity, b.bias, b.explanation, b.suggestion
+          )).join('');
+          box.innerHTML = `<div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px">✦ Analyse IA des biais cognitifs</div>` + aiAlertsHTML;
+        } else {
+          box.innerHTML = `<div class="bias-alert-ai low"><span class="bias-icon-badge">✅</span><div class="bias-content"><strong>Aucun biais majeur détecté</strong>Votre formulation semble équilibrée. Continuez avec cette clarté d'esprit !</div></div>`;
+        }
+      } catch(e) {
+        if (btn) { btn.textContent = '✦ Analyse IA approfondie des biais'; btn.style.pointerEvents = ''; }
+      }
     }
 
     /* ─── VOICE INPUT ────────────────────────── */
@@ -12703,6 +13109,503 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
        MODE VOTER — Vote 1→10 avec émojis
        ══════════════════════════════════════════ */
 
+    /* ══════════════════════════════════════════
+       LUCID 2.0 — NOUVELLES FONCTIONNALITÉS IA
+       ══════════════════════════════════════════ */
+
+    /* ─── ÉTAT ÉMOTIONNEL ─────────────────────── */
+    let _currentEmotion = null;
+
+    const EMOTION_TIPS = {
+      'stressé': { tip: '💨 Respirez profondément 3 fois avant de continuer. Le stress active le système limbique et réduit la pensée rationnelle de 30%. Prenez 2 minutes.', warn: true },
+      'anxieux': { tip: '🌊 L\'anxiété distorte souvent notre perception des risques (ils semblent plus grands). Avant de décider, notez sur papier vos 3 pires craintes — la plupart ne se réaliseront pas.', warn: true },
+      'fatigué': { tip: '😴 La fatigue réduit fortement la qualité des décisions complexes. Si possible, reportez cette décision après une bonne nuit de sommeil.', warn: true },
+      'triste': { tip: '💙 La tristesse peut pousser vers des choix risqués ou impulsifs (effet "mood repair"). Attendez 24h ou prenez un ami de confiance pour valider votre raisonnement.', warn: true },
+      'enthousiaste': { tip: '🚀 Super ! Mais l\'enthousiasme peut conduire à sous-estimer les risques. Prenez 5 minutes pour analyser les côtés négatifs de votre option favorite.', warn: false },
+      'confiant': { tip: '💪 Excellent état pour décider ! Gardez votre confiance tout en restant ouvert aux informations qui contredisent votre hypothèse de départ.', warn: false },
+      'serein': { tip: '😌 État idéal pour décider. Votre cortex préfrontal est en pleine capacité. Profitez de cette clarté !', warn: false },
+      'neutre': { tip: '😐 Un état neutre est excellent pour l\'objectivité. Vous êtes moins susceptible d\'être influencé par vos émotions du moment.', warn: false }
+    };
+
+    function openEmotionalModal() {
+      document.getElementById('emotionGrid').querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('selected'));
+      document.getElementById('emotionTip').classList.remove('visible');
+      document.getElementById('emotionTip').textContent = '';
+      document.getElementById('emotionalModal').classList.add('open');
+    }
+
+    function selectEmotion(emotion, emoji) {
+      _currentEmotion = { emotion, emoji };
+      document.getElementById('emotionGrid').querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('selected'));
+      event.currentTarget.classList.add('selected');
+      const tipData = EMOTION_TIPS[emotion] || {};
+      if (tipData.tip) {
+        const tipEl = document.getElementById('emotionTip');
+        tipEl.textContent = tipData.tip;
+        tipEl.classList.add('visible');
+      }
+    }
+
+    function closeEmotionalModal(proceed) {
+      document.getElementById('emotionalModal').classList.remove('open');
+      if (_currentEmotion) {
+        updateMentalEnergyPill();
+      }
+    }
+
+    function updateMentalEnergyPill() {
+      const pill = document.getElementById('mentalEnergyPill');
+      if (!pill) return;
+      const history = JSON.parse(localStorage.getItem('lucid_history') || '[]');
+      const last24h = history.filter(d => Date.now() - d.ts < 86400000).length;
+      const hour = new Date().getHours();
+      const isLateNight = hour >= 22 || hour <= 6;
+
+      let energy = 'high', energyLabel = 'Énergie mentale: Excellente', energyPct = 95;
+      if (last24h >= 4 || isLateNight) { energy = 'low'; energyLabel = 'Énergie mentale: Faible'; energyPct = 30; }
+      else if (last24h >= 2) { energy = 'medium'; energyLabel = 'Énergie mentale: Moyenne'; energyPct = 65; }
+
+      const warnEmotions = ['stressé','anxieux','fatigué','triste'];
+      if (_currentEmotion && warnEmotions.includes(_currentEmotion.emotion)) {
+        energy = energy === 'high' ? 'medium' : 'low';
+        energyPct = Math.max(20, energyPct - 25);
+      }
+
+      pill.innerHTML = `<div class="mental-energy-pill ${energy}">
+        <div class="mental-energy-dot"></div>
+        ${energyLabel}${_currentEmotion ? ' · ' + _currentEmotion.emoji : ''}
+      </div>`;
+    }
+
+    /* ─── COACH DÉCISIONNEL (SOCRATIQUE) ──────── */
+    let _coachHistory = [];
+    let _coachDecision = '';
+
+    function openCoachModal() {
+      _coachDecision = document.getElementById('inp-dec')?.value?.trim() || S.decision || '';
+      if (!_coachDecision) {
+        alert(LANG === 'fr' ? 'Formulez d\'abord votre décision ci-dessus.' : 'Please write your decision first.');
+        return;
+      }
+      _coachHistory = [];
+      document.getElementById('coachHistory').innerHTML = '';
+      document.getElementById('coachCurrentQ').style.display = 'none';
+      document.getElementById('coachInputArea').style.display = 'none';
+      document.getElementById('coachInsight').classList.remove('visible');
+      document.getElementById('coachProgress').textContent = '';
+      document.getElementById('coachModal').classList.add('open');
+      loadNextCoachQuestion();
+    }
+
+    function closeCoachModal() {
+      document.getElementById('coachModal').classList.remove('open');
+    }
+
+    async function loadNextCoachQuestion() {
+      const loading = document.getElementById('coachLoading');
+      const currentQ = document.getElementById('coachCurrentQ');
+      const inputArea = document.getElementById('coachInputArea');
+      const progress = document.getElementById('coachProgress');
+
+      loading.style.display = 'block';
+      currentQ.style.display = 'none';
+      inputArea.style.display = 'none';
+
+      // Fallback questions if AI unavailable
+      const fallbackQuestions = LANG === 'fr' ? [
+        'Qu\'est-ce qui vous empêche de décider facilement en ce moment ?',
+        'Si vous étiez certain du résultat dans 5 ans, quelle option choisiriez-vous sans hésiter ?',
+        'Quelle est la peur profonde derrière cette hésitation ?',
+        'Qu\'est-ce qu\'un ami bienveillant et sage vous conseille de faire ?',
+        'Dans 10 ans, de quelle option serez-vous le plus fier d\'avoir choisie ?'
+      ] : [
+        'What is preventing you from deciding easily right now?',
+        'If you knew the outcome in 5 years for certain, which option would you choose without hesitation?',
+        'What is the deep fear behind your hesitation?',
+        'What would a wise, caring friend advise you to do?',
+        'In 10 years, which choice will you be most proud of having made?'
+      ];
+
+      try {
+        const r = await fetch('/api/coach', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ decision: _coachDecision, history: _coachHistory, lang: LANG })
+        });
+        const data = await r.json();
+        const question = data.question || fallbackQuestions[Math.min(_coachHistory.length, fallbackQuestions.length - 1)];
+        showCoachQuestion(question);
+      } catch(e) {
+        const question = fallbackQuestions[Math.min(_coachHistory.length, fallbackQuestions.length - 1)];
+        showCoachQuestion(question);
+      }
+
+      loading.style.display = 'none';
+      progress.textContent = LANG === 'fr' ? `Question ${_coachHistory.length + 1}` : `Question ${_coachHistory.length + 1}`;
+    }
+
+    function showCoachQuestion(question) {
+      const currentQ = document.getElementById('coachCurrentQ');
+      const inputArea = document.getElementById('coachInputArea');
+      currentQ.textContent = question;
+      currentQ.style.display = 'block';
+      inputArea.style.display = 'flex';
+      document.getElementById('coachAnswer').value = '';
+      document.getElementById('coachAnswer').focus();
+      _coachCurrentQuestion = question;
+    }
+
+    let _coachCurrentQuestion = '';
+
+    async function sendCoachAnswer() {
+      const answerEl = document.getElementById('coachAnswer');
+      const answer = answerEl.value.trim();
+      if (!answer) return;
+
+      const historyEl = document.getElementById('coachHistory');
+      const sendBtn = document.getElementById('coachSendBtn');
+
+      // Add exchange to history display
+      const exchangeHTML = `<div class="coach-exchange">
+        <div class="coach-q-bubble">${esc(_coachCurrentQuestion)}</div>
+        <div class="coach-a-bubble">${esc(answer)}</div>
+      </div>`;
+      historyEl.innerHTML += exchangeHTML;
+      historyEl.scrollTop = historyEl.scrollHeight;
+
+      // Save to history
+      _coachHistory.push({ q: _coachCurrentQuestion, a: answer });
+
+      // Hide current question
+      document.getElementById('coachCurrentQ').style.display = 'none';
+      document.getElementById('coachInputArea').style.display = 'none';
+
+      // After 3+ questions, optionally show insight
+      if (_coachHistory.length >= 3 && _coachHistory.length % 3 === 0) {
+        await generateCoachInsight();
+      }
+
+      // Next question (max 7)
+      if (_coachHistory.length < 7) {
+        await loadNextCoachQuestion();
+      } else {
+        await generateCoachInsight();
+        document.getElementById('coachProgress').textContent = LANG === 'fr' ? 'Session complète ✓' : 'Session complete ✓';
+      }
+    }
+
+    async function generateCoachInsight() {
+      const insightEl = document.getElementById('coachInsight');
+      const qaText = _coachHistory.map(h => `Q: ${h.q}\nR: ${h.a}`).join('\n\n');
+
+      try {
+        const r = await fetch('/api/clarify-synthesis', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers: _coachHistory.map(h => h.a), lang: LANG })
+        });
+        const data = await r.json();
+        if (data.synthesis) {
+          insightEl.innerHTML = `<strong>💡 Insight du Coach :</strong><br>${data.synthesis.replace(/\n/g, '<br>')}`;
+          insightEl.classList.add('visible');
+        }
+      } catch(e) { /* silently fail */ }
+    }
+
+    /* ─── FRAMEWORK RECOMMENDATION ───────────── */
+    async function openFrameworkModal() {
+      const decision = document.getElementById('inp-dec')?.value?.trim() || S.decision;
+      if (!decision) {
+        alert(LANG === 'fr' ? 'Formulez d\'abord votre décision.' : 'Please write your decision first.');
+        return;
+      }
+
+      const box = document.getElementById('frameworkRecBox');
+      if (!box) return;
+
+      // Show sliders UI
+      box.innerHTML = `<div class="framework-rec" style="margin-top:8px">
+        <div style="font-size:.85rem;font-weight:700;color:#92400e;margin-bottom:12px">🧭 Caractéristiques de votre décision</div>
+        <div class="framework-urgency-row">
+          <div class="framework-urgency-item">
+            <div class="framework-urgency-label">Urgence</div>
+            <input type="range" class="framework-slider" id="fw-urgency" min="1" max="5" value="3">
+            <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--muted)"><span>Pas urgent</span><span>Très urgent</span></div>
+          </div>
+          <div class="framework-urgency-item">
+            <div class="framework-urgency-label">Réversibilité</div>
+            <input type="range" class="framework-slider" id="fw-revers" min="1" max="5" value="3">
+            <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--muted)"><span>Irréversible</span><span>Réversible</span></div>
+          </div>
+          <div class="framework-urgency-item">
+            <div class="framework-urgency-label">Complexité</div>
+            <input type="range" class="framework-slider" id="fw-complex" min="1" max="5" value="3">
+            <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--muted)"><span>Simple</span><span>Complexe</span></div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:8px;padding:10px" onclick="runFrameworkRec()">
+          Recommander le meilleur framework →
+        </button>
+        <div id="frameworkResult" style="margin-top:12px"></div>
+      </div>`;
+    }
+
+    async function runFrameworkRec() {
+      const decision = document.getElementById('inp-dec')?.value?.trim() || S.decision;
+      const urgency = document.getElementById('fw-urgency')?.value || 3;
+      const reversibility = document.getElementById('fw-revers')?.value || 3;
+      const complexity = document.getElementById('fw-complex')?.value || 3;
+      const numOptions = S.options.filter(o => o.name.trim()).length || 2;
+      const resultEl = document.getElementById('frameworkResult');
+      if (!resultEl) return;
+
+      resultEl.innerHTML = `<div style="color:var(--muted);font-size:.82rem;text-align:center;padding:10px">⏳ Analyse en cours…</div>`;
+
+      // Local fallback logic
+      const localFramework = () => {
+        if (urgency >= 4 && complexity <= 2) return { framework: 'Boucle OODA', emoji: '⚡', reason: 'Décision urgente et relativement simple — la boucle Observer-Orienter-Décider-Agir permet une réponse rapide et adaptative.', key_question: 'Quelle information me manque-t-il pour agir maintenant ?' };
+        if (complexity >= 4) return { framework: 'Framework Cynefin', emoji: '🌀', reason: 'Situation complexe avec de nombreuses inconnues — Cynefin aide à identifier le type de complexité et le mode de réponse approprié.', key_question: 'Cette situation est-elle compliquée (experts utiles) ou complexe (expérimentation requise) ?' };
+        if (urgency <= 2 && reversibility <= 2) return { framework: 'Pensée de 2nd Ordre', emoji: '♟️', reason: 'Décision peu urgente et difficile à défaire — analyser les conséquences des conséquences est crucial ici.', key_question: 'Et ensuite ? Quelles sont les conséquences de mes conséquences ?' };
+        return { framework: 'Matrice Décisionnelle Pondérée', emoji: '⚖️', reason: 'Vous avez plusieurs options comparables — la matrice pondérée vous permettra de structurer l\'évaluation objective.', key_question: 'Quels critères sont réellement les plus importants pour vous ?' };
+      };
+
+      try {
+        const r = await fetch('/api/framework', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ decision, urgency: +urgency, reversibility: +reversibility, complexity: +complexity, numOptions, lang: LANG })
+        });
+        const data = await r.json();
+        const fw = data.framework?.framework ? data.framework : localFramework();
+        renderFrameworkResult(fw, resultEl);
+      } catch(e) {
+        renderFrameworkResult(localFramework(), resultEl);
+      }
+    }
+
+    function renderFrameworkResult(fw, el) {
+      el.innerHTML = `<div style="animation: fadeUp .3s ease">
+        <div class="framework-rec-head">
+          <span class="framework-emoji">${fw.emoji || '🧭'}</span>
+          <div>
+            <div class="framework-name">${esc(fw.framework)}</div>
+            <div class="framework-badge">Framework recommandé</div>
+          </div>
+        </div>
+        <div class="framework-reason">${esc(fw.reason)}</div>
+        <div class="framework-question">${esc(fw.key_question)}</div>
+      </div>`;
+    }
+
+    /* ─── NARRATIVE AI (RÉSULTATS) ────────────── */
+    async function generateNarrative(containerEl) {
+      if (!containerEl) return;
+      const scores = S.options.map((_, i) => calcScore(i));
+      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
+
+      const loadingEl = containerEl.querySelector('.narrative-loading');
+      const textEl = containerEl.querySelector('.narrative-text');
+      if (loadingEl) loadingEl.style.display = 'block';
+      if (textEl) textEl.style.display = 'none';
+
+      try {
+        const r = await fetch('/api/narrative', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            decision: S.decision,
+            options: S.options,
+            criteria: S.criteria,
+            scores: S.scores,
+            ranked,
+            lang: LANG
+          })
+        });
+        const data = await r.json();
+        if (data.narrative && textEl) {
+          const formatted = data.narrative
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n/g, '<br>');
+          textEl.innerHTML = formatted;
+          textEl.style.display = 'block';
+          if (loadingEl) loadingEl.style.display = 'none';
+        }
+      } catch(e) {
+        // Fallback local
+        const scores2 = S.options.map((_, i) => calcScore(i));
+        const ranked2 = [...S.options.map((_, i) => i)].sort((a, b) => scores2[b] - scores2[a]);
+        const winner = S.options[ranked2[0]];
+        const topCrit = [...S.criteria].sort((a, b) => (b.weight||1) - (a.weight||1))[0];
+        const fallback = LANG === 'fr'
+          ? `Cette décision n'était pas simple, et le fait d'avoir pris le temps de l'analyser structurellement est déjà en soi un signe de maturité décisionnelle. Ton analyse révèle que <strong>${esc(winner?.name)}</strong> correspond le mieux à tes priorités actuelles${topCrit ? ', notamment en ce qui concerne <strong>' + esc(topCrit.name) + '</strong>' : ''}. Ce résultat ne reflète pas seulement les chiffres — il reflète ce qui compte vraiment pour toi aujourd'hui. Avance avec confiance.`
+          : `This decision wasn't simple, and taking the time to analyze it structurally is already a sign of good decision-making. Your analysis reveals that <strong>${esc(winner?.name)}</strong> best matches your current priorities${topCrit ? ', especially regarding <strong>' + esc(topCrit.name) + '</strong>' : ''}. This result reflects not just numbers — it reflects what truly matters to you today. Move forward with confidence.`;
+        if (textEl) { textEl.innerHTML = fallback; textEl.style.display = 'block'; }
+        if (loadingEl) loadingEl.style.display = 'none';
+      }
+    }
+
+    /* ─── TEMPORAL SIMULATION ─────────────────── */
+    let _temporalCache = {};
+
+    async function loadTemporalSim(optionIndex) {
+      const cacheKey = `${optionIndex}`;
+      const container = document.getElementById('temporalSimContent');
+      if (!container) return;
+
+      // Check cache
+      if (_temporalCache[cacheKey]) {
+        renderTemporalSim(_temporalCache[cacheKey], container);
+        return;
+      }
+
+      container.innerHTML = `<div class="temporal-grid">
+        <div class="temporal-skeleton"></div><div class="temporal-skeleton"></div><div class="temporal-skeleton"></div>
+      </div>`;
+
+      const option = S.options[optionIndex];
+      if (!option) return;
+
+      try {
+        const r = await fetch('/api/temporal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            decision: S.decision,
+            option: option.name,
+            criteria: S.criteria,
+            scores: S.scores,
+            optionIndex,
+            lang: LANG
+          })
+        });
+        const data = await r.json();
+        if (data.temporal && Object.keys(data.temporal).length > 0) {
+          _temporalCache[cacheKey] = data.temporal;
+          renderTemporalSim(data.temporal, container);
+        } else {
+          renderTemporalFallback(option.name, container);
+        }
+      } catch(e) {
+        renderTemporalFallback(option.name, container);
+      }
+    }
+
+    const EMOTION_ICONS = {
+      'optimiste': '🌅', 'optimistic': '🌅',
+      'anxieux': '😰', 'anxious': '😰',
+      'enthousiaste': '🚀', 'excited': '🚀',
+      'incertain': '🤔', 'uncertain': '🤔',
+      'satisfait': '😊', 'satisfied': '😊',
+      'stressé': '😤', 'stressed': '😤',
+      'épanoui': '🌸', 'fulfilled': '🌸',
+      'mitigé': '⚖️', 'mixed': '⚖️',
+      'fier': '🏆', 'proud': '🏆',
+      'regret': '😔', 'regretful': '😔',
+      'serein': '😌', 'content': '😌',
+      'transformé': '🦋', 'transformed': '🦋'
+    };
+
+    function renderTemporalSim(temporal, container) {
+      const cards = ['short', 'medium', 'long'].map(period => {
+        const d = temporal[period] || {};
+        const emotionIcon = EMOTION_ICONS[d.emotion] || '💭';
+        return `<div class="temporal-card ${period}">
+          <div class="temporal-timeframe">📅 ${esc(d.timeframe || period)}</div>
+          <div class="temporal-positive">${esc(d.positive || '—')}</div>
+          <div class="temporal-challenge">${esc(d.challenge || '—')}</div>
+          <div class="temporal-emotion">${emotionIcon} ${esc(d.emotion || '')}</div>
+        </div>`;
+      }).join('');
+      container.innerHTML = `<div class="temporal-grid">${cards}</div>`;
+    }
+
+    function renderTemporalFallback(optionName, container) {
+      const isFr = LANG === 'fr';
+      container.innerHTML = `<div class="temporal-grid">
+        <div class="temporal-card short">
+          <div class="temporal-timeframe">📅 ${isFr ? '3 mois' : '3 months'}</div>
+          <div class="temporal-positive">${isFr ? 'Mise en place progressive, premiers apprentissages.' : 'Progressive setup, first learnings.'}</div>
+          <div class="temporal-challenge">${isFr ? 'Adaptation et incertitudes initiales possibles.' : 'Adaptation and initial uncertainties possible.'}</div>
+          <div class="temporal-emotion">🌅 ${isFr ? 'optimiste' : 'optimistic'}</div>
+        </div>
+        <div class="temporal-card medium">
+          <div class="temporal-timeframe">📅 ${isFr ? '1 an' : '1 year'}</div>
+          <div class="temporal-positive">${isFr ? 'Premiers résultats concrets de votre choix.' : 'First concrete results of your choice.'}</div>
+          <div class="temporal-challenge">${isFr ? 'Ajustements nécessaires selon l\'évolution.' : 'Adjustments needed as things evolve.'}</div>
+          <div class="temporal-emotion">😊 ${isFr ? 'satisfait' : 'satisfied'}</div>
+        </div>
+        <div class="temporal-card long">
+          <div class="temporal-timeframe">📅 ${isFr ? '5 ans' : '5 years'}</div>
+          <div class="temporal-positive">${isFr ? 'Impact durable sur votre trajectoire personnelle.' : 'Lasting impact on your personal trajectory.'}</div>
+          <div class="temporal-challenge">${isFr ? 'Ce choix vous aura transformé d\'une façon ou d\'une autre.' : 'This choice will have transformed you one way or another.'}</div>
+          <div class="temporal-emotion">🦋 ${isFr ? 'transformé' : 'transformed'}</div>
+        </div>
+      </div>`;
+    }
+
+    /* ─── INJECTION DANS LES RÉSULTATS 2.0 ────── */
+    const _origBuildResults2 = window.buildResults;
+    window.buildResults = function() {
+      _origBuildResults2();
+      _temporalCache = {};
+
+      // Build temporal option buttons
+      const scores = S.options.map((_, i) => calcScore(i));
+      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
+
+      const optBtns = S.options.map((o, i) => {
+        const isWinner = ranked[0] === i;
+        return `<button class="temporal-option-btn${isWinner ? ' active' : ''}" onclick="selectTemporalOption(${i}, this)">${esc(o.name)}</button>`;
+      }).join('');
+
+      // Narrative + Temporal HTML blocks
+      const narrativeHTML = `
+        <div class="narrative-section" id="narrativeSection">
+          <div class="narrative-head">
+            <span class="narrative-icon">📖</span>
+            <div>
+              <div class="narrative-head-title">${LANG === 'fr' ? 'Lecture psychologique de votre décision' : 'Psychological reading of your decision'}</div>
+              <div class="narrative-head-sub">${LANG === 'fr' ? 'Générée par Dr. Lucid IA' : 'Generated by Dr. Lucid AI'}</div>
+            </div>
+          </div>
+          <div class="narrative-loading" style="color:var(--muted);font-size:.85rem;font-style:italic">✦ ${LANG === 'fr' ? 'Dr. Lucid analyse votre décision…' : 'Dr. Lucid is analyzing your decision…'}</div>
+          <div class="narrative-text" style="display:none"></div>
+        </div>`;
+
+      const temporalHTML = `
+        <div class="temporal-section" id="temporalSection">
+          <div style="font-size:.88rem;font-weight:700;color:var(--ink2);margin-bottom:10px">
+            ⏳ ${LANG === 'fr' ? 'Simulation des conséquences dans le temps' : 'Temporal consequence simulation'}
+          </div>
+          <div class="temporal-option-selector" id="temporalOptionBtns">${optBtns}</div>
+          <div id="temporalSimContent"></div>
+        </div>`;
+
+      // Insert before the analyses pane content
+      const analysesPane = document.getElementById('resTabAnalyses');
+      if (analysesPane) {
+        // Prepend narrative + temporal to existing content
+        analysesPane.innerHTML = narrativeHTML + temporalHTML + analysesPane.innerHTML;
+      }
+
+      // Auto-generate narrative
+      const narSection = document.getElementById('narrativeSection');
+      if (narSection) generateNarrative(narSection);
+
+      // Auto-load temporal for winner
+      loadTemporalSim(ranked[0]);
+    };
+
+    function selectTemporalOption(idx, btn) {
+      document.getElementById('temporalOptionBtns').querySelectorAll('.temporal-option-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadTemporalSim(idx);
+    }
+
+    /* ─── INIT WELLBEING ON PAGE LOAD ─────────── */
+    document.addEventListener('DOMContentLoaded', () => {
+      updateMentalEnergyPill();
+    });
 
   </script>
   <script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.8/dist/lottie-player.js"></script>
@@ -12717,6 +13620,60 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
   </script>
 
   <!-- ══════════════════════════ MODALS ══════════════════════════ -->
+
+  <!-- ── Modal Coach Décisionnel (Dr. Lucid) ── -->
+  <div class="modal-overlay" id="coachModal">
+    <div class="coach-modal-box">
+      <button class="coach-close" onclick="closeCoachModal()">✕</button>
+      <div class="coach-header">
+        <div class="coach-avatar">🦉</div>
+        <div>
+          <div class="coach-title">Dr. Lucid — Coach décisionnel</div>
+          <div class="coach-subtitle">Questions socratiques pour clarifier votre pensée</div>
+        </div>
+      </div>
+      <div class="coach-history" id="coachHistory"></div>
+      <div class="coach-current-q" id="coachCurrentQ" style="display:none"></div>
+      <div id="coachInsight" class="coach-insight-box"></div>
+      <div class="coach-input-area" id="coachInputArea" style="display:none">
+        <textarea class="coach-textarea" id="coachAnswer" placeholder="Votre réponse…" rows="3"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendCoachAnswer();}"></textarea>
+        <button class="coach-send-btn" id="coachSendBtn" onclick="sendCoachAnswer()">→</button>
+      </div>
+      <div id="coachLoading" style="text-align:center;padding:20px 0;color:var(--muted);font-size:.85rem;display:none">
+        ✦ Dr. Lucid réfléchit…
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
+        <div id="coachProgress" style="font-size:.72rem;color:var(--muted2)"></div>
+        <button class="btn btn-secondary" style="padding:8px 16px;font-size:.8rem" onclick="closeCoachModal()">Terminer la session</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Modal Check-in Émotionnel ── -->
+  <div class="modal-overlay" id="emotionalModal">
+    <div class="emotional-modal-box">
+      <div style="font-size:1.3rem;font-weight:800;color:var(--ink);margin-bottom:6px">🫀 Comment vous sentez-vous en ce moment ?</div>
+      <div style="font-size:.82rem;color:var(--muted);margin-bottom:4px;line-height:1.5">
+        Votre état émotionnel influence directement la qualité de vos décisions. Prenez 10 secondes pour vous ancrer.
+      </div>
+      <div class="emotion-grid" id="emotionGrid">
+        <button class="emotion-btn" onclick="selectEmotion('serein','😌')"><span class="emotion-emoji">😌</span>Serein·e</button>
+        <button class="emotion-btn" onclick="selectEmotion('stressé','😰')"><span class="emotion-emoji">😰</span>Stressé·e</button>
+        <button class="emotion-btn" onclick="selectEmotion('enthousiaste','🤩')"><span class="emotion-emoji">🤩</span>Enthousiaste</button>
+        <button class="emotion-btn" onclick="selectEmotion('fatigué','😴')"><span class="emotion-emoji">😴</span>Fatigué·e</button>
+        <button class="emotion-btn" onclick="selectEmotion('anxieux','😟')"><span class="emotion-emoji">😟</span>Anxieux·se</button>
+        <button class="emotion-btn" onclick="selectEmotion('confiant','💪')"><span class="emotion-emoji">💪</span>Confiant·e</button>
+        <button class="emotion-btn" onclick="selectEmotion('triste','😔')"><span class="emotion-emoji">😔</span>Triste</button>
+        <button class="emotion-btn" onclick="selectEmotion('neutre','😐')"><span class="emotion-emoji">😐</span>Neutre</button>
+      </div>
+      <div class="emotion-regulation-tip" id="emotionTip"></div>
+      <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">
+        <button class="btn btn-secondary" style="padding:9px 18px;font-size:.85rem" onclick="closeEmotionalModal(false)">Passer</button>
+        <button class="btn btn-primary" style="padding:9px 18px;font-size:.85rem" onclick="closeEmotionalModal(true)">Continuer →</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal Profil de valeurs -->
   <div class="modal-overlay" id="valuesModal">
