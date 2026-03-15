@@ -5938,15 +5938,15 @@
     /* ══════════════════════════════════════════
        MODE SELECTION PAGE
        ══════════════════════════════════════════ */
-    .page-mode-wrap { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 24px 16px 40px; }
-    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 480px; }
-    .mode-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r); padding: 18px 14px; cursor: pointer; transition: all .22s; text-align: left; }
+    .page-mode-wrap { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 16px; }
+    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 480px; }
+    .mode-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r); padding: 14px 12px; cursor: pointer; transition: all .22s; text-align: left; }
     .mode-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow); }
-    .mode-card-icon { font-size: 1.8rem; margin-bottom: 8px; }
+    .mode-card-icon { font-size: 1.6rem; margin-bottom: 5px; }
     .mode-card-title { font-size: .92rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
     .mode-card-desc { font-size: .76rem; color: var(--muted); line-height: 1.4; }
     .mode-card.wide { grid-column: 1 / -1; display: flex; align-items: center; gap: 14px; }
-    .mode-card.wide .mode-card-icon { font-size: 1.5rem; margin-bottom: 0; flex-shrink: 0; }
+    .mode-card.wide .mode-card-icon { font-size: 1.4rem; margin-bottom: 0; flex-shrink: 0; }
     .mode-card.wide .mode-card-text { flex: 1; }
 
     /* ══════════════════════════════════════════
@@ -6484,8 +6484,8 @@
       <div class="page-mode-wrap">
         <div style="max-width:480px;width:100%">
           <div class="page-eyebrow">Bienvenue</div>
-          <div class="page-title" style="margin-bottom:6px">Comment veux-tu décider ?</div>
-          <div style="font-size:.85rem;color:var(--muted);margin-bottom:24px">Choisis le mode adapté à ta situation.</div>
+          <div class="page-title" style="margin-bottom:4px">Comment veux-tu décider ?</div>
+          <div style="font-size:.85rem;color:var(--muted);margin-bottom:14px">Choisis le mode adapté à ta situation.</div>
           <div class="mode-grid">
             <div class="mode-card" onclick="nav('page-step1');checkFatigue()">
               <div class="mode-card-icon">⚖️</div>
@@ -6516,8 +6516,8 @@
             </div>
 
           </div>
-          <button class="intro-group-btn" onclick="openGroupModal()" style="margin-top:16px">👥 Décider en groupe</button>
-          <p style="margin-top:12px;font-size:.75rem;color:var(--muted2);text-align:center">Gratuit · Aucun compte requis · 100% privé</p>
+          <button class="intro-group-btn" onclick="openGroupModal()" style="margin-top:10px">👥 Décider en groupe</button>
+          <p style="margin-top:8px;font-size:.75rem;color:var(--muted2);text-align:center">Gratuit · Aucun compte requis · 100% privé</p>
         </div>
       </div>
     </div>
