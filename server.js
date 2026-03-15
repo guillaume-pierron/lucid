@@ -42,6 +42,72 @@ app.post('/api/suggest-criteria', async (req, res) => {
   }
 });
 
+/* ── AI: clarify synthesis ── */
+app.post('/api/clarify-synthesis', async (req, res) => {
+  const { answers, lang } = req.body || {};
+  if (!answers || !Array.isArray(answers)) return res.status(400).json({ error: 'answers required' });
+
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: 'AI not configured' });
+
+  const qs = [
+    'Quelle est la décision à prendre ?',
+    "Qu'est-ce qui empêche de décider facilement ?",
+    "Qu'est-ce qui serait perdu si rien n'est fait ?",
+    'Dans 5 ans, qu\'aura permis la bonne décision ?',
+    'Que conseillerait-on à un ami dans cette situation ?',
+    'Au fond, quelle est la décision déjà connue ?',
+    'Quel serait le premier pas concret ?',
+  ];
+
+  const qa = answers.map((a, i) => `Q${i + 1}: ${qs[i] || ''}\nR: ${a}`).join('\n\n');
+
+  const prompt = lang === 'en'
+    ? `Here are someone's answers to guided reflection questions for a decision:\n\n${qa}\n\nProvide a brief, insightful synthesis in 3-4 sentences. Be direct and empathetic. Highlight: (1) the key tension between what they know and what blocks them, (2) what they already know deep down, (3) one concrete encouragement. Avoid generic advice. Speak directly to the person.`
+    : `Voici les réponses d'une personne à des questions de réflexion guidée pour une décision :\n\n${qa}\n\nRédige une synthèse courte et perspicace en 3-4 phrases. Sois direct(e) et empathique. Mets en lumière : (1) la tension principale entre ce que la personne sait et ce qui la bloque, (2) ce qu'elle sait déjà au fond d'elle, (3) une encouragement concret. Évite les conseils génériques. Parle directement à la personne (tutoiement).`;
+
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 350, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await r.json();
+    res.json({ synthesis: data?.content?.[0]?.text || '' });
+  } catch (e) {
+    res.status(500).json({ error: 'AI error', synthesis: '' });
+  }
+});
+
+/* ── AI: peser analysis ── */
+app.post('/api/peser-analysis', async (req, res) => {
+  const { context, scenarios, reversible, inactionImpact, lang } = req.body || {};
+  if (!context) return res.status(400).json({ error: 'context required' });
+
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: 'AI not configured' });
+
+  const scenarioText = (scenarios || []).map(s =>
+    `- ${s.name} (prob: ${s.prob}%, impact: ${s.impact}/5)${s.desc ? ': ' + s.desc : ''}`
+  ).join('\n');
+
+  const prompt = lang === 'en'
+    ? `Decision: "${context}"\nReversible: ${reversible ? 'yes' : 'no'}\nCost of inaction: ${inactionImpact}/5\n\nScenarios:\n${scenarioText}\n\nIn 3-4 sentences: give a personalized risk-benefit verdict. Reference the specific scenarios described. Factor in loss aversion (losses feel 2x worse than equivalent gains) and reversibility. End with one concrete recommendation.`
+    : `Décision : "${context}"\nRéversible : ${reversible ? 'oui' : 'non'}\nCoût de l'inaction : ${inactionImpact}/5\n\nScénarios :\n${scenarioText}\n\nEn 3-4 phrases : donne un verdict risques-bénéfices personnalisé. Réfère-toi aux scénarios décrits. Tiens compte de l'aversion à la perte (les pertes semblent 2× plus intenses que les gains équivalents) et de la réversibilité. Termine par une recommandation concrète. Tutoiement.`;
+
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 350, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await r.json();
+    res.json({ analysis: data?.content?.[0]?.text || '' });
+  } catch (e) {
+    res.status(500).json({ error: 'AI error', analysis: '' });
+  }
+});
+
 app.use(express.static(__dirname));
 
 /* ── Session store ── */

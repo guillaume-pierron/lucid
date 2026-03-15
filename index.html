@@ -532,6 +532,12 @@
       border: 1px solid var(--border);
     }
 
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: .78rem;
+      border-radius: var(--r-sm);
+    }
+
     .btn-secondary:hover {
       border-color: var(--border2);
       background: var(--bg2);
@@ -5955,6 +5961,7 @@
     .prio-item-row { display: flex; align-items: center; gap: 8px; background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r-sm); padding: 10px 12px; }
     .prio-item-label { flex: 1; font-size: .88rem; font-weight: 600; }
     .prio-q-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .prio-q-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
     .prio-q-btn { padding: 12px 8px; border: 2px solid var(--border); border-radius: var(--r-sm); background: var(--white); font-size: .82rem; font-weight: 600; cursor: pointer; transition: all .18s; text-align: center; color: var(--ink); width: 100%; line-height: 1.4; }
     .prio-q-btn:hover { border-color: var(--primary); background: var(--teal-bg); }
     .prio-q-btn.sel { border-color: var(--teal); background: var(--teal-bg); color: var(--teal); }
@@ -11903,11 +11910,13 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     let _prioItems = [];
     let _prioCurrent = 0;
     let _prioPhase = 'input'; // 'input' | 'assign' | 'result'
+    let _prioContext = '';
 
     function startPrioriser() {
       _prioItems = [];
       _prioCurrent = 0;
       _prioPhase = 'input';
+      _prioContext = '';
       nav('page-prioriser');
       _renderPrioContent();
     }
@@ -11924,8 +11933,12 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       el.innerHTML = `
         <div class="page-eyebrow">Prioriser</div>
         <div class="page-title">Quels éléments veux-tu prioriser ?</div>
-        <div class="page-sub">Liste tes projets, tâches ou idées. Tu les classeras ensuite.</div>
+        <div class="page-sub">Liste tes projets, tâches ou idées. Tu les évalueras ensuite.</div>
         <div class="card" style="margin-bottom:16px">
+          <div class="field" style="margin-bottom:12px">
+            <label>Contexte <span style="font-weight:400;color:var(--muted)">(optionnel)</span></label>
+            <input type="text" id="prioContextInput" placeholder="Ex: Ma prochaine semaine, Mon projet Q2…" value="${esc(_prioContext)}" style="font-size:.87rem">
+          </div>
           <div class="field" style="margin-bottom:0">
             <label>Ajouter un élément</label>
             <div style="display:flex;gap:8px">
@@ -11938,7 +11951,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         <div id="prioItemsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px"></div>
         <div class="btn-row">
           <button class="btn btn-secondary" onclick="nav('page-mode')">← Retour</button>
-          <button class="btn btn-primary" onclick="_startPrioAssign()">Classer →</button>
+          <button class="btn btn-primary" onclick="_startPrioAssign()">Évaluer →</button>
         </div>`;
       _renderPrioItemsList();
     }
@@ -11952,6 +11965,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       }
       el.innerHTML = _prioItems.map((item, i) => `
         <div class="prio-item-row">
+          <span style="width:20px;text-align:center;font-size:.78rem;color:var(--muted);flex-shrink:0">${i + 1}</span>
           <span class="prio-item-label">${esc(item.label)}</span>
           <button onclick="_removePrioItem(${i})"
             style="background:none;border:none;color:var(--muted2);font-size:1.1rem;cursor:pointer;padding:2px 6px">✕</button>
@@ -11959,6 +11973,8 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     }
 
     function _addPrioItem() {
+      const ctxInput = document.getElementById('prioContextInput');
+      if (ctxInput) _prioContext = ctxInput.value.trim();
       const input = document.getElementById('prioItemInput');
       const val = input?.value.trim();
       if (!val) return;
@@ -11975,6 +11991,8 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     }
 
     function _startPrioAssign() {
+      const ctxInput = document.getElementById('prioContextInput');
+      if (ctxInput) _prioContext = ctxInput.value.trim();
       if (_prioItems.length < 2) { alert('Ajoute au moins 2 éléments.'); return; }
       _prioItems.forEach(item => { item.impact = null; item.effort = null; });
       _prioCurrent = 0;
@@ -11989,7 +12007,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       el.innerHTML = `
         <div class="prio-progress-row">
           <span class="prio-progress-label">${_prioCurrent + 1} / ${total}</span>
-          <span class="prio-progress-count">${pct}% classé</span>
+          <span class="prio-progress-count">${pct}% évalué</span>
         </div>
         <div style="height:4px;background:var(--bg2);border-radius:2px;margin-bottom:24px;overflow:hidden">
           <div style="height:100%;width:${pct}%;background:var(--primary);border-radius:2px;transition:width .4s ease"></div>
@@ -11997,23 +12015,30 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         <div class="card" style="text-align:center;margin-bottom:20px">
           <div style="font-size:1.3rem;margin-bottom:6px">📌</div>
           <div style="font-size:1.05rem;font-weight:700;color:var(--ink)">${esc(item.label)}</div>
+          ${_prioContext ? `<div style="font-size:.75rem;color:var(--muted);margin-top:4px">Contexte : ${esc(_prioContext)}</div>` : ''}
         </div>
-        <div style="font-size:.85rem;font-weight:700;color:var(--ink2);margin-bottom:10px">Impact sur tes objectifs :</div>
-        <div class="prio-q-grid" style="margin-bottom:20px">
-          <button class="prio-q-btn${item.impact === 'faible' ? ' sel' : ''}" onclick="_setPrioImpact('faible')">
-            📉 Impact faible<br><span style="font-weight:400;font-size:.72rem">Changement limité</span>
+        <div style="font-size:.85rem;font-weight:700;color:var(--ink2);margin-bottom:10px">Quel est l'impact si tu fais ça ?</div>
+        <div class="prio-q-grid prio-q-grid-3" style="margin-bottom:20px">
+          <button class="prio-q-btn${item.impact === 'limité' ? ' sel' : ''}" onclick="_setPrioImpact('limité')">
+            📉 Limité<br><span style="font-weight:400;font-size:.72rem">Peu de différence</span>
           </button>
-          <button class="prio-q-btn${item.impact === 'fort' ? ' sel' : ''}" onclick="_setPrioImpact('fort')">
-            🚀 Impact fort<br><span style="font-weight:400;font-size:.72rem">Change les choses</span>
+          <button class="prio-q-btn${item.impact === 'modéré' ? ' sel' : ''}" onclick="_setPrioImpact('modéré')">
+            📈 Modéré<br><span style="font-weight:400;font-size:.72rem">Amélioration notable</span>
+          </button>
+          <button class="prio-q-btn${item.impact === 'majeur' ? ' sel' : ''}" onclick="_setPrioImpact('majeur')">
+            🚀 Majeur<br><span style="font-weight:400;font-size:.72rem">Change vraiment les choses</span>
           </button>
         </div>
-        <div style="font-size:.85rem;font-weight:700;color:var(--ink2);margin-bottom:10px">Effort nécessaire :</div>
-        <div class="prio-q-grid">
-          <button class="prio-q-btn${item.effort === 'faible' ? ' sel' : ''}" onclick="_setPrioEffort('faible')">
-            😌 Effort faible<br><span style="font-weight:400;font-size:.72rem">Rapide à faire</span>
+        <div style="font-size:.85rem;font-weight:700;color:var(--ink2);margin-bottom:10px">Quel effort cela demande-t-il ?</div>
+        <div class="prio-q-grid prio-q-grid-3">
+          <button class="prio-q-btn${item.effort === 'léger' ? ' sel' : ''}" onclick="_setPrioEffort('léger')">
+            😌 Léger<br><span style="font-weight:400;font-size:.72rem">Rapide, peu de ressources</span>
           </button>
-          <button class="prio-q-btn${item.effort === 'fort' ? ' sel' : ''}" onclick="_setPrioEffort('fort')">
-            💪 Effort fort<br><span style="font-weight:400;font-size:.72rem">Demande du temps</span>
+          <button class="prio-q-btn${item.effort === 'modéré' ? ' sel' : ''}" onclick="_setPrioEffort('modéré')">
+            💼 Modéré<br><span style="font-weight:400;font-size:.72rem">Quelques heures/jours</span>
+          </button>
+          <button class="prio-q-btn${item.effort === 'lourd' ? ' sel' : ''}" onclick="_setPrioEffort('lourd')">
+            💪 Lourd<br><span style="font-weight:400;font-size:.72rem">Long ou complexe</span>
           </button>
         </div>`;
     }
@@ -12043,32 +12068,80 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     }
 
     function _getPrioQuadrant(item) {
-      if (item.impact === 'fort' && item.effort === 'faible') return 'now';
-      if (item.impact === 'fort' && item.effort === 'fort') return 'plan';
-      if (item.impact === 'faible' && item.effort === 'faible') return 'deleg';
+      const impScore = { 'limité': 1, 'modéré': 2, 'majeur': 3 }[item.impact] || 1;
+      const effScore = { 'léger': 1, 'modéré': 2, 'lourd': 3 }[item.effort] || 1;
+      // Majeur + Léger ou Modéré → faire maintenant
+      if (impScore === 3 && effScore <= 2) return 'now';
+      // Modéré + Léger → faire maintenant (quick win)
+      if (impScore === 2 && effScore === 1) return 'now';
+      // Majeur + Lourd ou Modéré + Modéré → planifier
+      if (impScore === 3 && effScore === 3) return 'plan';
+      if (impScore === 2 && effScore === 2) return 'plan';
+      // Modéré + Lourd ou Limité + Léger → déléguer/simplifier
+      if (impScore === 2 && effScore === 3) return 'deleg';
+      if (impScore === 1 && effScore === 1) return 'deleg';
+      // Limité + Modéré/Lourd → éviter
       return 'avoid';
     }
 
+    function _getPrioPriorityScore(item) {
+      const impScore = { 'limité': 1, 'modéré': 2, 'majeur': 3 }[item.impact] || 1;
+      const effScore = { 'léger': 1, 'modéré': 2, 'lourd': 3 }[item.effort] || 1;
+      return impScore * 10 - effScore;
+    }
+
     const _prioQuadrantMeta = {
-      now:   { label: '✅ Fais maintenant',     desc: 'Fort impact, peu d\'effort — priorité absolue' },
-      plan:  { label: '📅 Planifie',            desc: 'Fort impact mais effort élevé — à organiser' },
-      deleg: { label: '🔄 Délègue ou reporte',  desc: 'Faible impact, peu d\'effort — à faire après' },
-      avoid: { label: '🗑️ Évite ou abandonne',  desc: 'Faible impact, effort élevé — questionne sa valeur' },
+      now:   { label: '✅ Fais maintenant',        desc: 'Impact significatif, effort raisonnable — priorité absolue', color: 'var(--score-high)' },
+      plan:  { label: '📅 Planifie sérieusement',  desc: 'Fort impact mais effort élevé — bloque du temps dédié', color: 'var(--primary)' },
+      deleg: { label: '🔄 Délègue ou simplifie',   desc: 'Impact limité ou effort disproportionné — reconsidère', color: 'var(--score-mid)' },
+      avoid: { label: '🗑️ Évite ou abandonne',     desc: 'Peu d\'impact pour beaucoup d\'effort — questionne sa valeur', color: 'var(--score-low)' },
     };
 
     function _renderPrioResult(el) {
       const quadrants = { now: [], plan: [], deleg: [], avoid: [] };
-      _prioItems.forEach(item => quadrants[_getPrioQuadrant(item)].push(item.label));
+      _prioItems.forEach(item => {
+        const q = _getPrioQuadrant(item);
+        quadrants[q].push({ ...item, priority: _getPrioPriorityScore(item) });
+      });
+      Object.keys(quadrants).forEach(q => {
+        quadrants[q].sort((a, b) => b.priority - a.priority);
+      });
+
       const order = ['now', 'plan', 'deleg', 'avoid'];
+      const nowItems = quadrants['now'];
+
+      // Cognitive overload warning
+      const overloadHTML = nowItems.length > 3
+        ? `<div style="background:#fff3cd;border:1.5px solid #ffc107;border-radius:var(--r-sm);padding:12px 14px;margin-bottom:16px;font-size:.82rem;line-height:1.5">
+            ⚠️ <strong>Attention à la surcharge :</strong> tu as ${nowItems.length} priorités immédiates.
+            Le cerveau traite efficacement 3 priorités max simultanément. Choisis tes 3 plus importantes.
+          </div>` : '';
+
+      // Top 3 action items
+      const topItems = [...nowItems, ...quadrants['plan']].slice(0, 3);
+      const top3HTML = topItems.length > 0 ? `
+        <div style="background:linear-gradient(135deg,var(--teal-bg),var(--white));border:1.5px solid var(--teal-bd);border-radius:var(--r);padding:16px;margin-bottom:16px">
+          <div style="font-size:.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">⚡ Tes prochaines actions prioritaires</div>
+          ${topItems.map((item, i) => `
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;${i < topItems.length - 1 ? 'border-bottom:1px solid var(--border)' : ''}">
+              <div style="width:22px;height:22px;border-radius:50%;background:var(--teal);color:white;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i + 1}</div>
+              <div style="flex:1;font-size:.88rem;font-weight:600">${esc(item.label)}</div>
+              <div style="font-size:.72rem;color:var(--muted)">${item.impact} · ${item.effort}</div>
+            </div>`).join('')}
+        </div>` : '';
+
       el.innerHTML = `
         <div class="page-eyebrow">Résultat</div>
-        <div class="page-title" style="margin-bottom:20px">Ta matrice de priorités</div>
+        <div class="page-title" style="margin-bottom:${_prioContext ? '4px' : '20px'}">Ta matrice de priorités</div>
+        ${_prioContext ? `<div style="font-size:.82rem;color:var(--muted);margin-bottom:20px">Contexte : ${esc(_prioContext)}</div>` : ''}
+        ${overloadHTML}
+        ${top3HTML}
         ${order.filter(q => quadrants[q].length > 0).map(q => {
           const m = _prioQuadrantMeta[q];
-          return `<div class="prio-quad">
+          return `<div class="prio-quad" style="border-left:4px solid ${m.color}">
             <div class="prio-quad-title">${m.label} <span class="prio-quad-sub">— ${m.desc}</span></div>
             <div class="prio-quad-items">
-              ${quadrants[q].map(lbl => `<span class="prio-quad-chip">${esc(lbl)}</span>`).join('')}
+              ${quadrants[q].map(item => `<span class="prio-quad-chip">${esc(item.label)}</span>`).join('')}
             </div>
           </div>`;
         }).join('')}
@@ -12082,7 +12155,10 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
        MODE PESER — Analyse Risques & Bénéfices
        ══════════════════════════════════════════ */
 
+    let _peserReversible = true;
+
     function startPeser() {
+      _peserReversible = true;
       nav('page-peser');
       _renderPeserForm();
     }
@@ -12093,21 +12169,51 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       el.innerHTML = `
         <div class="page-eyebrow">Peser</div>
         <div class="page-title">Analyse risques & bénéfices</div>
-        <div class="page-sub" style="margin-bottom:20px">Décris ta décision, puis évalue 3 scénarios possibles.</div>
+        <div class="page-sub" style="margin-bottom:20px">Décris ta décision, évalue 3 scénarios et le coût de l'inaction.</div>
         <div class="card" style="margin-bottom:16px">
-          <div class="field" style="margin-bottom:0">
+          <div class="field" style="margin-bottom:12px">
             <label>Ta décision en une phrase</label>
             <textarea id="peserContext" rows="2"
               placeholder="Ex : Quitter mon CDI pour devenir freelance"></textarea>
           </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <label style="font-size:.82rem;font-weight:600;color:var(--ink);flex:1">Cette décision est-elle réversible ?</label>
+            <div style="display:flex;gap:8px">
+              <button id="peserRevYes" class="btn btn-sm btn-primary" onclick="_setPeserReversible(true)">Oui</button>
+              <button id="peserRevNo"  class="btn btn-sm btn-secondary" onclick="_setPeserReversible(false)">Non</button>
+            </div>
+          </div>
         </div>
         ${_peserScenarioHTML('opt', '🟢', 'Scénario optimiste', 'Les choses se passent mieux que prévu', 30, 4)}
-        ${_peserScenarioHTML('neu', '🟡', 'Scénario neutre',    'Les choses se passent comme prévu',    50, 3)}
-        ${_peserScenarioHTML('pes', '🔴', 'Scénario pessimiste','Les choses se passent moins bien que prévu', 20, 2)}
+        ${_peserScenarioHTML('neu', '🟡', 'Scénario probable',  'Les choses se passent comme prévu',    50, 3)}
+        ${_peserScenarioHTML('pes', '🔴', 'Scénario difficile', 'Les choses se passent moins bien que prévu', 20, 2)}
+        <div class="peser-scenario" style="border-style:dashed">
+          <div class="peser-scenario-header">
+            <span class="peser-scenario-icon">🚫</span>
+            <div>
+              <div class="peser-scenario-name">Si tu ne décides pas…</div>
+              <div style="font-size:.75rem;color:var(--muted)">Le coût du statu quo / de l'inaction</div>
+            </div>
+          </div>
+          <div class="peser-slider-row">
+            <span class="peser-slider-label">Impact négatif</span>
+            <input type="range" class="peser-slider" id="peser-inaction" min="1" max="5" value="2"
+              oninput="document.getElementById('peser-inaction-val').textContent=this.value+'/5'">
+            <span class="peser-slider-val" id="peser-inaction-val">2/5</span>
+          </div>
+        </div>
         <div class="btn-row">
           <button class="btn btn-secondary" onclick="nav('page-mode')">← Retour</button>
           <button class="btn btn-primary" onclick="_computePeser()">Analyser →</button>
         </div>`;
+    }
+
+    function _setPeserReversible(val) {
+      _peserReversible = val;
+      const yes = document.getElementById('peserRevYes');
+      const no  = document.getElementById('peserRevNo');
+      if (yes) yes.className = `btn btn-sm ${val ? 'btn-primary' : 'btn-secondary'}`;
+      if (no)  no.className  = `btn btn-sm ${!val ? 'btn-primary' : 'btn-secondary'}`;
     }
 
     function _peserScenarioHTML(id, icon, name, hint, defaultProb, defaultImp) {
@@ -12143,10 +12249,12 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
 
     function _computePeser() {
       const context = document.getElementById('peserContext')?.value.trim() || 'Ta décision';
+      const inactionImpact = parseInt(document.getElementById('peser-inaction')?.value || 2);
       const scenarios = ['opt', 'neu', 'pes'].map(id => ({
         id,
         prob:   parseInt(document.getElementById(`peser-prob-${id}`)?.value || 0),
         impact: parseInt(document.getElementById(`peser-imp-${id}`)?.value || 3),
+        desc:   document.getElementById(`peser-desc-${id}`)?.value.trim() || '',
       }));
       const totalProb = scenarios.reduce((s, sc) => s + sc.prob, 0) || 1;
       scenarios.forEach(sc => sc.normProb = sc.prob / totalProb);
@@ -12155,25 +12263,33 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       const pesSc     = scenarios.find(s => s.id === 'pes');
       const upside    = optSc.impact - 3;
       const downside  = 3 - pesSc.impact;
+      // Aversion à la perte : les pertes pèsent ~2× plus que les gains
+      const adjustedExpected = expected - (downside > 0 ? downside * pesSc.normProb : 0);
       const asymmetry = downside > 0 ? (upside / downside) : 99;
 
-      let verdictIcon, verdict;
-      if (expected >= 3.5 && asymmetry >= 1.5) {
-        verdictIcon = '✅';
-        verdict = `L'espérance de valeur est favorable (${expected.toFixed(1)}/5) et les gains potentiels dépassent les pertes. Asymétrie : ${asymmetry.toFixed(1)}x.`;
-      } else if (expected >= 3 && asymmetry >= 0.8) {
-        verdictIcon = '🟡';
-        verdict = `L'espérance est neutre à légèrement positive (${expected.toFixed(1)}/5). La décision est raisonnable mais sans forte conviction. Asymétrie : ${asymmetry.toFixed(1)}x.`;
+      let verdictIcon, verdict, verdictColor;
+      if (!_peserReversible && pesSc.normProb > 0.3 && pesSc.impact <= 2) {
+        verdictIcon = '⚠️'; verdictColor = '#d97706';
+        verdict = `Décision irréversible avec un scénario difficile probable (${Math.round(pesSc.normProb*100)}%). Sécurise-toi un plan B solide avant d'agir. Espérance : ${expected.toFixed(1)}/5.`;
+      } else if (expected >= 3.5 && asymmetry >= 1.5 && adjustedExpected >= 3) {
+        verdictIcon = '✅'; verdictColor = '#16a34a';
+        verdict = `Analyse favorable : espérance ${expected.toFixed(1)}/5, les gains potentiels dépassent les pertes (ratio ${asymmetry.toFixed(1)}×). ${!_peserReversible ? 'Même irréversible, le profil risque-bénéfice est positif.' : 'Et si ça ne marche pas parfaitement, tu pourras ajuster.'}`;
+      } else if (inactionImpact >= 4 && expected >= 2.8) {
+        verdictIcon = '🟡'; verdictColor = '#d97706';
+        verdict = `Le statu quo a un coût élevé (${inactionImpact}/5). Même avec une espérance modérée (${expected.toFixed(1)}/5), l'inaction est peut-être plus risquée que d'agir. Mets en balance les deux options.`;
       } else if (pesSc.normProb > 0.4 && pesSc.impact <= 2) {
-        verdictIcon = '⚠️';
-        verdict = `Le scénario pessimiste est probable (${Math.round(pesSc.normProb*100)}%) et son impact est fort. Assure-toi d'avoir un plan de secours avant de décider.`;
+        verdictIcon = '⚠️'; verdictColor = '#d97706';
+        verdict = `Le scénario difficile est probable (${Math.round(pesSc.normProb*100)}%) avec un impact de ${pesSc.impact}/5. Identifie les conditions à réunir avant de t'engager.`;
+      } else if (adjustedExpected < 2.8) {
+        verdictIcon = '🔴'; verdictColor = '#dc2626';
+        verdict = `Les risques semblent dépasser les bénéfices (espérance ajustée : ${adjustedExpected.toFixed(1)}/5). Cherche à améliorer le scénario difficile ou à réduire sa probabilité avant de décider.`;
       } else {
-        verdictIcon = '🔴';
-        verdict = `L'analyse montre un risque élevé par rapport aux bénéfices (espérance : ${expected.toFixed(1)}/5). Reconsidère ou cherche à améliorer le scénario pessimiste.`;
+        verdictIcon = '🟡'; verdictColor = '#d97706';
+        verdict = `Espérance neutre à légèrement positive (${expected.toFixed(1)}/5). La décision est raisonnable, mais sans conviction forte. Réévalue les probabilités ou explore d'autres voies.`;
       }
 
       const colors = { opt: '#16a34a', neu: '#d97706', pes: '#dc2626' };
-      const names  = { opt: 'Optimiste', neu: 'Neutre', pes: 'Pessimiste' };
+      const names  = { opt: 'Optimiste', neu: 'Probable', pes: 'Difficile' };
       const icons  = { opt: '🟢', neu: '🟡', pes: '🔴' };
 
       const el = document.getElementById('peserContent');
@@ -12181,30 +12297,76 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       el.innerHTML = `
         <div class="page-eyebrow">Résultat</div>
         <div class="page-title" style="margin-bottom:4px">${esc(context)}</div>
-        <div style="font-size:.82rem;color:var(--muted);margin-bottom:20px">Analyse des 3 scénarios</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:20px">${_peserReversible ? '🔄 Décision réversible' : '🔒 Décision irréversible'}</div>
         <div class="peser-result-bar">
           ${scenarios.map(sc => {
             const w = Math.round(sc.normProb * 100);
             return `<div class="peser-result-seg" style="width:${w}%;background:${colors[sc.id]}">${w > 10 ? w + '%' : ''}</div>`;
           }).join('')}
         </div>
-        <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
           ${scenarios.map(sc => `
-            <div style="flex:1;min-width:80px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px;text-align:center">
+            <div style="flex:1;min-width:80px;background:var(--white);border:1.5px solid ${colors[sc.id]}44;border-radius:var(--r-sm);padding:10px">
               <div style="font-size:1.1rem">${icons[sc.id]}</div>
               <div style="font-size:.72rem;font-weight:700;margin:4px 0">${names[sc.id]}</div>
-              <div style="font-size:.8rem;color:var(--primary);font-weight:700">${Math.round(sc.normProb * 100)}%</div>
-              <div style="font-size:.72rem;color:var(--muted)">Impact: ${sc.impact}/5</div>
+              <div style="font-size:.8rem;color:${colors[sc.id]};font-weight:700">${Math.round(sc.normProb * 100)}%</div>
+              <div style="font-size:.72rem;color:var(--muted)">Impact : ${sc.impact}/5</div>
+              ${sc.desc ? `<div style="font-size:.72rem;color:var(--ink);margin-top:5px;line-height:1.3;font-style:italic">"${esc(sc.desc.slice(0, 55))}${sc.desc.length > 55 ? '…' : ''}"</div>` : ''}
             </div>`).join('')}
         </div>
-        <div class="peser-verdict">
-          <div class="peser-verdict-title">${verdictIcon} Verdict</div>
+        ${inactionImpact >= 3 ? `
+        <div style="background:var(--bg2);border-radius:var(--r-sm);padding:10px 14px;margin-bottom:12px;font-size:.82rem;line-height:1.5">
+          🚫 <strong>Coût de l'inaction : ${inactionImpact}/5</strong> — Ne pas décider a aussi un coût. Inclus-le dans ta réflexion.
+        </div>` : ''}
+        <div style="background:#fff8e1;border:1.5px solid #ffd54f;border-radius:var(--r-sm);padding:10px 14px;margin-bottom:12px;font-size:.78rem;line-height:1.5;color:var(--ink)">
+          🧠 <strong>Biais d'aversion à la perte :</strong> le cerveau ressent les pertes ~2× plus intensément que les gains équivalents. Si tu hésites, vérifie si cette peur est proportionnée au risque réel.
+        </div>
+        <div class="peser-verdict" style="border-color:${verdictColor}44;background:${verdictColor}11">
+          <div class="peser-verdict-title" style="color:${verdictColor}">${verdictIcon} Verdict</div>
           ${verdict}
         </div>
+        <div id="peserAiSection" style="margin-top:12px"></div>
         <div class="btn-row" style="margin-top:20px">
           <button class="btn btn-secondary" onclick="nav('page-mode')">← Accueil</button>
           <button class="btn btn-primary" onclick="startPeser()">Recommencer</button>
         </div>`;
+
+      _tryPeserAI(context, scenarios, _peserReversible, inactionImpact);
+    }
+
+    async function _tryPeserAI(context, scenarios, reversible, inactionImpact) {
+      const section = document.getElementById('peserAiSection');
+      if (!section) return;
+      try {
+        section.innerHTML = `<div style="font-size:.78rem;color:var(--muted);text-align:center;padding:8px">✨ Analyse IA en cours…</div>`;
+        const r = await fetch('/api/peser-analysis', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            context,
+            scenarios: scenarios.map(sc => ({
+              name: { opt: 'Optimiste', neu: 'Probable', pes: 'Difficile' }[sc.id],
+              prob: Math.round(sc.normProb * 100),
+              impact: sc.impact,
+              desc: sc.desc,
+            })),
+            reversible,
+            inactionImpact,
+          })
+        });
+        const data = await r.json();
+        if (data.analysis) {
+          section.innerHTML = `
+            <div style="background:linear-gradient(135deg,var(--teal-bg),var(--white));border:1.5px solid var(--teal-bd);border-radius:var(--r);padding:16px">
+              <div style="font-size:.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">✨ Analyse IA</div>
+              <div style="font-size:.88rem;line-height:1.65;color:var(--ink)">${esc(data.analysis)}</div>
+            </div>`;
+        } else {
+          section.innerHTML = '';
+        }
+      } catch (e) {
+        section.innerHTML = '';
+      }
     }
 
     /* ══════════════════════════════════════════
@@ -12212,12 +12374,20 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
        ══════════════════════════════════════════ */
 
     const _clarifyQs = [
-      { q: 'Quelle est la décision que tu dois prendre ?',                              hint: 'Formule-la en une ou deux phrases simples.' },
-      { q: 'Qu\'est-ce qui t\'empêche de décider facilement ?',                         hint: 'Peur, manque d\'info, avis des autres… sois honnête.' },
-      { q: 'Qu\'est-ce que tu perdrais si tu ne fais rien ?',                           hint: 'Imagine que tu laisses passer l\'occasion.' },
-      { q: 'Dans 1 an, si tu regrettes de ne pas avoir agi, ce sera pour quelle raison ?', hint: 'Projette-toi dans le futur.' },
-      { q: 'Que conseillerais-tu à un ami dans exactement ta situation ?',              hint: 'Prends du recul comme si c\'était quelqu\'un d\'autre.' },
-      { q: 'Au fond de toi, quelle est la décision que tu connais déjà ?',              hint: 'Écoute ton instinct, même s\'il fait peur.' },
+      { q: 'Quelle est la décision que tu dois prendre ?',
+        hint: 'Formule-la en une ou deux phrases simples. Plus c\'est précis, plus la réflexion sera utile.' },
+      { q: 'Qu\'est-ce qui t\'empêche de décider facilement ?',
+        hint: 'Peur, manque d\'info, avis des autres, perfectionnisme… sois honnête avec toi-même.' },
+      { q: 'Qu\'est-ce que tu perdrais concrètement si tu ne fais rien ?',
+        hint: 'Pense aux opportunités manquées, à ce que le statu quo te coûte vraiment.' },
+      { q: 'Dans 5 ans, tu regardes en arrière avec fierté. Qu\'est-ce que la bonne décision t\'a permis d\'accomplir ?',
+        hint: 'Projection positive sur le long terme — dépasse la peur du court terme.' },
+      { q: 'Que conseillerais-tu à un ami proche dans exactement ta situation ?',
+        hint: 'Le recul d\'un tiers bienveillant révèle souvent ce qu\'on sait déjà sans oser l\'admettre.' },
+      { q: 'Au fond de toi, quelle est la décision que tu connais déjà ?',
+        hint: 'Écoute ton instinct sans filtre, même s\'il te fait peur. Pas de censure.' },
+      { q: 'Quel serait le premier petit pas concret si tu décidais d\'agir ?',
+        hint: 'Une seule action, réalisable cette semaine. Rends-la tangible et spécifique.' },
     ];
 
     let _clarifyStep    = 0;
@@ -12251,7 +12421,7 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
           ${_clarifyStep > 0
             ? `<button class="btn btn-secondary" onclick="_clarifyBack()">← Précédent</button>`
             : `<button class="btn btn-secondary" onclick="nav('page-mode')">← Retour</button>`}
-          <button class="btn btn-primary" onclick="_clarifyNext()">Suivant →</button>
+          <button class="btn btn-primary" onclick="_clarifyNext()">${_clarifyStep < total - 1 ? 'Suivant →' : 'Voir la synthèse →'}</button>
         </div>`;
       setTimeout(() => {
         const inp = document.getElementById('clarifyInput');
@@ -12275,20 +12445,73 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
       }
     }
 
-    function _renderClarifySynthesis() {
+    function _detectClarifyPattern(answers) {
+      const fearWords = ['peur', 'crainte', 'risque', 'incertitude', 'perdu', 'échec', 'trop', 'jamais', 'impossible', 'difficile', 'compliqué', 'raté', 'faute', 'inquiet', 'anxieux', 'stressé'];
+      const readyWords = ['envie', 'hâte', 'confiance', 'sûr', 'clair', 'évident', 'sens', 'naturel', 'prêt', 'veux', 'excité', 'motivé', 'certain'];
+      const text = answers.slice(0, 6).join(' ').toLowerCase();
+      const fearCount = fearWords.filter(w => text.includes(w)).length;
+      const readyCount = readyWords.filter(w => text.includes(w)).length;
+      if (fearCount > readyCount + 1) return 'fear';
+      if (readyCount > fearCount + 1) return 'ready';
+      return 'balanced';
+    }
+
+    function _clarifyConvergence(answers) {
+      const advice   = (answers[4] || '').toLowerCase();
+      const instinct = (answers[5] || '').toLowerCase();
+      if (!advice || !instinct) return null;
+      const adviceWords   = advice.split(/\W+/).filter(w => w.length > 4);
+      const instinctWords = instinct.split(/\W+/).filter(w => w.length > 4);
+      const overlap = adviceWords.filter(w => instinctWords.includes(w)).length;
+      const totalUnique = new Set([...adviceWords, ...instinctWords]).size;
+      if (totalUnique > 0 && overlap / totalUnique > 0.12) return 'converge';
+      const adviceNeg   = /\b(ne|pas|non|jamais|rien)\b/.test(advice);
+      const instinctNeg = /\b(ne|pas|non|jamais|rien)\b/.test(instinct);
+      if (adviceNeg !== instinctNeg) return 'diverge';
+      return 'unclear';
+    }
+
+    async function _renderClarifySynthesis() {
       const el = document.getElementById('clarifyContent');
       if (!el) return;
       const instinct  = _clarifyAnswers[5] || '—';
       const obstacle  = _clarifyAnswers[1] || '—';
+      const inaction  = _clarifyAnswers[2] || '—';
+      const firstStep = _clarifyAnswers[6] || '—';
+      const pattern     = _detectClarifyPattern(_clarifyAnswers);
+      const convergence = _clarifyConvergence(_clarifyAnswers);
+
+      const patternHTML = pattern === 'fear'
+        ? `<div style="background:#fff3cd;border:1.5px solid #ffc107;border-radius:var(--r-sm);padding:10px 14px;margin-bottom:16px;font-size:.82rem;line-height:1.5">
+            😨 <strong>Pattern détecté : la peur pilote ta décision.</strong> Tes réponses contiennent plusieurs signaux d'anxiété. Demande-toi : cette peur est-elle proportionnée au risque réel, ou est-elle une protection déguisée en raison ?
+          </div>`
+        : pattern === 'ready'
+        ? `<div style="background:#d1fae5;border:1.5px solid #34d399;border-radius:var(--r-sm);padding:10px 14px;margin-bottom:16px;font-size:.82rem;line-height:1.5">
+            ✅ <strong>Pattern détecté : tu es prêt(e).</strong> Tes réponses montrent de la clarté et de la confiance. Le vrai frein n'est peut-être pas la décision elle-même, mais l'autorisation de passer à l'action.
+          </div>`
+        : '';
+
+      const convergenceHTML = convergence === 'converge'
+        ? `<div style="background:#d1fae5;border:1.5px solid #34d399;border-radius:var(--r-sm);padding:10px 14px;margin-bottom:16px;font-size:.82rem">
+            🎯 <strong>Alignement fort :</strong> ce que tu conseillerais à un ami et ton instinct pointent dans la même direction. Quand la raison et l'intuition s'accordent, c'est un signal solide.
+          </div>`
+        : convergence === 'diverge'
+        ? `<div style="background:#fef3c7;border:1.5px solid #f59e0b;border-radius:var(--r-sm);padding:10px 14px;margin-bottom:16px;font-size:.82rem">
+            ⚡ <strong>Tension interne détectée :</strong> ce que tu conseillerais à un ami diffère de ton instinct. Cette divergence est souvent le cœur de la vraie décision à prendre.
+          </div>`
+        : '';
+
       el.innerHTML = `
         <div class="page-eyebrow">Synthèse</div>
         <div class="page-title" style="margin-bottom:6px">Ce que ta réflexion révèle</div>
-        <div style="font-size:.82rem;color:var(--muted);margin-bottom:20px">Tes 6 réponses, relues ensemble.</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:20px">Tes ${_clarifyQs.length} réponses analysées.</div>
+        ${patternHTML}
+        ${convergenceHTML}
         <div class="clarify-synthesis">
           <div class="clarify-synthesis-label">💡 Ce que tu sais déjà</div>
           <div class="clarify-synthesis-text">"${esc(instinct)}"<br><br>
             Ton instinct et tes conseils imaginaires à un ami convergent souvent vers la même réponse.
-            Si tu devais agir maintenant, tu sais probablement quoi faire.
+            Si tu devais agir maintenant, tu sais probablement déjà quoi faire.
           </div>
         </div>
         <div class="clarify-synthesis" style="background:var(--white);border-color:var(--border)">
@@ -12298,17 +12521,61 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
             Est-ce une vraie contrainte ou une peur déguisée en raison ?
           </div>
         </div>
-        <div class="clarify-answers-list">
-          ${_clarifyQs.map((q, i) => `
-            <div class="clarify-answer-card">
-              <div class="clarify-answer-q-label">Q${i + 1} — ${q.q}</div>
-              <div class="clarify-answer-text">${esc(_clarifyAnswers[i] || '—')}</div>
-            </div>`).join('')}
-        </div>
+        ${inaction !== '—' ? `
+        <div class="clarify-synthesis" style="background:var(--white);border-color:var(--border)">
+          <div class="clarify-synthesis-label" style="color:var(--score-mid)">⏳ Le coût de l'inaction</div>
+          <div class="clarify-synthesis-text">"${esc(inaction)}"<br><br>
+            Ne pas décider est aussi une décision — avec ses propres conséquences. Ce que tu perdrais en restant immobile est une motivation concrète.
+          </div>
+        </div>` : ''}
+        ${firstStep !== '—' ? `
+        <div style="background:linear-gradient(135deg,var(--teal-bg),var(--white));border:2px solid var(--teal-bd);border-radius:var(--r);padding:18px;margin-bottom:16px">
+          <div style="font-size:.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">⚡ Ton premier pas concret</div>
+          <div style="font-size:1rem;font-weight:700;color:var(--ink)">"${esc(firstStep)}"</div>
+          <div style="font-size:.8rem;color:var(--muted);margin-top:6px">Une seule action peut tout débloquer. Peux-tu la faire cette semaine ?</div>
+        </div>` : ''}
+        <div id="clarifyAiSection" style="margin-bottom:16px"></div>
+        <details style="margin-bottom:16px">
+          <summary style="font-size:.82rem;font-weight:700;color:var(--ink2);cursor:pointer;padding:4px 0">Voir toutes mes réponses ▾</summary>
+          <div class="clarify-answers-list" style="margin-top:10px">
+            ${_clarifyQs.map((q, i) => `
+              <div class="clarify-answer-card">
+                <div class="clarify-answer-q-label">Q${i + 1} — ${q.q}</div>
+                <div class="clarify-answer-text">${esc(_clarifyAnswers[i] || '—')}</div>
+              </div>`).join('')}
+          </div>
+        </details>
         <div class="btn-row">
           <button class="btn btn-secondary" onclick="nav('page-mode')">← Accueil</button>
           <button class="btn btn-primary" onclick="startClarifier()">Recommencer</button>
         </div>`;
+
+      _tryClarifyAI(_clarifyAnswers);
+    }
+
+    async function _tryClarifyAI(answers) {
+      const section = document.getElementById('clarifyAiSection');
+      if (!section) return;
+      try {
+        section.innerHTML = `<div style="font-size:.78rem;color:var(--muted);text-align:center;padding:8px">✨ Synthèse IA en cours…</div>`;
+        const r = await fetch('/api/clarify-synthesis', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers })
+        });
+        const data = await r.json();
+        if (data.synthesis) {
+          section.innerHTML = `
+            <div style="background:linear-gradient(135deg,var(--teal-bg),var(--white));border:1.5px solid var(--teal-bd);border-radius:var(--r);padding:16px">
+              <div style="font-size:.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">✨ Synthèse IA</div>
+              <div style="font-size:.88rem;line-height:1.65;color:var(--ink)">${esc(data.synthesis)}</div>
+            </div>`;
+        } else {
+          section.innerHTML = '';
+        }
+      } catch (e) {
+        section.innerHTML = '';
+      }
     }
 
     /* ══════════════════════════════════════════
