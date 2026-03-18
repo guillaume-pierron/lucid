@@ -13171,6 +13171,10 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         energyPct = Math.max(20, energyPct - 25);
       }
 
+      if (energy === 'high') energyLabel = 'Énergie mentale: Excellente';
+      else if (energy === 'medium') energyLabel = 'Énergie mentale: Moyenne';
+      else energyLabel = 'Énergie mentale: Faible';
+
       pill.innerHTML = `<div class="mental-energy-pill ${energy}">
         <div class="mental-energy-dot"></div>
         ${energyLabel}${_currentEmotion ? ' · ' + _currentEmotion.emoji : ''}
