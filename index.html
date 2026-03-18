@@ -6398,16 +6398,12 @@
             </div>
           </div>
 
-          <!-- Coach + Framework recommendation -->
+          <!-- Coach recommendation -->
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;margin-bottom:4px">
             <button class="coach-trigger-btn" onclick="openCoachModal()" style="flex:1;min-width:180px">
               🦉 Clarifier avec le Coach IA
             </button>
-            <button onclick="openFrameworkModal()" style="flex:1;min-width:140px;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--bg2);color:var(--ink2);border:1.5px solid var(--border2);border-radius:var(--r-sm);padding:10px 16px;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:0">
-              🧭 Quel framework ?
-            </button>
           </div>
-          <div id="frameworkRecBox" style="margin-top:4px"></div>
 
           <div class="anim d3">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
@@ -13314,91 +13310,6 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
           insightEl.classList.add('visible');
         }
       } catch(e) { /* silently fail */ }
-    }
-
-    /* ─── FRAMEWORK RECOMMENDATION ───────────── */
-    async function openFrameworkModal() {
-      const decision = document.getElementById('inp-dec')?.value?.trim() || S.decision;
-      if (!decision) {
-        alert(LANG === 'fr' ? 'Formulez d\'abord votre décision.' : 'Please write your decision first.');
-        return;
-      }
-
-      const box = document.getElementById('frameworkRecBox');
-      if (!box) return;
-
-      // Show sliders UI
-      box.innerHTML = `<div class="framework-rec" style="margin-top:8px">
-        <div style="font-size:.85rem;font-weight:700;color:#92400e;margin-bottom:12px">🧭 Caractéristiques de votre décision</div>
-        <div class="framework-urgency-row">
-          <div class="framework-urgency-item">
-            <div class="framework-urgency-label">Urgence</div>
-            <input type="range" class="framework-slider" id="fw-urgency" min="1" max="5" value="3">
-            <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--muted)"><span>Pas urgent</span><span>Très urgent</span></div>
-          </div>
-          <div class="framework-urgency-item">
-            <div class="framework-urgency-label">Réversibilité</div>
-            <input type="range" class="framework-slider" id="fw-revers" min="1" max="5" value="3">
-            <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--muted)"><span>Irréversible</span><span>Réversible</span></div>
-          </div>
-          <div class="framework-urgency-item">
-            <div class="framework-urgency-label">Complexité</div>
-            <input type="range" class="framework-slider" id="fw-complex" min="1" max="5" value="3">
-            <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--muted)"><span>Simple</span><span>Complexe</span></div>
-          </div>
-        </div>
-        <button class="btn btn-primary" style="width:100%;margin-top:8px;padding:10px" onclick="runFrameworkRec()">
-          Recommander le meilleur framework →
-        </button>
-        <div id="frameworkResult" style="margin-top:12px"></div>
-      </div>`;
-    }
-
-    async function runFrameworkRec() {
-      const decision = document.getElementById('inp-dec')?.value?.trim() || S.decision;
-      const urgency = document.getElementById('fw-urgency')?.value || 3;
-      const reversibility = document.getElementById('fw-revers')?.value || 3;
-      const complexity = document.getElementById('fw-complex')?.value || 3;
-      const numOptions = S.options.filter(o => o.name.trim()).length || 2;
-      const resultEl = document.getElementById('frameworkResult');
-      if (!resultEl) return;
-
-      resultEl.innerHTML = `<div style="color:var(--muted);font-size:.82rem;text-align:center;padding:10px">⏳ Analyse en cours…</div>`;
-
-      // Local fallback logic
-      const localFramework = () => {
-        if (urgency >= 4 && complexity <= 2) return { framework: 'Boucle OODA', emoji: '⚡', reason: 'Décision urgente et relativement simple — la boucle Observer-Orienter-Décider-Agir permet une réponse rapide et adaptative.', key_question: 'Quelle information me manque-t-il pour agir maintenant ?' };
-        if (complexity >= 4) return { framework: 'Framework Cynefin', emoji: '🌀', reason: 'Situation complexe avec de nombreuses inconnues — Cynefin aide à identifier le type de complexité et le mode de réponse approprié.', key_question: 'Cette situation est-elle compliquée (experts utiles) ou complexe (expérimentation requise) ?' };
-        if (urgency <= 2 && reversibility <= 2) return { framework: 'Pensée de 2nd Ordre', emoji: '♟️', reason: 'Décision peu urgente et difficile à défaire — analyser les conséquences des conséquences est crucial ici.', key_question: 'Et ensuite ? Quelles sont les conséquences de mes conséquences ?' };
-        return { framework: 'Matrice Décisionnelle Pondérée', emoji: '⚖️', reason: 'Vous avez plusieurs options comparables — la matrice pondérée vous permettra de structurer l\'évaluation objective.', key_question: 'Quels critères sont réellement les plus importants pour vous ?' };
-      };
-
-      try {
-        const r = await fetch('/api/framework', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ decision, urgency: +urgency, reversibility: +reversibility, complexity: +complexity, numOptions, lang: LANG })
-        });
-        const data = await r.json();
-        const fw = data.framework?.framework ? data.framework : localFramework();
-        renderFrameworkResult(fw, resultEl);
-      } catch(e) {
-        renderFrameworkResult(localFramework(), resultEl);
-      }
-    }
-
-    function renderFrameworkResult(fw, el) {
-      el.innerHTML = `<div style="animation: fadeUp .3s ease">
-        <div class="framework-rec-head">
-          <span class="framework-emoji">${fw.emoji || '🧭'}</span>
-          <div>
-            <div class="framework-name">${esc(fw.framework)}</div>
-            <div class="framework-badge">Framework recommandé</div>
-          </div>
-        </div>
-        <div class="framework-reason">${esc(fw.reason)}</div>
-        <div class="framework-question">${esc(fw.key_question)}</div>
-      </div>`;
     }
 
     /* ─── NARRATIVE AI (RÉSULTATS) ────────────── */

@@ -292,49 +292,6 @@ Sois spécifique à CETTE décision, pas générique.`;
   }
 });
 
-/* ── AI: framework recommendation ── */
-app.post('/api/framework', async (req, res) => {
-  const { decision, urgency, reversibility, complexity, numOptions, lang } = req.body || {};
-  if (!decision) return res.status(400).json({ error: 'decision required' });
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return res.status(503).json({ error: 'AI not configured' });
-
-  const prompt = lang === 'en'
-    ? `Decision framework expert. Recommend the best framework for:
-
-Decision: "${decision}"
-Urgency: ${urgency}/5 | Reversibility: ${reversibility}/5 | Complexity: ${complexity}/5 | Options: ${numOptions}
-
-Available: Eisenhower Matrix, OODA Loop, Cynefin Framework, Weighted Decision Matrix, Pre-mortem Analysis, 10/10/10 Rule, Second-Order Thinking, Inversion Method, WRAP Method
-
-Return ONLY valid JSON:
-{"framework":"Name","emoji":"emoji","reason":"1-2 sentences why this fits","key_question":"The one question this framework answers best"}`
-    : `Expert en frameworks décisionnels. Recommande le meilleur framework pour :
-
-Décision : "${decision}"
-Urgence : ${urgency}/5 | Réversibilité : ${reversibility}/5 | Complexité : ${complexity}/5 | Options : ${numOptions}
-
-Disponibles : Matrice Eisenhower, Boucle OODA, Cynefin, Matrice pondérée, Pré-mortem, Règle 10/10/10, Pensée de 2e ordre, Méthode d'inversion, Méthode WRAP
-
-Réponds UNIQUEMENT avec du JSON valide :
-{"framework":"Nom","emoji":"emoji","reason":"1-2 phrases pourquoi ce framework convient","key_question":"La question que ce framework aide le mieux à répondre"}`;
-
-  try {
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 300, messages: [{ role: 'user', content: prompt }] })
-    });
-    const data = await r.json();
-    const text = data?.content?.[0]?.text || '{}';
-    const match = text.match(/\{[\s\S]*\}/);
-    const framework = match ? JSON.parse(match[0]) : {};
-    res.json({ framework });
-  } catch (e) {
-    res.status(500).json({ error: 'AI error', framework: {} });
-  }
-});
-
 app.use(express.static(__dirname));
 
 /* ── Session store ── */
