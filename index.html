@@ -5482,60 +5482,6 @@
     .res-tool-card-sub { color: var(--muted); font-size: .76rem; margin-top: 1px; }
     .res-tool-card-arrow { color: var(--muted2); font-size: 1rem; }
 
-    /* ── FRAMEWORKS (10/10/10 & REGRET) ──── */
-    .framework-section {
-      background: var(--glass-bg); backdrop-filter: blur(12px);
-      border: 1.5px solid var(--border); border-radius: var(--r);
-      overflow: hidden; margin-bottom: 24px; box-shadow: var(--shadow);
-    }
-    .framework-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px; cursor: pointer; user-select: none; }
-    .framework-head:hover { background: var(--bg); }
-    .framework-chevron { color: var(--muted2); font-size: .8rem; transition: transform .22s; margin-left: auto; }
-    .framework-section.open .framework-chevron { transform: rotate(180deg); }
-    .framework-body { display: none; border-top: 1px solid var(--border); padding: 16px 20px; }
-    .framework-section.open .framework-body { display: block; }
-    .fw-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
-    .fw-tab {
-      flex: 1; padding: 8px 10px; border-radius: 10px;
-      border: 1.5px solid var(--border); background: var(--bg);
-      font-size: .75rem; font-weight: 600; color: var(--muted);
-      cursor: pointer; text-align: center; transition: all .15s;
-      font-family: 'Inter', sans-serif;
-    }
-    .fw-tab.active { border-color: var(--teal); background: var(--teal-bg); color: var(--teal); }
-    .fw-content { display: none; }
-    .fw-content.active { display: block; }
-    .fw-question {
-      font-size: .88rem; color: var(--ink2); font-style: italic; margin-bottom: 12px; line-height: 1.6;
-      padding: 10px 14px; background: var(--teal-bg);
-      border-left: 3px solid var(--teal); border-radius: 0 var(--r-sm) var(--r-sm) 0;
-    }
-    .fw-opts { display: flex; flex-direction: column; gap: 10px; }
-    .fw-opt-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .fw-opt-label { font-size: .8rem; font-weight: 600; color: var(--ink2); min-width: 90px; flex: 1 1 90px; word-break: break-word; }
-    .fw-smiley-row { display: flex; gap: 6px; flex-shrink: 0; }
-    .fw-smiley {
-      font-size: 1.5rem; cursor: pointer; opacity: .35; transition: all .15s;
-      border: none; background: none; padding: 2px; border-radius: 4px;
-    }
-    .fw-smiley:hover, .fw-smiley.selected { opacity: 1; transform: scale(1.2); }
-    .regret-choice { display: flex; gap: 8px; margin-top: 8px; }
-    .regret-btn {
-      flex: 1; padding: 8px 10px; border-radius: 8px;
-      border: 1.5px solid var(--border); background: var(--white);
-      font-size: .78rem; font-weight: 600; color: var(--muted);
-      cursor: pointer; transition: all .18s; text-align: center; font-family: 'Inter', sans-serif;
-    }
-    .regret-btn:hover { border-color: var(--teal); color: var(--teal); }
-    .regret-btn.yes { border-color: var(--green); background: var(--green-bg); color: var(--green); }
-    .regret-btn.no { border-color: var(--red); background: var(--red-bg); color: var(--red); }
-    .regret-opt { padding: 12px 14px; border-radius: var(--r-sm); background: var(--bg); border: 1px solid var(--border); margin-bottom: 10px; }
-    .regret-opt-name { font-size: .85rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
-    .regret-insight {
-      margin-top: 14px; padding: 12px 14px; background: var(--teal-bg);
-      border: 1px solid var(--teal-bd); border-radius: var(--r-sm);
-      font-size: .82rem; color: var(--ink2); line-height: 1.6;
-    }
 
     /* ── MODE COLLABORATIF ────────────────── */
     .collab-modal-tabs { display: flex; gap: 0; margin: -4px -4px 20px; border-bottom: 1.5px solid var(--border); }
@@ -5837,12 +5783,6 @@
     .robustness-opt-name { font-size: .82rem; font-weight: 600; color: var(--ink2); min-width: 100px; flex-shrink: 0; }
     .robustness-bar-wrap { flex: 1; height: 14px; background: var(--bg2); border-radius: 7px; overflow: hidden; }
     .robustness-bar-fill { height: 100%; border-radius: 7px; transition: width .8s cubic-bezier(.16,1,.3,1); }
-    .robustness-pct { font-size: .8rem; font-weight: 700; min-width: 38px; text-align: right; }
-    .robustness-verdict {
-      margin-top: 12px; padding: 10px 14px; background: var(--teal-bg);
-      border: 1px solid var(--teal-bd); border-radius: var(--r-sm);
-      font-size: .82rem; color: var(--ink2); line-height: 1.6;
-    }
 
     /* ── AI DEVIL'S ADVOCATE ──────────────── */
     .devil-section {
@@ -8145,11 +8085,7 @@
       <!-- ② SCORES -->
       <div class="sc-cards-row anim" id="scoresRow" style="grid-template-columns:repeat(${ncols},1fr)">${scoreCards}</div>
 
-      <!-- ③ Solidité -->
-      <div class="res-divider"><span class="res-divider-label">📊 ${LANG === 'fr' ? 'Solidité de votre décision' : 'Decision robustness'}</span></div>
-      ${buildRobustnessSection(scores)}
-
-      <!-- ④ Profil visuel -->
+      <!-- ③ Profil visuel -->
       <div class="res-divider" style="margin-top:22px"><span class="res-divider-label">${tr('div_visual')}</span></div>
       <div class="res-section">
         <div class="res-section-body" style="padding:16px 20px 20px">
@@ -10062,246 +9998,6 @@ Ta mission : Rédige un message interprétatif court (3 à 5 phrases) en frança
         ${insight ? `<div class="premortem-insight">${insight}</div>` : ''}`;
     }
 
-    /* ─── FRAMEWORK 10/10/10 ─────────────────── */
-    let _tenTenTen = {}; // { optIdx: { min: emoji, month: emoji, year: emoji } }
-
-    function buildTenTenTenSection(scores) {
-      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
-      const SMILEYS = ['😟', '😕', '😐', '🙂', '😊'];
-      const periods = [
-        { id: 'min', label: '10 minutes', question: 'Dans 10 minutes, après avoir pris cette décision, comment te sens-tu ?' },
-        { id: 'month', label: '10 mois', question: 'Dans 10 mois, avec le recul, comment tu vis ce choix ?' },
-        { id: 'year', label: '10 ans', question: 'Dans 10 ans, en regardant en arrière, comment tu juges cette décision ?' },
-      ];
-
-      const tabsHTML = periods.map((p, pi) => `<button class="fw-tab${pi === 0 ? ' active' : ''}" onclick="switchFwTab(this, 'fw-${p.id}')">${p.label}</button>`).join('');
-      const contentsHTML = periods.map((p, pi) => {
-        const optsHTML = ranked.map(oi => {
-          const row = `
-            <div class="fw-opt-row">
-              <span class="fw-opt-label" style="color:${resultColors[oi].hex}">${esc(S.options[oi].name)}</span>
-              <div class="fw-smiley-row">
-                ${SMILEYS.map((s, si) => `<button class="fw-smiley${(_tenTenTen[oi]?.[p.id] === si) ? ' selected' : ''}" onclick="setFwScore(${oi},'${p.id}',${si})" title="${s}">${s}</button>`).join('')}
-              </div>
-            </div>`;
-          return row;
-        }).join('');
-        return `<div class="fw-content${pi === 0 ? ' active' : ''}" id="fw-${p.id}">
-          <div class="fw-question">${p.question}</div>
-          <div class="fw-opts">${optsHTML}</div>
-        </div>`;
-      }).join('');
-
-      return `
-        <div class="framework-section" id="tenTenTenSection">
-          <div class="framework-head" onclick="this.parentElement.classList.toggle('open')">
-            <span style="font-size:1.1rem">⏱️</span>
-            <div style="flex:1">
-              <div style="font-size:.88rem;font-weight:700;color:var(--ink)">Règle des 10/10/10</div>
-              <div style="font-size:.72rem;color:var(--muted);margin-top:1px">Comment vous sentirez-vous dans 10 min, 10 mois, 10 ans ?</div>
-            </div>
-            <div class="framework-chevron">▾</div>
-          </div>
-          <div class="framework-body">
-            <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6">
-              La règle des 10/10/10 de <em>Suzy Welch</em> : pour chaque option, notez votre ressenti dans 3 horizons temporels. Révèle si vous décidez sous l'émotion du moment.
-            </p>
-            <div class="fw-tabs">${tabsHTML}</div>
-            ${contentsHTML}
-            <div id="fwInsight" style="margin-top:14px"></div>
-          </div>
-        </div>`;
-    }
-
-    function switchFwTab(btn, contentId) {
-      btn.closest('.framework-body').querySelectorAll('.fw-tab').forEach(t => t.classList.remove('active'));
-      btn.classList.add('active');
-      btn.closest('.framework-body').querySelectorAll('.fw-content').forEach(c => c.classList.remove('active'));
-      const el = document.getElementById(contentId);
-      if (el) el.classList.add('active');
-    }
-
-    function setFwScore(oi, period, val) {
-      if (!_tenTenTen[oi]) _tenTenTen[oi] = {};
-      _tenTenTen[oi][period] = val;
-      // Re-render smileys
-      document.querySelectorAll(`#fw-${period} .fw-smiley`).forEach((btn, idx) => {
-        const btnOi = parseInt(btn.closest('.fw-opt-row').querySelector('.fw-opt-label').dataset.oi || 0);
-        // Find option index from DOM order
-      });
-      // Simpler: rebuild insight
-      buildFwInsight();
-      // Update selected state
-      document.querySelectorAll(`#fw-${period} .fw-opt-row`).forEach((row, rowIdx) => {
-        const scores = S.options.map((_, i) => calcScore(i));
-        const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
-        const oi2 = ranked[rowIdx];
-        row.querySelectorAll('.fw-smiley').forEach((s, si) => {
-          s.classList.toggle('selected', _tenTenTen[oi2]?.[period] === si);
-        });
-      });
-    }
-
-    function buildFwInsight() {
-      const el = document.getElementById('fwInsight');
-      if (!el) return;
-      const scores = S.options.map((_, i) => calcScore(i));
-      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
-      const periods = ['min', 'month', 'year'];
-      // Check if there's a mismatch between rational choice and 10/10/10
-      const winner = ranked[0];
-      if (!_tenTenTen[winner]) return;
-      const yearScore = _tenTenTen[winner]?.year;
-      if (yearScore !== undefined && yearScore <= 1) {
-        el.innerHTML = `<div style="padding:10px 14px;background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.2);border-radius:var(--r-sm);font-size:.82rem;color:var(--ink2);line-height:1.6">
-          ⚠️ <strong>Signal d'alerte :</strong> L'option rationnellement gagnante vous semble négative dans 10 ans. Cela suggère un conflit entre votre analyse et votre intuition profonde — mérite réflexion.
-        </div>`;
-      } else if (yearScore !== undefined && yearScore >= 3) {
-        el.innerHTML = `<div style="padding:10px 14px;background:var(--teal-bg);border:1px solid var(--teal-bd);border-radius:var(--r-sm);font-size:.82rem;color:var(--ink2);line-height:1.6">
-          ✅ <strong>Cohérence confirmée :</strong> Votre choix rationnel s'aligne avec votre vision à 10 ans. C'est un signal fort.
-        </div>`;
-      }
-    }
-
-    /* ─── MINIMISATION DU REGRET ─────────────── */
-    let _regretAnswers = {};
-
-    function buildRegretSection(scores) {
-      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
-      const optsHTML = ranked.map(oi => `
-        <div class="regret-opt">
-          <div class="regret-opt-name" style="color:${resultColors[oi].hex}">${esc(S.options[oi].name)}</div>
-          <div style="font-size:.82rem;color:var(--muted);margin-bottom:6px">Dans 80 ans, regretterez-vous de ne pas avoir essayé cette option ?</div>
-          <div class="regret-choice">
-            <button class="regret-btn${_regretAnswers[oi] === 'yes' ? ' yes' : ''}" onclick="setRegret(${oi},'yes')">😟 Oui, probablement</button>
-            <button class="regret-btn${_regretAnswers[oi] === 'no' ? ' no' : ''}" onclick="setRegret(${oi},'no')">😌 Non, je serai en paix</button>
-          </div>
-        </div>`).join('');
-
-      return `
-        <div class="framework-section" id="regretSection">
-          <div class="framework-head" onclick="this.parentElement.classList.toggle('open')">
-            <span style="font-size:1.1rem">🔭</span>
-            <div style="flex:1">
-              <div style="font-size:.88rem;font-weight:700;color:var(--ink)">Minimisation du regret</div>
-              <div style="font-size:.72rem;color:var(--muted);margin-top:1px">La méthode de Jeff Bezos — la vue depuis vos 80 ans</div>
-            </div>
-            <div class="framework-chevron">▾</div>
-          </div>
-          <div class="framework-body">
-            <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6">
-              Jeff Bezos projetait sa décision à 80 ans : <em>"Est-ce que je regretterai de ne pas avoir essayé ?"</em> Cette perspective élimine la peur à court terme.
-            </p>
-            ${optsHTML}
-            <div id="regretInsight" style="margin-top:12px"></div>
-          </div>
-        </div>`;
-    }
-
-    function setRegret(oi, val) {
-      _regretAnswers[oi] = val;
-      // Re-render buttons
-      document.querySelectorAll(`#regretSection .regret-opt`).forEach((el, idx) => {
-        const scores = S.options.map((_, i) => calcScore(i));
-        const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
-        const oi2 = ranked[idx];
-        el.querySelectorAll('.regret-btn').forEach((btn, bi) => {
-          btn.className = 'regret-btn' + (bi === 0 && _regretAnswers[oi2] === 'yes' ? ' yes' : bi === 1 && _regretAnswers[oi2] === 'no' ? ' no' : '');
-        });
-      });
-      // Insight
-      const el = document.getElementById('regretInsight');
-      if (!el) return;
-      const scores = S.options.map((_, i) => calcScore(i));
-      const ranked = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a]);
-      const winner = ranked[0];
-      const answered = Object.keys(_regretAnswers).length;
-      if (answered < 2) return;
-      const regretOpts = ranked.filter(i => _regretAnswers[i] === 'yes');
-      if (regretOpts.length === 0) {
-        el.innerHTML = `<div class="regret-insight">😌 Vous semblez en paix avec toutes les options non choisies — votre décision ne repose pas sur la peur du regret. C'est un signe de clarté.</div>`;
-      } else if (regretOpts[0] === winner) {
-        el.innerHTML = `<div class="regret-insight">🎯 <strong>Cohérence :</strong> L'option qui vous ferait le plus regretter correspond à votre choix rationnel. Double confirmation.</div>`;
-      } else {
-        el.innerHTML = `<div class="regret-insight">⚡ <strong>Divergence :</strong> L'option que vous regretteriez le plus de ne pas avoir essayée n'est pas celle qui score le mieux dans votre matrice. Interrogez-vous : votre analyse intègre-t-elle bien ce qui compte pour vous dans 80 ans ?</div>`;
-      }
-    }
-
-    /* ─── ANALYSE DE ROBUSTESSE ──────────────── */
-    function buildRobustnessSection(scores) {
-      const results = runMonteCarlo(200);
-      const maxWins = Math.max(...results.map(r => r.wins));
-
-      const bars = [...S.options.map((_, i) => i)]
-        .sort((a, b) => results[b].wins - results[a].wins)
-        .map(oi => {
-          const r = results[oi];
-          const pct = r.wins;
-          const c = resultColors[oi] || activeColors()[oi];
-          const isStable = pct >= 65;
-          return `
-            <div class="robustness-bar-row">
-              <span class="robustness-opt-name" style="color:${c.hex}">${esc(S.options[oi].name)}</span>
-              <div class="robustness-bar-wrap">
-                <div class="robustness-bar-fill" style="width:${pct}%;background:${isStable ? c.hex : 'var(--amber)'}"></div>
-              </div>
-              <span class="robustness-pct" style="color:${c.hex}">${pct}%</span>
-            </div>`;
-        }).join('');
-
-      const actualWinner = [...S.options.map((_, i) => i)].sort((a, b) => scores[b] - scores[a])[0];
-      const actualWinnerPct = results[actualWinner].wins;
-      const mcWinner = [...S.options.map((_, i) => i)].sort((a, b) => results[b].wins - results[a].wins)[0];
-      let verdict = '';
-      if (actualWinnerPct >= 75) verdict = `<div class="robustness-verdict">✅ <strong>Décision robuste :</strong> "${esc(S.options[actualWinner].name)}" gagne dans <strong>${actualWinnerPct}%</strong> des 200 scénarios simulés — votre choix est stable quelle que soit la pondération exacte.</div>`;
-      else if (actualWinnerPct >= 50) verdict = `<div class="robustness-verdict">⚖️ <strong>Résultat modérément stable :</strong> "${esc(S.options[actualWinner].name)}" est en tête dans ${actualWinnerPct}% des scénarios. La décision finale dépend beaucoup des poids exacts.</div>`;
-      else verdict = `<div class="robustness-verdict">⚠️ <strong>Décision fragile :</strong> "${esc(S.options[actualWinner].name)}" ne gagne que dans ${actualWinnerPct}% des simulations. Avec des pondérations différentes, "${esc(S.options[mcWinner].name)}" serait souvent privilégiée — faites confiance à vos priorités.</div>`;
-
-      return `
-        <div class="framework-section" id="robustnessSection">
-          <div class="framework-head" onclick="this.parentElement.classList.toggle('open')">
-            <span style="font-size:1.1rem">🎲</span>
-            <div style="flex:1">
-              <div style="font-size:.88rem;font-weight:700;color:var(--ink)">Solidité de votre décision</div>
-              <div style="font-size:.72rem;color:var(--muted);margin-top:1px">200 simulations aléatoires des poids — quelle option gagne le plus souvent ?</div>
-            </div>
-            <div class="framework-chevron">▾</div>
-          </div>
-          <div class="framework-body">
-            <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px;line-height:1.6">
-              On fait varier les poids de chaque critère aléatoirement 200 fois pour voir si votre classement est <strong>stable</strong> ou <strong>fragile</strong>.
-            </p>
-            ${bars}
-            ${verdict}
-          </div>
-        </div>`;
-    }
-
-    function runMonteCarlo(iterations) {
-      const results = S.options.map(() => ({ wins: 0 }));
-      for (let iter = 0; iter < iterations; iter++) {
-        // Generate random weights for each criterion
-        const randWeights = {};
-        S.criteria.forEach(c => { randWeights[c.id] = Math.random() * 2 + 0.5; });
-        const totalW = Object.values(randWeights).reduce((a, b) => a + b, 0);
-        // Compute scores
-        const simScores = S.options.map((_, oi) => {
-          let tot = 0;
-          S.criteria.forEach(c => {
-            let v = S.scores[c.id]?.[oi] ?? 5;
-            if (c.invert) v = 11 - v;
-            tot += v * (randWeights[c.id] / totalW);
-          });
-          return tot;
-        });
-        // Find winner
-        const winnerIdx = simScores.indexOf(Math.max(...simScores));
-        results[winnerIdx].wins++;
-      }
-      // Convert to percentage
-      results.forEach(r => { r.wins = Math.round((r.wins / iterations) * 100); });
-      return results;
-    }
 
     /* ─── AI AVOCAT DU DIABLE ────────────────── */
     async function generateDevilsAdvocate() {
@@ -10377,8 +10073,8 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
     const _origBuildResults = buildResults;
     window.buildResults = function() {
       _origBuildResults();
-      // Reset framework state
-      _premortemNotes = {}; _tenTenTen = {}; _regretAnswers = {};
+      // Reset premortem state
+      _premortemNotes = {};
       // Insert new sections after the notes / before actions
       const scores = S.options.map((_, i) => calcScore(i));
       const actionsEl = document.querySelector('.res-actions');
@@ -10411,13 +10107,6 @@ Mission: Argue for "${S.options[loser].name}" in 3-4 punchy sentences. Highlight
         <!-- Pre-mortem -->
         <div class="res-divider"><span class="res-divider-label">🔮 Anticiper les risques</span></div>
         ${buildPremortemSection(scores)}
-
-        <!-- 10/10/10 -->
-        <div class="res-divider"><span class="res-divider-label">⏳ Perspectives temporelles</span></div>
-        ${buildTenTenTenSection(scores)}
-
-        <!-- Regret Minimization -->
-        ${buildRegretSection(scores)}
 
         <!-- Devil's Advocate -->
         <div class="res-divider"><span class="res-divider-label">🧠 Pensée critique</span></div>
